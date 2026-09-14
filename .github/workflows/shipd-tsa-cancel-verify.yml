@@ -79,7 +79,7 @@ jobs:
           docker commit cargo-perm-fix tsa-cancel-verify:latest
           docker rm cargo-perm-fix
 
-      - name: Run test.sh new (Verify Solution: test.patch + solution.patch applied live)
+      - name: "Run test.sh new (Verify Solution: test.patch + solution.patch applied live)"
         run: |
           mkdir -p out patches && chmod 777 out
           cp this-repo/shipd-cases/tsa-cancel/test.patch patches/
@@ -99,7 +99,7 @@ jobs:
               ./test.sh new --output_path /out/new.xml
             '
 
-      - name: Run test.sh base (regression: test.patch only, fresh container)
+      - name: "Run test.sh base (regression: test.patch only, fresh container)"
         if: always()
         run: |
           docker run --rm -u 54321:54321 -e HOME=/home/model \
