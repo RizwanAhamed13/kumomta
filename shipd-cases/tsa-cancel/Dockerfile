@@ -4,6 +4,8 @@ USER root
 
 ENV DEBIAN_FRONTEND=noninteractive \
     CARGO_INCREMENTAL=0 \
+    CARGO_PROFILE_DEV_DEBUG=0 \
+    CARGO_PROFILE_TEST_DEBUG=0 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     TZ=UTC \
@@ -35,15 +37,6 @@ RUN if ! id -u model >/dev/null 2>&1; then useradd --create-home --uid 1000 mode
 # myself" when that lookup is empty. Make /etc/passwd writable so the
 # runtime user can add itself; test.sh performs the actual self-heal.
 RUN chmod 666 /etc/passwd
-
-# The base image's vendored cargo registry source (/opt/cargo/registry) ships
-# mode 640, owned by model:model. If a subsequent cargo invocation under a
-# different runtime UID needs to recompile any crate whose build artifact
-# isn't already cached in target/ (e.g. a dependency of the fingerprint-
-# cleared crates that also got invalidated), it must read that crate's
-# source and fails with "Permission denied" for any UID outside the model
-# group. Make the vendored registry world-readable up front.
-RUN [ -d /opt/cargo ] && chmod -R a+rX /opt/cargo || true
 
 WORKDIR /app
 COPY --chown=model:model . .

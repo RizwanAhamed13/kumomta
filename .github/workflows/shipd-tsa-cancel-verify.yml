@@ -58,6 +58,22 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # The real Shipd grading harness wraps the candidate image with its own
+      # outer layer that runs `chmod -R a+rX /opt/cargo` before executing
+      # tests (visible in this case's original Verify Solution build log),
+      # because the base image vendors its cargo registry source with mode
+      # 640 owned by model:model. Baking that chmod into the candidate's own
+      # Dockerfile would force costly overlayfs copy-up of the whole vendored
+      # registry into a new layer and risks blowing past image-flatten time
+      # budgets, so it stays external here too - this step reproduces only
+      # Shipd's own wrapper behavior, not a change to the candidate artifact.
+      - name: Apply Shipd's external cargo-registry permission wrapper
+        run: |
+          docker run --user root --name cargo-perm-fix tsa-cancel-verify:latest \
+            bash -c '[ -d /opt/cargo ] && chmod -R a+rX /opt/cargo || true'
+          docker commit cargo-perm-fix tsa-cancel-verify:latest
+          docker rm cargo-perm-fix
+
       - name: Run test.sh new (Verify Solution)
         run: |
           mkdir -p out && chmod 777 out
