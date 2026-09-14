@@ -1,0 +1,983 @@
+diff --git a/assets/acls/default.toml b/assets/acls/default.toml
+index 4cd21662..f887890f 100644
+--- a/assets/acls/default.toml
++++ b/assets/acls/default.toml
+@@ -120,3 +120,8 @@ allow = true
+ privileges = ["GET"]
+ identity.Group = "kumomta:http-listener-trusted-ip"
+ 
++### TSA rule cancellation -----------------------------
++[[acl."http_listener/*/cancel_rule_v1"]]
++allow = true
++privileges = ["DELETE"]
++identity.Group = "kumomta:http-listener-trusted-ip"
+diff --git a/assets/policy-extras/shaping.lua b/assets/policy-extras/shaping.lua
+index 1ece88d0..f26da77c 100644
+--- a/assets/policy-extras/shaping.lua
++++ b/assets/policy-extras/shaping.lua
+@@ -177,7 +177,7 @@ local function apply_ready_q_suspension(items)
+     local reason =
+       string.format('%s (rule_hash=%s)', item.reason, item.rule_hash)
+ 
+-    kumo.api.admin.suspend_ready_q.suspend {
++    item.effect_id = kumo.api.admin.suspend_ready_q.suspend {
+       name = item.site_name,
+       reason = reason,
+       expires = item.expires,
+@@ -195,7 +195,7 @@ local function apply_sched_q_suspension(items)
+     local reason =
+       string.format('%s (rule_hash=%s)', item.reason, item.rule_hash)
+ 
+-    kumo.api.admin.suspend.suspend {
++    item.effect_id = kumo.api.admin.suspend.suspend {
+       campaign = item.campaign,
+       domain = item.domain,
+       tenant = item.tenant,
+@@ -215,7 +215,7 @@ local function apply_sched_q_bounce(items)
+     local reason =
+       string.format('%s (rule_hash=%s)', item.reason, item.rule_hash)
+ 
+-    kumo.api.admin.bounce.bounce {
++    item.effect_id = kumo.api.admin.bounce.bounce {
+       campaign = item.campaign,
+       domain = item.domain,
+       tenant = item.tenant,
+@@ -258,7 +258,60 @@ kumo.on('kumo.tsa.config.monitor', function(args)
+   end
+ end)
+ 
+-local function process_tsa_events(url)
++local subscriber_effects = {}
++
++local function delete_effect(effect)
++  if effect.kind == 'ready' then
++    kumo.api.admin.suspend_ready_q.delete(effect.id)
++  elseif effect.kind == 'scheduled' then
++    kumo.api.admin.suspend.delete(effect.id)
++  elseif effect.kind == 'bounce' then
++    kumo.api.admin.bounce.delete(effect.id)
++  end
++end
++
++local function delete_rule_effects(effects, rule_hash)
++  local tracked = effects[rule_hash] or {}
++  for _, effect in ipairs(tracked) do
++    delete_effect(effect)
++  end
++  effects[rule_hash] = nil
++end
++
++local function clear_effects(effects)
++  local hashes = {}
++  for rule_hash, _ in pairs(effects) do
++    table.insert(hashes, rule_hash)
++  end
++  for _, rule_hash in ipairs(hashes) do
++    delete_rule_effects(effects, rule_hash)
++  end
++end
++
++local function track_effect(effects, item, kind)
++  local tracked = effects[item.rule_hash] or {}
++  table.insert(tracked, {
++    kind = kind,
++    id = item.effect_id,
++    expires = kumo.time.parse_rfc3339(item.expires).unix_timestamp_millis,
++  })
++  effects[item.rule_hash] = tracked
++end
++
++local function prune_expired_effects(effects)
++  local now = kumo.time.now().unix_timestamp_millis
++  for rule_hash, tracked in pairs(effects) do
++    local active = {}
++    for _, effect in ipairs(tracked) do
++      if effect.expires > now then
++        table.insert(active, effect)
++      end
++    end
++    effects[rule_hash] = #active > 0 and active or nil
++  end
++end
++
++local function process_tsa_events(url, effects)
+   -- Generate the websocket URL from the user-provided HTTP URL
+   local ws_url = url:gsub('^http', 'ws')
+ 
+@@ -276,17 +329,27 @@ local function process_tsa_events(url)
+     -- generated suspension events in realtime.
+     while true do
+       local batch = err_or_stream:recv_batch '3s'
+-      local ready_q_sus = {}
+-      local sched_q_sus = {}
+-      local sched_q_bounce = {}
++      prune_expired_effects(effects)
+       for _, item in ipairs(batch) do
+         local data = kumo.json_parse(item)
+         if data.ReadyQSuspension then
+-          table.insert(ready_q_sus, data.ReadyQSuspension)
++          apply_ready_q_suspension { data.ReadyQSuspension }
++          track_effect(effects, data.ReadyQSuspension, 'ready')
+         elseif data.SchedQSuspension then
+-          table.insert(sched_q_sus, data.SchedQSuspension)
++          apply_sched_q_suspension { data.SchedQSuspension }
++          track_effect(effects, data.SchedQSuspension, 'scheduled')
+         elseif data.SchedQBounce then
+-          table.insert(sched_q_bounce, data.SchedQBounce)
++          apply_sched_q_bounce { data.SchedQBounce }
++          track_effect(effects, data.SchedQBounce, 'bounce')
++        elseif data.RuleCancellation then
++          delete_rule_effects(effects, data.RuleCancellation.rule_hash)
++          kumo.bump_config_epoch()
++        elseif data.SnapshotStart then
++          -- A fresh snapshot is authoritative. Removing the previous set first
++          -- also reconciles cancellations missed while disconnected.
++          clear_effects(effects)
++        elseif data.SnapshotEnd then
++          kumo.bump_config_epoch()
+         else
+           kumo.log_error(
+             string.format(
+@@ -296,9 +359,7 @@ local function process_tsa_events(url)
+           )
+         end
+       end
+-      apply_ready_q_suspension(ready_q_sus)
+-      apply_sched_q_suspension(sched_q_sus)
+-      apply_sched_q_bounce(sched_q_bounce)
++      prune_expired_effects(effects)
+     end
+   elseif tostring(err_or_stream):find 'HTTP error: 404 Not Found' then
+     -- Daemon is up, but the endpoint is not supported.
+@@ -341,11 +402,12 @@ end
+ 
+ kumo.on('kumo.tsa.suspension.subscriber', function(args)
+   local url = args[1]
++  subscriber_effects[url] = subscriber_effects[url] or {}
+ 
+   -- If we encounter an error (likely cause: tsa-daemon restarting),
+   -- then we'll try again after a short sleep
+   while true do
+-    local status, err = pcall(process_tsa_events, url)
++    local status, err = pcall(process_tsa_events, url, subscriber_effects[url])
+     kumo.log_error('TSA Error, will retry in 30 seconds', status, err)
+     kumo.sleep(30)
+   end
+diff --git a/crates/kumo-api-types/src/tsa.rs b/crates/kumo-api-types/src/tsa.rs
+index 89664cc2..cbb40382 100644
+--- a/crates/kumo-api-types/src/tsa.rs
++++ b/crates/kumo-api-types/src/tsa.rs
+@@ -1,5 +1,6 @@
+ use chrono::{DateTime, Utc};
+-use serde::Serialize;
++use serde::{Deserialize, Serialize};
++use utoipa::{ToResponse, ToSchema};
+ 
+ #[derive(Serialize, Default)]
+ pub struct Suspensions {
+@@ -42,9 +43,36 @@ pub struct SchedQBounce {
+     pub expires: DateTime<Utc>,
+ }
+ 
++#[derive(Serialize, Deserialize, Debug, ToSchema)]
++pub struct TsaRuleCancelRequest {
++    /// Full applied-action hash shown in TSA suspension and bounce reasons.
++    pub rule_hash: String,
++}
++
++#[derive(Serialize, Deserialize, Debug, ToResponse, ToSchema)]
++pub struct TsaRuleCancelResponse {
++    pub rule_hash: String,
++    pub config_overrides: usize,
++    pub ready_q_suspensions: usize,
++    pub scheduled_q_suspensions: usize,
++    pub scheduled_q_bounces: usize,
++    /// The cancellation suppresses stale log records until the latest
++    /// expiration of the actions that were removed.
++    pub suppress_until: DateTime<Utc>,
++}
++
++#[derive(Serialize, Clone)]
++pub struct TsaRuleCancellation {
++    pub rule_hash: String,
++    pub suppress_until: DateTime<Utc>,
++}
++
+ #[derive(Serialize, Clone)]
+ pub enum SubscriptionItem {
++    SnapshotStart {},
++    SnapshotEnd {},
+     ReadyQSuspension(ReadyQSuspension),
+     SchedQSuspension(SchedQSuspension),
+     SchedQBounce(SchedQBounce),
++    RuleCancellation(TsaRuleCancellation),
+ }
+diff --git a/crates/tsa-daemon/src/http_server.rs b/crates/tsa-daemon/src/http_server.rs
+index fc9510d8..5239af71 100644
+--- a/crates/tsa-daemon/src/http_server.rs
++++ b/crates/tsa-daemon/src/http_server.rs
+@@ -2,12 +2,16 @@ use crate::database::Database;
+ use crate::publish::submit_record;
+ use crate::shaping_config::get_shaping;
+ use crate::state::{
+-    ActionHash, ConfigurationOverride, MatchingScope, ReadyQSuspensionEntry, SchedQBounceEntry,
+-    SchedQBounceKey, SchedQSuspensionEntry, SchedQSuspensionKey, TsaState, TSA_STATE,
++    save_state, ActionHash, ConfigurationOverride, MatchingScope, ReadyQSuspensionEntry,
++    SchedQBounceEntry, SchedQBounceKey, SchedQSuspensionEntry, SchedQSuspensionKey, TsaState,
++    TSA_STATE,
+ };
+ use anyhow::anyhow;
++use axum::extract::rejection::JsonRejection;
+ use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
++use axum::http::StatusCode;
+ use axum::response::IntoResponse;
++use axum::response::Response;
+ use axum::Json;
+ use chrono::{DateTime, Utc};
+ use kumo_api_types::shaping::{
+@@ -15,7 +19,7 @@ use kumo_api_types::shaping::{
+ };
+ use kumo_api_types::tsa::{
+     ReadyQSuspension, SchedQBounce, SchedQSuspension, SubscriptionItem, SuspensionEntry,
+-    Suspensions,
++    Suspensions, TsaRuleCancelRequest, TsaRuleCancelResponse, TsaRuleCancellation,
+ };
+ use kumo_log_types::*;
+ use kumo_server_common::http_server::{AppError, RouterAndDocs};
+@@ -44,6 +48,7 @@ pub fn make_router() -> RouterAndDocs {
+     router_with_docs!(
+         title = "tsa-daemon",
+         handlers = [
++            cancel_rule_v1,
+             get_bounce_v1,
+             get_config_v1,
+             get_suspension_v1,
+@@ -130,7 +135,7 @@ async fn create_bounce(
+     }
+     let expires = record.timestamp + chrono::Duration::from_std(rule.duration)?;
+ 
+-    TSA_STATE
++    let inserted = TSA_STATE
+         .get()
+         .expect("tsa_state missing")
+         .insert_schedq_bounce(
+@@ -145,6 +150,9 @@ async fn create_bounce(
+                 expires,
+             },
+         );
++    if !inserted {
++        return Ok(());
++    }
+ 
+     events.push(SubscriptionItem::SchedQBounce(SchedQBounce {
+         rule_hash: action_hash.to_string(),
+@@ -191,7 +199,7 @@ async fn create_tenant_suspension(
+         reason.push_str(&format!(" campaign={campaign}"));
+     }
+ 
+-    {
++    let inserted = {
+         let reason = reason.to_string();
+         let campaign = campaign.as_ref().map(|c| c.to_string());
+         let tenant = tenant.to_string();
+@@ -208,7 +216,10 @@ async fn create_tenant_suspension(
+                     campaign,
+                 },
+                 SchedQSuspensionEntry { reason, expires },
+-            );
++            )
++    };
++    if !inserted {
++        return Ok(());
+     }
+ 
+     events.push(SubscriptionItem::SchedQSuspension(SchedQSuspension {
+@@ -234,7 +245,7 @@ async fn create_ready_q_suspension(
+     let expires = record.timestamp + chrono::Duration::from_std(rule.duration)?;
+     let reason = format!("automation rule: {}", regex_list_to_string(&rule.regex));
+ 
+-    {
++    let inserted = {
+         let reason = reason.to_string();
+         let source = source.to_string();
+ 
+@@ -248,7 +259,10 @@ async fn create_ready_q_suspension(
+                     source,
+                     expires,
+                 },
+-            );
++            )
++    };
++    if !inserted {
++        return Ok(());
+     }
+ 
+     events.push(SubscriptionItem::ReadyQSuspension(ReadyQSuspension {
+@@ -278,7 +292,29 @@ pub async fn publish_log_batch(records: &mut Vec<JsonLogRecord>) -> anyhow::Resu
+     }
+ 
+     for event in events {
+-        SubscriberMgr::submit(event);
++        let rule_hash = match &event {
++            SubscriptionItem::ReadyQSuspension(item) => Some(item.rule_hash.clone()),
++            SubscriptionItem::SchedQSuspension(item) => Some(item.rule_hash.clone()),
++            SubscriptionItem::SchedQBounce(item) => Some(item.rule_hash.clone()),
++            _ => None,
++        };
++        if let Some(rule_hash) = rule_hash {
++            match ActionHash::parse(&rule_hash) {
++                Ok(action_hash) => {
++                    TSA_STATE
++                        .get()
++                        .expect("tsa_state missing")
++                        .with_active_action(&action_hash, || SubscriberMgr::submit(event));
++                }
++                Err(err) => {
++                    tracing::error!(
++                        "refusing to publish event with invalid action hash {rule_hash}: {err:#}"
++                    );
++                }
++            }
++        } else {
++            SubscriberMgr::submit(event);
++        }
+     }
+ 
+     Ok(())
+@@ -644,6 +680,62 @@ pub async fn import_configs_from_sqlite(
+         .await
+ }
+ 
++#[utoipa::path(
++    delete,
++    path = "/cancel_rule_v1",
++    request_body = TsaRuleCancelRequest,
++    responses(
++        (status = 200, description = "Cancelled the TSA rule", body = TsaRuleCancelResponse),
++        (status = 400, description = "Malformed applied-action hash"),
++        (status = 404, description = "The TSA rule is not active"),
++        (status = 500, description = "Failed to persist cancellation"),
++    ),
++)]
++async fn cancel_rule_v1(request: Result<Json<TsaRuleCancelRequest>, JsonRejection>) -> Response {
++    let Json(request) = match request {
++        Ok(request) => request,
++        Err(err) => return (StatusCode::BAD_REQUEST, err.body_text()).into_response(),
++    };
++    let action_hash = match ActionHash::parse(&request.rule_hash) {
++        Ok(action_hash) => action_hash,
++        Err(err) => return (StatusCode::BAD_REQUEST, err.to_string()).into_response(),
++    };
++
++    let Some(cancelled) = TSA_STATE
++        .get()
++        .expect("tsa_state missing")
++        .cancel_action(&action_hash)
++    else {
++        return (
++            StatusCode::NOT_FOUND,
++            format!("TSA rule {} is not active", request.rule_hash),
++        )
++            .into_response();
++    };
++
++    if let Err(err) = save_state(false).await {
++        tracing::error!("failed to persist TSA cancellation: {err:#}");
++        return (
++            StatusCode::INTERNAL_SERVER_ERROR,
++            "failed to persist TSA cancellation",
++        )
++            .into_response();
++    }
++
++    let response = TsaRuleCancelResponse {
++        rule_hash: action_hash.to_string(),
++        config_overrides: cancelled.config_overrides,
++        ready_q_suspensions: cancelled.ready_q_suspensions,
++        scheduled_q_suspensions: cancelled.scheduled_q_suspensions,
++        scheduled_q_bounces: cancelled.scheduled_q_bounces,
++        suppress_until: cancelled.suppress_until,
++    };
++    SubscriberMgr::submit(SubscriptionItem::RuleCancellation(TsaRuleCancellation {
++        rule_hash: response.rule_hash.clone(),
++        suppress_until: response.suppress_until,
++    }));
++    Json(response).into_response()
++}
+ #[utoipa::path(get, path = "/get_config_v1/shaping.toml")]
+ async fn get_config_v1() -> Result<String, AppError> {
+     let result = TSA_STATE
+@@ -814,6 +906,9 @@ async fn process_event_subscription_inner(
+         let num_sched_q_sus;
+         let num_bounces;
+ 
++        let json = serde_json::to_string(&SubscriptionItem::SnapshotStart {})?;
++        socket.send(Message::Text(json.into())).await?;
++
+         // send the current set of suspensions first
+         {
+             let suspensions = get_suspensions();
+@@ -845,6 +940,8 @@ async fn process_event_subscription_inner(
+                 socket.send(Message::Text(json.into())).await?;
+             }
+         }
++        let json = serde_json::to_string(&SubscriptionItem::SnapshotEnd {})?;
++        socket.send(Message::Text(json.into())).await?;
+ 
+         tracing::info!(
+             "new sub, took {:?} to produce initial data and send to client. \
+diff --git a/crates/tsa-daemon/src/state.rs b/crates/tsa-daemon/src/state.rs
+index fefe90a0..fdcf4a48 100644
+--- a/crates/tsa-daemon/src/state.rs
++++ b/crates/tsa-daemon/src/state.rs
+@@ -11,13 +11,16 @@ use kumo_api_types::shaping::{
+ };
+ use kumo_api_types::tsa::{ReadyQSuspension, SchedQBounce, SchedQSuspension};
+ use kumo_log_types::JsonLogRecord;
++use parking_lot::Mutex;
+ use serde::{Deserialize, Serialize};
+ use std::collections::HashMap;
+ use std::hash::Hash;
++use std::str::FromStr;
+ use std::sync::{Arc, OnceLock};
+ use std::time::Instant;
+ 
+ pub static TSA_STATE: OnceLock<TsaState> = OnceLock::new();
++static STATE_SAVE_LOCK: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
+ 
+ /// Represents a specific rule definition.
+ #[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+@@ -79,6 +82,19 @@ impl std::fmt::Debug for ActionHash {
+ }
+ 
+ impl ActionHash {
++    pub fn parse(full_string: &str) -> anyhow::Result<Self> {
++        let Some((site, ahash)) = full_string.rsplit_once('-') else {
++            anyhow::bail!("invalid action hash {full_string}");
++        };
++        if ahash.len() != 64 {
++            anyhow::bail!("invalid action hash {full_string}");
++        }
++        let mut bytes = [0u8; 32];
++        hex::decode_to_slice(ahash, &mut bytes)
++            .with_context(|| format!("invalid action hash {full_string}"))?;
++        Ok(Self(bytes, SiteKey(site.to_string())))
++    }
++
+     pub fn from_rule_and_record(rule: &Rule, action: &Action, record: &JsonLogRecord) -> Self {
+         let mut hasher = Sha256Hasher::new();
+         rule.hash(&mut hasher);
+@@ -95,14 +111,7 @@ impl ActionHash {
+     }
+ 
+     pub fn from_legacy_action_hash_string(full_string: &str) -> Self {
+-        let Some((site, ahash)) = full_string.rsplit_once('-') else {
+-            panic!("invalid action hash {full_string}");
+-        };
+-        Self::from_legacy_hash_and_site(ahash, site)
+-    }
+-
+-    pub fn hash_portion(&self) -> String {
+-        hex::encode(self.0)
++        Self::parse(full_string).unwrap_or_else(|err| panic!("{err:#}"))
+     }
+ 
+     pub fn site_name(&self) -> &str {
+@@ -110,6 +119,14 @@ impl ActionHash {
+     }
+ }
+ 
++impl FromStr for ActionHash {
++    type Err = anyhow::Error;
++
++    fn from_str(value: &str) -> Result<Self, Self::Err> {
++        Self::parse(value)
++    }
++}
++
+ #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+ pub struct MatchingScope(RuleHash, SiteKey);
+ 
+@@ -200,9 +217,20 @@ pub struct SchedQSuspensionEntry {
+     pub expires: DateTime<Utc>,
+ }
+ 
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct CancellationResult {
++    pub config_overrides: usize,
++    pub ready_q_suspensions: usize,
++    pub scheduled_q_suspensions: usize,
++    pub scheduled_q_bounces: usize,
++    pub suppress_until: DateTime<Utc>,
++}
++
+ #[derive(Default)]
+ pub struct TsaState {
++    mutation_lock: Mutex<()>,
+     event_history: DashMap<MatchingScope, EventData>,
++    cancellations: DashMap<ActionHash, DateTime<Utc>>,
+     config_overrides: DashMap<ActionHash, ConfigurationOverride>,
+     schedq_bounces: DashMap<SchedQBounceKey, SchedQBounceEntry>,
+     readyq_suspensions: DashMap<ActionHash, ReadyQSuspensionEntry>,
+@@ -211,6 +239,8 @@ pub struct TsaState {
+ 
+ #[derive(Serialize, Deserialize)]
+ struct SerializableState {
++    #[serde(default)]
++    cancellations: HashMap<ActionHash, DateTime<Utc>>,
+     #[serde(default)]
+     event_history: HashMap<MatchingScope, EventData>,
+     #[serde(default)]
+@@ -223,6 +253,122 @@ struct SerializableState {
+     schedq_suspensions: HashMap<SchedQSuspensionKey, SchedQSuspensionEntry>,
+ }
+ 
++impl TsaState {
++    fn suppression_expiry_locked(
++        &self,
++        action_hash: &ActionHash,
++        now: &DateTime<Utc>,
++    ) -> Option<DateTime<Utc>> {
++        self.cancellations
++            .get(action_hash)
++            .map(|expires| expires.clone())
++            .filter(|expires| expires > now)
++    }
++
++    pub fn cancel_action(&self, action_hash: &ActionHash) -> Option<CancellationResult> {
++        let _guard = self.mutation_lock.lock();
++        let now = Utc::now();
++        let mut suppress_until = self.suppression_expiry_locked(action_hash, &now);
++        let mut result = CancellationResult {
++            config_overrides: 0,
++            ready_q_suspensions: 0,
++            scheduled_q_suspensions: 0,
++            scheduled_q_bounces: 0,
++            suppress_until: now,
++        };
++
++        let mut extend_suppression = |expires: DateTime<Utc>| {
++            if suppress_until
++                .as_ref()
++                .map(|current| expires > *current)
++                .unwrap_or(true)
++            {
++                suppress_until = Some(expires);
++            }
++        };
++
++        if let Some((_, entry)) = self.config_overrides.remove(action_hash) {
++            if entry.expires > now {
++                result.config_overrides += 1;
++                extend_suppression(entry.expires);
++            }
++        }
++        if let Some((_, entry)) = self.readyq_suspensions.remove(action_hash) {
++            if entry.expires > now {
++                result.ready_q_suspensions += 1;
++                extend_suppression(entry.expires);
++            }
++        }
++
++        let suspension_keys: Vec<_> = self
++            .schedq_suspensions
++            .iter()
++            .filter(|entry| &entry.key().action_hash == action_hash)
++            .map(|entry| entry.key().clone())
++            .collect();
++        for key in suspension_keys {
++            if let Some((_, entry)) = self.schedq_suspensions.remove(&key) {
++                if entry.expires > now {
++                    result.scheduled_q_suspensions += 1;
++                    extend_suppression(entry.expires);
++                }
++            }
++        }
++
++        let bounce_keys: Vec<_> = self
++            .schedq_bounces
++            .iter()
++            .filter(|entry| &entry.key().action_hash == action_hash)
++            .map(|entry| entry.key().clone())
++            .collect();
++        for key in bounce_keys {
++            if let Some((_, entry)) = self.schedq_bounces.remove(&key) {
++                if entry.expires > now {
++                    result.scheduled_q_bounces += 1;
++                    extend_suppression(entry.expires);
++                }
++            }
++        }
++
++        if result.config_overrides == 0
++            && result.ready_q_suspensions == 0
++            && result.scheduled_q_suspensions == 0
++            && result.scheduled_q_bounces == 0
++        {
++            return None;
++        }
++
++        let suppress_until = suppress_until?;
++        self.cancellations
++            .insert(action_hash.clone(), suppress_until);
++        result.suppress_until = suppress_until;
++        Some(result)
++    }
++
++    /// Run `operation` only while this action is still present. Holding the
++    /// mutation lock across the operation establishes a total order with
++    /// cancellation, so a queued event cannot publish after cancellation.
++    pub fn with_active_action<F>(&self, action_hash: &ActionHash, operation: F) -> bool
++    where
++        F: FnOnce(),
++    {
++        let _guard = self.mutation_lock.lock();
++        let active = self.config_overrides.contains_key(action_hash)
++            || self.readyq_suspensions.contains_key(action_hash)
++            || self
++                .schedq_suspensions
++                .iter()
++                .any(|entry| &entry.key().action_hash == action_hash)
++            || self
++                .schedq_bounces
++                .iter()
++                .any(|entry| &entry.key().action_hash == action_hash);
++        if active {
++            operation();
++        }
++        active
++    }
++}
+ impl TsaState {
+     /// Record the current event and return the total number
+     /// of records in the time period defined by the rule
+@@ -265,44 +411,64 @@ impl TsaState {
+         );
+     }
+ 
+-    pub fn insert_config_override(&self, scope: ActionHash, over: ConfigurationOverride) {
+-        if Utc::now() >= over.expires {
+-            // Skip already expired entry
+-            return;
++    pub fn insert_config_override(&self, scope: ActionHash, over: ConfigurationOverride) -> bool {
++        let _guard = self.mutation_lock.lock();
++        let now = Utc::now();
++        if now >= over.expires || self.suppression_expiry_locked(&scope, &now).is_some() {
++            return false;
+         }
+ 
+         tracing::debug!("new config override {scope:?} = {over:?}");
+         self.config_overrides.insert(scope, over);
++        true
+     }
+ 
+-    pub fn insert_schedq_bounce(&self, key: SchedQBounceKey, bounce: SchedQBounceEntry) {
+-        if Utc::now() >= bounce.expires {
+-            // Skip already expired entry
+-            return;
++    pub fn insert_schedq_bounce(&self, key: SchedQBounceKey, bounce: SchedQBounceEntry) -> bool {
++        let _guard = self.mutation_lock.lock();
++        let now = Utc::now();
++        if now >= bounce.expires
++            || self
++                .suppression_expiry_locked(&key.action_hash, &now)
++                .is_some()
++        {
++            return false;
+         }
+ 
+         tracing::debug!("new schedq bounce {key:?} = {bounce:?}");
+         self.schedq_bounces.insert(key, bounce);
++        true
+     }
+ 
+-    pub fn insert_readyq_suspension(&self, key: ActionHash, entry: ReadyQSuspensionEntry) {
+-        if Utc::now() >= entry.expires {
+-            // Skip already expired entry
+-            return;
++    pub fn insert_readyq_suspension(&self, key: ActionHash, entry: ReadyQSuspensionEntry) -> bool {
++        let _guard = self.mutation_lock.lock();
++        let now = Utc::now();
++        if now >= entry.expires || self.suppression_expiry_locked(&key, &now).is_some() {
++            return false;
+         }
+ 
+         tracing::debug!("new readyq suspension {key:?} = {entry:?}");
+         self.readyq_suspensions.insert(key, entry);
++        true
+     }
+ 
+-    pub fn insert_schedq_suspension(&self, key: SchedQSuspensionKey, entry: SchedQSuspensionEntry) {
+-        if Utc::now() >= entry.expires {
+-            // Skip already expired entry
+-            return;
++    pub fn insert_schedq_suspension(
++        &self,
++        key: SchedQSuspensionKey,
++        entry: SchedQSuspensionEntry,
++    ) -> bool {
++        let _guard = self.mutation_lock.lock();
++        let now = Utc::now();
++        if now >= entry.expires
++            || self
++                .suppression_expiry_locked(&key.action_hash, &now)
++                .is_some()
++        {
++            return false;
+         }
+ 
+         tracing::debug!("new sched suspension {key:?} = {entry:?}");
+         self.schedq_suspensions.insert(key, entry);
++        true
+     }
+ 
+     pub fn export_schedq_suspensions(&self) -> Vec<SchedQSuspension> {
+@@ -346,7 +512,7 @@ impl TsaState {
+             }
+             let key = entry.key();
+             entries.push(ReadyQSuspension {
+-                rule_hash: key.hash_portion(),
++                rule_hash: key.to_string(),
+                 site_name: key.site_name().to_string(),
+                 source: value.source.clone(),
+                 reason: value.reason.clone(),
+@@ -401,10 +567,10 @@ impl TsaState {
+             if now >= over.expires {
+                 continue;
+             }
+-            entries.push(over.clone());
++            entries.push((entry.key().clone(), over.clone()));
+         }
+ 
+-        entries.sort_by_key(|over| {
++        entries.sort_by_key(|(_, over)| {
+             (
+                 over.expires,
+                 over.domain.clone(),
+@@ -414,7 +580,7 @@ impl TsaState {
+         });
+         let num_entries = entries.len();
+ 
+-        for over in entries {
++        for (action_hash, over) in entries {
+             let domain_entry = doc
+                 .entry(&over.domain)
+                 .or_insert_with(|| {
+@@ -446,7 +612,8 @@ impl TsaState {
+ 
+             if let Some(mut key) = source_entry.key_mut(&over.option.name) {
+                 key.leaf_decor_mut().set_prefix(format!(
+-                    "# reason: {}\n# expires: {}\n",
++                    "# rule_hash: {}\n# reason: {}\n# expires: {}\n",
++                    action_hash,
+                     over.reason,
+                     over.expires.to_rfc3339()
+                 ));
+@@ -464,6 +631,11 @@ impl TsaState {
+     /// Return a serializable version of the state
+     fn serializable(&self) -> SerializableState {
+         SerializableState {
++            cancellations: self
++                .cancellations
++                .iter()
++                .map(|entry| (entry.key().clone(), entry.value().clone()))
++                .collect(),
+             event_history: self
+                 .event_history
+                 .iter()
+@@ -492,8 +664,32 @@ impl TsaState {
+         }
+     }
+ 
++    fn restore_serializable(&self, loaded: SerializableState) {
++        // Tombstones must be restored before actions so the normal insertion
++        // path suppresses stale entries captured by a pre-cancellation save.
++        for (key, value) in loaded.cancellations {
++            self.cancellations.insert(key, value);
++        }
++        for (key, value) in loaded.event_history {
++            self.event_history.insert(key, value);
++        }
++        for (key, value) in loaded.config_overrides {
++            self.insert_config_override(key, value);
++        }
++        for (key, value) in loaded.schedq_bounces {
++            self.insert_schedq_bounce(key, value);
++        }
++        for (key, value) in loaded.readyq_suspensions {
++            self.insert_readyq_suspension(key, value);
++        }
++        for (key, value) in loaded.schedq_suspensions {
++            self.insert_schedq_suspension(key, value);
++        }
++    }
++
+     async fn prune(&self, verbose: bool) {
+         let now = Utc::now();
++        self.prune_cancellations(&now, verbose);
+         let now_ts = to_unix_ts(&now);
+         self.prune_events(now_ts, verbose).await;
+         self.prune_config_overrides(&now, verbose).await;
+@@ -502,6 +698,15 @@ impl TsaState {
+         self.prune_schedq_bounces(&now, verbose).await;
+     }
+ 
++    fn prune_cancellations(&self, now: &DateTime<Utc>, verbose: bool) {
++        let _guard = self.mutation_lock.lock();
++        let before = self.cancellations.len();
++        self.cancellations.retain(|_, expires| *expires > *now);
++        let num_pruned = before - self.cancellations.len();
++        if verbose && num_pruned > 0 {
++            tracing::info!("Pruned {num_pruned} cancellation tombstones");
++        }
++    }
+     async fn prune_schedq_bounces(&self, now: &DateTime<Utc>, verbose: bool) {
+         let mut visited = 0;
+         let start = Instant::now();
+@@ -724,21 +929,7 @@ pub async fn load_state() -> anyhow::Result<()> {
+             let state = TsaState::default();
+             match rmp_serde::from_slice::<SerializableState>(&data) {
+                 Ok(loaded) => {
+-                    for (key, value) in loaded.event_history.into_iter() {
+-                        state.event_history.insert(key, value);
+-                    }
+-                    for (key, value) in loaded.config_overrides.into_iter() {
+-                        state.config_overrides.insert(key, value);
+-                    }
+-                    for (key, value) in loaded.schedq_bounces.into_iter() {
+-                        state.schedq_bounces.insert(key, value);
+-                    }
+-                    for (key, value) in loaded.readyq_suspensions.into_iter() {
+-                        state.readyq_suspensions.insert(key, value);
+-                    }
+-                    for (key, value) in loaded.schedq_suspensions.into_iter() {
+-                        state.schedq_suspensions.insert(key, value);
+-                    }
++                    state.restore_serializable(loaded);
+                     state.prune(true).await;
+ 
+                     tracing::info!(
+@@ -848,6 +1039,10 @@ pub async fn load_state() -> anyhow::Result<()> {
+ }
+ 
+ pub async fn save_state(background: bool) -> anyhow::Result<()> {
++    // Snapshot and write under one async lock so an older snapshot cannot
++    // finish after and overwrite a newer, acknowledged cancellation.
++    let _save_guard = STATE_SAVE_LOCK.lock().await;
++
+     let start = Instant::now();
+     let state = TSA_STATE
+         .get()
+diff --git a/docs/reference/tsa-daemon.openapi.json b/docs/reference/tsa-daemon.openapi.json
+index f0adaea2..b1334cdc 100644
+--- a/docs/reference/tsa-daemon.openapi.json
++++ b/docs/reference/tsa-daemon.openapi.json
+@@ -6,7 +6,7 @@
+     "license": {
+       "name": "Apache-2.0"
+     },
+-    "version": "2026.03.11-17b80530"
++    "version": "2026.08.27-2a405361"
+   },
+   "paths": {
+     "/api/admin/bump-config-epoch": {
+@@ -98,6 +98,43 @@
+         }
+       }
+     },
++    "/cancel_rule_v1": {
++      "delete": {
++        "tags": [],
++        "operationId": "cancel_rule_v1",
++        "requestBody": {
++          "content": {
++            "application/json": {
++              "schema": {
++                "$ref": "#/components/schemas/TsaRuleCancelRequest"
++              }
++            }
++          },
++          "required": true
++        },
++        "responses": {
++          "200": {
++            "description": "Cancelled the TSA rule",
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/TsaRuleCancelResponse"
++                }
++              }
++            }
++          },
++          "400": {
++            "description": "Malformed applied-action hash"
++          },
++          "404": {
++            "description": "The TSA rule is not active"
++          },
++          "500": {
++            "description": "Failed to persist cancellation"
++          }
++        }
++      }
++    },
+     "/get_bounce_v1/bounced.json": {
+       "get": {
+         "tags": [],
+@@ -323,6 +360,55 @@
+             "example": "kumod=trace"
+           }
+         }
++      },
++      "TsaRuleCancelRequest": {
++        "type": "object",
++        "required": [
++          "rule_hash"
++        ],
++        "properties": {
++          "rule_hash": {
++            "type": "string",
++            "description": "Full applied-action hash shown in TSA suspension and bounce reasons."
++          }
++        }
++      },
++      "TsaRuleCancelResponse": {
++        "type": "object",
++        "required": [
++          "rule_hash",
++          "config_overrides",
++          "ready_q_suspensions",
++          "scheduled_q_suspensions",
++          "scheduled_q_bounces",
++          "suppress_until"
++        ],
++        "properties": {
++          "config_overrides": {
++            "type": "integer",
++            "minimum": 0
++          },
++          "ready_q_suspensions": {
++            "type": "integer",
++            "minimum": 0
++          },
++          "rule_hash": {
++            "type": "string"
++          },
++          "scheduled_q_bounces": {
++            "type": "integer",
++            "minimum": 0
++          },
++          "scheduled_q_suspensions": {
++            "type": "integer",
++            "minimum": 0
++          },
++          "suppress_until": {
++            "type": "string",
++            "format": "date-time",
++            "description": "The cancellation suppresses stale log records until the latest\nexpiration of the actions that were removed."
++          }
++        }
+       }
+     },
+     "securitySchemes": {
