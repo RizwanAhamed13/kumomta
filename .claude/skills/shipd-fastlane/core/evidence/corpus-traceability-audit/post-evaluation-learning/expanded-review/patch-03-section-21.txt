@@ -1,0 +1,15 @@
+diff --git a/src/planner/operator/visitor.rs b/src/planner/operator/visitor.rs
+@@ -307,6 +307,13 @@ impl<'a, V: ExprVisitor<'a>> OperatorVisitor<'a> for OperatorExprVisitor<'_, V>
++
++    fn visit_create_index(&mut self, op: &'a CreateIndexOperator) -> Result<(), DatabaseError> {
++        for expression in &op.expressions {
++            ExprVisitor::visit(self.visitor, expression)?;
++        }
++        Ok(())
++    }
+@@ -533,7 +540,7 @@ pub(crate) mod tests {
+-                columns: vec![column_ref],
++                expressions: vec![ScalarExpression::column_expr(column_ref, 0)],
+@@ -611,7 +618,7 @@ pub(crate) mod tests {
+-        assert_eq!(counter.0, 20);
++        assert_eq!(counter.0, 21);

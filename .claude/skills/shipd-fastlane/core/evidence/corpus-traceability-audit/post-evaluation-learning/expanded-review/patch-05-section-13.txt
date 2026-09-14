@@ -1,0 +1,8 @@
+diff --git a/src/optimizer/rule/normalization/parameterized_index.rs b/src/optimizer/rule/normalization/parameterized_index.rs
+@@ -210,7 +210,11 @@ fn pick_parameterized_index_position(
+-                && index_meta.column_ids.first().copied() == Some(column_id)
++                && matches!(
++                    index_meta.expressions.first(),
++                    Some(ScalarExpression::ColumnRef { column, .. })
++                        if arena.column(*column).id() == Some(column_id)
++                )

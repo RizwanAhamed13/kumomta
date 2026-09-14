@@ -1,0 +1,11 @@
+{
+  "skills/shipd-fastlane/SKILL.md": "skills/shipd-fastlane/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-artifact-builder/SKILL.md": "vendor/olympus-forge/skills/olympus-artifact-builder/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-candidate-audit/SKILL.md": "vendor/olympus-forge/skills/olympus-candidate-audit/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-case-capture/SKILL.md": "vendor/olympus-forge/skills/olympus-case-capture/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-offline-validator/SKILL.md": "vendor/olympus-forge/skills/olympus-offline-validator/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-review-debugger/SKILL.md": "vendor/olympus-forge/skills/olympus-review-debugger/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-rollout-auditor/SKILL.md": "vendor/olympus-forge/skills/olympus-rollout-auditor/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-scope-gate/SKILL.md": "vendor/olympus-forge/skills/olympus-scope-gate/PROCEDURE.md",
+  "vendor/olympus-forge/skills/olympus-workflow/SKILL.md": "vendor/olympus-forge/skills/olympus-workflow/PROCEDURE.md"
+}

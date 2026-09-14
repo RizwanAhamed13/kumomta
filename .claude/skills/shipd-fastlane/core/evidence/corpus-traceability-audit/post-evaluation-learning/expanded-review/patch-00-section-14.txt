@@ -1,0 +1,3 @@
+diff --git a/crates/semantics/src/checker/promotion.rs b/crates/semantics/src/checker/promotion.rs
+@@ -445,6 +445,7 @@ mod tests {
++            default: None,

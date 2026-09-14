@@ -1,0 +1,69 @@
+diff --git a/crates/semantics/src/checker/infer/expressions/bindings.rs b/crates/semantics/src/checker/infer/expressions/bindings.rs
+@@ -1,7 +1,7 @@
+-use syntax::program::DefinitionBody;
++use syntax::program::{DefinitionBody, DotAccessResolution};
+@@ -12,7 +12,11 @@ enum ConstInitReject {
+-    fn classify_const_init(&self, expression: &Expression) -> Option<ConstInitReject> {
++    fn classify_const_init(
++        &self,
++        expression: &Expression,
++        allow_unit_enum_variant: bool,
++    ) -> Option<ConstInitReject> {
+@@ -21,12 +25,15 @@ impl InferCtx<'_> {
+-                .classify_const_init(left)
+-                .or_else(|| self.classify_const_init(right)),
+-            Expression::Unary { expression, .. } => self.classify_const_init(expression),
++                .classify_const_init(left, allow_unit_enum_variant)
++                .or_else(|| self.classify_const_init(right, allow_unit_enum_variant)),
++            Expression::Unary { expression, .. } => {
++                self.classify_const_init(expression, allow_unit_enum_variant)
++            }
++            dot if allow_unit_enum_variant && self.is_unit_enum_variant_access(dot) => None,
+@@ -48,6 +55,22 @@ impl InferCtx<'_> {
++    fn is_unit_enum_variant_access(&self, expression: &Expression) -> bool {
++        let Expression::DotAccess {
++            resolution: DotAccessResolution::EnumVariant { definition },
++            ..
++        } = expression
++        else {
++            return false;
++        };
++        let Some((enum_name, variant_name)) = definition.as_str().rsplit_once('.') else {
++            return false;
++        };
++        self.store
++            .variant_of(enum_name, variant_name)
++            .is_some_and(|variant| variant.fields.is_empty())
++    }
++
+@@ -81,7 +104,7 @@ impl InferCtx<'_> {
+-            match self.classify_const_init(&expression) {
++            match self.classify_const_init(&expression, false) {
+@@ -111,6 +134,33 @@ impl InferCtx<'_> {
++    pub(crate) fn infer_field_default(
++        &mut self,
++        expression: Expression,
++        expected_ty: &Type,
++    ) -> Expression {
++        let expression = self.with_field_default_context(|this| {
++            this.with_value_context(|this| this.infer_expression(expression, expected_ty))
++        });
++        match self.classify_const_init(&expression, true) {
++            None => {}
++            Some(ConstInitReject::NotSimple) => {
++                self.sink.push(
++                    diagnostics::infer::field_default_requires_simple_expression(
++                        expression.get_span(),
++                    ),
++                );
++            }
++            Some(ConstInitReject::Composite) => {
++                self.sink
++                    .push(diagnostics::infer::field_default_disallows_composite(
++                        expression.get_span(),
++                    ));
++            }
++        }
++        expression
++    }
++

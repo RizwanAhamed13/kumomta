@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-13T01:38:00.383106+00:00",
+  "sections": [
+    {
+      "index": 17,
+      "file": "diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs",
+      "bytes": 19488,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-17.txt",
+      "sha256": "1fc8be51d8a3f2ce5cc2ff9301b4cd99b0dd5b1fa57b01be5dbd8306059587ac"
+    }
+  ],
+  "extent": "complete retained changed-hunk section, unchanged context excluded"
+}

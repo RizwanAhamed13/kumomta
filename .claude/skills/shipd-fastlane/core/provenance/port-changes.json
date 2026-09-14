@@ -1,0 +1,36 @@
+{
+  ".codex-plugin/plugin.json": {
+    "status": "relocated to provenance",
+    "upstream_sha256": "7c2af121ff7e263d9ac2dcdfdef8cab21003906ae184d8efbbdeedc062874c57"
+  },
+  "README.md": {
+    "portable_sha256": "cbf7a4330f87c336ebbb309a3a3a3129d337b7a6c7dac9a87eca49dccd9ad44a",
+    "status": "client portability documentation adaptation",
+    "upstream_sha256": "26941fd55d167230515fdc1685a0a8e1eb96b028a4640c7b25b79d1eb89a71ea"
+  },
+  "assets/handoff.md": {
+    "portable_sha256": "13137fe5bbc10391e996e98dfbd6b00f48703ccc8bc29722d6ee194957f246aa",
+    "status": "client portability documentation adaptation",
+    "upstream_sha256": "d7c10d613885f854e552e0de367f4a913af05e984d61a8c12c4be842af2045f1"
+  },
+  "release-files.sha256": {
+    "status": "relocated to provenance",
+    "upstream_sha256": "f6b59ce32154e74230b67351d335ee6fa157189d3a91db87e459cfb45298f34c"
+  },
+  "skills/shipd-fastlane/SKILL.md": {
+    "portable_path": "skills/shipd-fastlane/PROCEDURE.md",
+    "portable_sha256": "5ac9e213f8ba1d40b808d0712dd669a5c52ba1369f6c0d60e69a9ad033ad154e",
+    "status": "procedure renamed to prevent duplicate native discovery; portable documentation adapted",
+    "upstream_sha256": "4d7819ee0cea4287571fa94c279a057da4c8f654451057b26a360d328f45d387"
+  },
+  "skills/shipd-fastlane/references/execution.md": {
+    "portable_sha256": "372c4fc6d2d820ce76a7fa75e6ab1131719b62353c7fe66e051f6b36168edf79",
+    "status": "client portability documentation adaptation",
+    "upstream_sha256": "3c7fd840531887dc33bf04a3099b8c3e02e75fd7a1f89745a856c58094294f14"
+  },
+  "skills/shipd-fastlane/references/local-quality-gate.md": {
+    "portable_sha256": "2da18e5c661c0ee1a967c68f01afa8bf5f3d5c1fdc9599ce918d6b25c57e20fa",
+    "status": "client portability documentation adaptation",
+    "upstream_sha256": "d86024e85e28dcb354343e02e9170cba5a1b9d260e823625b22e5e2861ecd2f4"
+  }
+}

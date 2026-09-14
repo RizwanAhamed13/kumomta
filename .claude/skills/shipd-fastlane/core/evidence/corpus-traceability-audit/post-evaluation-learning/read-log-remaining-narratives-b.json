@@ -1,0 +1,59 @@
+{
+  "recorded_at": "2026-09-13T01:28:46.053844+00:00",
+  "reads": [
+    {
+      "index": 87,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/auto-review-verdict.raw.md",
+      "sha256": "6160486cfbbcf2d7e80bb6badd260108979393e3fd8e61fc5014daf888415e22",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 89,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/validate-submission.raw.md",
+      "sha256": "84cf6f86fbf9c5674b2ff5763eae60c016c370398b953874eb7ec0f109d8338c",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 95,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v23/repair-report.md",
+      "sha256": "3dd52d64672fc655db3da34fbf72e33135849e8d3995bf478de5e6bd613de63d",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 97,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v24/repair-report.md",
+      "sha256": "bb5028e4ac58394e0492127ad499dc61760f33911052591cad0ad949dc3d2334",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 99,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v25/solution-quality.raw.md",
+      "sha256": "a8748d3046455d08b34f4ce4b04fb39e600cecb8bd60fdf8b7f633497947c940",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 101,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v27/repair-report.md",
+      "sha256": "8c5cadb95e85d4d3bfc3ad913fb5f8a88ada5970bc92f97f8c0a7167013dda47",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 102,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v28/hosted-flakiness-verdict.raw.md",
+      "sha256": "03f8074e0bda443b43be8961051960bf111e840e394443407b5ba40bd1c76455",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 103,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v28/repair-report.md",
+      "sha256": "6809f0ec9eab76b9205b9dc5976580909001a9306968efed0cf630492f9639e3",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    },
+    {
+      "index": 104,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v29/agent-runs-38-environment-blocker-audit.md",
+      "sha256": "2e673aeb5f1ba776436566f77f9139bda7b4c4e44afeaa3988a0e093435a7a27",
+      "extent": "full narrative emitted without truncation; duplicate raw payload retained"
+    }
+  ]
+}

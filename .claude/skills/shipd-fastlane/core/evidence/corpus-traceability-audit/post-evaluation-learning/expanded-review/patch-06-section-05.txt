@@ -1,0 +1,18 @@
+diff --git a/dora-bytecode/src/writer.rs b/dora-bytecode/src/writer.rs
+@@ -369,6 +369,22 @@ impl BytecodeWriter {
++    pub fn emit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_reg2_idx(BytecodeOpcode::TestTraitObjectType, dest, object, idx);
++    }
++    pub fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_reg2_idx(BytecodeOpcode::LoadTraitObjectValue, dest, object, idx);
++    }

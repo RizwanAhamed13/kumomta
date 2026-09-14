@@ -1,0 +1,2982 @@
+[
+  {
+    "path": ".git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".kumo-gap-fix",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".pytest_cache",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".ruff_cache",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".tmp-kumo-fix",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".olympus/repos",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".olympus/scratch",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".olympus/tmp",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".olympus/worktrees",
+    "reason": "source-checkout-store"
+  },
+  {
+    "path": ".olympus/candidates/llvm-217723/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/candidates/llvm-217723/repo/llvm",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/.devcontainer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/.hooks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/.vscode",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/benches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/calyx",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/calyx-lsp",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/calyx-py",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/cider",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/frontends",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/fud",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/fud2",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/primitives",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/calyx-inline-invoke-comb-second/repo/yxi",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/api",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/catalog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/components",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/support",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/mutant-work/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/api",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/catalog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/components",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/support",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/repo/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/api",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/catalog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/components",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/support",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/solved-work/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/api",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/catalog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/components",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/support",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/copper-live-log-follow/test-work/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/artifacts/numaflow-current",
+    "reason": "symlink"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase02/worktrees/r1-base-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase02/worktrees/r1-base-before/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase02/worktrees/r1-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase02/worktrees/r1-new-before/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase03/worktrees/r2-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase03/worktrees/r3-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase03/worktrees/r4-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase03/worktrees/r5-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/phase03/worktrees/r6-new-after/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/diagnostics/flakiness-solution-20260907/final/solution-applycheck/source/.github/actions/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/godot-rapier-shape-topology/scratch/__pycache__",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk/README.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk-js/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk-python/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk-python/docs/.env.sample",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk-python/docs/docs/reference/changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent1/icechunk-python/python/icechunk/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk/README.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk-js/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk-python/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk-python/docs/.env.sample",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk-python/docs/docs/reference/changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent2/icechunk-python/python/icechunk/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk/README.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk-js/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk-python/LICENSE",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk-python/docs/.env.sample",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk-python/docs/docs/reference/changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/agent3/icechunk-python/python/icechunk/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/design-docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-arrow-object-store",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-js",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-s3",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-storage",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/icechunk-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/calibration/pristine/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/design-docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-arrow-object-store",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-js",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-s3",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-storage",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/icechunk-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/repo/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/design-docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-arrow-object-store",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-js",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-s3",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-storage",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/icechunk-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-final/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/design-docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-arrow-object-store",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-js",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-s3",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-storage",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/icechunk-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/AI_USAGE_POLICY.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/icechunk-move-aware-rebase/verify-slice/Changelog.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent1/std/src/std/net/http/cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent1/std/test/std/net/http/test_cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent2/std/src/std/net/http/cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent2/std/test/std/net/http/test_cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent3/std/src/std/net/http/cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/calibration/agent3/std/test/std/net/http/test_cookie.inko",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/ast",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/compiler",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/inko",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/location",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/rt",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/shipd-tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/std",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo/types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/ast",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/compiler",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/inko",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/location",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/rt",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/std",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/inko-async-traits/repo-scope/types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/baseline-target/debug/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final-matrix.UWPxFW/solution/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/baseline/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/final2-matrix.sblY4F/solution/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/baseline/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/matrix.xGVeXm/solution/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/demos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/lib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/web",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/jj-reverse-absorb/work/solution/.envrc.recommended",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/cmake",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/security",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/third_party",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-composite-node-identity/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/cmake",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/security",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/third_party",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/cmake",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/security",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/third_party",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-feature-pioneer-scout/skeleton-worktree/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/cmake",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/security",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/third_party",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/cmake",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/security",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/third_party",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/lance-btree-address-domain/working-test/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/lance-btree-address-domain/working-test/rust",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/bench-cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/etc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/genmc-sys",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/miri-script",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/priroda",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/test-cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/full-draft/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/bench-cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/etc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/genmc-sys",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/miri-script",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/priroda",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/test-cargo-miri",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/miri-tcp-happens-before/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-generic-nominal-instantiations/work/solution/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/expanded-solution/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m1_guard/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m2_payload/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/mutants/m3_recursive/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/solution/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-match-exhaustiveness/work/tests/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/syntaxes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/vscode-extension",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/otterlang-struct-let-destructuring/work/solution/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/perry-profile-replay-b00e261f/__pycache__",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/assets",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/install",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/patches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/pixi-build-backends",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/schema",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/pixi-global-path-cache/repo/trampoline",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/fp2-hardening-2026-08-23/oldgold-multiple_markers_in_one_mapped_token_do_not_hide_a_later_exact_site.log",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/after-isolation-multiple_markers_in_one_mapped_token_do_not_hide_a_later_exact_site.log",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/scratch/reduce-token-start-scope.patch",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/scratch/review34-source-token-fix.patch",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/benches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/learn",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/tests-pl",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/wambook",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/repo/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/benches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/build",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/learn",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/logo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/tests-pl",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/wambook",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/scryer-tabled-first-query/skeleton-worktree/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/.devcontainer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/.vscode",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/deployment",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/forc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/forc-pkg",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/forc-plugins",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/forc-test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/forc-util",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-ast",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-error",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-features",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-ir",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-lib-std",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-lsp",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-parse",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/sway-utils",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/swayfmt",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/templates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/sway-recursion-detection/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/.claude",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/.config",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/benches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/cts_runner",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/deno_webgpu",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/lock-analyzer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/naga",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/naga-cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/naga-test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/naga-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/player",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-core-remote",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-core-remote-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-hal",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-info",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-naga-bridge",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-sync",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/wgpu-types",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/cases/wgpu-naga-compaction-order/repo/xtask",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/scripts/__pycache__",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/recovered/perry-profile-replay-b00e261f/review-draft/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/recovered/perry-profile-replay-b00e261f/review-draft/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": ".olympus/tmp-perry-prospective.oz5qzD/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": ".olympus/tmp-perry-prospective.oz5qzD/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "aiken-expect-trace-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "aiken-expect-trace-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "aiken-expect-trace-candidate/repo/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "aiken-expect-trace-candidate/repo/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "aiken-expect-trace-candidate/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/.codebase-memory",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/.devcontainer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/aminicoro",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/ante-ls",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/stdlib",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "ante-function-tags-candidate/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/catalog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/components",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/support",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "copper-retry-cycles-candidate/source/vendor",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/.claude",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/_scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/cmd",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/cue",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/cue.mod",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/cuego",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/encoding",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/internal",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/mod",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/pkg",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/tools",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "cue-gengotypes-comprehension-candidate/repo/unstable",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/.ai",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/.devcontainer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/datafusion",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/datafusion-cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/datafusion-examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/datafusion-testing",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/dev",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/parquet-testing",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/test-utils",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/testing",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/xtask",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "datafusion-ffi-feature-pioneer/repo/CLAUDE.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/.vscode",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/.well-known",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/benchmark",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/bin",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/changelog",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/compiler-cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/compiler-core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/compiler-wasm",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/containers",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/erlang-generation",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/erlang-term-format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/format",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/gleam-bin",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/hexpm",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/images",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/language-server",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/licence-bundler",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/licences",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/pretty-arena",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/src-span",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-commands",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-community-packages",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-helpers-rs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-output",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-package-compiler",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gleam-target-cache-candidate/repo/test-project-compiler",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/.codebase-memory",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/pkg",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/storages",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "gluesql-custom-function-candidate/repo/test-suite",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/.claude",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/crates",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/datasets",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/tasks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "graft-page-size-per-volume/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "jsoup-2541-input-limit/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "jsoup-2541-input-limit/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "jsoup-2541-input-limit/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/.devin",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "kitesql-work/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/assets",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/kite_sql_serde_macros",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/static",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "kitesql-work/tpcc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/.devcontainer",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/benchmarks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/ci",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/docs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/java",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/memtest",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/notebooks",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/protos",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/python",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/rust",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/skills",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/test_data",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/test_image_dataset",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "lance-btree-address-domain-candidate/repo/CLAUDE.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/.cargo",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/.vscode",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/cli",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/core",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/doc",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/flock",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/fmt",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/git",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/lsp",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/nickel",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/notes",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/package",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/parser",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/py-nickel",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/rfcs",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/scripts",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/spec",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/utils",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/vector",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/wasm-repl",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "nickel-json-contract-candidate/repo-full/.envrc",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": "output/shipd-fastlane-audit-20260912",
+    "reason": "generated-output"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/.git",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/.github",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/benches",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/compare",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/examples",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/fuzz",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/src",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/test-gen",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/tests",
+    "reason": "source-subtree"
+  },
+  {
+    "path": "quick-xml-886-fresh/repo/CLAUDE.md",
+    "reason": "symlink-or-private-name"
+  },
+  {
+    "path": "rollout-pass-rate-predictor/.pytest_cache",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "rollout-pass-rate-predictor/__pycache__",
+    "reason": "build/dependency/VCS"
+  },
+  {
+    "path": "rollout-pass-rate-predictor/tests/__pycache__",
+    "reason": "build/dependency/VCS"
+  }
+]

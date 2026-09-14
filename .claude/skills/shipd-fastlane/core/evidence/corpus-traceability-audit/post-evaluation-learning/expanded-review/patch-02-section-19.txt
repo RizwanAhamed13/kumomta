@@ -1,0 +1,21 @@
+diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs
+@@ -565,6 +565,7 @@ pub struct EnumFieldDefinition {
++    pub default: Option<Box<Expression>>,
+@@ -661,6 +662,7 @@ pub struct StructFieldDefinition {
++    pub default: Option<Box<Expression>>,
+@@ -1981,10 +1983,17 @@ impl Expression {
++            Expression::Enum { variants, .. } => variants
++                .iter()
++                .flat_map(|variant| variant.fields.iter())
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
++            Expression::Struct { fields, .. } => fields
++                .iter()
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
+-            | Expression::Enum { .. }
+-            | Expression::Struct { .. }
+@@ -2297,6 +2306,7 @@ pub enum FormatStringPart {
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+@@ -2305,6 +2315,7 @@ pub enum UnaryOperator {
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

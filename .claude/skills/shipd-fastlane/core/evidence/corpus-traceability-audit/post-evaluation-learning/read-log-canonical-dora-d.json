@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-13T01:38:50.847433+00:00",
+  "sections": [
+    {
+      "index": 9,
+      "file": "diff --git a/dora-frontend/src/exhaustiveness.rs b/dora-frontend/src/exhaustiveness.rs",
+      "bytes": 13072,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-09.txt",
+      "sha256": "611efa077469607e91cbfaba10a9d6d7e85b0cf95c84abd38c359ac4b63c28f0"
+    }
+  ],
+  "extent": "complete retained changed-hunk section, unchanged context excluded"
+}

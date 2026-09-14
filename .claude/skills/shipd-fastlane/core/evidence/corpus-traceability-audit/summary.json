@@ -1,0 +1,15 @@
+{
+  "root": "/Users/rizwanahamed/Documents/Shipd",
+  "files_indexed": 11706,
+  "bytes_indexed": 3441063942,
+  "artifact_files": 2662,
+  "case_records": 42,
+  "lesson_rows": 362,
+  "unique_lesson_rows": 195,
+  "archives": 161,
+  "archive_entries": 2126,
+  "duplicate_content_groups": 1281,
+  "skipped_paths": 745,
+  "errors": 1,
+  "coverage": "Artifact/record inventory, structured case records and full lesson rows. Source checkouts, build/dependency trees, private-name files and symlinks excluded. Archive payloads not extracted. Metadata inventory is not a semantic review of every file."
+}

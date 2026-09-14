@@ -1,0 +1,6 @@
+diff --git a/dora-cannon-compiler/src/asm.rs b/dora-cannon-compiler/src/asm.rs
+@@ -1333,6 +1333,10 @@ impl<'a> BaselineAssembler<'a> {
++    pub fn load_shape(&mut self, dest: Reg, shape_key: AotShapeKey) {
++        self.masm.load_shape(dest, shape_key);
++    }
++

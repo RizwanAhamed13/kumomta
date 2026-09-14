@@ -1,0 +1,15 @@
+diff --git a/src/planner/operator/create_index.rs b/src/planner/operator/create_index.rs
+@@ -12,7 +12,8 @@
+-use crate::catalog::{ColumnRef, TableName};
++use crate::catalog::TableName;
++use crate::expression::ScalarExpression;
+@@ -22,8 +23,8 @@ use std::fmt::Formatter;
+-    /// List of columns of the index
+-    pub columns: Vec<ColumnRef>,
++    /// Expressions that form the index key.
++    pub expressions: Vec<ScalarExpression>,
+@@ -31,11 +32,11 @@ pub struct CreateIndexOperator {
+-        let columns = self.columns.iter().join(", ");
++        let expressions = self.expressions.iter().join(", ");
+-            self.table_name, columns, self.if_not_exists
++            self.table_name, expressions, self.if_not_exists

@@ -1,0 +1,5 @@
+diff --git a/crates/semantics/src/zero.rs b/crates/semantics/src/zero.rs
+@@ -238,6 +238,9 @@ fn has_zero_nominal_fields(
++                if f.default.is_some() {
++                    continue;
++                }

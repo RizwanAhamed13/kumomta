@@ -1,0 +1,26 @@
+diff --git a/crates/diagnostics/src/infer.rs b/crates/diagnostics/src/infer.rs
+@@ -316,6 +316,30 @@ pub fn const_disallows_composite(span: Span) -> LisetteDiagnostic {
++pub fn field_default_disallows_composite(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Composite value in field default")
++        .with_infer_code("field_default_disallows_composite")
++        .with_span_label(&span, "not allowed in a field default")
++        .with_help("Use a literal, constant, simple expression, or payload-less enum variant")
++}
++
++pub fn field_default_requires_simple_expression(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Field default requires a simple expression")
++        .with_infer_code("field_default_requires_simple_expression")
++        .with_span_label(&span, "expected a constant expression")
++        .with_help("Use a literal, constant, simple expression, or payload-less enum variant")
++}
++
++pub fn field_default_in_typedef(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Field default in Go declaration")
++        .with_infer_code("field_default_in_typedef")
++        .with_span_label(&span, "field defaults are not allowed in `.d.lis` files")
++        .with_help(
++            "Remove the default value; Go declaration files describe existing Go types and do \
++             not define Lisette construction behavior",
++        )
++}
++

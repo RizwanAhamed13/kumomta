@@ -1,0 +1,6 @@
+diff --git a/scylla/src/cluster/worker.rs b/scylla/src/cluster/worker.rs
+@@ -196,6 +196,10 @@ impl Cluster {
++    pub(crate) fn get_state_handle(&self) -> Arc<ArcSwap<ClusterState>> {
++        Arc::clone(&self.state)
++    }
++

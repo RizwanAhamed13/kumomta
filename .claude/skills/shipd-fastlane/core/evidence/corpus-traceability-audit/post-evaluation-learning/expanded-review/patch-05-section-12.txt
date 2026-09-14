@@ -1,0 +1,10 @@
+diff --git a/src/optimizer/rule/normalization/elimination.rs b/src/optimizer/rule/normalization/elimination.rs
+@@ -515,6 +515,10 @@ mod tests {
++        let expressions = index_fields
++            .iter()
++            .map(|field| field.expr.clone())
++            .collect();
+@@ -523,6 +527,7 @@ mod tests {
++            expressions,
+@@ -606,6 +611,7 @@ mod tests {
++                expressions: vec![ScalarExpression::column_expr(c1, 0)],

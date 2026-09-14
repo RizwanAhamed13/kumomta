@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-09-13T01:37:44.191450+00:00",
+  "sections": [
+    {
+      "index": 2,
+      "file": "diff --git a/crates/emit/src/expressions/identifiers.rs b/crates/emit/src/expressions/identifiers.rs",
+      "bytes": 2995,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-02.txt",
+      "sha256": "8140aaaddc4aa83a65940c0cc3a861f7d3e69893aeb264775688dd0118e86b7b"
+    },
+    {
+      "index": 7,
+      "file": "diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs",
+      "bytes": 15166,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-07.txt",
+      "sha256": "beb91821b9c2f9fab6a849c7bb56bdc0f214bb2dc7557416d680da2007e3a4e5"
+    }
+  ],
+  "extent": "complete retained changed-hunk sections, unchanged context excluded",
+  "qualification_previous": "read-log-canonical-kite-lisette-a output truncated 332 tokens inside Lisette section2; section2 reread here"
+}

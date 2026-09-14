@@ -1,0 +1,14 @@
+diff --git a/src/planner/operator/table_scan.rs b/src/planner/operator/table_scan.rs
+@@ -15,7 +15,6 @@
+-use crate::expression::ScalarExpression;
+@@ -51,13 +50,11 @@ impl TableScanOperator {
+-            let mut sort_fields = Vec::with_capacity(index_meta.column_ids.len());
+-            for col_id in &index_meta.column_ids {
+-                let column_ref = table_catalog.get_column_by_id(col_id).ok_or_else(|| {
+-                    DatabaseError::column_not_found(format!("index column id: {col_id} not found"))
+-                })?;
++            let expressions = index_meta.expressions.clone();
++            let mut sort_fields = Vec::with_capacity(expressions.len());
++            for expression in expressions {
+-                    expr: ScalarExpression::column_expr(column_ref, sort_fields.len()),
++                    expr: expression,

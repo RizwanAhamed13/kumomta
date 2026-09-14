@@ -1,0 +1,10 @@
+diff --git a/pkgs/boots/codegen/arm64.dora b/pkgs/boots/codegen/arm64.dora
+@@ -1237,6 +1237,14 @@ impl CodeGen for CodeGenArm64 {
++    fn emit_shape_const(inst: Inst) {
++        let register = inst.get_location_data().get_output().get_register();
++        let key = iface::get_class_shape_key_for_trait_object(
++            inst.get_trait_object_info(),
++        );
++        self.load_shape(register, REG_TEMP2, key);
++    }
++

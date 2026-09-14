@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Case Capture"
+  short_description: "Freeze and record approved Olympus cases"
+  default_prompt: "Use $olympus-case-capture to recheck duplicates, freeze approved bytes, and capture durable Olympus evidence."

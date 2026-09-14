@@ -1,0 +1,56 @@
+diff --git a/src/optimizer/rule/normalization/simplification.rs b/src/optimizer/rule/normalization/simplification.rs
+@@ -14,7 +14,9 @@
++use crate::expression::visitor::{walk_expr, ExprVisitor};
++use crate::expression::ScalarExpression;
+@@ -78,6 +80,51 @@ fn has_aggregate_descendant(plan: &LogicalPlan) -> bool {
++struct IndexedExpressionFinder<'target, 'arena, 'table> {
++    target: &'target ScalarExpression,
++    arena: &'arena crate::planner::PlanArena<'table>,
++    found: bool,
++}
++
++impl<'expr> ExprVisitor<'expr> for IndexedExpressionFinder<'_, '_, '_> {
++    fn visit(&mut self, expr: &'expr ScalarExpression) -> Result<(), DatabaseError> {
++        if expr.eq_ignore_colref_pos(self.target, self.arena) {
++            self.found = true;
++            Ok(())
++        } else {
++            walk_expr(self, expr)
++        }
++    }
++}
++
++fn contains_stored_expression(
++    predicate: &ScalarExpression,
++    child: &LogicalPlan,
++    arena: &crate::planner::PlanArena,
++) -> Result<bool, DatabaseError> {
++    let Operator::TableScan(scan) = &child.operator else {
++        return Ok(false);
++    };
++    for index_info in &scan.index_infos {
++        let index = arena.index(index_info.meta);
++        if !index.is_expression_index() {
++            continue;
++        }
++        for target in &index.expressions {
++            let mut finder = IndexedExpressionFinder {
++                target,
++                arena,
++                found: false,
++            };
++            finder.visit(predicate)?;
++            if finder.found {
++                return Ok(true);
++            }
++        }
++    }
++    Ok(false)
++}
++
+@@ -92,6 +139,11 @@ impl NormalizationRule for SimplifyFilter {
++                if contains_stored_expression(&filter_op.predicate, child, arena)? {
++                    ConstantCalculator::new(arena).visit(&mut filter_op.predicate)?;
++                    filter_op.is_optimized = true;
++                    return Ok(true);
++                }

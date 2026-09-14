@@ -1,0 +1,708 @@
+diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs
+@@ -42,8 +42,11 @@ struct ExpansionResult {
++    direct_attribute_output: bool,
++const MAX_TERMINAL_IDENTIFIERS: usize = 64;
++
+@@ -52,6 +55,7 @@ pub(super) struct AnalysisResult<'db> {
++    pub(super) direct_attribute_output: bool,
+@@ -61,14 +65,13 @@ pub(super) fn expand_and_analyze<'db>(
+-    // as we insert after the offset, right biased will *always* pick the identifier no matter
+-    // if there is an ident already typed or not
++    // Keep the historical single-site traversal for requests which are not eligible for
++    // aggregation. In particular, the context of the selected occurrence can affect which
++    // expression snippets are offered.
+-    // the relative offset between the cursor and the *identifier* token we are completing on
+-    // make the offset point to the start of the original token, as that is what the
+-    // intermediate offsets calculated in expansion always points to
++    let mut state = ExpansionState::single();
+@@ -76,7 +79,11 @@ pub(super) fn expand_and_analyze<'db>(
++        &mut state,
++        false,
++    .into_iter()
++    .next()
+@@ -84,15 +91,109 @@ pub(super) fn expand_and_analyze<'db>(
++        direct_attribute_output: false,
+-    // add the relative offset back, so that left_biased finds the proper token
++    let direct_attribute_output = expansion.direct_attribute_output;
++    analyze(sema, expansion, original_token, &token, false).map(
++        |(analysis, expected, qualifier_ctx)| AnalysisResult {
++            analysis,
++            expected,
++            qualifier_ctx,
++            token,
++            original_offset,
++            direct_attribute_output,
++        },
++    )
++}
+-    analyze(sema, expansion, original_token, &token).map(|(analysis, expected, qualifier_ctx)| {
+-        AnalysisResult { analysis, expected, qualifier_ctx, token, original_offset }
+-    })
++pub(super) fn expand_and_analyze_all<'db>(
++    sema: &Semantics<'db, RootDatabase>,
++    original_file: InFile<SyntaxNode>,
++    speculative_file: SyntaxNode,
++    offset: TextSize,
++    original_token: &SyntaxToken,
++) -> Vec<AnalysisResult<'db>> {
++    // as we insert after the offset, right biased will *always* pick the identifier no matter
++    // if there is an ident already typed or not
++    let Some(fake_ident_token) = speculative_file.token_at_offset(offset).right_biased() else {
++        return vec![];
++    };
++    // the relative offset between the cursor and the *identifier* token we are completing on
++    let relative_offset = offset - fake_ident_token.text_range().start();
++    // make the offset point to the start of the original token, as that is what the
++    // intermediate offsets calculated in expansion always points to
++    let offset = offset - relative_offset;
++    let mut state = ExpansionState::all();
++    let expansions = expand_maybe_stop(
++        sema,
++        original_file.clone(),
++        speculative_file.clone(),
++        offset,
++        fake_ident_token.clone(),
++        relative_offset,
++        &mut state,
++        false,
++    );
++    let expansions = if expansions.is_empty() {
++        vec![ExpansionResult {
++            original_file: original_file.value,
++            speculative_file,
++            original_offset: offset,
++            speculative_offset: fake_ident_token.text_range().start(),
++            fake_ident_token,
++            derive_ctx: None,
++            direct_attribute_output: false,
++        }]
++    } else {
++        expansions
++    };
++
++    let multi_marker = expansions.iter().any(|expansion| {
++        expansion.fake_ident_token.parent_ancestors().last().is_some_and(|file| {
++            completion_marker_count(&file)
++                .saturating_sub(completion_marker_count(&expansion.original_file))
++                > 1
++        })
++    });
++    expansions
++        .into_iter()
++        .filter_map(|expansion| {
++            // add the relative offset back, so that left_biased finds the proper token
++            let original_offset = expansion.original_offset + relative_offset;
++            let token = expansion.original_file.token_at_offset(original_offset).left_biased()?;
++            let direct_attribute_output = expansion.direct_attribute_output;
++
++            analyze(sema, expansion, original_token, &token, multi_marker).map(
++                |(analysis, expected, qualifier_ctx)| AnalysisResult {
++                    analysis,
++                    expected,
++                    qualifier_ctx,
++                    token,
++                    original_offset,
++                    direct_attribute_output,
++                },
++            )
++        })
++        .collect()
++}
++
++#[derive(Debug)]
++struct ExpansionState {
++    collect_all: bool,
++    terminal_identifiers: usize,
++}
++
++impl ExpansionState {
++    fn single() -> Self {
++        Self { collect_all: false, terminal_identifiers: 0 }
++    }
++
++    fn all() -> Self {
++        Self { collect_all: true, terminal_identifiers: 0 }
++    }
+@@ -100,6 +201,77 @@ fn token_at_offset_ignore_whitespace(file: &SyntaxNode, offset: TextSize) -> Opt
++fn mapped_tokens_with_offsets(
++    fake_mapped_tokens: Vec<(SyntaxToken, u8)>,
++) -> impl Iterator<Item = (SyntaxToken, u8, TextSize)> {
++    let mut accumulated_offset_from_fake_tokens = 0;
++    fake_mapped_tokens.into_iter().filter_map(move |(fake_mapped_token, rank)| {
++        if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
++            // Proc macros can make the same span with different text, we don't
++            // want them to participate in completion because the macro author probably
++            // didn't intend them to.
++            return None;
++        }
++        let accumulated_offset = accumulated_offset_from_fake_tokens;
++        accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
++
++        let new_offset = fake_mapped_token
++            .text_range()
++            .start()
++            .checked_sub(TextSize::try_from(accumulated_offset).ok()?)?;
++        Some((fake_mapped_token, rank, new_offset))
++    })
++}
++
++fn expand_mapped_tokens(
++    sema: &Semantics<'_, RootDatabase>,
++    original_file: InFile<SyntaxNode>,
++    speculative_file: SyntaxNode,
++    actual_range: TextSize,
++    fake_mapped_tokens: Vec<(SyntaxToken, u8)>,
++    relative_offset: TextSize,
++    state: &mut ExpansionState,
++    direct_attribute_output: bool,
++) -> Vec<ExpansionResult> {
++    let mut mapped_tokens = mapped_tokens_with_offsets(fake_mapped_tokens)
++        .filter(|(_, _, new_offset)| *new_offset + relative_offset <= actual_range)
++        .sorted_by_key(|(_, rank, _)| *rank);
++    if state.collect_all {
++        mapped_tokens
++            .flat_map(|(fake_mapped_token, _, new_offset)| {
++                expand_maybe_stop(
++                    sema,
++                    original_file.clone(),
++                    speculative_file.clone(),
++                    new_offset,
++                    fake_mapped_token,
++                    relative_offset,
++                    state,
++                    direct_attribute_output,
++                )
++            })
++            .collect()
++    } else {
++        mapped_tokens
++            .find_map(|(fake_mapped_token, _, new_offset)| {
++                expand_maybe_stop(
++                    sema,
++                    original_file.clone(),
++                    speculative_file.clone(),
++                    new_offset,
++                    fake_mapped_token,
++                    relative_offset,
++                    state,
++                    direct_attribute_output,
++                )
++                .into_iter()
++                .next()
++            })
++            .into_iter()
++            .collect()
++    }
++}
++
+@@ -136,37 +308,55 @@ fn expand_maybe_stop(
+-) -> Option<ExpansionResult> {
+-    if let result @ Some(_) = expand(
++    state: &mut ExpansionState,
++    direct_attribute_output: bool,
++) -> Vec<ExpansionResult> {
++    if state.collect_all && state.terminal_identifiers >= MAX_TERMINAL_IDENTIFIERS {
++        return vec![];
++    }
++    if let Some(result) = expand(
++        state,
++        direct_attribute_output,
+-    if token_at_offset_ignore_whitespace(&original_file.value, original_offset + relative_offset)
+-        .is_some_and(|original_token| {
+-            !sema.is_inside_macro_call(original_file.with_value(&original_token))
+-        })
+-    {
++    let Some(original_token) =
++        token_at_offset_ignore_whitespace(&original_file.value, original_offset + relative_offset)
++    else {
++        return vec![];
++    };
++    if !sema.is_inside_macro_call(original_file.with_value(&original_token)) {
++        // A mapped fake token can survive in the speculative expansion even when the actual
++        // expansion has no identifier at this position. Such a path must not consume the
++        // request-wide occurrence budget.
++        if state.collect_all && original_token.kind() == SyntaxKind::IDENT {
++            if state.terminal_identifiers == MAX_TERMINAL_IDENTIFIERS {
++                return vec![];
++            }
++            state.terminal_identifiers += 1;
++        }
+-        Some(ExpansionResult {
++        return vec![ExpansionResult {
+-        })
+-    } else {
+-        None
++            direct_attribute_output,
++        }];
++
++    vec![]
+@@ -176,7 +366,9 @@ fn expand(
+-) -> Option<ExpansionResult> {
++    state: &mut ExpansionState,
++    direct_attribute_output: bool,
++) -> Option<Vec<ExpansionResult>> {
+@@ -211,41 +403,19 @@ fn expand(
+-                let mut accumulated_offset_from_fake_tokens = 0;
+-                let result = fake_mapped_tokens
+-                    .into_iter()
+-                    .filter_map(|(fake_mapped_token, rank)| {
+-                        let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                        if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                            // Proc macros can make the same span with different text, we don't
+-                            // want them to participate in completion because the macro author probably
+-                            // didn't intend them to.
+-                            return None;
+-                        }
+-                        accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                        let new_offset = fake_mapped_token.text_range().start()
+-                            - TextSize::new(accumulated_offset as u32);
+-                        if new_offset + relative_offset > actual_range {
+-                            // offset outside of bounds from the original expansion,
+-                            // stop here to prevent problems from happening
+-                            return None;
+-                        }
+-                        let result = expand_maybe_stop(
+-                            sema,
+-                            actual_expansion.clone(),
+-                            fake_expansion.clone(),
+-                            new_offset,
+-                            fake_mapped_token,
+-                            relative_offset,
+-                        )?;
+-                        Some((result, rank))
+-                    })
+-                    .min_by_key(|(_, rank)| *rank)
+-                    .map(|(result, _)| result);
+-                if result.is_some() {
+-                    return result;
++                let result = expand_mapped_tokens(
++                    sema,
++                    actual_expansion,
++                    fake_expansion,
++                    actual_range,
++                    fake_mapped_tokens,
++                    relative_offset,
++                    state,
++                    true,
++                );
++                if !result.is_empty() {
++                    return Some(result);
+@@ -298,7 +468,7 @@ fn expand(
+-            return Some(ExpansionResult {
++            return Some(vec![ExpansionResult {
+@@ -310,7 +480,8 @@ fn expand(
+-            });
++                direct_attribute_output: false,
++            }]);
+@@ -332,41 +503,19 @@ fn expand(
+-                        let mut accumulated_offset_from_fake_tokens = 0;
+-                        let result = fake_mapped_tokens
+-                            .into_iter()
+-                            .filter_map(|(fake_mapped_token, rank)| {
+-                                let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                                if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                                    // Proc macros can make the same span with different text, we don't
+-                                    // want them to participate in completion because the macro author probably
+-                                    // didn't intend them to.
+-                                    return None;
+-                                }
+-                                accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                                let new_offset = fake_mapped_token.text_range().start()
+-                                    - TextSize::new(accumulated_offset as u32);
+-                                if new_offset + relative_offset > actual_range {
+-                                    // offset outside of bounds from the original expansion,
+-                                    // stop here to prevent problems from happening
+-                                    return None;
+-                                }
+-                                let result = expand_maybe_stop(
+-                                    sema,
+-                                    InFile::new(file.into(), actual_expansion.clone()),
+-                                    fake_expansion.clone(),
+-                                    new_offset,
+-                                    fake_mapped_token,
+-                                    relative_offset,
+-                                )?;
+-                                Some((result, rank))
+-                            })
+-                            .min_by_key(|(_, rank)| *rank)
+-                            .map(|(result, _)| result);
+-                        if result.is_some() {
+-                            return result;
++                        let result = expand_mapped_tokens(
++                            sema,
++                            InFile::new(file.into(), actual_expansion),
++                            fake_expansion,
++                            actual_range,
++                            fake_mapped_tokens,
++                            relative_offset,
++                            state,
++                            false,
++                        );
++                        if !result.is_empty() {
++                            return Some(result);
+@@ -391,45 +540,40 @@ fn expand(
++    let is_declarative_macro = sema.to_def(&actual_macro_call).is_some_and(|macro_| {
++        matches!(
++            macro_.kind(sema.db),
++            hir::MacroKind::Declarative | hir::MacroKind::DeclarativeBuiltIn
++        )
++    });
++    let preserved_declarative_macro = direct_attribute_output
++        && is_declarative_macro
++        && sema.original_syntax_node_rooted(actual_macro_call.syntax()).is_some();
++    if direct_attribute_output && is_declarative_macro && !preserved_declarative_macro {
++        // A declarative macro synthesized by an attribute's output is not an original
++        // completion position. An invocation preserved by the attribute maps back to a
++        // source node and is handled below.
++        return None;
++    }
++
+-            let mut accumulated_offset_from_fake_tokens = 0;
+-            fake_mapped_tokens
+-                .into_iter()
+-                .filter_map(|(fake_mapped_token, rank)| {
+-                    let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                    if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                        // Proc macros can make the same span with different text, we don't
+-                        // want them to participate in completion because the macro author probably
+-                        // didn't intend them to.
+-                        return None;
+-                    }
+-                    accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                    let new_offset = fake_mapped_token.text_range().start()
+-                        - TextSize::new(accumulated_offset as u32);
+-                    if new_offset + relative_offset > actual_range {
+-                        // offset outside of bounds from the original expansion,
+-                        // stop here to prevent problems from happening
+-                        return None;
+-                    }
+-                    let result = expand_maybe_stop(
+-                        sema,
+-                        actual_expansion.clone(),
+-                        fake_expansion.clone(),
+-                        new_offset,
+-                        fake_mapped_token,
+-                        relative_offset,
+-                    )?;
+-                    Some((result, rank))
+-                })
+-                .min_by_key(|(_, rank)| *rank)
+-                .map(|(result, _)| result)
++            let result = expand_mapped_tokens(
++                sema,
++                actual_expansion,
++                fake_expansion,
++                actual_range,
++                fake_mapped_tokens,
++                relative_offset,
++                state,
++                direct_attribute_output && !preserved_declarative_macro,
++            );
++            (!result.is_empty()).then_some(result)
+@@ -444,6 +588,7 @@ fn analyze<'db>(
++    multi_marker: bool,
+@@ -454,6 +599,7 @@ fn analyze<'db>(
++        ..
+@@ -474,7 +620,7 @@ fn analyze<'db>(
+-                classify_name_ref(sema, &original_file, name_ref, offset, parent)?;
++                classify_name_ref(sema, &original_file, name_ref, offset, parent, multi_marker)?;
+@@ -558,6 +704,7 @@ fn analyze<'db>(
++                multi_marker,
+@@ -578,7 +725,7 @@ fn analyze<'db>(
+-            let name_ctx = classify_name(sema, &original_file, name)?;
++            let name_ctx = classify_name(sema, &original_file, name, multi_marker)?;
+@@ -911,6 +1058,7 @@ fn classify_name(
++    multi_marker: bool,
+@@ -920,9 +1068,15 @@ fn classify_name(
+-                let mut pat_ctx = pattern_context_for(sema, original_file, bind_pat.into());
++                let mut pat_ctx =
++                    pattern_context_for(sema, original_file, bind_pat.into(), multi_marker);
+-                    pat_ctx.record_pat = find_node_in_file_compensated(sema, original_file, &record_field.parent_record_pat());
++                    pat_ctx.record_pat = find_node_in_file_mode(
++                        sema,
++                        original_file,
++                        &record_field.parent_record_pat(),
++                        multi_marker,
++                    );
+@@ -943,7 +1097,7 @@ fn classify_name(
+-    let name = find_node_at_offset(original_file, name.syntax().text_range().start());
++    let name = find_node_in_file_mode(sema, original_file, &name, multi_marker);
+@@ -953,6 +1107,7 @@ fn classify_name_ref<'db>(
++    multi_marker: bool,
+@@ -962,10 +1117,11 @@ fn classify_name_ref<'db>(
+-        return find_node_in_file_compensated(
++        return find_node_in_file_mode(
++            multi_marker,
+@@ -976,18 +1132,24 @@ fn classify_name_ref<'db>(
+-            record_pat: find_node_in_file_compensated(
++            record_pat: find_node_in_file_mode(
++                multi_marker,
+-            ..pattern_context_for(sema, original_file, record_field.parent_record_pat().into())
++            ..pattern_context_for(
++                sema,
++                original_file,
++                record_field.parent_record_pat().into(),
++                multi_marker,
++            )
+-        let receiver = find_opt_node_in_file(original_file, receiver);
++        let receiver = find_opt_node_in_file_aggregate(sema, original_file, receiver, multi_marker);
+@@ -1039,7 +1201,12 @@ fn classify_name_ref<'db>(
+-                let receiver = find_opt_node_in_file(original_file, method.receiver());
++                let receiver = find_opt_node_in_file_aggregate(
++                    sema,
++                    original_file,
++                    method.receiver(),
++                    multi_marker,
++                );
+@@ -1057,8 +1224,7 @@ fn classify_name_ref<'db>(
+-    let original_path = find_node_in_file_compensated(sema, original_file, &path);
+-
++    let original_path = find_node_in_file_mode(sema, original_file, &path, multi_marker);
+@@ -1073,7 +1239,7 @@ fn classify_name_ref<'db>(
+-            find_node_in_file_compensated(sema, original_file, &record_expr)
++            find_node_in_file_mode(sema, original_file, &record_expr, multi_marker)
+@@ -1145,10 +1311,11 @@ fn classify_name_ref<'db>(
+-        let location = find_opt_node_in_file_compensated(
++        let location = find_opt_node_in_file_mode(
++            multi_marker,
+@@ -1323,7 +1490,7 @@ fn classify_name_ref<'db>(
+-                    let args = find_opt_node_in_file_compensated(sema, original_file, Some(it));
++                    let args = find_opt_node_in_file_mode(sema, original_file, Some(it), multi_marker);
+@@ -1388,7 +1555,7 @@ fn classify_name_ref<'db>(
+-            match find_node_in_file_compensated(sema, original_file, &expr) {
++            match find_node_in_file_mode(sema, original_file, &expr, multi_marker) {
+@@ -1407,7 +1574,7 @@ fn classify_name_ref<'db>(
+-            .and_then(|expr| find_node_in_file_compensated(sema, original_file, &expr))
++            .and_then(|expr| find_node_in_file_mode(sema, original_file, &expr, multi_marker))
+@@ -1421,7 +1588,7 @@ fn classify_name_ref<'db>(
+-        let impl_ = fetch_immediate_impl_or_trait(sema, original_file, expr.syntax())
++        let impl_ = fetch_immediate_impl_or_trait(sema, original_file, expr.syntax(), multi_marker)
+@@ -1467,7 +1634,12 @@ fn classify_name_ref<'db>(
+-                                ItemListKind::TraitImpl(find_node_in_file_compensated(sema, original_file, &it))
++                                ItemListKind::TraitImpl(find_node_in_file_mode(
++                                    sema,
++                                    original_file,
++                                    &it,
++                                    multi_marker,
++                                ))
+@@ -1500,7 +1672,9 @@ fn classify_name_ref<'db>(
+-                ast::MacroPat(it) => PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into())},
++                ast::MacroPat(it) => PathKind::Pat {
++                    pat_ctx: pattern_context_for(sema, original_file, it.into(), multi_marker),
++                },
+@@ -1568,14 +1742,20 @@ fn classify_name_ref<'db>(
+-                    PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into()) }
++                    PathKind::Pat {
++                        pat_ctx: pattern_context_for(sema, original_file, it.into(), multi_marker),
++                    }
+-                    PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into()) }
++                    PathKind::Pat {
++                        pat_ctx: pattern_context_for(sema, original_file, it.into(), multi_marker),
++                    }
+-                    PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into())}
++                    PathKind::Pat {
++                        pat_ctx: pattern_context_for(sema, original_file, it.into(), multi_marker),
++                    }
+@@ -1597,14 +1777,35 @@ fn classify_name_ref<'db>(
+-                                PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into()) }
++                                PathKind::Pat {
++                                    pat_ctx: pattern_context_for(
++                                        sema,
++                                        original_file,
++                                        it.into(),
++                                        multi_marker,
++                                    ),
++                                }
+-                                PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into()) }
++                                PathKind::Pat {
++                                    pat_ctx: pattern_context_for(
++                                        sema,
++                                        original_file,
++                                        it.into(),
++                                        multi_marker,
++                                    ),
++                                }
+-                                PathKind::Pat { pat_ctx: pattern_context_for(sema, original_file, it.into())}
++                                PathKind::Pat {
++                                    pat_ctx: pattern_context_for(
++                                        sema,
++                                        original_file,
++                                        it.into(),
++                                        multi_marker,
++                                    ),
++                                }
+@@ -1640,7 +1841,7 @@ fn classify_name_ref<'db>(
+-                .and_then(|it| find_node_in_file(original_file, &it))
++                .and_then(|it| find_node_in_file_aggregate(sema, original_file, &it, multi_marker))
+@@ -1770,6 +1971,7 @@ fn pattern_context_for(
++    multi_marker: bool,
+@@ -1792,7 +1994,12 @@ fn pattern_context_for(
+-                            let param_list = find_node_in_file_compensated(sema, original_file, &fake_param_list)?;
++                            let param_list = find_node_in_file_mode(
++                                sema,
++                                original_file,
++                                &fake_param_list,
++                                multi_marker,
++                            )?;
+@@ -1882,7 +2089,12 @@ fn pattern_context_for(
+-        impl_or_trait: fetch_immediate_impl_or_trait(sema, original_file, pat.syntax()),
++        impl_or_trait: fetch_immediate_impl_or_trait(
++            sema,
++            original_file,
++            pat.syntax(),
++            multi_marker,
++        ),
+@@ -1891,10 +2103,15 @@ fn fetch_immediate_impl_or_trait(
++    multi_marker: bool,
+-    let mut ancestors = ancestors_in_file_compensated(sema, original_file, node)?
+-        .filter_map(ast::Item::cast)
+-        .filter(|it| !matches!(it, ast::Item::MacroCall(_)));
++    let ancestors: Box<dyn Iterator<Item = SyntaxNode> + '_> = if multi_marker {
++        Box::new(ancestors_in_file_multi(sema, original_file, node)?)
++    } else {
++        Box::new(ancestors_in_file_compensated(sema, original_file, node)?)
++    };
++    let mut ancestors =
++        ancestors.filter_map(ast::Item::cast).filter(|it| !matches!(it, ast::Item::MacroCall(_)));
+@@ -1926,7 +2143,7 @@ fn find_node_in_file<N: AstNode>(syntax: &SyntaxNode, node: &N) -> Option<N> {
+-/// This is wrong if `node` comes before the insertion point! Use `find_node_in_file` instead.
++/// This is the historical single-marker version used by non-aggregated requests.
+@@ -1947,7 +2164,6 @@ fn ancestors_in_file_compensated<'sema>(
+-    // our inserted ident could cause `range` to go outside of the original syntax, so cap it
+@@ -1956,15 +2172,138 @@ fn ancestors_in_file_compensated<'sema>(
+-/// Attempts to find `node` inside `syntax` via `node`'s text range while compensating
+-/// for the offset introduced by the fake ident..
+-/// This is wrong if `node` comes before the insertion point! Use `find_node_in_file` instead.
+-fn find_opt_node_in_file_compensated<N: AstNode>(
++fn find_node_in_file_mode<N: AstNode>(
++    sema: &Semantics<'_, RootDatabase>,
++    in_file: &SyntaxNode,
++    node: &N,
++    multi_marker: bool,
++) -> Option<N> {
++    if multi_marker {
++        find_node_in_file_multi(sema, in_file, node)
++    } else {
++        find_node_in_file_compensated(sema, in_file, node)
++    }
++}
++
++fn find_opt_node_in_file_mode<N: AstNode>(
++    sema: &Semantics<'_, RootDatabase>,
++    syntax: &SyntaxNode,
++    node: Option<N>,
++    multi_marker: bool,
++) -> Option<N> {
++    find_node_in_file_mode(sema, syntax, &node?, multi_marker)
++}
++
++fn find_opt_node_in_file_aggregate<N: AstNode>(
++    multi_marker: bool,
+-    find_node_in_file_compensated(sema, syntax, &node?)
++    match (multi_marker, node) {
++        (true, Some(node)) => find_node_in_file_multi(sema, syntax, &node),
++        (false, Some(node)) => find_node_in_file(syntax, &node),
++        (_, None) => None,
++    }
++}
++
++fn find_node_in_file_aggregate<N: AstNode>(
++    sema: &Semantics<'_, RootDatabase>,
++    syntax: &SyntaxNode,
++    node: &N,
++    multi_marker: bool,
++) -> Option<N> {
++    if multi_marker {
++        find_node_in_file_multi(sema, syntax, node)
++    } else {
++        find_node_in_file(syntax, node)
++    }
++}
++
++/// The multi-marker version used by aggregated requests.
++fn find_node_in_file_multi<N: AstNode>(
++    sema: &Semantics<'_, RootDatabase>,
++    in_file: &SyntaxNode,
++    node: &N,
++) -> Option<N> {
++    ancestors_in_file_multi(sema, in_file, node.syntax())?.find_map(N::cast)
++}
++
++fn ancestors_in_file_multi<'sema>(
++    sema: &'sema Semantics<'_, RootDatabase>,
++    in_file: &SyntaxNode,
++    node: &SyntaxNode,
++) -> Option<impl Iterator<Item = SyntaxNode> + 'sema> {
++    let syntax_range = in_file.text_range();
++    let range = node.text_range();
++    let fake_file = node.ancestors().last()?;
++    let start = corresponding_offset(in_file, &fake_file, range.start())?;
++    let end = corresponding_offset(in_file, &fake_file, range.end())?;
++    if end < start {
++        return None;
++    }
++    let range = TextRange::new(start, end);
++    // our inserted ident could cause `range` to go outside of the original syntax, so cap it
++    let intersection = range.intersect(syntax_range)?;
++    let node = match in_file.covering_element(intersection) {
++        NodeOrToken::Node(node) => node,
++        NodeOrToken::Token(tok) => tok.parent()?,
++    };
++    Some(sema.ancestors_with_macros(node))
++}
++
++fn corresponding_offset(
++    actual_file: &SyntaxNode,
++    speculative_file: &SyntaxNode,
++    speculative_offset: TextSize,
++) -> Option<TextSize> {
++    let actual_tokens = actual_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
++    let speculative_tokens =
++        speculative_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
++
++    for (actual, speculative) in actual_tokens.zip(speculative_tokens) {
++        let range = speculative.text_range();
++        if speculative_offset < range.start() || speculative_offset > range.end() {
++            continue;
++        }
++        let relative = usize::from(speculative_offset - range.start());
++        let relative = corresponding_token_offset(actual.text(), speculative.text(), relative)?;
++        return actual.text_range().start().checked_add(TextSize::try_from(relative).ok()?);
++    }
++    None
++}
++
++fn corresponding_token_offset(actual: &str, speculative: &str, offset: usize) -> Option<usize> {
++    if offset > speculative.len() {
++        return None;
++    }
++
++    let actual = actual.as_bytes();
++    let speculative = speculative.as_bytes();
++    let marker = COMPLETION_MARKER.as_bytes();
++    let (mut actual_offset, mut speculative_offset) = (0, 0);
++    while speculative_offset < offset {
++        if actual.get(actual_offset) == speculative.get(speculative_offset) {
++            actual_offset += 1;
++            speculative_offset += 1;
++        } else if speculative[speculative_offset..].starts_with(marker) {
++            let remaining = offset - speculative_offset;
++            if remaining <= marker.len() {
++                return Some(actual_offset);
++            }
++            speculative_offset += marker.len();
++        } else {
++            return None;
++        }
++    }
++    Some(actual_offset)
++}
++
++fn completion_marker_count(file: &SyntaxNode) -> usize {
++    file.descendants_with_tokens()
++        .filter_map(NodeOrToken::into_token)
++        .map(|token| token.text().matches(COMPLETION_MARKER).count())
++        .sum()

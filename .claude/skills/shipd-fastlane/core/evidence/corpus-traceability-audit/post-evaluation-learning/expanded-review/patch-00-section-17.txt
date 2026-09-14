@@ -1,0 +1,556 @@
+diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs
+@@ -1,17 +1,43 @@
+-    EnumFieldDefinition, EnumVariant, Expression, Generic, Span, StructFieldDefinition,
+-    StructFields, VariantFields,
++    ConstInitializer, EnumFieldDefinition, EnumVariant, Expression, Generic, IdentifierResolution,
++    Literal, Span, StructFieldDefinition, StructFields, VariantFields,
+-use syntax::program::{AliasKind, Definition, DefinitionBody, Methods, Visibility};
+-use syntax::types::Type;
++use syntax::program::{
++    AliasKind, Definition, DefinitionBody, DotAccessResolution, FileImport, Methods, ValueKind,
++    Visibility,
++};
++use syntax::types::{Symbol, Type};
+-use super::enum_variant_constructor_type;
++use super::{FileContext, RegistrationFile, enum_variant_constructor_type};
++use crate::checker::freeze::FreezeFolder;
++use crate::checker::infer::InferCtx;
++#[derive(Default)]
++pub(super) struct FieldDefaultConstInitializers {
++    values: FxHashMap<Symbol, FieldDefaultConstInitializer>,
++}
++
++#[derive(Clone)]
++struct FieldDefaultConstInitializer {
++    expression: Box<Expression>,
++    origin: Option<FieldDefaultConstOrigin>,
++}
++
++#[derive(Clone)]
++struct FieldDefaultConstOrigin {
++    package_id: String,
++    file_id: u32,
++    imports: Vec<FileImport>,
++}
++
++type PendingFieldDefault<K> = (K, Option<Box<Expression>>, Box<Expression>, Type);
++type InferredFieldDefault<K> = (K, Box<Expression>);
++
+@@ -342,6 +368,523 @@ impl TaskState {
++    pub(super) fn collect_package_field_default_const_initializers(
++        &self,
++        package_id: &str,
++        files: &[RegistrationFile],
++    ) -> FieldDefaultConstInitializers {
++        let mut initializers = FieldDefaultConstInitializers::default();
++        for file in files {
++            let origin = FieldDefaultConstOrigin {
++                package_id: package_id.to_string(),
++                file_id: file.id,
++                imports: file.imports.clone(),
++            };
++            Self::extend_field_default_const_initializers(
++                &mut initializers,
++                package_id,
++                Some(origin),
++                &file.items,
++            );
++        }
++        initializers
++    }
++
++    pub(super) fn collect_current_file_field_default_const_initializers(
++        &self,
++        items: &[Expression],
++    ) -> FieldDefaultConstInitializers {
++        let mut initializers = FieldDefaultConstInitializers::default();
++        Self::extend_field_default_const_initializers(
++            &mut initializers,
++            self.cursor.package_id(),
++            None,
++            items,
++        );
++        initializers
++    }
++
++    fn extend_field_default_const_initializers(
++        initializers: &mut FieldDefaultConstInitializers,
++        package_id: &str,
++        origin: Option<FieldDefaultConstOrigin>,
++        items: &[Expression],
++    ) {
++        for item in items {
++            let Expression::Const {
++                identifier,
++                expression: ConstInitializer::Value(expression),
++                ..
++            } = item
++            else {
++                continue;
++            };
++            initializers.values.insert(
++                Symbol::from_parts(package_id, identifier),
++                FieldDefaultConstInitializer {
++                    expression: expression.clone(),
++                    origin: origin.clone(),
++                },
++            );
++        }
++    }
++
++    pub(super) fn infer_and_install_field_defaults(
++        &mut self,
++        store: &mut Store,
++        items: &[Expression],
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        for item in items {
++            match item {
++                Expression::Struct { name, .. } => {
++                    self.infer_and_install_struct_defaults(store, name, const_initializers)
++                }
++                Expression::Enum { name, .. } => {
++                    self.infer_and_install_enum_defaults(store, name, const_initializers)
++                }
++                _ => {}
++            }
++        }
++    }
++
++    fn infer_and_install_struct_defaults(
++        &mut self,
++        store: &mut Store,
++        name: &str,
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        let qualified_name = self.qualify_name(name);
++        let Some(Definition {
++            body: DefinitionBody::Struct {
++                generics, fields, ..
++            },
++            ..
++        }) = store.get_definition(qualified_name.as_str())
++        else {
++            return;
++        };
++        let generics = generics.clone();
++        let fields = fields.clone();
++
++        if self.reject_typedef_defaults(&*store, &fields) {
++            self.clear_struct_defaults(store, &qualified_name);
++            return;
++        }
++
++        let mut resolving = FxHashSet::default();
++        let sites: Vec<_> = fields
++            .iter()
++            .enumerate()
++            .filter_map(|(index, field)| {
++                field.default.clone().map(|default| {
++                    let original = *default;
++                    let default = self.materialize_field_default_consts(
++                        store,
++                        original.clone(),
++                        const_initializers,
++                        &mut resolving,
++                    );
++                    let declaration_reference = (default != original).then(|| Box::new(original));
++                    (
++                        index,
++                        declaration_reference,
++                        Box::new(default),
++                        field.ty.clone(),
++                    )
++                })
++            })
++            .collect();
++        let inferred = self.infer_field_default_sites(&*store, &generics, sites);
++
++        let Some(Definition {
++            body: DefinitionBody::Struct { fields, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        else {
++            return;
++        };
++        for (index, default) in inferred {
++            fields[index].default = Some(default);
++        }
++    }
++
++    fn infer_and_install_enum_defaults(
++        &mut self,
++        store: &mut Store,
++        name: &str,
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        let qualified_name = self.qualify_name(name);
++        let Some(Definition {
++            body: DefinitionBody::Enum {
++                generics, variants, ..
++            },
++            ..
++        }) = store.get_definition(qualified_name.as_str())
++        else {
++            return;
++        };
++        let generics = generics.clone();
++        let variants = variants.clone();
++
++        if self.is_d_lis(&*store) {
++            let mut found = false;
++            for variant in &variants {
++                for field in &variant.fields {
++                    if let Some(default) = &field.default {
++                        found = true;
++                        self.sink.push(diagnostics::infer::field_default_in_typedef(
++                            default.get_span(),
++                        ));
++                    }
++                }
++            }
++            if found {
++                self.clear_enum_defaults(store, &qualified_name);
++            }
++            return;
++        }
++
++        let mut resolving = FxHashSet::default();
++        let mut sites = Vec::new();
++        for (variant_index, variant) in variants.iter().enumerate() {
++            for (field_index, field) in variant.fields.iter().enumerate() {
++                let Some(default) = field.default.clone() else {
++                    continue;
++                };
++                let original = *default;
++                let default = self.materialize_field_default_consts(
++                    store,
++                    original.clone(),
++                    const_initializers,
++                    &mut resolving,
++                );
++                let declaration_reference = (default != original).then(|| Box::new(original));
++                sites.push((
++                    (variant_index, field_index),
++                    declaration_reference,
++                    Box::new(default),
++                    field.ty.clone(),
++                ));
++            }
++        }
++        let inferred = self.infer_field_default_sites(&*store, &generics, sites);
++
++        let Some(Definition {
++            body: DefinitionBody::Enum { variants, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        else {
++            return;
++        };
++        for ((variant_index, field_index), default) in inferred {
++            let fields = match &mut variants[variant_index].fields {
++                VariantFields::Unit => continue,
++                VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++            };
++            fields[field_index].default = Some(default);
++        }
++    }
++
++    fn materialize_field_default_consts(
++        &mut self,
++        store: &mut Store,
++        expression: Expression,
++        const_initializers: &FieldDefaultConstInitializers,
++        resolving: &mut FxHashSet<Symbol>,
++    ) -> Expression {
++        if let Some(path) = Self::field_default_const_path(&expression)
++            && let Some(qualified_name) = self.lookup_qualified_name(&*store, &path)
++        {
++            let qualified_name = Symbol::from(qualified_name);
++            if let Some(initializer) = const_initializers
++                .values
++                .get(qualified_name.as_str())
++                .cloned()
++            {
++                if !resolving.insert(qualified_name.clone()) {
++                    return expression;
++                }
++                let materialized = match initializer.origin {
++                    Some(origin) => self.with_file_context_mut(
++                        store,
++                        FileContext::Standard {
++                            package_id: &origin.package_id,
++                            file_id: origin.file_id,
++                            imports: &origin.imports,
++                        },
++                        |this, store| {
++                            this.materialize_field_default_consts(
++                                store,
++                                *initializer.expression,
++                                const_initializers,
++                                resolving,
++                            )
++                        },
++                    ),
++                    None => self.materialize_field_default_consts(
++                        store,
++                        *initializer.expression,
++                        const_initializers,
++                        resolving,
++                    ),
++                };
++                resolving.remove(&qualified_name);
++                return materialized;
++            }
++
++            if let Some(literal) = Self::registered_const_literal(&*store, &qualified_name) {
++                return Expression::Literal {
++                    literal,
++                    ty: Type::uninferred(),
++                    span: expression.get_span(),
++                };
++            }
++
++            if let Some(reference) =
++                self.registered_owner_aware_const(&*store, &qualified_name, expression.get_span())
++            {
++                return reference;
++            }
++        }
++
++        match expression {
++            Expression::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Expression::Binary {
++                operator,
++                left: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *left,
++                    const_initializers,
++                    resolving,
++                )),
++                right: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *right,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Expression::Unary {
++                operator,
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::Paren {
++                expression,
++                ty,
++                span,
++            } => Expression::Paren {
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Expression::DotAccess {
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                member,
++                ty,
++                span,
++                resolution,
++            },
++            expression => expression,
++        }
++    }
++
++    fn field_default_const_path(expression: &Expression) -> Option<String> {
++        match expression {
++            Expression::Identifier { value, .. } => Some(value.to_string()),
++            Expression::DotAccess {
++                expression, member, ..
++            } => Some(format!(
++                "{}.{}",
++                Self::field_default_const_path(expression)?,
++                member
++            )),
++            _ => None,
++        }
++    }
++
++    fn registered_const_literal(store: &Store, qualified_name: &Symbol) -> Option<Literal> {
++        let Definition {
++            body:
++                DefinitionBody::Value {
++                    kind: ValueKind::Constant(literal),
++                    ..
++                },
++            ..
++        } = store.get_definition(qualified_name.as_str())?
++        else {
++            return None;
++        };
++        match literal {
++            // Negative integers are stored as their wrapping `u64` value, so
++            // they cannot be reconstructed as a positive literal safely here.
++            Literal::Integer { value, .. } if *value > i64::MAX as u64 => None,
++            literal => Some(literal.clone()),
++        }
++    }
++
++    fn registered_owner_aware_const(
++        &self,
++        store: &Store,
++        qualified_name: &Symbol,
++        span: Span,
++    ) -> Option<Expression> {
++        let package_id = store.package_for_qualified_name(qualified_name.as_str())?;
++        if package_id == self.cursor.package_id() {
++            return None;
++        }
++        let definition = store.get_definition(qualified_name.as_str())?;
++        if !definition.is_const() || !definition.visibility.is_public() {
++            return None;
++        }
++        let member = qualified_name
++            .as_str()
++            .strip_prefix(package_id)?
++            .strip_prefix('.')?;
++        if member.contains('.') {
++            return None;
++        }
++
++        Some(Expression::DotAccess {
++            expression: Box::new(Expression::Identifier {
++                value: package_id.into(),
++                ty: Type::ImportNamespace(package_id.into()),
++                span,
++                resolution: IdentifierResolution::Unresolved,
++            }),
++            member: member.into(),
++            ty: definition.ty.clone(),
++            span,
++            resolution: DotAccessResolution::PackageMember {
++                definition: Some(qualified_name.clone()),
++            },
++        })
++    }
++
++    fn infer_field_default_sites<K>(
++        &mut self,
++        store: &Store,
++        generics: &[Generic],
++        sites: Vec<PendingFieldDefault<K>>,
++    ) -> Vec<InferredFieldDefault<K>> {
++        self.with_scope(|this| {
++            this.put_in_scope(generics);
++            let mut ctx = InferCtx::new(this, store);
++            sites
++                .into_iter()
++                .map(|(key, declaration_reference, default, expected_ty)| {
++                    if let Some(declaration_reference) = declaration_reference {
++                        // Preserve the referenced constant's declared type and
++                        // record its source-level use before storing the
++                        // ownership-independent materialized expression.
++                        let _ = ctx.infer_field_default(*declaration_reference, &expected_ty);
++                    }
++                    let inferred = ctx.infer_field_default(*default, &expected_ty);
++                    let mut folder = FreezeFolder::new(&ctx.env, store);
++                    let frozen = folder
++                        .freeze_items(vec![inferred])
++                        .pop()
++                        .expect("one field default was frozen");
++                    (key, Box::new(frozen))
++                })
++                .collect()
++        })
++    }
++
++    fn reject_typedef_defaults(&mut self, store: &Store, fields: &StructFields) -> bool {
++        if !self.is_d_lis(store) {
++            return false;
++        }
++        let mut found = false;
++        for field in fields {
++            if let Some(default) = &field.default {
++                found = true;
++                self.sink.push(diagnostics::infer::field_default_in_typedef(
++                    default.get_span(),
++                ));
++            }
++        }
++        found
++    }
++
++    fn clear_struct_defaults(&self, store: &mut Store, qualified_name: &Symbol) {
++        if let Some(Definition {
++            body: DefinitionBody::Struct { fields, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        {
++            for field in fields {
++                field.default = None;
++            }
++        }
++    }
++
++    fn clear_enum_defaults(&self, store: &mut Store, qualified_name: &Symbol) {
++        if let Some(Definition {
++            body: DefinitionBody::Enum { variants, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        {
++            for variant in variants {
++                let fields = match &mut variant.fields {
++                    VariantFields::Unit => continue,
++                    VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++                };
++                for field in fields {
++                    field.default = None;
++                }
++            }
++        }
++    }
++

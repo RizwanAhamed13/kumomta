@@ -1,0 +1,15 @@
+2026-09-13T04:59:14+05:30
+arch
+tailscale0       UNKNOWN        100.105.254.33/32 fd7a:115c:a1e0::6331:fe22/128 fe80::a358:b5ef:6484:2148/64 
+/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane
+Filesystem                  1B-blocks         Used    Available Use% Mounted on
+/dev/mapper/omarchy_root 835832512512 273766203392 561337974784  33% /home
+TARGET SOURCE                           FSTYPE OPTIONS
+/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home
+/mnt/ssd/docker 29.7.2
+TARGET SOURCE                       FSTYPE OPTIONS
+/      /dev/mapper/omarchy_root[/@] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=256,subvol=/@
+bccf67f1921a7bbc4e26c9aa1fbefd4dbc3d74e0
+1875c53276fcf0c61b03f79d4187918e520e77dca50a0d9f62c1603798cee753  /home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/input/problem.md
+dc060ecd16224ad01cdb8d7bafe89230e477446a
+2d46c9ea618ec0eacbdf95317ff593f059cb30c5143209115372efeb6038925a  /home/admin/olympus-work/fastlane-dogfood-20260912/lisette/input/problem.md

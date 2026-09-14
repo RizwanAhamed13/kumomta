@@ -1,0 +1,18 @@
+{
+  "name": "shipd-fastlane",
+  "version": "1.0.0+codex.20260912162528",
+  "description": "Shipd artifact delivery workflow distilled from accepted cases and iteration history, with mandatory local quality evidence before upload, coverage checks and usage checkpoints.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Shipd Fastlane",
+    "shortDescription": "Fewer Shipd review cycles; faster proven artifacts.",
+    "longDescription": "A stage-specific companion to Olympus Forge with historical accepted patterns, 195 searchable lesson records, mandatory local quality evidence before upload, public-contract coverage checks, artifact staleness tracking, remote runtime guidance and usage checkpoints.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use Shipd Fastlane to resume this case at its first unproven stage, retrieve relevant lessons, and deliver the next complete artifact gate within my usage cap."
+  }
+}

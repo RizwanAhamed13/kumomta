@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "case_id": null,
+  "repository_commit": null,
+  "started_at": null,
+  "stage_completed_at": null,
+  "stage": null,
+  "artifact_set_id": null,
+  "artifact_revisions": null,
+  "wall_seconds": null,
+  "remote_build_seconds": null,
+  "remote_test_seconds": null,
+  "platform_equivalent_seconds_before": null,
+  "platform_equivalent_seconds_after": null,
+  "cache_conditions_before": null,
+  "cache_conditions_after": null,
+  "first_attempt_four_state_pass": null,
+  "paid_gate_attempts": [],
+  "platform_tokens_spent": null,
+  "codex_usage_checkpoints": [],
+  "repeated_failure_families": {},
+  "rollout": {
+    "total": null,
+    "infrastructure_invalid": null,
+    "behaviorally_valid": null,
+    "genuine_passes": null,
+    "false_positives": null
+  },
+  "auto_review_approved": null,
+  "manager_accepted": null,
+  "acceptance_receipt": null,
+  "note": "Unknown values remain null. Distinguish local completion, compatibility coverage and upload readiness. Preserve first outcomes and frozen bytes; phases may overlap and must not be blindly summed. Compare like-for-like cases; no synthetic speedup or success rate.",
+  "test_adequacy": {
+    "patch_stage": null,
+    "test_only_added_loc": null,
+    "fixture_runner_added_loc": null,
+    "expected_cases": null,
+    "discovered_cases": null,
+    "executed_cases": null,
+    "skipped_cases": null,
+    "applicable_cells": null,
+    "witnessed_cells": null,
+    "required_scenarios": null,
+    "witnessed_scenarios": null,
+    "changed_production_line_coverage": {
+      "covered": null,
+      "total": null,
+      "receipt": null,
+      "added_lines": null,
+      "mapped_executable_lines": null,
+      "unmapped_added_lines": null,
+      "uncovered_mapped_lines": null,
+      "by_selection": {
+        "existing": {
+          "covered": null,
+          "mapped": null,
+          "receipt": null
+        },
+        "fresh_feature": {
+          "covered": null,
+          "mapped": null,
+          "receipt": null
+        },
+        "fresh_adjacent": {
+          "covered": null,
+          "mapped": null,
+          "receipt": null
+        },
+        "combined_union": {
+          "covered": null,
+          "mapped": null,
+          "receipt": null
+        }
+      }
+    },
+    "changed_production_branch_coverage": {
+      "covered": null,
+      "total": null,
+      "receipt": null,
+      "unavailable_reason": null
+    },
+    "critical_probes": {
+      "behaviorally_killed": null,
+      "survived": null,
+      "invalid": null,
+      "receipt": null,
+      "equivalent_excluded": null,
+      "initial_receipt": null,
+      "revised_receipts": [],
+      "behavioral_triage_receipt": null
+    },
+    "unresolved_obligations": []
+  },
+  "workflow_mode": null,
+  "completion_states": {
+    "local_workflow": {
+      "status": null,
+      "criteria": [],
+      "unresolved": []
+    },
+    "compatibility_coverage": {
+      "status": null,
+      "required_inventory_sha256": null,
+      "executed": null,
+      "unresolved_exclusions": []
+    },
+    "platform_upload_readiness": {
+      "status": null,
+      "live_panel_receipt": null,
+      "unknown_private_gates": [],
+      "not_run_hosted_gates": []
+    }
+  },
+  "exposure": {
+    "permitted_inputs": [],
+    "metadata_and_generic_exposure": [],
+    "withheld_sources": [],
+    "first_holdout_read_at": null,
+    "blindness_certified": false,
+    "first_holdout_read_receipt": null,
+    "first_holdout_read_time_kind": null,
+    "bounds": {
+      "not_read_as_of": null,
+      "read_by": null,
+      "evidence": []
+    },
+    "first_archive_run_at": null,
+    "timestamp_note": "Keep exact read time null without an explicit receipt. A transfer, preflight, identity inspection, archive outcome, or file mtime is a different event. Retain its kind and source; use justified bounds instead of inventing an exact time."
+  },
+  "usage_policy": {
+    "maximum_percent": null,
+    "stop_percent": null,
+    "explicit_no_cap": false,
+    "authorization_receipt": null,
+    "duration": null
+  },
+  "first_outcomes": [],
+  "iteration_counts": {
+    "production": null,
+    "test_fixture": null,
+    "harness": null,
+    "environment": null,
+    "packaging": null,
+    "post_holdout": null
+  },
+  "freeze_milestones": {
+    "provisional": null,
+    "first_feature_pass": null,
+    "first_complete": null,
+    "later_revisions": [],
+    "historical_original_snapshots": []
+  },
+  "phase_seconds": {
+    "dependency_build": null,
+    "image_build": null,
+    "image_export_unpack": null,
+    "runtime_compile": null,
+    "test_execution": null,
+    "queue_wait": null,
+    "thermal_pause": null
+  },
+  "execution_integrity": {
+    "individual_receipts": [],
+    "raw_events_reconciled": null,
+    "complete_partition_receipt": null,
+    "source_manifest_sha256": null,
+    "binary_identities": [],
+    "native_adapter_limitations": []
+  },
+  "first_outcomes_note": "Append immutable records with phase, revision, command, native exit, reporting exit, discovered/executed/passed/failed/error/skipped counts, classification, elapsed seconds and hashed receipt; do not replace an initial failure with a repaired pass.",
+  "freeze_milestones_note": "For new freezes record UTC time, manifest SHA-256 and verified transfer receipt. First complete follows all agreed own validation; provisional and first-feature-pass are distinct. Preserve historical_original_snapshots with their original label, timestamp and receipt even if an old first-complete label preceded validation. Do not relabel old bytes or manufacture a new validated freeze. Unknown event times remain null; validation completion has its own receipt.",
+  "validation_milestones": {
+    "own_validation_completed": {
+      "at_utc": null,
+      "receipt": null,
+      "agreed_criteria": [],
+      "unresolved": []
+    }
+  }
+}

@@ -1,0 +1,26 @@
+diff --git a/crates/semantics/src/checker/freeze.rs b/crates/semantics/src/checker/freeze.rs
+@@ -294,11 +294,31 @@ impl<'a> FreezeFolder<'a> {
++            Expression::Struct { fields, .. } => {
++                for field in fields {
++                    if let Some(default) = &mut field.default {
++                        self.freeze_expr(default);
++                    }
++                }
++            }
++
++            Expression::Enum { variants, .. } => {
++                for variant in variants {
++                    let fields = match &mut variant.fields {
++                        VariantFields::Unit => continue,
++                        VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++                    };
++                    for field in fields {
++                        if let Some(default) = &mut field.default {
++                            self.freeze_expr(default);
++                        }
++                    }
++                }
++            }
++
+-            | Expression::Enum { .. }
+-            | Expression::Struct { .. }

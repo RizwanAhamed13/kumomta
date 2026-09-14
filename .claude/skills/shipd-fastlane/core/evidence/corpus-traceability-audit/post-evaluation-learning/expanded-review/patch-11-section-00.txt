@@ -1,0 +1,19 @@
+diff --git a/scylla/src/client/caching_session.rs b/scylla/src/client/caching_session.rs
+@@ -1,6 +1,7 @@
++use crate::client::paging_continuation::PagingContinuation;
+@@ -136,6 +137,21 @@ where
++    /// Does the same thing as [`Session::execute_single_page_with_affinity`]
++    /// but uses the prepared statement cache.
++    pub async fn execute_single_page_with_affinity(
++        &self,
++        query: impl Into<Statement>,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let query = query.into();
++        let prepared = self.add_prepared_statement_owned(query).await?;
++        self.session
++            .execute_single_page_with_affinity(&prepared, values, continuation)
++            .await
++    }
++

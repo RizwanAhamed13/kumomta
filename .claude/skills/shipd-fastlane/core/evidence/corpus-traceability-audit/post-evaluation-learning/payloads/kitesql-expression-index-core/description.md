@@ -1,0 +1,7 @@
+Extend `CREATE INDEX` so a non-unique index may use addition or subtraction of two `INTEGER` columns as its sole key or as the second key after one ordinary `INTEGER` column. Reject expression keys in unique indexes, in a leading multi-key position, in indexes with more than two keys, or with other forms or operand types.
+
+Backfill existing rows, retain duplicate keys, maintain them on insert, update, and delete, and persist definitions across close and reopen. NULL changes to either operand must remove or restore its non-NULL key; NULL-predicate index use is not required. Direct, unaliased predicates on the complete expression must use the applicable single-key index for equality and strict or inclusive ranges, including constant-left comparisons. For two-key indexes, the leading key must have an equality constraint before applying an equality or range constraint to the expression key. The resulting scan must constrain both stored key positions rather than use only the leading key and leave the expression as a residual filter. `EXPLAIN` must contain `IndexScan`.
+
+Match keys by complete structure and referenced-column identities; do not substitute a dependency column, different expression, or reversed operands. Selecting source columns through an expression predicate must not make the scan covering.
+
+Trailing expression use without leading-key equality is not required. Literals, casts, functions, correlated queries, and schema changes are outside this task.

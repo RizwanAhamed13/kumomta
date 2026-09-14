@@ -1,0 +1,7 @@
+{"utc": "2026-09-12T22:00:59.214473+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "attached", "pre_existing_paused": true}
+{"utc": "2026-09-12T22:00:59.304171+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "quota_update", "returncode": 0, "cpus": 0.5, "diagnostic": ""}
+{"utc": "2026-09-12T22:00:59.323058+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "sample", "celsius": 53.0, "paused": true}
+{"utc": "2026-09-12T22:00:59.332193+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "interrupted", "signal": 15}
+{"utc": "2026-09-12T22:00:59.332216+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed", "reason": "guard_interrupted"}
+{"utc": "2026-09-12T22:00:59.339733+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed_already_paused"}
+{"utc": "2026-09-12T22:00:59.339823+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "finished", "reason": "guard_interrupted", "wall_seconds": 0.134, "thermal_pause_seconds": 0.0, "active_elapsed_seconds": 0.134}

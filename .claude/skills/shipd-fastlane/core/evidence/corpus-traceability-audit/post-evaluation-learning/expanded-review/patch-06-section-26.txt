@@ -1,0 +1,3 @@
+diff --git a/pkgs/boots/graph/dump.dora b/pkgs/boots/graph/dump.dora
+@@ -292,6 +292,7 @@ fn dump_inst_name(inst: Inst): String {
++        Op::ShapeConst => "Const.Shape",

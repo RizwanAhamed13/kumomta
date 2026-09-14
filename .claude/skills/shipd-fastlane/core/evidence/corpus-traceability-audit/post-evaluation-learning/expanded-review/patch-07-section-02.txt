@@ -1,0 +1,4 @@
+diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs
+@@ -465,7 +465,7 @@ impl CompletionItemKind {
+-#[derive(Copy, Clone, Debug)]
++#[derive(Copy, Clone, Debug, PartialEq, Eq)]

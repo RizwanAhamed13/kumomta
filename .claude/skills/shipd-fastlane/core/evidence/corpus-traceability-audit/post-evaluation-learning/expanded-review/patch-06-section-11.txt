@@ -1,0 +1,47 @@
+diff --git a/dora-frontend/src/generator/pattern.rs b/dora-frontend/src/generator/pattern.rs
+@@ -125,6 +125,27 @@ fn destruct_pattern_inner(
++    if ty.is_trait_object() {
++        if let Some(actual_ty) = trait_object_pattern_ty(g, pattern_id) {
++            let actual_bty = g.emitter.convert_ty(g.sa, actual_ty.clone());
++            let trait_bty = g.emitter.convert_ty(g.sa, ty.clone());
++            let idx = g.builder.add_const_trait(trait_bty, actual_bty.clone());
++            let matched = g.alloc_temp(BytecodeType::Bool);
++            let extracted = g.alloc_temp(actual_bty);
++            let mismatch = pck.ensure_label(&mut g.builder);
++
++            g.builder.emit_test_trait_object_type(matched, value, idx);
++            g.builder.emit_jump_if_false(matched, mismatch);
++            g.builder
++                .emit_load_trait_object_value(extracted, value, idx);
++            destruct_pattern_inner(g, pck, pattern_id, extracted, actual_ty);
++
++            g.free_temp(extracted);
++            g.free_temp(matched);
++            return;
++        }
++    }
++
+@@ -349,6 +370,29 @@ fn destruct_pattern_inner(
++fn trait_object_pattern_ty(g: &AstBytecodeGen, pattern_id: PatternId) -> Option<SourceType> {
++    let pattern = g.analysis.pattern(pattern_id);
++
++    match pattern {
++        Pattern::Ident(_) | Pattern::Ctor(_) => match g.analysis.get_ident(pattern_id) {
++            Some(IdentType::Class(id, type_params)) => Some(SourceType::Class(id, type_params)),
++            Some(IdentType::Struct(id, type_params)) => Some(SourceType::Struct(id, type_params)),
++            Some(IdentType::EnumVariant(id, type_params, _)) => {
++                Some(SourceType::Enum(id, type_params))
++            }
++            Some(IdentType::Const(id)) => Some(g.sa.const_(id).ty()),
++            _ => None,
++        },
++        Pattern::LitBool(_)
++        | Pattern::LitChar(_)
++        | Pattern::LitFloat(_)
++        | Pattern::LitInt(_)
++        | Pattern::LitStr(_) => Some(g.analysis.ty(pattern_id)),
++        Pattern::Tuple(_) => Some(g.analysis.ty(pattern_id)),
++        _ => None,
++    }
++}
++

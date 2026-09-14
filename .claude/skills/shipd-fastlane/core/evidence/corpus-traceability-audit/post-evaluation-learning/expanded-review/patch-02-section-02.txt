@@ -1,0 +1,30 @@
+diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs
+@@ -205,6 +205,13 @@ impl<'a> Formatter<'a> {
++            let field_definition = match &field.default {
++                Some(default) => field_definition
++                    .append(" = ")
++                    .append(self.expression(default)),
++                None => field_definition,
++            };
++
+@@ -219,8 +226,11 @@ impl<'a> Formatter<'a> {
+-            let ann_span = field.annotation.get_span();
+-            prev_anchor = Some(ann_span.byte_offset + ann_span.byte_length);
++            let trailing_span = field
++                .default
++                .as_deref()
++                .map_or_else(|| field.annotation.get_span(), Expression::get_span);
++            prev_anchor = Some(trailing_span.byte_offset + trailing_span.byte_length);
+@@ -325,10 +335,16 @@ impl<'a> Formatter<'a> {
+-                    .map(|f| {
+-                        Document::string(f.name.to_string())
++                    .map(|field| {
++                        let definition = Document::string(field.name.to_string())
+-                            .append(Self::annotation(&f.annotation))
++                            .append(Self::annotation(&field.annotation));
++                        match &field.default {
++                            Some(default) => {
++                                definition.append(" = ").append(self.expression(default))
++                            }
++                            None => definition,
++                        }

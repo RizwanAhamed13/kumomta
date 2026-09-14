@@ -1,0 +1,74 @@
+[
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6/base-skip-repair/audit.md",
+    "sha256": "2f639314f84ac13b7a51e25a18a038168907bd564c630460cd3b1a81c4640dbd",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079624+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/alignment.md",
+    "sha256": "e1069bacf64f3a81101ae06709d15ea6bb2fcbc003bf7606c60a6d8c19b030a3",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079684+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/fp-master-rerun.md",
+    "sha256": "728414f0ba68df411d0a89e8040bfa7008a8ccff85bc3a9806d047612f72b842",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079729+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/audit.md",
+    "sha256": "36811452107d28cb5aa76fb5b5f050c49f7152f1c5f2f6949fcc92532daa7565",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079773+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/audit.md",
+    "sha256": "40185b6a4be5a2b5dd3d6993f97248c1553bcbb3603a81bd1dbd589fce89162d",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079812+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/verify-solution-base-skip-failure.md",
+    "sha256": "545408f9e50e1acf37c32f5dfea6b6961283baa0a0ff026d0a23d61d4b3c79ad",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079850+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0/review-portability/audit.md",
+    "sha256": "f3a604c5e196ed4d60f5ea08d1cf147e8d3998192c6748a47515771ae1114a5c",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079889+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/audit.md",
+    "sha256": "6834461944e31d246b6f478872f700f21f563b5cc350431f5bcbb4acf375aa4e",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079926+00:00"
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/audit.md",
+    "sha256": "ccae39aa9f1e1fdbf6e9b76e09b4efcaf2866ed209806d7ff947babde03c0f7e",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079967+00:00"
+  },
+  {
+    "path": "kitesql-expression-index-core/description.md",
+    "sha256": "4c3ef490b1528c532fc2ffc02310e9722aa662f04cf07e29ee57d5897073fe81",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.079991+00:00"
+  },
+  {
+    "path": "kitesql-expression-index-scoped/description.md",
+    "sha256": "e565dc86b46fedabd4853a5dc83dc409b4b5979b4832bf0ce617c7e395b75444",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.080015+00:00"
+  },
+  {
+    "path": "kitesql-expression-index-v5-mixed-types/description.md",
+    "sha256": "1875c53276fcf0c61b03f79d4187918e520e77dca50a0d9f62c1603798cee753",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:45.080039+00:00"
+  }
+]

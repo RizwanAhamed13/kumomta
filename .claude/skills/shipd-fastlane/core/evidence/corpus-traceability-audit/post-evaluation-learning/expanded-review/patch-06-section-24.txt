@@ -1,0 +1,10 @@
+diff --git a/pkgs/boots/codegen/x64.dora b/pkgs/boots/codegen/x64.dora
+@@ -1261,6 +1261,14 @@ impl CodeGen for CodeGenX64 {
++    fn emit_shape_const(inst: Inst) {
++        let register = inst.get_location_data().get_output().get_register();
++        let key = iface::get_class_shape_key_for_trait_object(
++            inst.get_trait_object_info(),
++        );
++        self.load_shape(register, REG_TEMP, key);
++    }
++

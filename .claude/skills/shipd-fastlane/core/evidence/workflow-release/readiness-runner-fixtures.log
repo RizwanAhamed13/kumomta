@@ -1,0 +1,14 @@
+..........................F.
+======================================================================
+FAIL: test_xml_control_characters_are_escaped_without_changing_raw_events (__main__.RunnerTest.test_xml_control_characters_are_escaped_without_changing_raw_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/admin/olympus-work/fastlane-dogfood-20260912/post-evaluation-readiness-repair/test_readiness_runner.py", line 212, in test_xml_control_characters_are_escaped_without_changing_raw_events
+    self.assertIn(r"\\u001b[31m",xml_stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '\\\\u001b[31m' not found in 'ANSI: \\x1b[31m bad \\x00 \\x0b \\ud800 \\ufffe; unicode: é 🧪\\n'
+
+----------------------------------------------------------------------
+Ran 28 tests in 12.504s
+
+FAILED (failures=1)

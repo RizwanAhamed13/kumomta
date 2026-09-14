@@ -1,0 +1,25 @@
+# Current general documentation and unknown panel fields
+
+The authenticated Olympus Docs observations recorded on September 13, 2026 at 00:31–00:33 UTC cover the [problem requirements](https://shipd.ai/quests/olympus/docs/problem) and [process](https://shipd.ai/quests/olympus/docs/process). The normalized private receipt is live-docs-requirements-20260913.json, SHA-256 26533b0754d5d7950dd1b83e6b30c8c2bae523c76a65595c99a7ef3e48c11654. It is a sourced observation, not an exact page export or a complete submission-specific panel contract. Refresh the applicable panel before a live action; retain this dated evidence separately from the historical lesson corpus.
+
+## Artifact and execution rules
+
+Every test selected by new mode must fail on the base commit for the intended feature-dependent reason and pass with the solution. Real affected-area existing regressions must pass before and after. Keep baseline-valid safety and compatibility checks in an explicit disjoint base partition; reconcile complete discovery across partitions. A selected matrix that contains baseline-valid new cases is not Verify Tests readiness. Record compiler or setup errors honestly, preserve failing test identities and assertion output, and do not use fail-fast. Candidate-language diagnostic tests can exercise public behavior when the harness executes and checks the expected diagnostic; inability to build the harness is not that evidence.
+
+Exclude tests only with grounded flaky, network-dependent or preexisting-failure evidence. A valid test broken by the solution is a regression to repair. A completeness gate that reconciles selected partitions does not establish whether all omissions are fair or authorized.
+
+The submitted description is natural maintainer-style prose, leading with the ask. Avoid headings, requirement bullet lists, code presented as the description, and unnecessary internal implementation prescriptions. Keep tested obligations explicit or discoverable under the current contract. These description constraints do not prohibit structured private requirement maps or evidence reports.
+
+Patches must avoid challenge/quest/olympus filenames, quest-referencing comments, and Shipd/Olympus/mars leaks. An approved example in the docs contains conflicting names; preserve the observation and follow the normative rule rather than treating the example as an exemption. Review context before classifying repository-native terminology as a leak.
+
+Use the allowed language-specific public.ecr.aws/d3j8x8q7/olympus-base-<language>:latest image, WORKDIR /app and CMD ["/bin/bash"]. Record resolved image identity in evidence; do not add a digest to FROM. Install dependencies during image build and run with --network none. Build the image without solution.patch or test.patch. The docs forbid running tests during image build and literally say no test commands in a RUN step. Prefer a compilation command such as cargo build --tests when equivalent; do not assume cargo test --no-run satisfies that wording. Runtime patches must rebuild every affected component. The narrative local-review order applies tests before image build; the explicit patch-free build requirement remains authoritative.
+
+## Gate order and status
+
+The observed process is prechecks → Scope Gate → Build Image → quality checks → agent rollouts → false-positive review of settled passing runs → Auto Review → submit. Quality checks include Verify Tests, Verify Solution, Verify Flakiness, Test Quality, Task Quality, Solution Quality and Description Quality. Flakiness requires stable outcomes across repeated suites with and without the solution. False-positive review covers all passing runs; one false positive fails that criterion.
+
+Auto Review completion is required by the submission criteria. The process text says its verdict itself does not block submission. Preserve the actual verdict and unresolved findings, and distinguish the platform's submission behavior from this workflow's stricter local readiness requirements. Artifact changes, check reruns and changes to agent runs stale Auto Review. Content edits stale their dependent checks and rollouts; Dockerfile edits require a matching rebuilt image. Freeze each reviewed revision without overwriting earlier receipts.
+
+Required rollout counts, assignment LOC thresholds, flakiness repetition counts, current costs, private grader prompts and the private similarity corpus remain unknown from this capture. Use current panel values where available. An explicit Forge fallback remains a local workflow choice with attribution, not a value asserted by these docs. Quick Check is a paid agent run; it needs the user's authorization for that gate. No paid action was started during this capture.
+
+For an offline fresh reconstruction benchmark, report these as current general constraints and record any package gap. Unknown private behavior remains UNPROVEN and unrun hosted checks remain NOT_RUN. Local workflow completion, full compatibility evidence and platform upload readiness are separate claims; these unknowns do not authorize or require paid checks to finish the requested local work.

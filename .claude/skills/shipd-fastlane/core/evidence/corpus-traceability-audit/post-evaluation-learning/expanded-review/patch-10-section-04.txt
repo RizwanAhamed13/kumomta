@@ -1,0 +1,75 @@
+diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs
+@@ -194,47 +194,54 @@ pub fn completions(
+-    let (ctx, analysis) = &CompletionContext::new(db, position, config, trigger_character)?;
++    let contexts = CompletionContext::new_all(db, position, config, trigger_character);
++    if contexts.is_empty() {
++        return None;
++    }
+-        if let CompletionAnalysis::NameRef(NameRefContext {
+-            kind:
+-                NameRefKind::Path(
+-                    path_ctx @ PathCompletionCtx { kind: PathKind::Vis { has_in_token }, .. },
+-                ),
+-            ..
+-        }) = analysis
+-        {
+-            completions::vis::complete_vis_path(&mut completions, ctx, path_ctx, has_in_token);
++        for (ctx, analysis) in &contexts {
++            if let CompletionAnalysis::NameRef(NameRefContext {
++                kind:
++                    NameRefKind::Path(
++                        path_ctx @ PathCompletionCtx {
++                            kind: PathKind::Vis { has_in_token }, ..
++                        },
++                    ),
++                ..
++            }) = analysis
++            {
++                completions::vis::complete_vis_path(&mut completions, ctx, path_ctx, has_in_token);
++            }
+-    // when the user types a bare `_` (that is it does not belong to an identifier)
+-    // the user might just wanted to type a `_` for type inference or pattern discarding
+-    // so try to suppress completions in those cases
+-    if trigger_character == Some('_')
+-        && ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE
+-        && let CompletionAnalysis::NameRef(NameRefContext {
+-            kind:
+-                NameRefKind::Path(
+-                    path_ctx @ PathCompletionCtx {
+-                        kind: PathKind::Type { .. } | PathKind::Pat { .. },
+-                        ..
+-                    },
+-                ),
+-            ..
+-        }) = analysis
+-        && path_ctx.is_trivial_path()
+-    {
+-        return None;
+-    }
++    let mut unsuppressed_context = false;
++    for (ctx, analysis) in &contexts {
++        // When the user types a bare `_` (that is, it does not belong to an identifier),
++        // they may intend type inference or pattern discarding. Suppress only that branch.
++        if trigger_character == Some('_')
++            && ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE
++            && let CompletionAnalysis::NameRef(NameRefContext {
++                kind:
++                    NameRefKind::Path(
++                        path_ctx @ PathCompletionCtx {
++                            kind: PathKind::Type { .. } | PathKind::Pat { .. },
++                            ..
++                        },
++                    ),
++                ..
++            }) = analysis
++            && path_ctx.is_trivial_path()
++        {
++            continue;
++        }
++        unsuppressed_context = true;
+-    {
+-
+@@ -271,6 +278,9 @@ pub fn completions(
++    if !unsuppressed_context {
++        return None;
++    }

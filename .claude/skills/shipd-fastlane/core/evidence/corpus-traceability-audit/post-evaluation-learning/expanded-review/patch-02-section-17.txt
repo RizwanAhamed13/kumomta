@@ -1,0 +1,3 @@
+diff --git a/crates/semantics/src/store.rs b/crates/semantics/src/store.rs
+@@ -700,6 +700,7 @@ mod closed_domain_tests {
++                    default: None,

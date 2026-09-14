@@ -1,0 +1,98 @@
+diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs
+@@ -205,6 +205,13 @@ impl<'a> Formatter<'a> {
++            let field_definition = match &field.default {
++                Some(default) => field_definition
++                    .append(" = ")
++                    .append(self.expression(default)),
++                None => field_definition,
++            };
++
+@@ -219,8 +226,11 @@ impl<'a> Formatter<'a> {
+-            let ann_span = field.annotation.get_span();
+-            prev_anchor = Some(ann_span.byte_offset + ann_span.byte_length);
++            let trailing_span = field
++                .default
++                .as_deref()
++                .map_or_else(|| field.annotation.get_span(), Expression::get_span);
++            prev_anchor = Some(trailing_span.byte_offset + trailing_span.byte_length);
+@@ -323,17 +333,77 @@ impl<'a> Formatter<'a> {
+-                let field_docs: Vec<_> = fields
++                let mut entries: Vec<SiblingEntry<'a>> = Vec::with_capacity(fields.len());
++                let mut prev_anchor = None;
++                for field in fields {
++                    let split = match prev_anchor {
++                        Some(anchor) => self
++                            .comments
++                            .take_split_by_newline_after(anchor, field.name_span.byte_offset),
++                        None => SplitComments::leading(
++                            self.comments
++                                .take_comments_before(field.name_span.byte_offset),
++                        ),
++                    };
++                    if let Some(trailing) = split.trailing
++                        && let Some(last) = entries.last_mut()
++                    {
++                        last.trailing = Some(trailing);
++                    }
++
++                    let definition = Document::string(field.name.to_string())
++                        .append(": ")
++                        .append(Self::annotation(&field.annotation));
++                    let definition = match &field.default {
++                        Some(default) => definition.append(" = ").append(self.expression(default)),
++                        None => definition,
++                    };
++                    entries.push(SiblingEntry {
++                        leading: split.leading,
++                        doc: definition,
++                        trailing: None,
++                        has_blank_above: split.has_blank_before_leading,
++                    });
++
++                    let trailing_span = field
++                        .default
++                        .as_deref()
++                        .map_or_else(|| field.annotation.get_span(), Expression::get_span);
++                    prev_anchor = Some(trailing_span.end());
++                }
++
++                let has_comments = entries
+-                    .map(|f| {
+-                        Document::string(f.name.to_string())
+-                            .append(": ")
+-                            .append(Self::annotation(&f.annotation))
+-                    })
+-                    .collect();
+-                name.append(" { ")
+-                    .append(join(field_docs, Document::str(", ")))
+-                    .append(" },")
++                    .any(|entry| entry.leading.is_some() || entry.trailing.is_some());
++                if !has_comments {
++                    let field_docs: Vec<_> = entries.into_iter().map(|entry| entry.doc).collect();
++                    return name
++                        .append(" { ")
++                        .append(join(field_docs, Document::str(", ")))
++                        .append(" },");
++                }
++
++                let mut body = Document::Sequence(vec![]);
++                for (index, entry) in entries.into_iter().enumerate() {
++                    if index > 0 {
++                        body = body.append(Document::Newline);
++                        if entry.has_blank_above {
++                            body = body.append(Document::Newline);
++                        }
++                    }
++                    if let Some(leading) = entry.leading {
++                        body = body.append(leading.force_break()).append(Document::Newline);
++                    }
++                    body = body.append(entry.doc).append(",");
++                    if let Some(trailing) = entry.trailing {
++                        body = body.append(" ").append(trailing);
++                    }
++                }
++                name.append(" {")
++                    .append(Document::Newline.append(body).nest(INDENT_WIDTH))
++                    .append(Document::Newline)
++                    .append("},")
++                    .force_break()

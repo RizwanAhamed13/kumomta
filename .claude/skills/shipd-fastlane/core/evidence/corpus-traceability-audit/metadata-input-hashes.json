@@ -1,0 +1,38 @@
+{
+  "at": "2026-09-12T23:53:48.046106+00:00",
+  "origin": "/Users/rizwanahamed/Documents/Shipd/output/shipd-fastlane-audit-20260912",
+  "files": {
+    "inventory.json": {
+      "sha256": "bf31b1e361279dcc15ca1cdef7119999fe9903e129905b31dac996ad0d886e6e",
+      "bytes": 3328525
+    },
+    "summary.json": {
+      "sha256": "a427adf03cc7c6a1b5c3f14e770777471736443f0206d07c6eace73c1c123083",
+      "bytes": 594
+    },
+    "cases.json": {
+      "sha256": "8752d831d0a7d7314bc31a4a96c93d5dd835639b8539afe64f43e2594572fc0e",
+      "bytes": 511488
+    },
+    "archives.json": {
+      "sha256": "8447806b5d888f347d0b5be7ef412812750b3751d89526b55a0e76b47af64ab8",
+      "bytes": 367032
+    },
+    "revisions.json": {
+      "sha256": "29da71cc7a80d0aaa53eba5c2d025ae1a2db5acd887d904078ad75c924ba453c",
+      "bytes": 864035
+    },
+    "errors.json": {
+      "sha256": "8256ae2286ab8840b80f1eef46011205c64bef95104b3e9cff5227d8b162c05b",
+      "bytes": 139
+    },
+    "skipped.json": {
+      "sha256": "d1815f1b01a6b8f023c62690ea62e8aac69cfb05a2ae17f0beae547eb39972a7",
+      "bytes": 86855
+    },
+    "REPORT.md": {
+      "sha256": "2eba4664831656338ad11f22957f3bb24eaa21b33055b50da0a1b59d653b5b7d",
+      "bytes": 13496
+    }
+  }
+}

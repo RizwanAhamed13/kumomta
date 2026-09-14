@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Artifact Builder"
+  short_description: "Build aligned Olympus challenge artifacts"
+  default_prompt: "Use $olympus-artifact-builder to complete the full reference solution, prove executable hardness against every accepted task, freeze problem and solution, build reduced Scope Gate tests, then expand tests only after the gate."

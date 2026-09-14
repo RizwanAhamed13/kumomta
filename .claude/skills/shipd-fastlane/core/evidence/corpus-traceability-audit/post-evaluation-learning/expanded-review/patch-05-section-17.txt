@@ -1,0 +1,7 @@
+diff --git a/src/planner/arena.rs b/src/planner/arena.rs
+@@ -528,7 +528,8 @@ impl MetaArena for PlanArena<'_> {
+-    use crate::catalog::{ColumnCatalog, ColumnDesc};
++    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRef};
++    use crate::expression::ScalarExpression;
+@@ -551,6 +552,7 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],

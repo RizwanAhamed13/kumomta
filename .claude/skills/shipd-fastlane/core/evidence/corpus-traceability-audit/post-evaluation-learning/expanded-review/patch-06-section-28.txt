@@ -1,0 +1,3 @@
+diff --git a/pkgs/boots/location.dora b/pkgs/boots/location.dora
+@@ -113,6 +113,7 @@ impl LocationAnnotation {
++            | Op::ShapeConst

@@ -1,0 +1,4 @@
+diff --git a/pkgs/boots/bytecode/instruction.dora b/pkgs/boots/bytecode/instruction.dora
+@@ -70,6 +70,8 @@ pub enum BytecodeInstruction {
++    TestTraitObjectType(BytecodeRegister, BytecodeRegister, ConstPoolId),
++    LoadTraitObjectValue(BytecodeRegister, BytecodeRegister, ConstPoolId),

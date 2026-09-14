@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-13T00:27:50.262612+00:00",
+  "phase": "source_metadata_only_doc_followup",
+  "host": "arch",
+  "workspace": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "no_candidate_execution": true,
+  "inputs": {
+    "README.md": "f4c07b552aa52866b88c0f1018154fff662074aa6b0eb84b1636271efecb9fff",
+    "skills/shipd-fastlane/references/provenance.md": "c11e5d919a137ba15748b72c7c958ece87109411c52221622098d7d11f3b52a4",
+    "knowledge/accepted-cases.json": "114361b20ecc4618e9c94d45de7917b125cd85eab6cc9940ad90e936c4c91287",
+    "evidence/corpus-traceability-audit/post-evaluation-learning/transfer-verification.json": "8426d35c15bf5b8f8e0022fa49210a57938ededd20adf85e37ec36f59f07cc0d"
+  }
+}

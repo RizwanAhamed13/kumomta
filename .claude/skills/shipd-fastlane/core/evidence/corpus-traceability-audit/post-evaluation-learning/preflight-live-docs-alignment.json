@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-13T00:37:51.934310+00:00",
+  "phase": "source-only-docs-live-contract-alignment",
+  "hostname": "arch",
+  "arch": "x86_64",
+  "cwd": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "disk": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  260G  519G  34% /home",
+  "mount": "/dev/mapper/omarchy_root[/@home] btrfs /home rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+  "docker": "Docker version 29.7.2, build a7dcaa6fdb",
+  "input": {
+    "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/live-docs-requirements-20260913.json",
+    "sha256": "26533b0754d5d7950dd1b83e6b30c8c2bae523c76a65595c99a7ef3e48c11654"
+  }
+}

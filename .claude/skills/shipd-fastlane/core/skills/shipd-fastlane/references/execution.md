@@ -1,0 +1,63 @@
+# Evidence reuse, runtime and budget
+
+## Check usage using the actual client
+
+Follow the [portable usage policy](../../../PORTABILITY.md). These distributions impose no workflow percentage cap. Honor a cap and reserve only when explicitly supplied by the user, and bind its measurement and duration to the current task. Use available provider measurements honestly; unknown usage blocks a spend-dependent phase only when a required cap cannot be verified.
+
+The unchanged `fastlane.py budget` command accepts Codex usage JSON only. It cannot measure or enforce this app's quota. Do not invent a Codex tool or translate unrelated provider data into that schema. Keep account limits, task-specific overrides, global settings and paid Shipd authorization separate.
+
+## Fingerprint the evidence inputs
+
+Use an actual observed environment record based on [environment.example.json](../../../assets/environment.example.json). Record image digest separately from the submitted `FROM`. `selection.json` must specify exact base/new selections, runner arguments, patch-application order, cache policy and relevant execution commands, including commands used for a platform-equivalent reproduction. Use [selection.example.json](../../../assets/selection.example.json) as an explicitly incomplete template. The metadata gate requires schema 1 and a complete `commands` array: each entry has a globally unique `id`, a catalog `check_id`, applicable `stages`, exact `command` text, and integer `expected_exit_code`. Give repeats separate IDs and include preparation commands in the appropriate check. Freeze this file before the run.
+
+```text
+python3 <plugin-root>/scripts/fastlane.py snapshot <canonical-artifacts> --commit <full-commit> --environment <environment.json> --selection <selection.json> --scope-tests <frozen-scope-test.patch> --output <receipt-inputs.json>
+python3 <plugin-root>/scripts/fastlane.py compare <prior-inputs.json> <current-inputs.json>
+```
+
+Preserve the corresponding passing receipt with the same component hashes, actual command, exit status, test inventory, logs, JUnit, environment and completeness. Attach the exact selection file to every executable receipt with its SHA-256 and reference it as `execution.selection_evidence`. Each actual command outcome must have the matching `id`, exact command text, expected exit and applicable stage; missing, extra or duplicate outcomes block. Legacy text selections remain hashable by the fingerprint tool, but cannot satisfy the structured quality gate. This binding catches receipt mix-ups; matching command prose still does not prove selected tests executed. Reconcile native events and complete test inventories separately. A fingerprint does not prove the command ran or succeeded. Missing metadata is unproven. Tool, SDK, runner or external input changes must appear in the environment/selection fingerprint; an unrecorded dependency invalidates reuse manually.
+
+The comparison reports stale, unknown and eligible-for-reuse local checks. It is advisory and conservative, not the live platform's cache key. Read panel status before any paid gate. Keep semantic Scope validity separate from the panel's paid staleness. Preserve frozen problem/solution and reduced Scope tests when expanding hidden tests. A changed problem, solution or repository requires revisiting Scope.
+
+## Current execution routing and storage
+
+Use `ssh -o BatchMode=yes shipd-local` (admin, hostname `arch`, Tailscale IP `100.105.254.33`) and an isolated directory under `/home/admin/olympus-work`. All code generation/editing and material computation, including plugin validation, run there. The Mac only orchestrates, reads lightweight metadata, and transfers/inspects evidence. Stop if access or identity fails; no fallback without explicit user authorization. Current user instructions override these defaults.
+
+Before each computational phase record `hostname`, `ip -brief address`, `realpath <workdir>`, `df -B1 <workdir>`, `docker info --format '{{.DockerRootDir}}'`, `findmnt -T <workdir>`, `findmnt -T <DockerRootDir>` and `lsblk -o NAME,TYPE,FSTYPE,ROTA,MOUNTPOINTS`. Resolve the actual destination and physical backing device, not its directory name. Include exact repository commit and hashes of every transferred artifact. Use checksummed transfers and compare hashes before execution and after return. Preserve this output as a hashed `preflight_evidence` attachment and copy the observed fields into `environment.preflight` and each executable receipt's `preflight`.
+
+Record a unique computational `phase_id`, timezone-aware preflight `captured_at`, `docker_available: true` only after a successful daemon query, and the observed `docker_server_version`. Put the same phase ID in `execution` and each actual command, with command `started_at`/`completed_at` timestamps. The metadata gate requires the preflight to precede each command and command intervals to lie within the receipt interval. A failed/unknown daemon query blocks executable receipts. These are recorded assertions bound to hashed logs, not independent host probes: the gate does not prove that claimed phase IDs or timestamps are truthful, impose an unrecorded freshness window, or guarantee availability remained unchanged after observation. Preserve original timestamps on reused static evidence; a new computational phase needs a new preflight.
+
+Observed 2026-09-12: `/home` is Btrfs on rotational `/dev/sda` through `/dev/mapper/omarchy_root`; Docker reports `/mnt/ssd/docker` but this resolves to the same HDD-backed root filesystem. Do not describe it as SSD-backed. `/mnt/windows` is read-only NTFS3; the existing NVMe partitions and unallocated space are untouched. Do not partition, format or change mounts as part of this workflow. Free capacity was about 588 GiB; measure it again rather than reusing that number.
+
+The metadata gate rejects `/mnt/windows` destinations, filesystem targets and recorded source paths, along with protected `nvme0n1p1` through `p4` source/backing-device records, even if other fields are complete. It does not blanket-reject another NVMe partition: a future explicitly authorized Linux mount still needs real filesystem, physical-device and authorization evidence. Lexical checks cannot resolve hidden device aliases or prove the host records truthful.
+
+For an explicitly authorized routing override, record `environment.execution_policy` with `ssh_alias`, `host`, `ip` and `workspace_root`; attach the actual user instruction as `execution.authorization_evidence`. The metadata checker accepts a complete override only with that hashed attachment. This records existing authorization and does not grant permission itself. Historical receipts retain their original routing and are not relabeled as new runs.
+
+## Optimize on the builder, with measurements
+
+1. Confirm `ssh -o BatchMode=yes shipd-local` access. Record hostname/IP, `/home/admin/olympus-work/<case>` workdir, full commit, image identity, UID/login environment, toolchain, flags and input hashes. Avoid collision with another case's caches/ports/output directories.
+2. Measure the current artifact's platform-equivalent execution from a pristine checkout before changing it. Preserve cold/warm status, build/test phase durations, per-test timings, logs and JUnit. Record the full four-state matrix: base tests on baseline PASS; new tests on baseline fail for intended missing behavior; base tests on reference PASS; new tests on reference PASS. Follow any additional matrix states required by the active Forge workflow.
+3. Optimize only a measured bottleneck: dependency hydration; repeated compilation/code generation; lock contention; process startup; irrelevant package discovery; fixed sleeps; fixture/service cost. Keep full required integration and every assertion. No speculative cache trick without an invalidation model.
+4. Move stable dependencies/reusable compilation to image build only where the platform permits. Order stable manifests before volatile source inputs. Runtime-applied solution/test patches stay outside image layers. Rematerialize every affected local component after runtime patch application; pre-patch binaries cannot answer post-patch tests. Check generated parsers with content stamps rather than trusting stale timestamps.
+5. Reuse persistent language/Docker caches with matching toolchain, flags, features, platform ABI and ownership. Use isolated state directories or clean affected packages across patch states. Lock only genuinely shared mutable preparation. At most five build jobs; serialize competing candidate builds when contention is the bottleneck.
+6. Combine compatible commands and target only required challenge packages while retaining every cross-layer integration. Use deterministic fixtures and readiness deadlines. Stream bounded progress for long remote jobs; poll no more than once per minute and stop at terminal status.
+7. Rerun the complete four-state matrix from the exact clean commit under the same measured conditions. Report before/after total duration and per-phase timings; do not compare a warm optimized run to a cold baseline without labeling that difference. Preserve variance evidence if claiming stable improvement.
+8. Transfer results and verify hashes. Compare fingerprints and list all stale Verify Solution, Test/Solution Quality, rollout/replay, false-positive, Holistic and review receipts. Local speed evidence cannot update their live status. Paid execution remains a separately authorized next gate.
+
+## Package and freeze
+
+Before each upload, run the mandatory [local quality gate](local-quality-gate.md) for the current Scope/full/final boundary. All applicable executable counterparts and rubric reviews must have current passing evidence. Require `LOCAL_EVIDENCE_GATE_PASS` from the actual artifacts and retain its result; unknown live checks, missing evidence or stale inputs block the workflow. Recheck the panel immediately before the authorized action. This local result does not replace any hosted check.
+
+One canonical four-file package plus a separate evidence manifest. Verify artifact bytes after transfer and immediately before upload. Preserve the actual Auto Review completion, verdict and exact reviewed bytes; manager acceptance is a separate state. The [current process documentation](current-general-contract.md) requires Auto Review completion but says its verdict does not block submission. This workflow still requires its local readiness findings to be resolved before upload. If a later edit is needed, create a new revision and invalidate the affected approval, never mutate the frozen package silently.
+
+## Measure workflow impact
+
+Use [metrics.example.json](../../../assets/metrics.example.json). Count artifact revisions from the first delivery-ready package, and attribute each repeat to its actual failure family. Track first-attempt local matrix and paid gate results, accepted/submitted denominator, genuine solver outcomes, false positives, platform tokens and wall time separately. Unknown values stay null. Compare similar completed cases and disclose sample sizes; nine accepted references do not establish this plugin's success rate.
+
+## Benchmark completeness and host safety
+
+Measure image build, image export/unpack, runtime compilation and actual test execution separately. Include cold/warm cache identity and thermal pause time; shared queue waits belong to end-to-end delivery time, not test runtime. A successful dev-container run does not establish a clean exported image result. A failed thermal watcher invalidates a claim of guarded execution even when tests pass.
+
+Use the [thermal safety procedure and its recorded validation limits](thermal-safety.md) for the local builder. Maintain one compute slot when the host is hot, with explicit ownership of paused workloads. Preserve stop/resume evidence and never silently switch hosts. Current task authorization can remove the workflow usage cap without changing global settings or restoring competing tasks.
+
+Before dependency hydration or an image build, run the static artifact preflight. It now screens literal language-base `:latest`, final `WORKDIR /app`, final `CMD /bin/bash`, and visible test commands in `RUN`, including `cargo test --no-run`. Use `cargo build --tests` or an appropriate build target for reusable compilation. `scripts/docker_contract.py` is a bounded screen: inspect invoked scripts, unsupported syntax, the panel-specific language, and the unpatched/offline runtime separately. A static pass is not an image or Verify Solution pass. Preserve old frozen Docker bytes and record later Docker repairs with image/runtime evidence pending.

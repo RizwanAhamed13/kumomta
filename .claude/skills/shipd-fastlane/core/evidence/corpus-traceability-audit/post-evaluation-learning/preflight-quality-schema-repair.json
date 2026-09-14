@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-09-13T00:46:46.075136+00:00",
+  "phase": "source-only-preflight-schema-repair-no-validation",
+  "host": "arch",
+  "arch": "x86_64",
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "df": "Filesystem                  1B-blocks         Used    Available Use% Mounted on\n/dev/mapper/omarchy_root 835832512512 279233912832 556121956352  34% /home",
+  "filesystem": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+  "docker_version": "29.7.2",
+  "docker_root": "/mnt/ssd/docker",
+  "input_hashes": {
+    "scripts/quality_gate.py": "1cdceaf17ab2dbf02e0459908986416946c7e186165e8d8b13801f8ecc71d143",
+    "tests/test_quality_gate.py": "90ed891197efc0fab2c0841cfde0bdccfe0a96541994b172d88c0475391561c3",
+    "assets/environment.example.json": "fca8ecf2ff8720ed5d34817eddf3cad224c7fc76fc49a3a83364229f177be049",
+    "skills/shipd-fastlane/references/execution.md": "e10cbd668e9265675f2f73f18ea34f849821100564123065746cc7c0388b2ce5",
+    "skills/shipd-fastlane/references/local-quality-gate.md": "8225f7c0e19da8749819ae79fb205821c1db809298663eb8382073f225c44e2e"
+  },
+  "repo_commit": null,
+  "repo_commit_reason": "Plugin staging directory; no candidate code edited."
+}

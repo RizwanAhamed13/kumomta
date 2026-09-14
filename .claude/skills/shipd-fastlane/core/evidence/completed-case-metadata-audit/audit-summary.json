@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "captured_at_utc": "2026-09-12T23:46:07.304083+00:00",
+  "scope": "Metadata/source-only audit; candidate builds and material validation not run while Parquet owns compute.",
+  "docs_and_templates": {
+    "initial_local_markdown_links": 60,
+    "initial_documents": 15,
+    "initial_missing_local_targets": 0,
+    "changed_link": "skills/shipd-fastlane/references/fresh-execution-findings.md -> ../../../evidence/partition-gate-workflow-lessons.json",
+    "changed_link_exists": true,
+    "json_templates_parsed": 5,
+    "contract_duplicate_ids": false,
+    "contract_unknown_references": [],
+    "quality_family_ids": 20,
+    "environment_template": "jobs and thermal values require actual per-phase allocation; existing fingerprint snapshot accepts arbitrary build_flags metadata but never claims checks pass"
+  },
+  "edits": {
+    "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/assets/environment.example.json": {
+      "sha256": "fca8ecf2ff8720ed5d34817eddf3cad224c7fc76fc49a3a83364229f177be049",
+      "bytes": 1931
+    },
+    "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/skills/shipd-fastlane/references/fresh-execution-findings.md": {
+      "sha256": "5dc16fd46f286b3ad41b78879ecfa81a87e8b5cf18c8d9c7fa8476ac542129c7",
+      "bytes": 4338
+    },
+    "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/skills/shipd-fastlane/references/execution.md": {
+      "sha256": "b740924150ff7574598b173daa7b0011660d1206d18f674e762d4e98c561d248",
+      "bytes": 10098
+    },
+    "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/REPORT.md": {
+      "sha256": "e726b4afa43e371faf5ea7dbfd82c36b0077e8e2aa6c2206f6bf6f841168dc5b",
+      "bytes": 4521
+    }
+  },
+  "lisette": "Qualified early freeze chronology, 286 exclusions, metadata exposure versus blindness, and frozen runner setup-error limitation; original report saved, historical artifact/delivery manifests unchanged.",
+  "kitesql": "Report metrics match retained receipts; no report change needed. Six matrix inventories contain no excluded tests.",
+  "validation": "Source/metadata parse and local link existence inspection only; no fixture, script, candidate, Docker, or thermal retest. Prior 133-fixture receipt remains historical and unchanged.",
+  "lookup_errors": [
+    "Guessed Kite root holdout-summary path did not exist; actual evidence/holdout-summary.json inspected.",
+    "Two guessed plugin script names did not exist; targeted existing names inspected."
+  ],
+  "unchanged": [
+    "Candidate artifacts and raw evidence",
+    "Original manifests and freeze labels",
+    "Mac REPORT.md and benchmark.json",
+    "Plugin scripts",
+    "Plugin manifest/version"
+  ],
+  "remaining": [
+    "Root to integrate chronology into aggregate scorecard/timing definitions.",
+    "Remote Lisette REPORT has a new hash; refresh its report transfer without rewriting historical delivery manifests.",
+    "Root-owned final publication/package validation after all cases; proposed plugin version remains unbumped."
+  ],
+  "chronology": {
+    "path": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/completed-case-metadata-audit/chronology.json",
+    "sha256": "9ee24d8e2673fcb46ebbb51b53c13f61b4f9f28e5ff54cbf469851eee2071c70"
+  },
+  "chronology_schema_addendum": {
+    "edits": {
+      "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/assets/metrics.example.json": {
+        "sha256": "ed69a174e6593b881176938dbb439a48b9d80573d6c6aabaf9aae270fbe2e9de",
+        "bytes": 5795
+      },
+      "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md": {
+        "sha256": "b26024407ab9e56d56a8ad6e3ecb0bd5f535fbf9a5310e6bf8bf43d6960b081a",
+        "bytes": 8014
+      }
+    },
+    "purpose": "Separate historical original snapshot labels, own-validation completion, exact archive read receipts, justified exposure bounds and first archive run. No original milestone redefined."
+  }
+}

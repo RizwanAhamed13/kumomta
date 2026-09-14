@@ -1,0 +1,84 @@
+diff --git a/src/expression/mod.rs b/src/expression/mod.rs
+@@ -426,6 +426,25 @@ impl ScalarExpression {
++    pub(crate) fn explicit_type_cast(
++        expr: ScalarExpression,
++        ty: Cow<'_, LogicalType>,
++        arena: &PlanArena,
++    ) -> Result<ScalarExpression, DatabaseError> {
++        let from = expr.return_type(arena);
++        let evaluator = if from.as_ref() == ty.as_ref() {
++            None
++        } else {
++            Some(cast_create(from, ty.clone())?)
++        };
++
++        Ok(ScalarExpression::TypeCast {
++            expr: Box::new(expr),
++            ty: ty.into_owned(),
++            evaluator,
++        })
++    }
++
+@@ -436,6 +455,57 @@ impl ScalarExpression {
++            (
++                ScalarExpression::TypeCast {
++                    expr: lhs_expr,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::TypeCast {
++                    expr: rhs_expr,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => lhs_ty == rhs_ty && lhs_expr.eq_ignore_colref_pos(rhs_expr, arena),
++            (
++                ScalarExpression::Unary {
++                    op: lhs_op,
++                    expr: lhs_expr,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::Unary {
++                    op: rhs_op,
++                    expr: rhs_expr,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => {
++                lhs_op == rhs_op
++                    && lhs_ty == rhs_ty
++                    && lhs_expr.eq_ignore_colref_pos(rhs_expr, arena)
++            }
++            (
++                ScalarExpression::Binary {
++                    op: lhs_op,
++                    left_expr: lhs_left,
++                    right_expr: lhs_right,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::Binary {
++                    op: rhs_op,
++                    left_expr: rhs_left,
++                    right_expr: rhs_right,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => {
++                lhs_op == rhs_op
++                    && lhs_ty == rhs_ty
++                    && lhs_left.eq_ignore_colref_pos(rhs_left, arena)
++                    && lhs_right.eq_ignore_colref_pos(rhs_right, arena)
++            }
+@@ -1165,6 +1235,16 @@ mod test {
++
++        let add = |column| ScalarExpression::Binary {
++            op: BinaryOperator::Plus,
++            left_expr: Box::new(column),
++            right_expr: Box::new(ScalarExpression::Constant(DataValue::Int32(1))),
++            evaluator: None,
++            ty: LogicalType::Integer,
++        };
++        assert!(add(left.clone()).eq_ignore_colref_pos(&add(right), &arena));
++        assert!(!add(left).eq_ignore_colref_pos(&add(different), &arena));

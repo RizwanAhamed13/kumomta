@@ -1,0 +1,13 @@
+diff --git a/src/binder/create_index.rs b/src/binder/create_index.rs
+@@ -13,8 +13,9 @@
+-use crate::catalog::{ColumnRef, TableName};
++use crate::catalog::TableName;
++use crate::expression::ScalarExpression;
+@@ -48,14 +49,14 @@ impl<T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<'_, '_, T, A>
+-        columns: Vec<ColumnRef>,
++        expressions: Vec<ScalarExpression>,
+-        } else if columns.len() == 1 {
++        } else if expressions.len() == 1 {
+@@ -64,7 +65,7 @@ impl<T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<'_, '_, T, A>
+-                columns,
++                expressions,

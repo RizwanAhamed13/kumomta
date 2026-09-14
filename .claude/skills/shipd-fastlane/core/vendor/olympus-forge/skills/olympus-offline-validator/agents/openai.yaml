@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Offline Validator"
+  short_description: "Validate and adversarially grade artifacts"
+  default_prompt: "Use $olympus-offline-validator to run the local matrix, calibration, red-team, and adversarial grader loop for an Olympus package."

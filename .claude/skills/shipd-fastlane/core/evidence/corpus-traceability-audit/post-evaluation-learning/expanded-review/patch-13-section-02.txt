@@ -1,0 +1,49 @@
+diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs
+@@ -9,6 +9,7 @@ use std::sync::Arc;
++use arc_swap::ArcSwap;
+@@ -129,7 +130,7 @@ enum ShouldFetchMorePages {
+-    cluster_state: Arc<ClusterState>,
++    cluster_state: Arc<ArcSwap<ClusterState>>,
+@@ -152,7 +153,7 @@ impl PagingExecutor {
+-            cluster_state: session.get_cluster_state(),
++            cluster_state: session.get_cluster_state_handle(),
+@@ -334,35 +335,14 @@ impl PagingExecutor {
+-        let load_balancing_policy = self.load_balancing_policy.as_ref();
+-        let base_plan =
+-            load_balancing::Plan::new(load_balancing_policy, routing_info, &self.cluster_state);
+-
+-        // Coordinator stability: try the previous page's coordinator first.
+-        let stability_target = self.stable_coordinator.as_ref().map(|coordinator| {
+-            // `Coordinator` gets its shard from `Connection`. If `Connection` believes it has `Shard` `None`,
+-            // then it means that the connection pool to that connection is not sharded.
+-            // In such case, shard is ignored in `connection_for_shard()`.
+-            // We must provide a shard to `connection_for_shard()` anyway.
+-            // Therefore, let's pass an arbitrarily big shard to catch regressions in this logic earlier.
+-            (coordinator.node(), coordinator.shard().unwrap_or(2137))
+-        });
+-
+-        let plan = stability_target
+-            .into_iter()
+-            .chain(base_plan.filter(|&(node, shard)| {
+-                // Filter out the preselected coordinator - it is tried first.
+-                self.stable_coordinator.as_ref().is_none_or(|coordinator| {
+-                    // If the previous attempt targeted an unsharded node (such as
+-                    // Cassandra), filter out all targets to that node regardless
+-                    // of shard.
+-                    !(Arc::ptr_eq(node, coordinator.node())
+-                        && coordinator
+-                            .shard()
+-                            .is_none_or(|last_shard| last_shard == shard))
+-                })
+-            }))
+-            .map(|(node, shard)| NodeAttemptTarget::new(node, shard));
++        let cluster_state = self.cluster_state.load_full();
++        let plan = load_balancing::Plan::new_with_preferred(
++            self.load_balancing_policy.as_ref(),
++            routing_info,
++            &cluster_state,
++            self.stable_coordinator.as_ref(),
++        )
++        .map(|(node, shard)| NodeAttemptTarget::new(node, shard));
+@@ -990,6 +970,7 @@ If you are using this API, you are probably doing something wrong."
++                    .load_full()

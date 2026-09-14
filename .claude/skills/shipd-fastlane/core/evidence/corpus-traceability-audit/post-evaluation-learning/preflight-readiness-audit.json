@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-09-13T00:56:03.019640+00:00",
+  "phase": "source-and-receipt-readiness-audit",
+  "hostname": "arch",
+  "arch": "x86_64",
+  "cwd": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "filesystem": "/dev/mapper/omarchy_root[/@home] btrfs /home",
+  "disk": {
+    "total": 835832512512,
+    "used": 279800496128,
+    "free": 555564285952
+  },
+  "docker_server_version": "29.7.2",
+  "docker_root": "/mnt/ssd/docker",
+  "mode": "metadata/source only; no candidate execution"
+}

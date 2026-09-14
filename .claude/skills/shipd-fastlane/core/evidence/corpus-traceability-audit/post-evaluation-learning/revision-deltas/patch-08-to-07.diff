@@ -1,0 +1,175 @@
+--- .olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch
++++ .olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch
+@@ -1,5 +1,5 @@
+ diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs
+-index 705305f55..b0d9003ec 100644
++index 705305f557..b0d9003ec0 100644
+ --- a/crates/ide-completion/src/context.rs
+ +++ b/crates/ide-completion/src/context.rs
+ @@ -4,7 +4,7 @@ mod analysis;
+@@ -176,7 +176,7 @@
+          let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
+  
+ diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs
+-index 7280fd1ad..4ce35a560 100644
++index 7280fd1ad5..5e85087ea6 100644
+ --- a/crates/ide-completion/src/context/analysis.rs
+ +++ b/crates/ide-completion/src/context/analysis.rs
+ @@ -42,8 +42,11 @@ struct ExpansionResult {
+@@ -299,11 +299,11 @@
+ +    };
+ +
+ +    let multi_marker = expansions.iter().any(|expansion| {
+-+        expansion.fake_ident_token.parent_ancestors().last().is_some_and(|file| {
+-+            completion_marker_count(&file)
+-+                .saturating_sub(completion_marker_count(&expansion.original_file))
+-+                > 1
+-+        })
+++        expansion
+++            .fake_ident_token
+++            .parent_ancestors()
+++            .last()
+++            .is_some_and(|file| completion_marker_count(&file) > 1)
+ +    });
+ +    expansions
+ +        .into_iter()
+@@ -1077,7 +1077,7 @@
+      let intersection = range.intersect(syntax_range)?;
+      let node = match in_file.covering_element(intersection) {
+          NodeOrToken::Node(node) => node,
+-@@ -1956,15 +2172,138 @@ fn ancestors_in_file_compensated<'sema>(
++@@ -1956,15 +2172,102 @@ fn ancestors_in_file_compensated<'sema>(
+      Some(sema.ancestors_with_macros(node))
+  }
+  
+@@ -1099,21 +1099,20 @@
+ +}
+ +
+ +fn find_opt_node_in_file_mode<N: AstNode>(
++     sema: &Semantics<'_, RootDatabase>,
++     syntax: &SyntaxNode,
++     node: Option<N>,
+++    multi_marker: bool,
+++) -> Option<N> {
+++    find_node_in_file_mode(sema, syntax, &node?, multi_marker)
+++}
+++
+++fn find_opt_node_in_file_aggregate<N: AstNode>(
+ +    sema: &Semantics<'_, RootDatabase>,
+ +    syntax: &SyntaxNode,
+ +    node: Option<N>,
+ +    multi_marker: bool,
+ +) -> Option<N> {
+-+    find_node_in_file_mode(sema, syntax, &node?, multi_marker)
+-+}
+-+
+-+fn find_opt_node_in_file_aggregate<N: AstNode>(
+-     sema: &Semantics<'_, RootDatabase>,
+-     syntax: &SyntaxNode,
+-     node: Option<N>,
+-+    multi_marker: bool,
+- ) -> Option<N> {
+--    find_node_in_file_compensated(sema, syntax, &node?)
+ +    match (multi_marker, node) {
+ +        (true, Some(node)) => find_node_in_file_multi(sema, syntax, &node),
+ +        (false, Some(node)) => find_node_in_file(syntax, &node),
+@@ -1139,7 +1138,8 @@
+ +    sema: &Semantics<'_, RootDatabase>,
+ +    in_file: &SyntaxNode,
+ +    node: &N,
+-+) -> Option<N> {
++ ) -> Option<N> {
++-    find_node_in_file_compensated(sema, syntax, &node?)
+ +    ancestors_in_file_multi(sema, in_file, node.syntax())?.find_map(N::cast)
+ +}
+ +
+@@ -1151,8 +1151,9 @@
+ +    let syntax_range = in_file.text_range();
+ +    let range = node.text_range();
+ +    let fake_file = node.ancestors().last()?;
+-+    let start = corresponding_offset(in_file, &fake_file, range.start())?;
+-+    let end = corresponding_offset(in_file, &fake_file, range.end())?;
+++    let start =
+++        range.start().checked_sub(completion_marker_len_before(&fake_file, range.start()))?;
+++    let end = range.end().checked_sub(completion_marker_len_before(&fake_file, range.end()))?;
+ +    if end < start {
+ +        return None;
+ +    }
+@@ -1166,51 +1167,14 @@
+ +    Some(sema.ancestors_with_macros(node))
+ +}
+ +
+-+fn corresponding_offset(
+-+    actual_file: &SyntaxNode,
+-+    speculative_file: &SyntaxNode,
+-+    speculative_offset: TextSize,
+-+) -> Option<TextSize> {
+-+    let actual_tokens = actual_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
+-+    let speculative_tokens =
+-+        speculative_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
+-+
+-+    for (actual, speculative) in actual_tokens.zip(speculative_tokens) {
+-+        let range = speculative.text_range();
+-+        if speculative_offset < range.start() || speculative_offset > range.end() {
+-+            continue;
+-+        }
+-+        let relative = usize::from(speculative_offset - range.start());
+-+        let relative = corresponding_token_offset(actual.text(), speculative.text(), relative)?;
+-+        return actual.text_range().start().checked_add(TextSize::try_from(relative).ok()?);
+-+    }
+-+    None
+-+}
+-+
+-+fn corresponding_token_offset(actual: &str, speculative: &str, offset: usize) -> Option<usize> {
+-+    if offset > speculative.len() {
+-+        return None;
+-+    }
+-+
+-+    let actual = actual.as_bytes();
+-+    let speculative = speculative.as_bytes();
+-+    let marker = COMPLETION_MARKER.as_bytes();
+-+    let (mut actual_offset, mut speculative_offset) = (0, 0);
+-+    while speculative_offset < offset {
+-+        if actual.get(actual_offset) == speculative.get(speculative_offset) {
+-+            actual_offset += 1;
+-+            speculative_offset += 1;
+-+        } else if speculative[speculative_offset..].starts_with(marker) {
+-+            let remaining = offset - speculative_offset;
+-+            if remaining <= marker.len() {
+-+                return Some(actual_offset);
+-+            }
+-+            speculative_offset += marker.len();
+-+        } else {
+-+            return None;
+-+        }
+-+    }
+-+    Some(actual_offset)
+++fn completion_marker_len_before(file: &SyntaxNode, offset: TextSize) -> TextSize {
+++    let len = file
+++        .descendants_with_tokens()
+++        .filter_map(NodeOrToken::into_token)
+++        .filter(|token| token.text_range().start() < offset)
+++        .map(|token| token.text().matches(COMPLETION_MARKER).count())
+++        .sum::<usize>();
+++    TextSize::try_from(len * COMPLETION_MARKER.len()).unwrap_or_default()
+ +}
+ +
+ +fn completion_marker_count(file: &SyntaxNode) -> usize {
+@@ -1222,7 +1186,7 @@
+  
+  fn path_or_use_tree_qualifier(path: &ast::Path) -> Option<(ast::Path, bool)> {
+ diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs
+-index 675ffac04..f256c0c3d 100644
++index 675ffac040..f256c0c3da 100644
+ --- a/crates/ide-completion/src/item.rs
+ +++ b/crates/ide-completion/src/item.rs
+ @@ -465,7 +465,7 @@ impl CompletionItemKind {
+@@ -1235,7 +1199,7 @@
+      Reference(Mutability),
+      Dereference,
+ diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs
+-index 4ca3257c5..81a41eef8 100644
++index 4ca3257c5c..81a41eef8f 100644
+ --- a/crates/ide-completion/src/lib.rs
+ +++ b/crates/ide-completion/src/lib.rs
+ @@ -194,18 +194,33 @@ pub fn completions(

@@ -1,0 +1,7 @@
+diff --git a/src/planner/operator/mod.rs b/src/planner/operator/mod.rs
+@@ -958,7 +958,10 @@ mod tests {
+-                    columns: vec![id, name],
++                    expressions: vec![
++                        ScalarExpression::column_expr(id, 0),
++                        ScalarExpression::column_expr(name, 1),
++                    ],

@@ -1,0 +1,1783 @@
+[
+  {
+    "index": 0,
+    "source": {
+      "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+      "bytes": 98757,
+      "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+      "kind": "artifact",
+      "status": "partial_semantic_inspection",
+      "extents": [
+        "selected changed lines in emitter, formatter, registration, cache, inference and lint sections; output truncation prevents a whole-file claim",
+        "later untruncated changed-lines sections 11,12,13,15,16; other inspected observations are bounded excerpts"
+      ],
+      "unread": "Complete patch and two other saved revisions remain unaudited."
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/diagnostics/src/infer.rs b/crates/diagnostics/src/infer.rs",
+        "bytes": 1403,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-00.txt",
+        "sha256": "ca5660ff176bd6fe21a56450fc99ab61211ebedcb68c4914b23d9aa6a7ed8eae"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/emit/src/expressions/access/struct_call.rs b/crates/emit/src/expressions/access/struct_call.rs",
+        "bytes": 8662,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-01.txt",
+        "sha256": "85cf682bc3c185fad3e2588bb7c6e3a8b0faa246e9b4a5de5745031b52c33185"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/emit/src/expressions/identifiers.rs b/crates/emit/src/expressions/identifiers.rs",
+        "bytes": 2995,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-02.txt",
+        "sha256": "8140aaaddc4aa83a65940c0cc3a861f7d3e69893aeb264775688dd0118e86b7b"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs",
+        "bytes": 4760,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-03.txt",
+        "sha256": "5eba3d3d04037cb4cbe086efca5d2e3e6e99b17f7aa4b9ab0a0bec379a1a656b"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "bytes": 1189,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-04.txt",
+        "sha256": "2ef6c2c5579a3257ca650c134a3ae41cc5d6efd48aa7114f2205ab0d11167dd3"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "bytes": 561,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-05.txt",
+        "sha256": "952afff049563f167935a27dc65bc5a5a9eab02a48b653b8c7ad3bce446ddb5f"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/crates/semantics/src/cache/mod.rs b/crates/semantics/src/cache/mod.rs",
+        "bytes": 244,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-06.txt",
+        "sha256": "e9b98fa6113f4a14169b5fd93c883c704bbca61fc6fd920f6bf73c7d78da6de8"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs",
+        "bytes": 15166,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-07.txt",
+        "sha256": "beb91821b9c2f9fab6a849c7bb56bdc0f214bb2dc7557416d680da2007e3a4e5"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/crates/semantics/src/checker/freeze.rs b/crates/semantics/src/checker/freeze.rs",
+        "bytes": 1080,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-08.txt",
+        "sha256": "cbce35ae183dac35467e2a9090f3ea019a19c0841489d48b18f122fad1b6c823"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/crates/semantics/src/checker/infer/context.rs b/crates/semantics/src/checker/infer/context.rs",
+        "bytes": 671,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-09.txt",
+        "sha256": "e9fa8e07b9631b923ffa4501557891fd4db9ff7393a35256c4d4b6ce495a7a56"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/bindings.rs b/crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "bytes": 2936,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-10.txt",
+        "sha256": "8118f6be79dded6f1fc308b4685f83bf871915bc7d82b5108daa811262f00313"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/definitions.rs b/crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "bytes": 5492,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-11.txt",
+        "sha256": "6cf898cd8c9d01d58f183b750649969410e1c9ec4e94e8ec77566cf5acd5ac73"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/mod.rs b/crates/semantics/src/checker/infer/expressions/mod.rs",
+        "bytes": 2818,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-12.txt",
+        "sha256": "c102b00e0bb4092cd2d274e94f898e0ee894a5c7d5d84ea29aea44f583ba8917"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/struct_call.rs b/crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "bytes": 894,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-13.txt",
+        "sha256": "353fef77c28f42e1849e98d593d49b38d4514fe0cd1b4f99f4e4130fcea765da"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/crates/semantics/src/checker/promotion.rs b/crates/semantics/src/checker/promotion.rs",
+        "bytes": 159,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-14.txt",
+        "sha256": "89f5b9544d78ec26e2161e466b776603c311672560ab359a3a77c2b8a51dbbd3"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/crates/semantics/src/checker/registration/declarations.rs b/crates/semantics/src/checker/registration/declarations.rs",
+        "bytes": 350,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-15.txt",
+        "sha256": "8efdbbe98fde77b143087cf66c8638af7c45f93b5853e4fe68148e162d8ffb4a"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/crates/semantics/src/checker/registration/mod.rs b/crates/semantics/src/checker/registration/mod.rs",
+        "bytes": 879,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-16.txt",
+        "sha256": "cb00cf803ab427576c8b7ee2315b3e752347a8a719a3f019ec45cba103ec2581"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs",
+        "bytes": 19488,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-17.txt",
+        "sha256": "1fc8be51d8a3f2ce5cc2ff9301b4cd99b0dd5b1fa57b01be5dbd8306059587ac"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/crates/semantics/src/store.rs b/crates/semantics/src/store.rs",
+        "bytes": 157,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-18.txt",
+        "sha256": "fca6801a0e568ea29a7b08b013d79d07651038cf1c9fbb96ede9c2e659bbd003"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/crates/semantics/src/zero.rs b/crates/semantics/src/zero.rs",
+        "bytes": 213,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-19.txt",
+        "sha256": "863a57b5f59ce9f580ed29f3a708d40f683d422c706081c9b95654e8334fe47a"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs",
+        "bytes": 2340,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-20.txt",
+        "sha256": "1ceee4807bbce965cf9e67b6f67186e66e307059c4a707afc152f557100f1887"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/crates/syntax/src/go_names.rs b/crates/syntax/src/go_names.rs",
+        "bytes": 141,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-21.txt",
+        "sha256": "6c03da4631ffb41f2d40dc5f79a6f2c42606be9aca28fe7950f7984e2966a53b"
+      },
+      {
+        "index": 22,
+        "file": "diff --git a/crates/syntax/src/parse/definitions.rs b/crates/syntax/src/parse/definitions.rs",
+        "bytes": 2959,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-00-section-22.txt",
+        "sha256": "126793f45e7a4f83414145eab3190a67e18e830408e9c78d6b144a6d4275cbb6"
+      }
+    ]
+  },
+  {
+    "index": 1,
+    "source": {
+      "path": ".olympus/cases/lisette-default-field-values/evidence/3f3ce128a1e555c6e171c6a7f9de42e97615ad912824d27f8ec002ae71d58ba3/artifacts/solution.patch",
+      "bytes": 88977,
+      "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/diagnostics/src/infer.rs b/crates/diagnostics/src/infer.rs",
+        "bytes": 1403,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-00.txt",
+        "sha256": "ca5660ff176bd6fe21a56450fc99ab61211ebedcb68c4914b23d9aa6a7ed8eae"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/emit/src/expressions/access/struct_call.rs b/crates/emit/src/expressions/access/struct_call.rs",
+        "bytes": 8662,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-01.txt",
+        "sha256": "85cf682bc3c185fad3e2588bb7c6e3a8b0faa246e9b4a5de5745031b52c33185"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs",
+        "bytes": 1563,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-02.txt",
+        "sha256": "6953c325eb30880e15228beb2ea2154b145ffbd1572810932347437bbcf0e7ae"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "bytes": 1189,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-03.txt",
+        "sha256": "2ef6c2c5579a3257ca650c134a3ae41cc5d6efd48aa7114f2205ab0d11167dd3"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "bytes": 561,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-04.txt",
+        "sha256": "952afff049563f167935a27dc65bc5a5a9eab02a48b653b8c7ad3bce446ddb5f"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/crates/semantics/src/cache/mod.rs b/crates/semantics/src/cache/mod.rs",
+        "bytes": 244,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-05.txt",
+        "sha256": "e9b98fa6113f4a14169b5fd93c883c704bbca61fc6fd920f6bf73c7d78da6de8"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs",
+        "bytes": 15166,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-06.txt",
+        "sha256": "beb91821b9c2f9fab6a849c7bb56bdc0f214bb2dc7557416d680da2007e3a4e5"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/crates/semantics/src/checker/freeze.rs b/crates/semantics/src/checker/freeze.rs",
+        "bytes": 1080,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-07.txt",
+        "sha256": "cbce35ae183dac35467e2a9090f3ea019a19c0841489d48b18f122fad1b6c823"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/crates/semantics/src/checker/infer/context.rs b/crates/semantics/src/checker/infer/context.rs",
+        "bytes": 671,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-08.txt",
+        "sha256": "e9fa8e07b9631b923ffa4501557891fd4db9ff7393a35256c4d4b6ce495a7a56"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/bindings.rs b/crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "bytes": 2936,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-09.txt",
+        "sha256": "8118f6be79dded6f1fc308b4685f83bf871915bc7d82b5108daa811262f00313"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/definitions.rs b/crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "bytes": 5492,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-10.txt",
+        "sha256": "6cf898cd8c9d01d58f183b750649969410e1c9ec4e94e8ec77566cf5acd5ac73"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/mod.rs b/crates/semantics/src/checker/infer/expressions/mod.rs",
+        "bytes": 2818,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-11.txt",
+        "sha256": "c102b00e0bb4092cd2d274e94f898e0ee894a5c7d5d84ea29aea44f583ba8917"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/struct_call.rs b/crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "bytes": 894,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-12.txt",
+        "sha256": "353fef77c28f42e1849e98d593d49b38d4514fe0cd1b4f99f4e4130fcea765da"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/crates/semantics/src/checker/promotion.rs b/crates/semantics/src/checker/promotion.rs",
+        "bytes": 159,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-13.txt",
+        "sha256": "89f5b9544d78ec26e2161e466b776603c311672560ab359a3a77c2b8a51dbbd3"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/crates/semantics/src/checker/registration/declarations.rs b/crates/semantics/src/checker/registration/declarations.rs",
+        "bytes": 350,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-14.txt",
+        "sha256": "8efdbbe98fde77b143087cf66c8638af7c45f93b5853e4fe68148e162d8ffb4a"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/crates/semantics/src/checker/registration/mod.rs b/crates/semantics/src/checker/registration/mod.rs",
+        "bytes": 879,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-15.txt",
+        "sha256": "cb00cf803ab427576c8b7ee2315b3e752347a8a719a3f019ec45cba103ec2581"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs",
+        "bytes": 19374,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-16.txt",
+        "sha256": "1641b8657cb75851011a3f658ec9e2b1b90d43e5cd28a448b272dbaf81289f88"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/crates/semantics/src/store.rs b/crates/semantics/src/store.rs",
+        "bytes": 157,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-17.txt",
+        "sha256": "fca6801a0e568ea29a7b08b013d79d07651038cf1c9fbb96ede9c2e659bbd003"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/crates/semantics/src/zero.rs b/crates/semantics/src/zero.rs",
+        "bytes": 213,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-18.txt",
+        "sha256": "863a57b5f59ce9f580ed29f3a708d40f683d422c706081c9b95654e8334fe47a"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs",
+        "bytes": 1044,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-19.txt",
+        "sha256": "851803e767d0f6273a8de51840c6f2a9bacf741a68dfe0b805253723d640ef37"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/crates/syntax/src/go_names.rs b/crates/syntax/src/go_names.rs",
+        "bytes": 141,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-20.txt",
+        "sha256": "6c03da4631ffb41f2d40dc5f79a6f2c42606be9aca28fe7950f7984e2966a53b"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/crates/syntax/src/parse/definitions.rs b/crates/syntax/src/parse/definitions.rs",
+        "bytes": 2959,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-01-section-21.txt",
+        "sha256": "126793f45e7a4f83414145eab3190a67e18e830408e9c78d6b144a6d4275cbb6"
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "source": {
+      "path": ".olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch",
+      "bytes": 92787,
+      "sha256": "f9a3845b6d13d179fcd4feb918da7beab105e5d5cdec47e68ca2205e6cafbb90",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/diagnostics/src/infer.rs b/crates/diagnostics/src/infer.rs",
+        "bytes": 1403,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-00.txt",
+        "sha256": "ca5660ff176bd6fe21a56450fc99ab61211ebedcb68c4914b23d9aa6a7ed8eae"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/emit/src/expressions/access/struct_call.rs b/crates/emit/src/expressions/access/struct_call.rs",
+        "bytes": 8662,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-01.txt",
+        "sha256": "85cf682bc3c185fad3e2588bb7c6e3a8b0faa246e9b4a5de5745031b52c33185"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs",
+        "bytes": 1563,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-02.txt",
+        "sha256": "6953c325eb30880e15228beb2ea2154b145ffbd1572810932347437bbcf0e7ae"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "bytes": 3512,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-03.txt",
+        "sha256": "77a8b68dd7c401dc1b0ed3d6bf660bb7fe1029f18dae840c99b8ecb5621de761"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "bytes": 561,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-04.txt",
+        "sha256": "952afff049563f167935a27dc65bc5a5a9eab02a48b653b8c7ad3bce446ddb5f"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/crates/semantics/src/cache/mod.rs b/crates/semantics/src/cache/mod.rs",
+        "bytes": 244,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-05.txt",
+        "sha256": "e9b98fa6113f4a14169b5fd93c883c704bbca61fc6fd920f6bf73c7d78da6de8"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs",
+        "bytes": 15166,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-06.txt",
+        "sha256": "beb91821b9c2f9fab6a849c7bb56bdc0f214bb2dc7557416d680da2007e3a4e5"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/crates/semantics/src/checker/freeze.rs b/crates/semantics/src/checker/freeze.rs",
+        "bytes": 1080,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-07.txt",
+        "sha256": "cbce35ae183dac35467e2a9090f3ea019a19c0841489d48b18f122fad1b6c823"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/crates/semantics/src/checker/infer/context.rs b/crates/semantics/src/checker/infer/context.rs",
+        "bytes": 671,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-08.txt",
+        "sha256": "e9fa8e07b9631b923ffa4501557891fd4db9ff7393a35256c4d4b6ce495a7a56"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/bindings.rs b/crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "bytes": 2936,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-09.txt",
+        "sha256": "8118f6be79dded6f1fc308b4685f83bf871915bc7d82b5108daa811262f00313"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/definitions.rs b/crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "bytes": 5492,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-10.txt",
+        "sha256": "6cf898cd8c9d01d58f183b750649969410e1c9ec4e94e8ec77566cf5acd5ac73"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/mod.rs b/crates/semantics/src/checker/infer/expressions/mod.rs",
+        "bytes": 2818,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-11.txt",
+        "sha256": "c102b00e0bb4092cd2d274e94f898e0ee894a5c7d5d84ea29aea44f583ba8917"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/crates/semantics/src/checker/infer/expressions/struct_call.rs b/crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "bytes": 894,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-12.txt",
+        "sha256": "353fef77c28f42e1849e98d593d49b38d4514fe0cd1b4f99f4e4130fcea765da"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/crates/semantics/src/checker/promotion.rs b/crates/semantics/src/checker/promotion.rs",
+        "bytes": 159,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-13.txt",
+        "sha256": "89f5b9544d78ec26e2161e466b776603c311672560ab359a3a77c2b8a51dbbd3"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/crates/semantics/src/checker/registration/declarations.rs b/crates/semantics/src/checker/registration/declarations.rs",
+        "bytes": 350,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-14.txt",
+        "sha256": "8efdbbe98fde77b143087cf66c8638af7c45f93b5853e4fe68148e162d8ffb4a"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/crates/semantics/src/checker/registration/mod.rs b/crates/semantics/src/checker/registration/mod.rs",
+        "bytes": 879,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-15.txt",
+        "sha256": "cb00cf803ab427576c8b7ee2315b3e752347a8a719a3f019ec45cba103ec2581"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs",
+        "bytes": 19374,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-16.txt",
+        "sha256": "1641b8657cb75851011a3f658ec9e2b1b90d43e5cd28a448b272dbaf81289f88"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/crates/semantics/src/store.rs b/crates/semantics/src/store.rs",
+        "bytes": 157,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-17.txt",
+        "sha256": "fca6801a0e568ea29a7b08b013d79d07651038cf1c9fbb96ede9c2e659bbd003"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/crates/semantics/src/zero.rs b/crates/semantics/src/zero.rs",
+        "bytes": 213,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-18.txt",
+        "sha256": "863a57b5f59ce9f580ed29f3a708d40f683d422c706081c9b95654e8334fe47a"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs",
+        "bytes": 1044,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-19.txt",
+        "sha256": "851803e767d0f6273a8de51840c6f2a9bacf741a68dfe0b805253723d640ef37"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/crates/syntax/src/go_names.rs b/crates/syntax/src/go_names.rs",
+        "bytes": 141,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-20.txt",
+        "sha256": "6c03da4631ffb41f2d40dc5f79a6f2c42606be9aca28fe7950f7984e2966a53b"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/crates/syntax/src/parse/definitions.rs b/crates/syntax/src/parse/definitions.rs",
+        "bytes": 2959,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-02-section-21.txt",
+        "sha256": "126793f45e7a4f83414145eab3190a67e18e830408e9c78d6b144a6d4275cbb6"
+      }
+    ]
+  },
+  {
+    "index": 3,
+    "source": {
+      "path": "kitesql-expression-index-core/solution.patch",
+      "bytes": 75756,
+      "sha256": "a1f979a1b9a12ed568391b7697b2be210638e81109e05c8579824d6fbb91321c",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/src/binder/create_index.rs b/src/binder/create_index.rs",
+        "bytes": 625,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-00.txt",
+        "sha256": "f6c1803fd72e934e5a66fa0a1daf53db438b6078e3668d4002b72934e914396b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/src/binder/parser.rs b/src/binder/parser.rs",
+        "bytes": 5419,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-01.txt",
+        "sha256": "e1b51fec61ec738056d355cd37a756d0efa580c0ce3974c18545e66c516c811f"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/src/catalog/table.rs b/src/catalog/table.rs",
+        "bytes": 7263,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-02.txt",
+        "sha256": "490b151c8046ca68d95bbeb031aad8d951701a28ec36ba62b5f5a23510d9f75a"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/src/db.rs b/src/db.rs",
+        "bytes": 188,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-03.txt",
+        "sha256": "acdca45127791333c3b677b47a43e6064c46c5712fe55f831e29c316ca141e75"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/src/execution/ddl/create_index.rs b/src/execution/ddl/create_index.rs",
+        "bytes": 1583,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-04.txt",
+        "sha256": "90c71a1a894cbd4fdaff5650483086007e5d37644e510efd24a3b456a04cc01c"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/src/execution/dml/analyze.rs b/src/execution/dml/analyze.rs",
+        "bytes": 284,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-05.txt",
+        "sha256": "add3248fb913090f20ecd9e5fbba6fbb7dfaf7588ac7ad30916f6c9526185427"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/src/execution/dml/delete.rs b/src/execution/dml/delete.rs",
+        "bytes": 437,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-06.txt",
+        "sha256": "76dca82f8a57557333edda4f19dd1b3febad97499d23161bebcc32943fc4364a"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/src/execution/mod.rs b/src/execution/mod.rs",
+        "bytes": 243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-07.txt",
+        "sha256": "7220e2e15ee2144d8c8aed53304ea6b3d818f4640209d087b6ca018d66ffb11d"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/src/expression/mod.rs b/src/expression/mod.rs",
+        "bytes": 2933,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-08.txt",
+        "sha256": "d6e9c2a22b75aea97500e16279bd7202e952b5c88af4c17f8d654ebc8ddb6061"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/src/expression/range_detacher.rs b/src/expression/range_detacher.rs",
+        "bytes": 7100,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-09.txt",
+        "sha256": "a2634773b7f04846e7ebc797a251f3b341f5ad1aef20763d48c0982bab66a623"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/src/optimizer/core/histogram.rs b/src/optimizer/core/histogram.rs",
+        "bytes": 320,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-10.txt",
+        "sha256": "62cc057563d99dfc9f65a2259f4dc0f43350071f6294d87cfa808926533bc19a"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/src/optimizer/core/statistics_meta.rs b/src/optimizer/core/statistics_meta.rs",
+        "bytes": 332,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-11.txt",
+        "sha256": "d6536c004294d27c8226889a5739af985e99596883bc5b3a9100df736808f10a"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/src/optimizer/rule/normalization/elimination.rs b/src/optimizer/rule/normalization/elimination.rs",
+        "bytes": 440,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-12.txt",
+        "sha256": "59dac3bd606fd04c32afe36ff6ddbeade7aede360396ebcdd5896c849041d19d"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/src/optimizer/rule/normalization/parameterized_index.rs b/src/optimizer/rule/normalization/parameterized_index.rs",
+        "bytes": 510,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-13.txt",
+        "sha256": "22ff9312fd30f969775b54308dd724306ba6cb092375d81e747607b9fbcd1284"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/src/optimizer/rule/normalization/pushdown_predicates.rs b/src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "bytes": 3717,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-14.txt",
+        "sha256": "c59f574acc0459764cfea143be43a7d8a12c83753559d0b211a87d04bf8dde40"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/src/optimizer/rule/normalization/simplification.rs b/src/optimizer/rule/normalization/simplification.rs",
+        "bytes": 1977,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-15.txt",
+        "sha256": "8ac803700054ef06089477ea75b11ed18d730f1089156dde2eb36775fcdebf9e"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/src/orm/ddl.rs b/src/orm/ddl.rs",
+        "bytes": 414,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-16.txt",
+        "sha256": "73267750c1375997e1694dac36a9dbb0306ec1232fa251cd995e969d98535c8a"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/src/planner/arena.rs b/src/planner/arena.rs",
+        "bytes": 394,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-17.txt",
+        "sha256": "6fe53445e73d8b4155bb0bd3152720c2c56948eb74cc2da9992171d6caf8e25a"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/src/planner/operator/create_index.rs b/src/planner/operator/create_index.rs",
+        "bytes": 723,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-18.txt",
+        "sha256": "975c48d9f68487cebf21a508d259e961cb0cfc2e8e8d59adbe30d7537ab4236f"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/src/planner/operator/mod.rs b/src/planner/operator/mod.rs",
+        "bytes": 342,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-19.txt",
+        "sha256": "bf40e93e8bced1924ef0e2455a5b7e71c2d7777602ae5f018533d052eb72dcfb"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/src/planner/operator/table_scan.rs b/src/planner/operator/table_scan.rs",
+        "bytes": 848,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-20.txt",
+        "sha256": "855ab580e3d6f4c0f53fc2c5accc28480566781e4a8fa9fcc9a6c5aa676c737f"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/src/planner/operator/visitor.rs b/src/planner/operator/visitor.rs",
+        "bytes": 703,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-21.txt",
+        "sha256": "afa2e9314004d01672c4b2e6fe7f145e7a17b79da38a9cab8446fb1031961b05"
+      },
+      {
+        "index": 22,
+        "file": "diff --git a/src/planner/operator/visitor_mut.rs b/src/planner/operator/visitor_mut.rs",
+        "bytes": 439,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-22.txt",
+        "sha256": "867eb5d5a1b5187b2d120b095c22f6d727068b4e920edbfa98fd17c831e57287"
+      },
+      {
+        "index": 23,
+        "file": "diff --git a/src/storage/mod.rs b/src/storage/mod.rs",
+        "bytes": 2608,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-23.txt",
+        "sha256": "3e210b348231b01f50b7e1f5e8246f36249673f121a4716ca90bb06d197b97ab"
+      },
+      {
+        "index": 24,
+        "file": "diff --git a/src/storage/table_codec.rs b/src/storage/table_codec.rs",
+        "bytes": 7243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-24.txt",
+        "sha256": "c558bea1746a0e149141c815faf1b2a18f227d5ecf40c81f52cce6c712f5c3a5"
+      },
+      {
+        "index": 25,
+        "file": "diff --git a/src/types/index.rs b/src/types/index.rs",
+        "bytes": 2594,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-03-section-25.txt",
+        "sha256": "0d48c75f0254b6d33cec1f8ac9ff8aed0e0e8c3f424c5108b14129f363507213"
+      }
+    ]
+  },
+  {
+    "index": 4,
+    "source": {
+      "path": "kitesql-expression-index-scoped/solution.patch",
+      "bytes": 76309,
+      "sha256": "436a55fb0c0e8a0e8b535aeaf1966bbd64b80899697abb8b65e1043a6489bbaa",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/src/binder/create_index.rs b/src/binder/create_index.rs",
+        "bytes": 625,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-00.txt",
+        "sha256": "f6c1803fd72e934e5a66fa0a1daf53db438b6078e3668d4002b72934e914396b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/src/binder/parser.rs b/src/binder/parser.rs",
+        "bytes": 5898,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-01.txt",
+        "sha256": "e471f3d8fca8ed50b3cbfe380efcc93c995feb9f12c1bf5a764e8252218cac93"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/src/catalog/table.rs b/src/catalog/table.rs",
+        "bytes": 7263,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-02.txt",
+        "sha256": "490b151c8046ca68d95bbeb031aad8d951701a28ec36ba62b5f5a23510d9f75a"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/src/db.rs b/src/db.rs",
+        "bytes": 188,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-03.txt",
+        "sha256": "acdca45127791333c3b677b47a43e6064c46c5712fe55f831e29c316ca141e75"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/src/execution/ddl/create_index.rs b/src/execution/ddl/create_index.rs",
+        "bytes": 1583,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-04.txt",
+        "sha256": "90c71a1a894cbd4fdaff5650483086007e5d37644e510efd24a3b456a04cc01c"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/src/execution/dml/analyze.rs b/src/execution/dml/analyze.rs",
+        "bytes": 284,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-05.txt",
+        "sha256": "add3248fb913090f20ecd9e5fbba6fbb7dfaf7588ac7ad30916f6c9526185427"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/src/execution/dml/delete.rs b/src/execution/dml/delete.rs",
+        "bytes": 437,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-06.txt",
+        "sha256": "76dca82f8a57557333edda4f19dd1b3febad97499d23161bebcc32943fc4364a"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/src/execution/mod.rs b/src/execution/mod.rs",
+        "bytes": 243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-07.txt",
+        "sha256": "7220e2e15ee2144d8c8aed53304ea6b3d818f4640209d087b6ca018d66ffb11d"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/src/expression/mod.rs b/src/expression/mod.rs",
+        "bytes": 2933,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-08.txt",
+        "sha256": "d6e9c2a22b75aea97500e16279bd7202e952b5c88af4c17f8d654ebc8ddb6061"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/src/expression/range_detacher.rs b/src/expression/range_detacher.rs",
+        "bytes": 7100,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-09.txt",
+        "sha256": "a2634773b7f04846e7ebc797a251f3b341f5ad1aef20763d48c0982bab66a623"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/src/optimizer/core/histogram.rs b/src/optimizer/core/histogram.rs",
+        "bytes": 320,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-10.txt",
+        "sha256": "62cc057563d99dfc9f65a2259f4dc0f43350071f6294d87cfa808926533bc19a"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/src/optimizer/core/statistics_meta.rs b/src/optimizer/core/statistics_meta.rs",
+        "bytes": 332,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-11.txt",
+        "sha256": "d6536c004294d27c8226889a5739af985e99596883bc5b3a9100df736808f10a"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/src/optimizer/rule/normalization/elimination.rs b/src/optimizer/rule/normalization/elimination.rs",
+        "bytes": 440,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-12.txt",
+        "sha256": "59dac3bd606fd04c32afe36ff6ddbeade7aede360396ebcdd5896c849041d19d"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/src/optimizer/rule/normalization/parameterized_index.rs b/src/optimizer/rule/normalization/parameterized_index.rs",
+        "bytes": 510,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-13.txt",
+        "sha256": "22ff9312fd30f969775b54308dd724306ba6cb092375d81e747607b9fbcd1284"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/src/optimizer/rule/normalization/pushdown_predicates.rs b/src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "bytes": 3717,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-14.txt",
+        "sha256": "c59f574acc0459764cfea143be43a7d8a12c83753559d0b211a87d04bf8dde40"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/src/optimizer/rule/normalization/simplification.rs b/src/optimizer/rule/normalization/simplification.rs",
+        "bytes": 1977,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-15.txt",
+        "sha256": "8ac803700054ef06089477ea75b11ed18d730f1089156dde2eb36775fcdebf9e"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/src/orm/ddl.rs b/src/orm/ddl.rs",
+        "bytes": 414,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-16.txt",
+        "sha256": "73267750c1375997e1694dac36a9dbb0306ec1232fa251cd995e969d98535c8a"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/src/planner/arena.rs b/src/planner/arena.rs",
+        "bytes": 394,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-17.txt",
+        "sha256": "6fe53445e73d8b4155bb0bd3152720c2c56948eb74cc2da9992171d6caf8e25a"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/src/planner/operator/create_index.rs b/src/planner/operator/create_index.rs",
+        "bytes": 723,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-18.txt",
+        "sha256": "975c48d9f68487cebf21a508d259e961cb0cfc2e8e8d59adbe30d7537ab4236f"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/src/planner/operator/mod.rs b/src/planner/operator/mod.rs",
+        "bytes": 342,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-19.txt",
+        "sha256": "bf40e93e8bced1924ef0e2455a5b7e71c2d7777602ae5f018533d052eb72dcfb"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/src/planner/operator/table_scan.rs b/src/planner/operator/table_scan.rs",
+        "bytes": 848,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-20.txt",
+        "sha256": "855ab580e3d6f4c0f53fc2c5accc28480566781e4a8fa9fcc9a6c5aa676c737f"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/src/planner/operator/visitor.rs b/src/planner/operator/visitor.rs",
+        "bytes": 703,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-21.txt",
+        "sha256": "afa2e9314004d01672c4b2e6fe7f145e7a17b79da38a9cab8446fb1031961b05"
+      },
+      {
+        "index": 22,
+        "file": "diff --git a/src/planner/operator/visitor_mut.rs b/src/planner/operator/visitor_mut.rs",
+        "bytes": 439,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-22.txt",
+        "sha256": "867eb5d5a1b5187b2d120b095c22f6d727068b4e920edbfa98fd17c831e57287"
+      },
+      {
+        "index": 23,
+        "file": "diff --git a/src/storage/mod.rs b/src/storage/mod.rs",
+        "bytes": 2608,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-23.txt",
+        "sha256": "3e210b348231b01f50b7e1f5e8246f36249673f121a4716ca90bb06d197b97ab"
+      },
+      {
+        "index": 24,
+        "file": "diff --git a/src/storage/table_codec.rs b/src/storage/table_codec.rs",
+        "bytes": 7243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-24.txt",
+        "sha256": "c558bea1746a0e149141c815faf1b2a18f227d5ecf40c81f52cce6c712f5c3a5"
+      },
+      {
+        "index": 25,
+        "file": "diff --git a/src/types/index.rs b/src/types/index.rs",
+        "bytes": 2594,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-04-section-25.txt",
+        "sha256": "0d48c75f0254b6d33cec1f8ac9ff8aed0e0e8c3f424c5108b14129f363507213"
+      }
+    ]
+  },
+  {
+    "index": 5,
+    "source": {
+      "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+      "bytes": 76293,
+      "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be",
+      "kind": "artifact",
+      "status": "partial_semantic_inspection",
+      "extents": [
+        "Full sections0,1,2,4,8,9,14,15,23,24,25"
+      ],
+      "unread": "Remaining execution, optimization, storage integration sections; core/scoped solution payloads. Three descriptions were fully read and differ in contract."
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/src/binder/create_index.rs b/src/binder/create_index.rs",
+        "bytes": 625,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-00.txt",
+        "sha256": "f6c1803fd72e934e5a66fa0a1daf53db438b6078e3668d4002b72934e914396b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/src/binder/parser.rs b/src/binder/parser.rs",
+        "bytes": 5882,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-01.txt",
+        "sha256": "81bb17b2a7c7c1cc4c684ea94fe5980e110fc4c18cc6f26621d1249039c74430"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/src/catalog/table.rs b/src/catalog/table.rs",
+        "bytes": 7263,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-02.txt",
+        "sha256": "490b151c8046ca68d95bbeb031aad8d951701a28ec36ba62b5f5a23510d9f75a"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/src/db.rs b/src/db.rs",
+        "bytes": 188,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-03.txt",
+        "sha256": "acdca45127791333c3b677b47a43e6064c46c5712fe55f831e29c316ca141e75"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/src/execution/ddl/create_index.rs b/src/execution/ddl/create_index.rs",
+        "bytes": 1583,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-04.txt",
+        "sha256": "90c71a1a894cbd4fdaff5650483086007e5d37644e510efd24a3b456a04cc01c"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/src/execution/dml/analyze.rs b/src/execution/dml/analyze.rs",
+        "bytes": 284,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-05.txt",
+        "sha256": "add3248fb913090f20ecd9e5fbba6fbb7dfaf7588ac7ad30916f6c9526185427"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/src/execution/dml/delete.rs b/src/execution/dml/delete.rs",
+        "bytes": 437,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-06.txt",
+        "sha256": "76dca82f8a57557333edda4f19dd1b3febad97499d23161bebcc32943fc4364a"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/src/execution/mod.rs b/src/execution/mod.rs",
+        "bytes": 243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-07.txt",
+        "sha256": "7220e2e15ee2144d8c8aed53304ea6b3d818f4640209d087b6ca018d66ffb11d"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/src/expression/mod.rs b/src/expression/mod.rs",
+        "bytes": 2933,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-08.txt",
+        "sha256": "d6e9c2a22b75aea97500e16279bd7202e952b5c88af4c17f8d654ebc8ddb6061"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/src/expression/range_detacher.rs b/src/expression/range_detacher.rs",
+        "bytes": 7100,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-09.txt",
+        "sha256": "a2634773b7f04846e7ebc797a251f3b341f5ad1aef20763d48c0982bab66a623"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/src/optimizer/core/histogram.rs b/src/optimizer/core/histogram.rs",
+        "bytes": 320,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-10.txt",
+        "sha256": "62cc057563d99dfc9f65a2259f4dc0f43350071f6294d87cfa808926533bc19a"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/src/optimizer/core/statistics_meta.rs b/src/optimizer/core/statistics_meta.rs",
+        "bytes": 332,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-11.txt",
+        "sha256": "d6536c004294d27c8226889a5739af985e99596883bc5b3a9100df736808f10a"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/src/optimizer/rule/normalization/elimination.rs b/src/optimizer/rule/normalization/elimination.rs",
+        "bytes": 440,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-12.txt",
+        "sha256": "59dac3bd606fd04c32afe36ff6ddbeade7aede360396ebcdd5896c849041d19d"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/src/optimizer/rule/normalization/parameterized_index.rs b/src/optimizer/rule/normalization/parameterized_index.rs",
+        "bytes": 510,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-13.txt",
+        "sha256": "22ff9312fd30f969775b54308dd724306ba6cb092375d81e747607b9fbcd1284"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/src/optimizer/rule/normalization/pushdown_predicates.rs b/src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "bytes": 3717,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-14.txt",
+        "sha256": "c59f574acc0459764cfea143be43a7d8a12c83753559d0b211a87d04bf8dde40"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/src/optimizer/rule/normalization/simplification.rs b/src/optimizer/rule/normalization/simplification.rs",
+        "bytes": 1977,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-15.txt",
+        "sha256": "8ac803700054ef06089477ea75b11ed18d730f1089156dde2eb36775fcdebf9e"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/src/orm/ddl.rs b/src/orm/ddl.rs",
+        "bytes": 414,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-16.txt",
+        "sha256": "73267750c1375997e1694dac36a9dbb0306ec1232fa251cd995e969d98535c8a"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/src/planner/arena.rs b/src/planner/arena.rs",
+        "bytes": 394,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-17.txt",
+        "sha256": "6fe53445e73d8b4155bb0bd3152720c2c56948eb74cc2da9992171d6caf8e25a"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/src/planner/operator/create_index.rs b/src/planner/operator/create_index.rs",
+        "bytes": 723,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-18.txt",
+        "sha256": "975c48d9f68487cebf21a508d259e961cb0cfc2e8e8d59adbe30d7537ab4236f"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/src/planner/operator/mod.rs b/src/planner/operator/mod.rs",
+        "bytes": 342,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-19.txt",
+        "sha256": "bf40e93e8bced1924ef0e2455a5b7e71c2d7777602ae5f018533d052eb72dcfb"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/src/planner/operator/table_scan.rs b/src/planner/operator/table_scan.rs",
+        "bytes": 848,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-20.txt",
+        "sha256": "855ab580e3d6f4c0f53fc2c5accc28480566781e4a8fa9fcc9a6c5aa676c737f"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/src/planner/operator/visitor.rs b/src/planner/operator/visitor.rs",
+        "bytes": 703,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-21.txt",
+        "sha256": "afa2e9314004d01672c4b2e6fe7f145e7a17b79da38a9cab8446fb1031961b05"
+      },
+      {
+        "index": 22,
+        "file": "diff --git a/src/planner/operator/visitor_mut.rs b/src/planner/operator/visitor_mut.rs",
+        "bytes": 439,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-22.txt",
+        "sha256": "867eb5d5a1b5187b2d120b095c22f6d727068b4e920edbfa98fd17c831e57287"
+      },
+      {
+        "index": 23,
+        "file": "diff --git a/src/storage/mod.rs b/src/storage/mod.rs",
+        "bytes": 2608,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-23.txt",
+        "sha256": "3e210b348231b01f50b7e1f5e8246f36249673f121a4716ca90bb06d197b97ab"
+      },
+      {
+        "index": 24,
+        "file": "diff --git a/src/storage/table_codec.rs b/src/storage/table_codec.rs",
+        "bytes": 7243,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-24.txt",
+        "sha256": "c558bea1746a0e149141c815faf1b2a18f227d5ecf40c81f52cce6c712f5c3a5"
+      },
+      {
+        "index": 25,
+        "file": "diff --git a/src/types/index.rs b/src/types/index.rs",
+        "bytes": 2594,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-05-section-25.txt",
+        "sha256": "0d48c75f0254b6d33cec1f8ac9ff8aed0e0e8c3f424c5108b14129f363507213"
+      }
+    ]
+  },
+  {
+    "index": 6,
+    "source": {
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/artifacts/solution.patch",
+      "bytes": 68353,
+      "sha256": "c2e553bdef19a6b23994d7f54b37418c384f3cea8b29942e8375f8cdf013c2a0",
+      "kind": "artifact",
+      "status": "partial_semantic_inspection",
+      "extents": [
+        "Full sections 11,21,22,23,24,27",
+        "section 9 patch-local lines 1\u2013410",
+        "section16 added lines only",
+        "selected changed lines in sections0,3,4,5,7,14"
+      ],
+      "unread": "Remaining lowering, exhaustiveness tail, metadata and backend diff portions; no whole-patch claim."
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/dora-bytecode/src/data.rs b/dora-bytecode/src/data.rs",
+        "bytes": 994,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-00.txt",
+        "sha256": "66a742795a338dcdefe52ef16211b7868cae432a9e2e0f7ef1079a553da26c62"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/dora-bytecode/src/dumper.rs b/dora-bytecode/src/dumper.rs",
+        "bytes": 614,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-01.txt",
+        "sha256": "fdbd1e4009a0624bbeab99d77caf4e9ff47d36e927e5858edd889811c799005b"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/dora-bytecode/src/opcode.rs b/dora-bytecode/src/opcode.rs",
+        "bytes": 263,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-02.txt",
+        "sha256": "4b3039dee3ecc0cefd468c75f318a69de4464fb70f417a458118588db7cfaf7e"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/dora-bytecode/src/reader.rs b/dora-bytecode/src/reader.rs",
+        "bytes": 1561,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-03.txt",
+        "sha256": "bbcc2421b9a2bdeaf584b46e9196561c51779c179d04b202a9c892e40870574e"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/dora-bytecode/src/verifier.rs b/dora-bytecode/src/verifier.rs",
+        "bytes": 1215,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-04.txt",
+        "sha256": "9a905d31d7b6d31859be410e67052be366a02d758e3bc8327fa3b8b44fa58638"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/dora-bytecode/src/writer.rs b/dora-bytecode/src/writer.rs",
+        "bytes": 600,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-05.txt",
+        "sha256": "276b6d9a133ee32b9c8119b0af56a0f60b1c0635c110b20a368f077dc1b2084f"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/dora-cannon-compiler/src/asm.rs b/dora-cannon-compiler/src/asm.rs",
+        "bytes": 263,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-06.txt",
+        "sha256": "7da1db8729664557d7d250a374d431888dcd509fa3cfc54eee8f5a0ed7744f50"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/dora-cannon-compiler/src/codegen.rs b/dora-cannon-compiler/src/codegen.rs",
+        "bytes": 2790,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-07.txt",
+        "sha256": "00ab3bd04a6c4e605885f703e186dbe14290cb71d48c5aa0bf3dba7cfbab54f3"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/dora-compiler/src/closure.rs b/dora-compiler/src/closure.rs",
+        "bytes": 1068,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-08.txt",
+        "sha256": "c3fd7fd9b19de01148be4ccfab3caa537eea743d15eeb5382d109662bd3cd453"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/dora-frontend/src/exhaustiveness.rs b/dora-frontend/src/exhaustiveness.rs",
+        "bytes": 13072,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-09.txt",
+        "sha256": "611efa077469607e91cbfaba10a9d6d7e85b0cf95c84abd38c359ac4b63c28f0"
+      },
+      {
+        "index": 10,
+        "file": "diff --git a/dora-frontend/src/generator/bytecode.rs b/dora-frontend/src/generator/bytecode.rs",
+        "bytes": 707,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-10.txt",
+        "sha256": "be746aa82dd4aab7a934ce06385a65b7d70c0d1e0f5888008db9840c809b14b9"
+      },
+      {
+        "index": 11,
+        "file": "diff --git a/dora-frontend/src/generator/pattern.rs b/dora-frontend/src/generator/pattern.rs",
+        "bytes": 2111,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-11.txt",
+        "sha256": "8fc5e2a04144f9b4bb7640b8d49613dbe9cec69fb0265ed8c2f7ac9f41d5e67d"
+      },
+      {
+        "index": 12,
+        "file": "diff --git a/dora-frontend/src/sema.rs b/dora-frontend/src/sema.rs",
+        "bytes": 424,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-12.txt",
+        "sha256": "f8576a29b9dccbb7aed7c78eee6fea8c27ef17f811d0ea7ac4fe1bf59f8ff029"
+      },
+      {
+        "index": 13,
+        "file": "diff --git a/dora-frontend/src/sema/body.rs b/dora-frontend/src/sema/body.rs",
+        "bytes": 757,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-13.txt",
+        "sha256": "a23c6d7be9af044cf8e7be7c4b8e6e3d7bcc837c110ebc9f3303d0032aa8ed04"
+      },
+      {
+        "index": 14,
+        "file": "diff --git a/dora-frontend/src/sema/impl_matching.rs b/dora-frontend/src/sema/impl_matching.rs",
+        "bytes": 4799,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-14.txt",
+        "sha256": "5fe34142dab4c5ccc33bf8c9129dc2ff496d78aee996a2e98dbdefe6df15f67c"
+      },
+      {
+        "index": 15,
+        "file": "diff --git a/dora-frontend/src/sema/matching.rs b/dora-frontend/src/sema/matching.rs",
+        "bytes": 191,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-15.txt",
+        "sha256": "19c8870eab4a006e1815843b5dd0ddf713f16776e032b727898aae6603e6db30"
+      },
+      {
+        "index": 16,
+        "file": "diff --git a/dora-frontend/src/typeck/pattern.rs b/dora-frontend/src/typeck/pattern.rs",
+        "bytes": 5178,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-16.txt",
+        "sha256": "a432e3c304455f8c05bc074752892c421af8921353108a127c74a98f93726239"
+      },
+      {
+        "index": 17,
+        "file": "diff --git a/pkgs/boots/bytecode/dump.dora b/pkgs/boots/bytecode/dump.dora",
+        "bytes": 511,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-17.txt",
+        "sha256": "f185d893230fb40ea01f8affe41138137b7d255ac925a35873e8e058a5baf442"
+      },
+      {
+        "index": 18,
+        "file": "diff --git a/pkgs/boots/bytecode/instruction.dora b/pkgs/boots/bytecode/instruction.dora",
+        "bytes": 289,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-18.txt",
+        "sha256": "d4870535a6b84eafeeb03e68feafbe560e25dd1c82f5f2a8c5d893085fa39511"
+      },
+      {
+        "index": 19,
+        "file": "diff --git a/pkgs/boots/bytecode/opcode.dora b/pkgs/boots/bytecode/opcode.dora",
+        "bytes": 559,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-19.txt",
+        "sha256": "14592e3842e2bd96f20292c3d8842349ffa1bf16e7ce9ae64b1a654a993fa89c"
+      },
+      {
+        "index": 20,
+        "file": "diff --git a/pkgs/boots/bytecode/reader.dora b/pkgs/boots/bytecode/reader.dora",
+        "bytes": 734,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-20.txt",
+        "sha256": "68f0c3aa543148a84ca07a80577906b3c0405ae09ef69edaf39c28b4d8ad2ce0"
+      },
+      {
+        "index": 21,
+        "file": "diff --git a/pkgs/boots/bytecode_graph_builder.dora b/pkgs/boots/bytecode_graph_builder.dora",
+        "bytes": 2280,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-21.txt",
+        "sha256": "1084cbb05efc576453afbfa58af02c873a4527c5e807662b41d53ddde5f3239d"
+      },
+      {
+        "index": 22,
+        "file": "diff --git a/pkgs/boots/codegen.dora b/pkgs/boots/codegen.dora",
+        "bytes": 343,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-22.txt",
+        "sha256": "4a0db1916f0131cd73b59ced9a2a9993fe7a5f0f1b63be4d68ecb9233023f453"
+      },
+      {
+        "index": 23,
+        "file": "diff --git a/pkgs/boots/codegen/arm64.dora b/pkgs/boots/codegen/arm64.dora",
+        "bytes": 427,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-23.txt",
+        "sha256": "e7c57c10135248431d550010ecb2057fb8e3daa8865ea75bc3f03edeeecf2b2b"
+      },
+      {
+        "index": 24,
+        "file": "diff --git a/pkgs/boots/codegen/x64.dora b/pkgs/boots/codegen/x64.dora",
+        "bytes": 420,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-24.txt",
+        "sha256": "a0a1a0777e3d4f648f646d18ba81f62268c77d2a0dbc84e379eb66bf5da7bf9d"
+      },
+      {
+        "index": 25,
+        "file": "diff --git a/pkgs/boots/graph.dora b/pkgs/boots/graph.dora",
+        "bytes": 689,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-25.txt",
+        "sha256": "ea399e47e10c8bd157db15575317004c6f3225297d5d1b32ff69b54a92200602"
+      },
+      {
+        "index": 26,
+        "file": "diff --git a/pkgs/boots/graph/dump.dora b/pkgs/boots/graph/dump.dora",
+        "bytes": 171,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-26.txt",
+        "sha256": "abe5cdee06bfb17c83483c0ae115058b66887af89f234605cc37ed0cec937d60"
+      },
+      {
+        "index": 27,
+        "file": "diff --git a/pkgs/boots/graph/verifier.dora b/pkgs/boots/graph/verifier.dora",
+        "bytes": 309,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-27.txt",
+        "sha256": "920ca1948bfbd004e9aa96ca6812d4ec9f35b55da368bb184f7a19c28b7e6b7c"
+      },
+      {
+        "index": 28,
+        "file": "diff --git a/pkgs/boots/location.dora b/pkgs/boots/location.dora",
+        "bytes": 141,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-28.txt",
+        "sha256": "ce19bb5fec5312dac117f01ae56c9707ffda6143c49ab41e62a509b3107430d3"
+      },
+      {
+        "index": 29,
+        "file": "diff --git a/pkgs/boots/store_elimination.dora b/pkgs/boots/store_elimination.dora",
+        "bytes": 166,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-29.txt",
+        "sha256": "79d105501a4d64701e90a3325acbf10331be150d3468c7bda1a607dd56497e5a"
+      },
+      {
+        "index": 30,
+        "file": "diff --git a/tools/bytecode.toml b/tools/bytecode.toml",
+        "bytes": 143,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-30.txt",
+        "sha256": "59d896005b2279cf6d4197022f94d6a7d24641ee7e6b2ace2c4011559457163c"
+      }
+    ]
+  },
+  {
+    "index": 7,
+    "source": {
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+      "bytes": 57807,
+      "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+      "kind": "artifact",
+      "status": "partial_semantic_inspection",
+      "extents": [
+        "Full sections0,2,3",
+        "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+      ],
+      "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs",
+        "bytes": 5499,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-00.txt",
+        "sha256": "86967d25857720f3059d29a113a3f569747c1720c0aeff81724305027d01c31e"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs",
+        "bytes": 30831,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-01.txt",
+        "sha256": "8e5c9dc5b489fcc43665183ab7a8f74d1e5e6a7f6eacef983b6968ec10806a4f"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs",
+        "bytes": 206,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-02.txt",
+        "sha256": "e1e1d7b3eb18a1d55693bc5be7b75cada07a9689f29ea691b28d591ff8be6ff7"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs",
+        "bytes": 5119,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-03.txt",
+        "sha256": "9be2bd252a0db35bcda697ddd235db95a4aaf5a89fe9866018122a3676de9f0c"
+      }
+    ]
+  },
+  {
+    "index": 8,
+    "source": {
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch",
+      "bytes": 59216,
+      "sha256": "95c60a6ff4e42dcaeef858c48ce603eaea3abff779366515a4b981316dcb6ad4",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs",
+        "bytes": 5499,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-08-section-00.txt",
+        "sha256": "86967d25857720f3059d29a113a3f569747c1720c0aeff81724305027d01c31e"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs",
+        "bytes": 32248,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-08-section-01.txt",
+        "sha256": "24a2737171247abc4f2bb713eaa5902ff78078e079a9a04f314b09ef8d88138a"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs",
+        "bytes": 206,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-08-section-02.txt",
+        "sha256": "e1e1d7b3eb18a1d55693bc5be7b75cada07a9689f29ea691b28d591ff8be6ff7"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs",
+        "bytes": 5119,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-08-section-03.txt",
+        "sha256": "9be2bd252a0db35bcda697ddd235db95a4aaf5a89fe9866018122a3676de9f0c"
+      }
+    ]
+  },
+  {
+    "index": 9,
+    "source": {
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch",
+      "bytes": 59413,
+      "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs",
+        "bytes": 5643,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-09-section-00.txt",
+        "sha256": "6faf267c9045ef2703b5b545af23da3edd15aa950948fec3b5d5ce719e96f25b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs",
+        "bytes": 32301,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-09-section-01.txt",
+        "sha256": "502c4b9274b1ef74fc749e73a7cafddc781b3a2393ff6259ca0d169dd54b1ac9"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs",
+        "bytes": 206,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-09-section-02.txt",
+        "sha256": "e1e1d7b3eb18a1d55693bc5be7b75cada07a9689f29ea691b28d591ff8be6ff7"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs",
+        "bytes": 5119,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-09-section-03.txt",
+        "sha256": "9be2bd252a0db35bcda697ddd235db95a4aaf5a89fe9866018122a3676de9f0c"
+      }
+    ]
+  },
+  {
+    "index": 10,
+    "source": {
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/solution.patch",
+      "bytes": 51156,
+      "sha256": "3369ded437806aae7135bb3d172eb2e19e7998cbe9027017ac87dd8ae93e3be8",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/crates/ide-completion/src/completions.rs b/crates/ide-completion/src/completions.rs",
+        "bytes": 1624,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-00.txt",
+        "sha256": "9af1b98baff124ddce3748c2169f49015537de50cae1465c6390ddc1eacc67fc"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs",
+        "bytes": 15501,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-01.txt",
+        "sha256": "10d0a0f27ffffc2ae060b7fb5824f7740b380b511398698271216f300a13f4f5"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs",
+        "bytes": 21627,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-02.txt",
+        "sha256": "ab8a5f68db5dce2fea43ea67f3ad786554a76553c92e90fd703614480733ea32"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs",
+        "bytes": 420,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-03.txt",
+        "sha256": "aedbad3a118d531e30c03ffb533285ff498a0dc9c3b2e7d477538c0a8d31eaa6"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs",
+        "bytes": 3061,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-04.txt",
+        "sha256": "8dbcf312ac30357c1d420807813cfbdbb459b4f63ccf8812afa2abc8a47a42c9"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/crates/ide-completion/src/tests/expression.rs b/crates/ide-completion/src/tests/expression.rs",
+        "bytes": 164,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-10-section-05.txt",
+        "sha256": "a15fcb9452005743c21c527be19d30872e75f91afe2f8db824590c9657dcc068"
+      }
+    ]
+  },
+  {
+    "index": 11,
+    "source": {
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+      "bytes": 25443,
+      "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44",
+      "kind": "artifact",
+      "status": "full_semantic_inspection",
+      "extents": [
+        "Entire 25,443-byte patch in an untruncated tool response."
+      ],
+      "unread": "Two other saved revisions, raw historical executions, solver payloads and ZIP contents remain unaudited."
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/scylla/src/client/caching_session.rs b/scylla/src/client/caching_session.rs",
+        "bytes": 832,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-00.txt",
+        "sha256": "0508277b88fac35c1d8f80606b8a5f9b2b6137ba4b46231584729b2689c6547b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/scylla/src/client/mod.rs b/scylla/src/client/mod.rs",
+        "bytes": 130,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-01.txt",
+        "sha256": "ba7ebaa43e77e87085c90c92d46210dcdb9fae046e8925fbdd2db778988cd97c"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs",
+        "bytes": 3101,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-02.txt",
+        "sha256": "82f76ee786ee0759162bc7faad454d1959a21d623ee9f5b383ebc7005d3bd93c"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs",
+        "bytes": 1151,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-03.txt",
+        "sha256": "dce2b04b0bc7e0ae4c1903fc19e96d91b38a8cae80754a35c2b5e3e872535075"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs",
+        "bytes": 4160,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-04.txt",
+        "sha256": "b20525fd46b6cda919a6a8c4ae4eb292a82ff36b0ba5733deaac4635dee4d34b"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/scylla/src/cluster/worker.rs b/scylla/src/cluster/worker.rs",
+        "bytes": 226,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-05.txt",
+        "sha256": "3c1d8bc286464fa82bfa97600e86ae5eaa24e411c77ed8e04545ad348be12067"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/scylla/src/policies/load_balancing/default.rs b/scylla/src/policies/load_balancing/default.rs",
+        "bytes": 1971,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-06.txt",
+        "sha256": "f8d16a0d361b189bbdd351d0b70dc40a8ffc73e77b6a759de11217b61eb75460"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/scylla/src/policies/load_balancing/mod.rs b/scylla/src/policies/load_balancing/mod.rs",
+        "bytes": 659,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-07.txt",
+        "sha256": "339ad86eb95fe8afbf6c1ef1707e86428cc924c1ae1de9f50d6ea05583f37b8d"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs",
+        "bytes": 3467,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-08.txt",
+        "sha256": "48d88f0e078295a003b6334e04562fb0e0676dd342e748d0d5e81f0918c0e7d4"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/scylla/tests/integration/session/pager.rs b/scylla/tests/integration/session/pager.rs",
+        "bytes": 381,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-11-section-09.txt",
+        "sha256": "64e328920806b398873291863c1d77c99bfe647828444eed41c1f2668ed83c68"
+      }
+    ]
+  },
+  {
+    "index": 12,
+    "source": {
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch",
+      "bytes": 24104,
+      "sha256": "c2bf2ce0176aadc6c214453029409cf44ac71462a30852e04a68d724585523c3",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/scylla/src/client/caching_session.rs b/scylla/src/client/caching_session.rs",
+        "bytes": 832,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-00.txt",
+        "sha256": "0508277b88fac35c1d8f80606b8a5f9b2b6137ba4b46231584729b2689c6547b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/scylla/src/client/mod.rs b/scylla/src/client/mod.rs",
+        "bytes": 130,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-01.txt",
+        "sha256": "ba7ebaa43e77e87085c90c92d46210dcdb9fae046e8925fbdd2db778988cd97c"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs",
+        "bytes": 2658,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-02.txt",
+        "sha256": "9a550c31c8730a4d9faf6f354c3400893fe7c721cb6d0cfb4ace693337b1a32d"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs",
+        "bytes": 4187,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-03.txt",
+        "sha256": "9e4b406c47d47f711e892616e3fb424a145eb54b22a544e0e7a599153ab399e2"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/scylla/src/cluster/worker.rs b/scylla/src/cluster/worker.rs",
+        "bytes": 226,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-04.txt",
+        "sha256": "3c1d8bc286464fa82bfa97600e86ae5eaa24e411c77ed8e04545ad348be12067"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/scylla/src/policies/load_balancing/default.rs b/scylla/src/policies/load_balancing/default.rs",
+        "bytes": 1971,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-05.txt",
+        "sha256": "f8d16a0d361b189bbdd351d0b70dc40a8ffc73e77b6a759de11217b61eb75460"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/scylla/src/policies/load_balancing/mod.rs b/scylla/src/policies/load_balancing/mod.rs",
+        "bytes": 659,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-06.txt",
+        "sha256": "339ad86eb95fe8afbf6c1ef1707e86428cc924c1ae1de9f50d6ea05583f37b8d"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs",
+        "bytes": 3484,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-07.txt",
+        "sha256": "f45e3ab53c7fedced04d9d3b10b58bae11cefd93f2f1f07fc3730c6d5dc42589"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs",
+        "bytes": 1151,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-12-section-08.txt",
+        "sha256": "dce2b04b0bc7e0ae4c1903fc19e96d91b38a8cae80754a35c2b5e3e872535075"
+      }
+    ]
+  },
+  {
+    "index": 13,
+    "source": {
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-gap-pre-v16/solution.patch",
+      "bytes": 58594,
+      "sha256": "c5a83c205851ef0c5c1084a84a4805d1cc4a12b534e8691558c5229557b1c9ac",
+      "kind": "artifact",
+      "status": "structure_only",
+      "extents": [
+        "Diff file names and addition/deletion counts only."
+      ]
+    },
+    "sections": [
+      {
+        "index": 0,
+        "file": "diff --git a/scylla/src/client/caching_session.rs b/scylla/src/client/caching_session.rs",
+        "bytes": 832,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-00.txt",
+        "sha256": "0508277b88fac35c1d8f80606b8a5f9b2b6137ba4b46231584729b2689c6547b"
+      },
+      {
+        "index": 1,
+        "file": "diff --git a/scylla/src/client/mod.rs b/scylla/src/client/mod.rs",
+        "bytes": 130,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-01.txt",
+        "sha256": "ba7ebaa43e77e87085c90c92d46210dcdb9fae046e8925fbdd2db778988cd97c"
+      },
+      {
+        "index": 2,
+        "file": "diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs",
+        "bytes": 2658,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-02.txt",
+        "sha256": "9a550c31c8730a4d9faf6f354c3400893fe7c721cb6d0cfb4ace693337b1a32d"
+      },
+      {
+        "index": 3,
+        "file": "diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs",
+        "bytes": 1151,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-03.txt",
+        "sha256": "dce2b04b0bc7e0ae4c1903fc19e96d91b38a8cae80754a35c2b5e3e872535075"
+      },
+      {
+        "index": 4,
+        "file": "diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs",
+        "bytes": 4160,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-04.txt",
+        "sha256": "b20525fd46b6cda919a6a8c4ae4eb292a82ff36b0ba5733deaac4635dee4d34b"
+      },
+      {
+        "index": 5,
+        "file": "diff --git a/scylla/src/cluster/worker.rs b/scylla/src/cluster/worker.rs",
+        "bytes": 226,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-05.txt",
+        "sha256": "3c1d8bc286464fa82bfa97600e86ae5eaa24e411c77ed8e04545ad348be12067"
+      },
+      {
+        "index": 6,
+        "file": "diff --git a/scylla/src/policies/load_balancing/default.rs b/scylla/src/policies/load_balancing/default.rs",
+        "bytes": 1971,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-06.txt",
+        "sha256": "f8d16a0d361b189bbdd351d0b70dc40a8ffc73e77b6a759de11217b61eb75460"
+      },
+      {
+        "index": 7,
+        "file": "diff --git a/scylla/src/policies/load_balancing/mod.rs b/scylla/src/policies/load_balancing/mod.rs",
+        "bytes": 659,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-07.txt",
+        "sha256": "339ad86eb95fe8afbf6c1ef1707e86428cc924c1ae1de9f50d6ea05583f37b8d"
+      },
+      {
+        "index": 8,
+        "file": "diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs",
+        "bytes": 3467,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-08.txt",
+        "sha256": "48d88f0e078295a003b6334e04562fb0e0676dd342e748d0d5e81f0918c0e7d4"
+      },
+      {
+        "index": 9,
+        "file": "diff --git a/scylla/tests/paging_affinity_regression.rs b/scylla/tests/paging_affinity_regression.rs",
+        "bytes": 34416,
+        "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-13-section-09.txt",
+        "sha256": "73b5bdf6e23de80af322b1caf9bd029f0ea597b8c90256c18af25078e415cb12"
+      }
+    ]
+  }
+]

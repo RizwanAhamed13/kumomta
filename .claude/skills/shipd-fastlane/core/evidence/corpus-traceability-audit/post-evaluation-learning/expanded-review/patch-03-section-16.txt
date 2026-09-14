@@ -1,0 +1,8 @@
+diff --git a/src/orm/ddl.rs b/src/orm/ddl.rs
+@@ -427,19 +427,19 @@ fn execute_create_index<S: Storage>(
+-        let mut columns = Vec::with_capacity(column_names.len());
++        let mut expressions = Vec::with_capacity(column_names.len());
+-            columns.push(column);
++            expressions.push(ScalarExpression::column_expr(column, expressions.len()));
+-            columns,
++            expressions,

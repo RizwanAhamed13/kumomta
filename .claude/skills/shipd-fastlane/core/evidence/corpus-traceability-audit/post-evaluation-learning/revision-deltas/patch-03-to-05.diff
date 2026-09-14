@@ -1,0 +1,167 @@
+--- kitesql-expression-index-core/solution.patch
++++ kitesql-expression-index-v5-mixed-types/solution.patch
+@@ -40,10 +40,10 @@
+                  if_not_exists,
+                  ty,
+ diff --git a/src/binder/parser.rs b/src/binder/parser.rs
+-index 91129eb..4feb01c 100644
++index 91129eb..90cd62e 100644
+ --- a/src/binder/parser.rs
+ +++ b/src/binder/parser.rs
+-@@ -841,35 +841,122 @@ where
++@@ -841,35 +841,139 @@ where
+              .name
+              .ok_or(DatabaseError::InvalidIndex)
+              .and_then(sql_object_name)?;
+@@ -54,12 +54,10 @@
+ -        let mut columns = Vec::with_capacity(create.columns.len());
+ +        let input_schema = input.output_schema(self.arena).clone();
+ +        let key_count = create.columns.len();
+-+        let unique = create.unique;
+ +        let mut expressions = Vec::with_capacity(create.columns.len());
+  
+--        for index_column in create.columns {
++         for index_column in create.columns {
+ -            match self
+-+        for (key_position, index_column) in create.columns.into_iter().enumerate() {
+ +            let expression = self
+                  .binder
+ -                .bind_expr(&index_column.column.expr, self.arena)?
+@@ -72,7 +70,7 @@
+ +                .bind_expr(&index_column.column.expr, self.arena)?;
+ +            match &expression {
+ +                ScalarExpression::ColumnRef { .. } => {}
+-+                _ if !unique && (key_count == 1 || (key_count == 2 && key_position == 1)) => {
+++                _ if key_count == 1 => {
+ +                    if !Self::validate_index_expression(&expression, &input_schema, self.arena)? {
+ +                        return Err(DatabaseError::UnsupportedStmt(
+ +                            "CREATE INDEX expressions must reference an indexed-table column"
+@@ -80,32 +78,13 @@
+ +                        ));
+ +                    }
+ +                }
+-+                _ if unique => {
+-+                    return Err(DatabaseError::UnsupportedStmt(
+-+                        "unique expression indexes are not supported".to_string(),
+-+                    ));
+-+                }
+ +                _ => {
+ +                    return Err(DatabaseError::UnsupportedStmt(
+-+                        "an expression key must be the sole key or the second key of a two-key index"
+-+                            .to_string(),
+++                        "expression indexes support exactly one key".to_string(),
+ +                    ));
+                  }
+              }
+ +            expressions.push(expression);
+-+        }
+-+
+-+        if key_count == 2 && !matches!(&expressions[1], ScalarExpression::ColumnRef { .. }) {
+-+            let ScalarExpression::ColumnRef { column, .. } = &expressions[0] else {
+-+                return Err(DatabaseError::UnsupportedStmt(
+-+                    "a composite expression index requires an ordinary leading key".to_string(),
+-+                ));
+-+            };
+-+            if *self.arena.column(*column).datatype() != LogicalType::Integer {
+-+                return Err(DatabaseError::UnsupportedStmt(
+-+                    "a composite expression index requires an INTEGER leading key".to_string(),
+-+                ));
+-+            }
+          }
+  
+          self.binder.bind_create_index(
+@@ -114,8 +93,7 @@
+ -            columns,
+ +            expressions,
+              create.if_not_exists,
+--            create.unique,
+-+            unique,
++             create.unique,
+              input,
+          )
+      }
+@@ -125,6 +103,10 @@
+ +        input_schema: &[ColumnRef],
+ +        arena: &PlanArena,
+ +    ) -> Result<bool, DatabaseError> {
+++        fn is_supported_literal(value: &DataValue) -> bool {
+++            matches!(value, DataValue::Int32(value) if *value >= 0)
+++        }
+++
+ +        fn validate_column(
+ +            column: ColumnRef,
+ +            input_schema: &[ColumnRef],
+@@ -148,7 +130,7 @@
+ +
+ +        match expression {
+ +            ScalarExpression::Binary {
+-+                op: expression::BinaryOperator::Plus | expression::BinaryOperator::Minus,
+++                op: op @ (expression::BinaryOperator::Plus | expression::BinaryOperator::Minus),
+ +                left_expr,
+ +                right_expr,
+ +                ..
+@@ -160,17 +142,50 @@
+ +                    ));
+ +                };
+ +                validate_column(*column, input_schema, arena)?;
+-+                let ScalarExpression::ColumnRef { column, .. } = right_expr.as_ref() else {
+++                match right_expr.as_ref() {
+++                    ScalarExpression::ColumnRef { column, .. } => {
+++                        validate_column(*column, input_schema, arena)?;
+++                    }
+++                    ScalarExpression::Constant(value)
+++                        if matches!(op, expression::BinaryOperator::Plus)
+++                            && is_supported_literal(value) => {}
+++                    _ => {
+++                        return Err(DatabaseError::UnsupportedStmt(
+++                            "CREATE INDEX arithmetic requires an INTEGER column or a non-negative integer literal as its right operand"
+++                                .to_string(),
+++                        ));
+++                    }
+++                }
+++                Ok(true)
+++            }
+++            ScalarExpression::TypeCast { expr, ty, .. }
+++                if *ty == LogicalType::Bigint
+++                    && matches!(expr.as_ref(), ScalarExpression::ColumnRef { .. }) =>
+++            {
+++                let ScalarExpression::ColumnRef { column, .. } = expr.as_ref() else {
+++                    unreachable!();
+++                };
+++                if !input_schema
+++                    .iter()
+++                    .any(|candidate| arena.same_column(*candidate, *column))
+++                {
+ +                    return Err(DatabaseError::UnsupportedStmt(
+-+                        "CREATE INDEX arithmetic requires an INTEGER column as its right operand"
+++                        "CREATE INDEX expressions must use columns from the indexed table"
+ +                            .to_string(),
+ +                    ));
+-+                };
+-+                validate_column(*column, input_schema, arena)?;
+++                }
+++                if !matches!(
+++                    arena.column(*column).datatype(),
+++                    LogicalType::Integer | LogicalType::Bigint
+++                ) {
+++                    return Err(DatabaseError::UnsupportedStmt(
+++                        "CREATE INDEX casts require an INTEGER or BIGINT source".to_string(),
+++                    ));
+++                }
+ +                Ok(true)
+ +            }
+ +            _ => Err(DatabaseError::UnsupportedStmt(
+-+                "CREATE INDEX supports only addition or subtraction of two INTEGER columns"
+++                "CREATE INDEX supports only integer addition, subtraction, and CAST(integer_column AS BIGINT)"
+ +                    .to_string(),
+ +            )),
+ +        }
+@@ -179,7 +194,7 @@
+      fn create_view(self, create: CreateView) -> Result<LogicalPlan, DatabaseError> {
+          let CreateView {
+              or_replace,
+-@@ -2153,7 +2240,7 @@ impl<'a, 'parent, T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<
++@@ -2153,7 +2257,7 @@ impl<'a, 'parent, T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<
+              }
+              Expr::Cast {
+                  expr, data_type, ..

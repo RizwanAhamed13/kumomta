@@ -1,0 +1,163 @@
+diff --git a/src/expression/range_detacher.rs b/src/expression/range_detacher.rs
+@@ -12,7 +12,6 @@
+-use crate::catalog::ColumnRef;
+@@ -212,9 +211,20 @@ impl Range {
++enum RangeTarget<'a> {
++    Column {
++        table_name: &'a str,
++        column_id: &'a ColumnId,
++    },
++    Expression {
++        expression: &'a ScalarExpression,
++        ty: LogicalType,
++        nullable: bool,
++    },
++}
++
+-    table_name: &'a str,
+-    column_id: &'a ColumnId,
++    target: RangeTarget<'a>,
+@@ -225,8 +235,29 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-            table_name,
+-            column_id,
++            target: RangeTarget::Column {
++                table_name,
++                column_id,
++            },
++            arena,
++        }
++    }
++
++    pub(crate) fn new_expression(
++        expression: &'a ScalarExpression,
++        ty: LogicalType,
++        arena: &'a PlanArena<'p>,
++    ) -> Self {
++        let nullable = match expression.unpack_alias_ref() {
++            ScalarExpression::ColumnRef { column, .. } => arena.column(*column).nullable(),
++            _ => true,
++        };
++        Self {
++            target: RangeTarget::Expression {
++                expression,
++                ty,
++                nullable,
++            },
+@@ -242,19 +273,13 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-                if let (Some(col), Some(val)) = (
+-                    left_expr.unpack_bound_col(false).map(|(column, _)| column),
+-                    right_expr.unpack_val(),
+-                ) {
++                if let Some(val) = right_expr.unpack_val() {
+-                        .new_range(*op, col, val, false)
++                        .new_range(*op, left_expr, val, false)
+-                } else if let (Some(val), Some(col)) = (
+-                    left_expr.unpack_val(),
+-                    right_expr.unpack_bound_col(false).map(|(column, _)| column),
+-                ) {
++                } else if let Some(val) = left_expr.unpack_val() {
+-                        .new_range(*op, col, val, true)
++                        .new_range(*op, right_expr, val, true)
+@@ -313,47 +338,20 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-            ScalarExpression::IsNull { expr, negated, .. } => match expr.as_ref() {
+-                ScalarExpression::ColumnRef { column, .. } => {
+-                    let column = self.arena.column(*column);
+-                    if let (Some(col_id), Some(col_table)) = (column.id(), column.table_name()) {
+-                        if &col_id == self.column_id && col_table.as_ref() == self.table_name {
+-                            return Ok(if *negated {
+-                                Some(DetachedPredicate::consumed(Range::Scope {
+-                                    min: Bound::Unbounded,
+-                                    max: Bound::Excluded(DataValue::Null),
+-                                }))
+-                            } else {
+-                                Some(DetachedPredicate::consumed(Range::Eq(DataValue::Null)))
+-                            });
++            ScalarExpression::IsNull { expr, negated, .. } => {
++                if self.matches_target(expr) {
++                    Some(DetachedPredicate::consumed(if *negated {
++                        Range::Scope {
++                            min: Bound::Unbounded,
++                            max: Bound::Excluded(DataValue::Null),
+-                    }
+-
++                    } else {
++                        Range::Eq(DataValue::Null)
++                    }))
++                } else {
+-                ScalarExpression::Constant(_)
+-                | ScalarExpression::Alias { .. }
+-                | ScalarExpression::TypeCast { .. }
+-                | ScalarExpression::IsNull { .. }
+-                | ScalarExpression::Unary { .. }
+-                | ScalarExpression::Binary { .. }
+-                | ScalarExpression::AggCall { .. }
+-                | ScalarExpression::In { .. }
+-                | ScalarExpression::Between { .. }
+-                | ScalarExpression::SubString { .. }
+-                | ScalarExpression::Position { .. }
+-                | ScalarExpression::Trim { .. }
+-                | ScalarExpression::ScalaFunction(_)
+-                | ScalarExpression::If { .. }
+-                | ScalarExpression::IfNull { .. }
+-                | ScalarExpression::NullIf { .. }
+-                | ScalarExpression::Coalesce { .. }
+-                | ScalarExpression::CaseWhen { .. }
+-                | ScalarExpression::WindowCall(_) => None,
+-                ScalarExpression::Tuple(_)
+-                | ScalarExpression::TableFunction(_)
+-                | ScalarExpression::Empty => unreachable!(),
+-            },
++            }
+@@ -776,13 +774,35 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-    fn _is_belong(&self, col: ColumnRef) -> bool {
+-        let col = self.arena.column(col);
+-        matches!(
+-            col.table_name()
+-                .map(|name| self.table_name == name.as_ref()),
+-            Some(true)
+-        )
++    fn matches_target(&self, expression: &ScalarExpression) -> bool {
++        match &self.target {
++            RangeTarget::Column {
++                table_name,
++                column_id,
++            } => expression
++                .unpack_bound_col(false)
++                .map(|(column_ref, _)| self.arena.column(column_ref))
++                .is_some_and(|column| {
++                    column.id() == Some(**column_id)
++                        && column
++                            .table_name()
++                            .is_some_and(|name| name.as_ref() == *table_name)
++                }),
++            RangeTarget::Expression {
++                expression: target, ..
++            } => expression.eq_ignore_colref_pos(target, self.arena),
++        }
++    }
++
++    fn target_type_and_nullable(&self, expression: &ScalarExpression) -> (LogicalType, bool) {
++        match &self.target {
++            RangeTarget::Column { .. } => expression
++                .unpack_bound_col(false)
++                .map(|(column_ref, _)| self.arena.column(column_ref))
++                .map(|column| (column.datatype().clone(), column.nullable()))
++                .unwrap_or((LogicalType::SqlNull, true)),
++            RangeTarget::Expression { ty, nullable, .. } => (ty.clone(), *nullable),
++        }
+@@ -821,14 +841,14 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-        col: ColumnRef,
++        expression: &ScalarExpression,
+-        let column = self.arena.column(col);
+-        if !self._is_belong(col) || column.id() != Some(*self.column_id) {
++        if !self.matches_target(expression) {
++        let (target_type, nullable) = self.target_type_and_nullable(expression);
+@@ -841,7 +861,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-        val = val.cast(column.datatype())?;
++        val = val.cast(&target_type)?;
+@@ -854,7 +874,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-                max: if column.nullable() {
++                max: if nullable {
+@@ -866,7 +886,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+-                max: if column.nullable() {
++                max: if nullable {

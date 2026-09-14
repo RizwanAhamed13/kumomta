@@ -1,0 +1,17 @@
+2026-09-13T04:50:24+05:30
+arch
+admin
+tailscale0       UNKNOWN        100.105.254.33/32 fd7a:115c:a1e0::6331:fe22/128 fe80::a358:b5ef:6484:2148/64 
+/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane
+Filesystem                  1B-blocks         Used    Available Use% Mounted on
+/dev/mapper/omarchy_root 835832512512 273728245760 561374785536  33% /home
+TARGET SOURCE                           FSTYPE OPTIONS
+/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home
+/mnt/ssd/docker 29.7.2
+TARGET SOURCE                       FSTYPE OPTIONS
+/      /dev/mapper/omarchy_root[/@] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=256,subvol=/@
+bccf67f1921a7bbc4e26c9aa1fbefd4dbc3d74e0
+1875c53276fcf0c61b03f79d4187918e520e77dca50a0d9f62c1603798cee753  /home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/input/problem.md
+3ef72439e59d1f3f1faccc96f16da3eae4ede1b6f74609ecb2386cf33dd97c27  scripts/test_result_gate.py
+7a400bacbb03dc39dc5cb60c5be780f69e05238da84f42a98ed1176ab052413a  scripts/partition_result_gate.py
+2b42587d4f9f9f16fb3deb3a854b52c8f70c333a17ba058115c4b0b766f0b103  .codex-plugin/plugin.json

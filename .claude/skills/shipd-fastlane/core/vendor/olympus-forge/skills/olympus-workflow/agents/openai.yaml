@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Workflow"
+  short_description: "Route the full stage-ordered Olympus workflow"
+  default_prompt: "Use $olympus-workflow to run this Shipd/Olympus challenge from its correct current stage through the complete workflow."

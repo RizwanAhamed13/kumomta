@@ -1,0 +1,572 @@
+[
+  {
+    "case_id": "any-sync-missing-binary-progress",
+    "record": ".olympus/cases/any-sync-missing-binary-progress/case.json",
+    "record_sha256": "c168b4cf1ddf8310a3d267d72c2d148112d0e6769b12182c56efc52d899143b1",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "calyx-inline-invoke-comb-second",
+    "record": ".olympus/cases/calyx-inline-invoke-comb-second/case.json",
+    "record_sha256": "c470e678c5a1f14ac414ad002b1afe468e6d3f38e8daae5a05083641a92a51cd",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5c",
+    "lesson_rows": 11,
+    "proof_records": 7,
+    "proof_states": {
+      "current": 3,
+      "stale": 4
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "copper-live-log-follow",
+    "record": ".olympus/cases/copper-live-log-follow/case.json",
+    "record_sha256": "7be8e38d53162e9fddacbe73493a25e603d31afc31abcccd0735df0f81a92c2d",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5c",
+    "lesson_rows": 1,
+    "proof_records": 6,
+    "proof_states": {
+      "current": 6
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "datafusion-ffi-custom-physical-expr",
+    "record": ".olympus/cases/datafusion-ffi-custom-physical-expr/case.json",
+    "record_sha256": "c2ca53763b624ffc10620330be62d2ae097078047f509f970fd2e35f1cd617d1",
+    "historical_verdict": "REJECT",
+    "historical_stage": "15",
+    "lesson_rows": 1,
+    "proof_records": 10,
+    "proof_states": {
+      "current": 7,
+      "stale": 3
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "delta-rs-restore-deletion-vectors",
+    "record": ".olympus/cases/delta-rs-restore-deletion-vectors/case.json",
+    "record_sha256": "017b268f175eb651c742ef613f16ebf2ed66aac9b37b2570cf7d1f9b6c207883",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5c",
+    "lesson_rows": 2,
+    "proof_records": 2,
+    "proof_states": {
+      "stale": 2
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "dora-trait-object-concrete-patterns",
+    "record": ".olympus/cases/dora-trait-object-concrete-patterns/case.json",
+    "record_sha256": "0810b295e8b85633fa9f65b6f2a933f225f6c707e1ad455db913ab712c238406",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5b",
+    "lesson_rows": 11,
+    "proof_records": 28,
+    "proof_states": {
+      "current": 4,
+      "stale": 24
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "gitoxide-commitgraph-writer",
+    "record": ".olympus/cases/gitoxide-commitgraph-writer/case.json",
+    "record_sha256": "c783d3db104775acf93c101ca68eab2f173e76d62bc9065397693995ec1901d0",
+    "historical_verdict": "REJECT",
+    "historical_stage": "candidate-audit",
+    "lesson_rows": 2,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "godot-rapier-shape-topology",
+    "record": ".olympus/cases/godot-rapier-shape-topology/case.json",
+    "record_sha256": "e2d5684ed75c7f4337cd0d00e7ae21a0594e6a352f99c61bad42ae9d851079f8",
+    "historical_verdict": "BLOCKED",
+    "historical_stage": "5",
+    "lesson_rows": 2,
+    "proof_records": 13,
+    "proof_states": {
+      "stale": 13
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "graft-configurable-page-size",
+    "record": ".olympus/cases/graft-configurable-page-size/case.json",
+    "record_sha256": "4dd51dd6ddd565eba906810027e793bef8e1a103cfc427be3f22f80a90de019e",
+    "historical_verdict": "QUALIFIED-PROVISIONAL",
+    "historical_stage": "artifact-builder-minimal-slice",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "icechunk-move-aware-rebase",
+    "record": ".olympus/cases/icechunk-move-aware-rebase/case.json",
+    "record_sha256": "7b824c47dc552ab1adb7b16d847bd67a99fd42800ad77730def206e4cb724e6c",
+    "historical_verdict": "REJECT",
+    "historical_stage": "11",
+    "lesson_rows": 0,
+    "proof_records": 1,
+    "proof_states": {
+      "current": 1
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "inko-async-traits",
+    "record": ".olympus/cases/inko-async-traits/case.json",
+    "record_sha256": "e97d6189f7971cc52f02f87345b8322d9e88748e4514e367cbc65d925321079d",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5c",
+    "lesson_rows": 0,
+    "proof_records": 1,
+    "proof_states": {
+      "current": 1
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "jj-absorb-descendant-destinations",
+    "record": ".olympus/cases/jj-absorb-descendant-destinations/case.json",
+    "record_sha256": "08ecdc427af80e3c2036864e5f9481ebce57c3a1551d915f5e612588d2747a45",
+    "historical_verdict": "REJECT",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "jj-reverse-absorb",
+    "record": ".olympus/cases/jj-reverse-absorb/case.json",
+    "record_sha256": "e3ae914b07ffe59fdfeb51ba2427b432149e8b7a9d6ec519c44d68e552e9061e",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5b",
+    "lesson_rows": 0,
+    "proof_records": 5,
+    "proof_states": {
+      "current": 5
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "kumomta-tsa-cancel",
+    "record": ".olympus/cases/kumomta-tsa-cancel/case.json",
+    "record_sha256": "2bb4f5e0d1cc6e7b49f95da986c7ca8dc753f76fdb4e6c9968d366ca9253cfcd",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5",
+    "lesson_rows": 6,
+    "proof_records": 9,
+    "proof_states": {
+      "current": 1,
+      "stale": 8
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "ladybug-composite-node-identity",
+    "record": ".olympus/cases/ladybug-composite-node-identity/case.json",
+    "record_sha256": "39255ecb76de743badd792c3ab4788efa369271beeaba25b5108bb6b54e77fbe",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5c",
+    "lesson_rows": 18,
+    "proof_records": 17,
+    "proof_states": {
+      "current": 1,
+      "stale": 16
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "ladybug-feature-pioneer-scout",
+    "record": ".olympus/cases/ladybug-feature-pioneer-scout/case.json",
+    "record_sha256": "641fadd1dea8652b81409bc49a8353ce28a665bb89bc8df3c6b36955c6dc5acd",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "ladybug-rel-art-index-feature-pioneer",
+    "record": ".olympus/cases/ladybug-rel-art-index-feature-pioneer/case.json",
+    "record_sha256": "5aa98834fe18e04ca6013789de0b43d8adf82321bdb14e3be4a57b6a12370043",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5c",
+    "lesson_rows": 6,
+    "proof_records": 11,
+    "proof_states": {
+      "current": 2,
+      "stale": 9
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "ladybug-rel-art-multipair-review-20260908",
+    "record": ".olympus/cases/ladybug-rel-art-multipair-review-20260908/case.json",
+    "record_sha256": "38e34051eb3625b8ed06b0e4a5f263ef06d56b6c55ba757842fe86d5ac32db78",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "0",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "ladybug-transaction-savepoints-feature-pioneer",
+    "record": ".olympus/cases/ladybug-transaction-savepoints-feature-pioneer/case.json",
+    "record_sha256": "38f6656debe67e10ed84c1fa09e648b383b92cf4e6dcdf5c538fdb3d8ebbc666",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "lisette-configurable-lint-levels",
+    "record": ".olympus/cases/lisette-configurable-lint-levels/case.json",
+    "record_sha256": "1218f9c9a994c4b72ec9851b4fd13baf7f6edf3747932e1f2b15ef499e169546",
+    "historical_verdict": "REJECT",
+    "historical_stage": "6",
+    "lesson_rows": 1,
+    "proof_records": 3,
+    "proof_states": {
+      "current": 1,
+      "stale": 2
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "lisette-default-field-values",
+    "record": ".olympus/cases/lisette-default-field-values/case.json",
+    "record_sha256": "67577a2b96adb9a6ead5eed4b222b316e3ec1e5e6d16646f4bf65cd940c2c71a",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5c",
+    "lesson_rows": 23,
+    "proof_records": 110,
+    "proof_states": {
+      "current": 2,
+      "stale": 108
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "lisette-select-option-as-bindings",
+    "record": ".olympus/cases/lisette-select-option-as-bindings/case.json",
+    "record_sha256": "b912cbf65204e5e3550ce00dc5d89e922c9cbe580e7e1b2a9adcb58d71e5a378",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "lisette-suffix-sequence-patterns",
+    "record": ".olympus/cases/lisette-suffix-sequence-patterns/case.json",
+    "record_sha256": "fbe4d5809ffe25a3bbacf70db28aa73aed7afbf444e10a3e92e2a64a1d5d3ecf",
+    "historical_verdict": "PASS",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "lisette-trailing-slice-rest-patterns",
+    "record": ".olympus/cases/lisette-trailing-slice-rest-patterns/case.json",
+    "record_sha256": "31ab3eb4a8d8f1a1330839a21a05940cac21bfc5840e5045fea22f68b9cb489a",
+    "historical_verdict": "REJECT",
+    "historical_stage": "16",
+    "lesson_rows": 6,
+    "proof_records": 6,
+    "proof_states": {
+      "current": 6
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "miri-tcp-happens-before",
+    "record": ".olympus/cases/miri-tcp-happens-before/case.json",
+    "record_sha256": "ed047f74646f6e7c571676a90ec83b8c34dcc8dd816de84d4ed4b0864ae5d135",
+    "historical_verdict": "PASS",
+    "historical_stage": "5b",
+    "lesson_rows": 0,
+    "proof_records": 6,
+    "proof_states": {
+      "current": 6
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "numaflow-priority-edges",
+    "record": ".olympus/cases/numaflow-priority-edges/case.json",
+    "record_sha256": "0f855781f3e082f9bf44194e4bcb182aaae12f32fd7b37b8997146610d963110",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 8,
+    "proof_states": {
+      "current": 1,
+      "stale": 7
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "opendata-terminal-storage-failure",
+    "record": ".olympus/cases/opendata-terminal-storage-failure/case.json",
+    "record_sha256": "f8433c4e36d59bfcf9515a318d1337a9e079cd13ee0ad13b88220a377e592142",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "0",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "otterlang-generic-nominal-instantiations",
+    "record": ".olympus/cases/otterlang-generic-nominal-instantiations/case.json",
+    "record_sha256": "74d5a44a641102ff4f0f13528b374bf5bd4c0ae3bf5d2509b5d9fbb88b6ac2ff",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "otterlang-match-exhaustiveness",
+    "record": ".olympus/cases/otterlang-match-exhaustiveness/case.json",
+    "record_sha256": "e8ca4e4b451f66bdb7c17cebb659253a81f3eee7d12220222d8d359ac65ee8c8",
+    "historical_verdict": "PASS",
+    "historical_stage": "13",
+    "lesson_rows": 0,
+    "proof_records": 6,
+    "proof_states": {
+      "current": 4,
+      "stale": 2
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "otterlang-struct-let-destructuring",
+    "record": ".olympus/cases/otterlang-struct-let-destructuring/case.json",
+    "record_sha256": "a1c46e02ccd503e2da26936a9f18afab93de899df075090f8750644eae3f0f7f",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "perry-profile-replay-b00e261f",
+    "record": ".olympus/cases/perry-profile-replay-b00e261f/case.json",
+    "record_sha256": "bbc5a702f26344247a8f673cf07bed457f46715ecfe6265faca17a380708a2f5",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5",
+    "lesson_rows": 31,
+    "proof_records": 55,
+    "proof_states": {
+      "stale": 55
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "pixi-global-path-cache",
+    "record": ".olympus/cases/pixi-global-path-cache/case.json",
+    "record_sha256": "0c7f9d3614a03b836fcbf3cd9c10f2081abce32b3832ff1a5c9db68f868303d9",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "rolldown-post-inline-dce",
+    "record": ".olympus/cases/rolldown-post-inline-dce/case.json",
+    "record_sha256": "7749632eba0a9493cf11608c069bce93217b3a8058cea8aa78b62813730443a0",
+    "historical_verdict": "PASS",
+    "historical_stage": "14e",
+    "lesson_rows": 1,
+    "proof_records": 8,
+    "proof_states": {
+      "current": 8
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "rust-analyzer-multi-macro-completion",
+    "record": ".olympus/cases/rust-analyzer-multi-macro-completion/case.json",
+    "record_sha256": "be4cc857b2c35ca9c77dee860b819cdd128f622e171e70d9dfec23c46113c1a6",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5",
+    "lesson_rows": 26,
+    "proof_records": 74,
+    "proof_states": {
+      "stale": 74
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "salsa-persistent-accumulators",
+    "record": ".olympus/cases/salsa-persistent-accumulators/case.json",
+    "record_sha256": "f4f5bb403d8353806b2fb4512464d8f92a1b448120700153a0ce4697d24191a0",
+    "historical_verdict": "REJECT",
+    "historical_stage": "5b",
+    "lesson_rows": 0,
+    "proof_records": 2,
+    "proof_states": {
+      "stale": 2
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "scryer-tabled-first-query",
+    "record": ".olympus/cases/scryer-tabled-first-query/case.json",
+    "record_sha256": "42a96688a3484a2c798cc43ec67c514b1741e8be371491709e8d58734660c2e9",
+    "historical_verdict": "PASS",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 1,
+    "proof_states": {
+      "current": 1
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "scylla-policy-aware-paging-affinity",
+    "record": ".olympus/cases/scylla-policy-aware-paging-affinity/case.json",
+    "record_sha256": "858a98c12d8bb431a2ac30a3267632c0b95d8afa09e735ff827b5dc00e529ccb",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "5",
+    "lesson_rows": 10,
+    "proof_records": 54,
+    "proof_states": {
+      "current": 5,
+      "stale": 49
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "stoolap-cold-temporal-history",
+    "record": ".olympus/cases/stoolap-cold-temporal-history/case.json",
+    "record_sha256": "8d19b9b892a3b76da9ba17e51cf2c6c2143dfa8d05aab5774b1589313c79d907",
+    "historical_verdict": "REJECT",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 2,
+    "proof_states": {
+      "current": 2
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "str0m-simulcast-rid-alternatives",
+    "record": ".olympus/cases/str0m-simulcast-rid-alternatives/case.json",
+    "record_sha256": "4cf0881cc3ebb0cedaaabcde79a320f6eef96de5dbe96becdf3ef6e4b64405ae",
+    "historical_verdict": "REJECT",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 1,
+    "proof_states": {
+      "current": 1
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "walrus-quorum-replication",
+    "record": ".olympus/cases/walrus-quorum-replication/case.json",
+    "record_sha256": "31c6331f62e6975c04c1025b3bd7875f25b862e7cf9e1494fa67574bc27ec897",
+    "historical_verdict": "PASS_LOCAL_REPAIR",
+    "historical_stage": "16-review-repair",
+    "lesson_rows": 2,
+    "proof_records": 9,
+    "proof_states": {
+      "current": 1,
+      "stale": 8
+    },
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "wgsl-analyzer-native-alias-analysis",
+    "record": ".olympus/cases/wgsl-analyzer-native-alias-analysis/case.json",
+    "record_sha256": "02959b5e5c041bd7199fa0e3f85699e5be8172e7bbe663c7553500155e8bc867",
+    "historical_verdict": "REJECT",
+    "historical_stage": "4",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  },
+  {
+    "case_id": "risingwave-full-lifecycle-backfill-admission",
+    "record": "artifacts/risingwave-full-lifecycle-admission/case.json",
+    "record_sha256": "a9d1a17c7dfcca6395f611f8540e8fb25af59ab6830837912a5afd5523fde8de",
+    "historical_verdict": "IN_PROGRESS",
+    "historical_stage": "16",
+    "lesson_rows": 0,
+    "proof_records": 0,
+    "proof_states": {},
+    "current_audit_inspection": "metadata keys/counts only",
+    "prior_semantic_inspection": "reported by original REPORT.md, no per-item read receipt"
+  }
+]

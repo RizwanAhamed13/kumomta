@@ -1,0 +1,37 @@
+{
+  "promoted_script": "scripts/thermal_guard.py",
+  "sha256": "7700182175e55385459e215779435f2cfa6fa124b9bdea4ffb5ac48fbe9cff04",
+  "source_path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/thermal-container-guard.py",
+  "byte_identical": true,
+  "validation": {
+    "temperature": 43.0,
+    "owned_container": "8701b9ad08d4273524b0d60fe5dc99f02aa16257dc10674f65fd2120e2be1e87",
+    "events": [
+      "NanoCpus=500000000; forced pause/resume; SIGTERM fail-closed pause",
+      "pre-existing pause retained",
+      "sensor failure exit5 pauses owned container"
+    ],
+    "status": "PASS",
+    "wall_seconds": 8.036
+  },
+  "evidence": [
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation.json",
+      "sha256": "85f33dce7ea497c67a74b4bc03a19a8529f038bb13cb0a3908157844a0866d9a"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-cycle.jsonl",
+      "sha256": "b7794f5530ce66c947c670ab7e450ecef9cbc599d5b1b9dfd7392435f7b29386"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-preexisting.jsonl",
+      "sha256": "d83951a849c46b85844f5decebb34f7379822f474f0b2a8f0353636519ba92ea"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-sensor-failure.jsonl",
+      "sha256": "f176e25db38af0ca02c3ae28f66db8159bc95a7a33795a8d8e5f330c3ef62cb7"
+    }
+  ],
+  "promotion_validation": "Source hash equivalence only; no new execution while shared compute slot held.",
+  "required_supervisor": "Pause only exact owned container on any premature guard exit."
+}

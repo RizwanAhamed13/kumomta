@@ -1,0 +1,22 @@
+diff --git a/dora-frontend/src/generator/bytecode.rs b/dora-frontend/src/generator/bytecode.rs
+@@ -617,6 +617,26 @@ impl BytecodeBuilder {
++    pub fn emit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        assert!(self.def(dest) && self.used(object));
++        self.writer.emit_test_trait_object_type(dest, object, idx);
++    }
++
++    pub fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        assert!(self.def(dest) && self.used(object));
++        self.writer.emit_load_trait_object_value(dest, object, idx);
++    }
++

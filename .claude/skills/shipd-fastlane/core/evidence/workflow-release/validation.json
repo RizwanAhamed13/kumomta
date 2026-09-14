@@ -1,0 +1,114 @@
+{
+  "started_utc": "2026-09-13T02:36:52.262418+00:00",
+  "hostname": "arch",
+  "cwd": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "purpose": "Final workflow/plugin release; synthetic fixtures only; no candidate build or execution",
+  "source_sha256": {
+    "scripts/contract_check.py": "893cccc8fabbb05bc24cfc9d7fb18ae001c882dd2804a309dabf054f58298efa",
+    "scripts/docker_contract.py": "4b0f7cbc1f12426eedfddc650914c0072420b06856438b2f732e757e2e807703",
+    "scripts/evidence_index.py": "e2a80ab5a74a8fd58a66e6ff79a8ccf3f63e9006bcc7a70e489e0e37b414595d",
+    "scripts/fastlane.py": "3eba19b7483119a693978b129fc6a13fd40560dfe9a15cdf1cb77542e5887084",
+    "scripts/partition_result_gate.py": "7a400bacbb03dc39dc5cb60c5be780f69e05238da84f42a98ed1176ab052413a",
+    "scripts/quality_gate.py": "84c403c4e6e079a682ee41f03a239138f1f16a0c01209754b633e04412e88829",
+    "scripts/test_result_gate.py": "3ef72439e59d1f3f1faccc96f16da3eae4ede1b6f74609ecb2386cf33dd97c27",
+    "scripts/thermal_guard.py": "5dfb7caa5a919017104b73351cc5253c16308c67382050ea3f8bae2b44a70e21",
+    "tests/test_docker_contract.py": "8924e5045b138d3d1d43164eb14daee5e01627e4e9bdf309437702b08f3a8c6f",
+    "tests/test_execution_receipts.py": "f82dd4094132790f71a50cd285d7db86e7ed775edb79e1a5f77d38fe8719cd53",
+    "tests/test_partition_result_gate.py": "d4dbab63a04d1a6a3cfa9146a96708b30398ee83733c24595bfce4e74567c20d",
+    "tests/test_quality_gate.py": "5c6dad8ff868dc01f531dfbd94b35460e94e58637a02a1da0b47fbdf68a9182e",
+    "tests/test_tools.py": "68ef853e4607bde6233efb06909a61e9228fab55a6d822a23ea306a2ad63e51c"
+  },
+  "external_readiness_runner_sha256": {
+    "/home/admin/olympus-work/fastlane-dogfood-20260912/post-evaluation-readiness-repair/runner-template.py": "54a86968c225f968ad77049eea788e35a56c695046c2240af1d2564a47074a2d",
+    "/home/admin/olympus-work/fastlane-dogfood-20260912/post-evaluation-readiness-repair/test_readiness_runner.py": "3f55d3380b92d5eccddb65648c8f6f29915dbe240830063cf88a440404d90eb7"
+  },
+  "document_sha256": {
+    "WORKFLOW.md": "f1833e7c0ff7b22c4370fe2f435829408f4ab48ef5e046182e8e5ee9ea87a70e",
+    "assets/delivery-checklist.md": "2402ac39b5d1fccb6b9ae648c645c510c81c44de735f920f96d69133f79c5d64",
+    "assets/case-plan.md": "1731cd07fbf45532f82cbffa7b32140d8c5c0a282533acb21455ac4b5151b7b4",
+    "knowledge/dogfood-lessons-20260913.md": "9a481e123067899a30aab0b5f91ed3128f744171397694b567971c702061217c",
+    "README.md": "26941fd55d167230515fdc1685a0a8e1eb96b028a4640c7b25b79d1eb89a71ea",
+    "skills/shipd-fastlane/SKILL.md": "4d7819ee0cea4287571fa94c279a057da4c8f654451057b26a360d328f45d387",
+    ".codex-plugin/plugin.json": "7c2af121ff7e263d9ac2dcdfdef8cab21003906ae184d8efbbdeedc062874c57"
+  },
+  "version": "1.0.0+codex.20260913023652",
+  "checks": [
+    {
+      "check": "cachebuster",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/admin/olympus-work/fastlane-routing-20260912/update_plugin_cachebuster.py",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.115,
+      "log": "evidence/workflow-release/cachebuster.log",
+      "log_sha256": "cb6c2bb5605b209f2b096466df732f41a81355ffd18247a2dc698a9f8163c6fb",
+      "test_counts": []
+    },
+    {
+      "check": "plugin-fixtures",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 6.394,
+      "log": "evidence/workflow-release/plugin-fixtures.log",
+      "log_sha256": "a50c1cf3d53cd95d0a652e0832831a286053b08f504c766771beb52e2751caef",
+      "test_counts": [
+        163
+      ]
+    },
+    {
+      "check": "readiness-runner-fixtures-corrected",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/admin/olympus-work/fastlane-dogfood-20260912/post-evaluation-readiness-repair/test_readiness_runner.py"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 12.882,
+      "log": "evidence/workflow-release/readiness-runner-fixtures-corrected.log",
+      "log_sha256": "dec6b440cec2455df4a4df3e5882bb4142683376689818857da5a07defd41c69",
+      "test_counts": [
+        28
+      ]
+    },
+    {
+      "check": "plugin-manifest",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/admin/olympus-work/fastlane-routing-20260912/validate_plugin.py",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.234,
+      "log": "evidence/workflow-release/plugin-manifest.log",
+      "log_sha256": "8d619a7dea94afbd784526702933440a7dc89df02979b5422a3f010027688702",
+      "test_counts": []
+    },
+    {
+      "check": "skill",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/admin/olympus-work/fastlane-routing-20260912/quick_validate.py",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/skills/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.168,
+      "log": "evidence/workflow-release/skill.log",
+      "log_sha256": "db349825903d66adffea3ecf1bd8e1803043e8a71cf1a051235dabc5371f5bb0",
+      "test_counts": []
+    }
+  ],
+  "first_attempt_receipt": "evidence/workflow-release/validation-first-attempt.json",
+  "first_attempt_result": "FAIL: external fixture incorrectly escaped input",
+  "result": "PASS",
+  "finished_utc": "2026-09-13T02:39:41.024508+00:00"
+}

@@ -1,0 +1,150 @@
+test_direct_pass_events_reconcile (test_execution_receipts.RawEventsTest.test_direct_pass_events_reconcile) ... ok
+test_duplicate_terminal_event_rejected (test_execution_receipts.RawEventsTest.test_duplicate_terminal_event_rejected) ... ok
+test_extra_started_test_cannot_hide_behind_passing_report (test_execution_receipts.RawEventsTest.test_extra_started_test_cannot_hide_behind_passing_report) ... FAIL
+test_extra_started_test_invalidates_expected_behavioral_failure (test_execution_receipts.RawEventsTest.test_extra_started_test_invalidates_expected_behavioral_failure) ... FAIL
+test_fabricated_compile_failure_has_no_terminal_execution (test_execution_receipts.RawEventsTest.test_fabricated_compile_failure_has_no_terminal_execution) ... ok
+test_ignored_event_with_start_does_not_leave_pending_start (test_execution_receipts.RawEventsTest.test_ignored_event_with_start_does_not_leave_pending_start) ... ok
+test_ignored_event_without_start_still_reports_selected_skip (test_execution_receipts.RawEventsTest.test_ignored_event_without_start_still_reports_selected_skip) ... ok
+test_pass_in_xml_but_failed_event_rejected (test_execution_receipts.RawEventsTest.test_pass_in_xml_but_failed_event_rejected) ... ok
+test_terminal_without_start_rejected (test_execution_receipts.RawEventsTest.test_terminal_without_start_rejected) ... ok
+test_broken_counter_blocks (test_execution_receipts.ResultGateTest.test_broken_counter_blocks) ... ok
+test_compile_error_is_not_behavioral_failure (test_execution_receipts.ResultGateTest.test_compile_error_is_not_behavioral_failure) ... ok
+test_duplicate_case_cannot_inflate_coverage (test_execution_receipts.ResultGateTest.test_duplicate_case_cannot_inflate_coverage) ... ok
+test_explicit_exclusions_remain_unverified (test_execution_receipts.ResultGateTest.test_explicit_exclusions_remain_unverified) ... ok
+test_failure_and_nonzero_discriminate (test_execution_receipts.ResultGateTest.test_failure_and_nonzero_discriminate) ... ok
+test_hidden_exit_failure_blocks (test_execution_receipts.ResultGateTest.test_hidden_exit_failure_blocks) ... ok
+test_invalid_xml_control_byte_rejected (test_execution_receipts.ResultGateTest.test_invalid_xml_control_byte_rejected) ... ok
+test_missing_discovered_test_blocks (test_execution_receipts.ResultGateTest.test_missing_discovered_test_blocks) ... ok
+test_nested_suites_and_pass (test_execution_receipts.ResultGateTest.test_nested_suites_and_pass) ... ok
+test_process_failure_with_no_assertion_is_not_discrimination (test_execution_receipts.ResultGateTest.test_process_failure_with_no_assertion_is_not_discrimination) ... ok
+test_required_test_cannot_be_excluded (test_execution_receipts.ResultGateTest.test_required_test_cannot_be_excluded) ... ok
+test_silent_wrong_filter_blocks (test_execution_receipts.ResultGateTest.test_silent_wrong_filter_blocks) ... ok
+test_skipped_requirement_blocks (test_execution_receipts.ResultGateTest.test_skipped_requirement_blocks) ... ok
+test_altered_events_are_rejected (test_partition_result_gate.PartitionGateTests.test_altered_events_are_rejected) ... ok
+test_altered_inventory_is_rejected (test_partition_result_gate.PartitionGateTests.test_altered_inventory_is_rejected) ... ok
+test_altered_junit_is_rejected (test_partition_result_gate.PartitionGateTests.test_altered_junit_is_rejected) ... ok
+test_changed_binary_is_rejected (test_partition_result_gate.PartitionGateTests.test_changed_binary_is_rejected) ... ok
+test_changed_source_is_rejected (test_partition_result_gate.PartitionGateTests.test_changed_source_is_rejected) ... ok
+test_changed_source_manifest_is_rejected (test_partition_result_gate.PartitionGateTests.test_changed_source_manifest_is_rejected) ... ok
+test_cli_missing_report_writes_failed_receipt (test_partition_result_gate.PartitionGateTests.test_cli_missing_report_writes_failed_receipt) ... ok
+test_complementary_passing_partitions (test_partition_result_gate.PartitionGateTests.test_complementary_passing_partitions) ... ok
+test_complete_inventory_cannot_hide_exclusions (test_partition_result_gate.PartitionGateTests.test_complete_inventory_cannot_hide_exclusions) ... ok
+test_different_binaries_allowed_only_without_cross_identity_exclusion (test_partition_result_gate.PartitionGateTests.test_different_binaries_allowed_only_without_cross_identity_exclusion) ... ok
+test_disjoint_partitions_need_not_declare_complement (test_partition_result_gate.PartitionGateTests.test_disjoint_partitions_need_not_declare_complement) ... ok
+test_duplicate_complete_inventory_ids_are_rejected (test_partition_result_gate.PartitionGateTests.test_duplicate_complete_inventory_ids_are_rejected) ... ok
+test_duplicate_json_keys_are_rejected (test_partition_result_gate.PartitionGateTests.test_duplicate_json_keys_are_rejected) ... ok
+test_duplicate_partition_names_are_rejected (test_partition_result_gate.PartitionGateTests.test_duplicate_partition_names_are_rejected) ... ok
+test_empty_complete_inventory_is_rejected (test_partition_result_gate.PartitionGateTests.test_empty_complete_inventory_is_rejected) ... ok
+test_exclusion_cannot_be_satisfied_by_another_binary (test_partition_result_gate.PartitionGateTests.test_exclusion_cannot_be_satisfied_by_another_binary) ... ok
+test_exclusion_cannot_be_satisfied_by_another_source (test_partition_result_gate.PartitionGateTests.test_exclusion_cannot_be_satisfied_by_another_source) ... ok
+test_expected_behavioral_failure_can_complete_baseline (test_partition_result_gate.PartitionGateTests.test_expected_behavioral_failure_can_complete_baseline) ... ok
+test_expected_failure_needs_triage (test_partition_result_gate.PartitionGateTests.test_expected_failure_needs_triage) ... ok
+test_expected_outcome_cannot_change_from_receipt (test_partition_result_gate.PartitionGateTests.test_expected_outcome_cannot_change_from_receipt) ... ok
+test_noncanonical_complete_inventory_id_is_rejected (test_partition_result_gate.PartitionGateTests.test_noncanonical_complete_inventory_id_is_rejected) ... ok
+test_nonreconciled_receipt_is_rejected (test_partition_result_gate.PartitionGateTests.test_nonreconciled_receipt_is_rejected) ... ok
+test_overlapping_execution_is_rejected (test_partition_result_gate.PartitionGateTests.test_overlapping_execution_is_rejected) ... ok
+test_partial_green_suite_is_rejected (test_partition_result_gate.PartitionGateTests.test_partial_green_suite_is_rejected) ... ok
+test_partial_suite_without_exclusion_is_still_rejected (test_partition_result_gate.PartitionGateTests.test_partial_suite_without_exclusion_is_still_rejected) ... ok
+test_receipt_tampering_is_rejected (test_partition_result_gate.PartitionGateTests.test_receipt_tampering_is_rejected) ... ok
+test_refrozen_fabricated_receipt_is_rejected (test_partition_result_gate.PartitionGateTests.test_refrozen_fabricated_receipt_is_rejected) ... ok
+test_source_manifest_cannot_escape_root (test_partition_result_gate.PartitionGateTests.test_source_manifest_cannot_escape_root) ... ok
+test_triage_cannot_label_harness_error_behavioral (test_partition_result_gate.PartitionGateTests.test_triage_cannot_label_harness_error_behavioral) ... ok
+test_triage_must_cover_all_failed_ids (test_partition_result_gate.PartitionGateTests.test_triage_must_cover_all_failed_ids) ... ok
+test_triage_must_match_actual_event_hash (test_partition_result_gate.PartitionGateTests.test_triage_must_match_actual_event_hash) ... ok
+test_triage_requires_prompt_grounding (test_partition_result_gate.PartitionGateTests.test_triage_requires_prompt_grounding) ... ok
+test_unexpected_execution_is_rejected (test_partition_result_gate.PartitionGateTests.test_unexpected_execution_is_rejected) ... ok
+test_unknown_exclusion_is_rejected (test_partition_result_gate.PartitionGateTests.test_unknown_exclusion_is_rejected) ... ok
+test_xml_only_receipt_is_rejected (test_partition_result_gate.PartitionGateTests.test_xml_only_receipt_is_rejected) ... ok
+test_boolean_exit_code_not_accepted (test_quality_gate.QualityGateTests.test_boolean_exit_code_not_accepted) ... ok
+test_changed_artifact_invalidates_dependent_proof (test_quality_gate.QualityGateTests.test_changed_artifact_invalidates_dependent_proof) ... ok
+test_cli_recomputes_artifact_fingerprints (test_quality_gate.QualityGateTests.test_cli_recomputes_artifact_fingerprints) ... ok
+test_command_failure_or_no_execution_blocks (test_quality_gate.QualityGateTests.test_command_failure_or_no_execution_blocks) ... ok
+test_complete_stage_receipts_pass_without_hosted_claim (test_quality_gate.QualityGateTests.test_complete_stage_receipts_pass_without_hosted_claim) ... ok
+test_duplicate_receipts_and_items_block (test_quality_gate.QualityGateTests.test_duplicate_receipts_and_items_block) ... ok
+test_dynamic_evidence_expires_but_static_evidence_does_not (test_quality_gate.QualityGateTests.test_dynamic_evidence_expires_but_static_evidence_does_not) ... ok
+test_evidence_role_and_item_citation_required (test_quality_gate.QualityGateTests.test_evidence_role_and_item_citation_required) ... ok
+test_expected_baseline_failure_is_allowed (test_quality_gate.QualityGateTests.test_expected_baseline_failure_is_allowed) ... ok
+test_incomplete_observed_storage_cannot_pass_even_when_receipt_matches (test_quality_gate.QualityGateTests.test_incomplete_observed_storage_cannot_pass_even_when_receipt_matches) ... ok
+test_mapping_requires_explanation_and_stage (test_quality_gate.QualityGateTests.test_mapping_requires_explanation_and_stage) ... ok
+test_missing_counterpart_blocks_even_if_panel_omits_it (test_quality_gate.QualityGateTests.test_missing_counterpart_blocks_even_if_panel_omits_it) ... ok
+test_missing_or_mismatched_preflight_blocks (test_quality_gate.QualityGateTests.test_missing_or_mismatched_preflight_blocks) ... ok
+test_missing_preflight_attachment_blocks (test_quality_gate.QualityGateTests.test_missing_preflight_attachment_blocks) ... ok
+test_missing_scope_hash_blocks (test_quality_gate.QualityGateTests.test_missing_scope_hash_blocks) ... ok
+test_new_contract_invalidates_old_reviews (test_quality_gate.QualityGateTests.test_new_contract_invalidates_old_reviews) ... ok
+test_old_builder_receipt_blocks (test_quality_gate.QualityGateTests.test_old_builder_receipt_blocks) ... ok
+test_open_finding_blocks (test_quality_gate.QualityGateTests.test_open_finding_blocks) ... ok
+test_path_traversal_and_symlinks_block (test_quality_gate.QualityGateTests.test_path_traversal_and_symlinks_block) ... ok
+test_pending_template_cannot_pass (test_quality_gate.QualityGateTests.test_pending_template_cannot_pass) ... ok
+test_prompt_edit_keeps_execution_receipt_eligible (test_quality_gate.QualityGateTests.test_prompt_edit_keeps_execution_receipt_eligible) ... ok
+test_review_citations_must_be_nonempty_strings (test_quality_gate.QualityGateTests.test_review_citations_must_be_nonempty_strings) ... ok
+test_review_without_raw_output_or_limitations_blocks (test_quality_gate.QualityGateTests.test_review_without_raw_output_or_limitations_blocks) ... ok
+test_scope_submission_must_match_frozen_scope_tests (test_quality_gate.QualityGateTests.test_scope_submission_must_match_frozen_scope_tests) ... ok
+test_stale_or_incomplete_panel_blocks (test_quality_gate.QualityGateTests.test_stale_or_incomplete_panel_blocks) ... ok
+test_tampered_or_missing_evidence_blocks (test_quality_gate.QualityGateTests.test_tampered_or_missing_evidence_blocks) ... ok
+test_unknown_live_check_blocks (test_quality_gate.QualityGateTests.test_unknown_live_check_blocks) ... ok
+test_unknown_or_exhausted_capacity_blocks (test_quality_gate.QualityGateTests.test_unknown_or_exhausted_capacity_blocks) ... ok
+test_user_override_requires_attached_authorization (test_quality_gate.QualityGateTests.test_user_override_requires_attached_authorization) ... ok
+test_warning_or_skip_cannot_pass (test_quality_gate.QualityGateTests.test_warning_or_skip_cannot_pass) ... ok
+test_workdir_traversal_blocks (test_quality_gate.QualityGateTests.test_workdir_traversal_blocks) ... ok
+test_wrong_builder_or_missing_transfer_receipt_blocks (test_quality_gate.QualityGateTests.test_wrong_builder_or_missing_transfer_receipt_blocks) ... ok
+test_app_tool_wrapper (test_tools.BudgetTests.test_app_tool_wrapper) ... ok
+test_below_checkpoint (test_tools.BudgetTests.test_below_checkpoint) ... ok
+test_explicit_custom_cap (test_tools.BudgetTests.test_explicit_custom_cap) ... ok
+test_explicit_no_cap_preserves_account_block (test_tools.BudgetTests.test_explicit_no_cap_preserves_account_block) ... ok
+test_invalid_cap (test_tools.BudgetTests.test_invalid_cap) ... ok
+test_malformed_window_and_wrong_legacy (test_tools.BudgetTests.test_malformed_window_and_wrong_legacy) ... ok
+test_missing_and_invalid_fail_closed (test_tools.BudgetTests.test_missing_and_invalid_fail_closed) ... ok
+test_reserve_stops_before_cap (test_tools.BudgetTests.test_reserve_stops_before_cap) ... ok
+test_secondary_window_controls (test_tools.BudgetTests.test_secondary_window_controls) ... ok
+test_spend_block (test_tools.BudgetTests.test_spend_block) ... ok
+test_baseline_valid_new_is_rejected (test_tools.ContractTests.test_baseline_valid_new_is_rejected) ... ok
+test_complete_cells_still_need_one_interaction_witness (test_tools.ContractTests.test_complete_cells_still_need_one_interaction_witness) ... ok
+test_duplicate_and_orphan_ids (test_tools.ContractTests.test_duplicate_and_orphan_ids) ... ok
+test_each_risk_family_needs_a_review (test_tools.ContractTests.test_each_risk_family_needs_a_review) ... ok
+test_empty_dimensions_or_unknown_stage_fail_closed (test_tools.ContractTests.test_empty_dimensions_or_unknown_stage_fail_closed) ... ok
+test_example_declared_coverage_only (test_tools.ContractTests.test_example_declared_coverage_only) ... ok
+test_excluded_cell_requires_grounding_and_cannot_also_be_covered (test_tools.ContractTests.test_excluded_cell_requires_grounding_and_cannot_also_be_covered) ... ok
+test_inapplicability_needs_reason_and_public_source (test_tools.ContractTests.test_inapplicability_needs_reason_and_public_source) ... ok
+test_independent_dimension_totals_do_not_cover_cross_product (test_tools.ContractTests.test_independent_dimension_totals_do_not_cover_cross_product) ... ok
+test_legacy_contract_needs_inventory_and_risk_review_for_full_gate (test_tools.ContractTests.test_legacy_contract_needs_inventory_and_risk_review_for_full_gate) ... ok
+test_malformed_documents_fail (test_tools.ContractTests.test_malformed_documents_fail) ... ok
+test_missing_feature_prerequisite_is_rejected (test_tools.ContractTests.test_missing_feature_prerequisite_is_rejected) ... ok
+test_missing_input_family_is_caught (test_tools.ContractTests.test_missing_input_family_is_caught) ... ok
+test_missing_or_malformed_scenario_cannot_pass (test_tools.ContractTests.test_missing_or_malformed_scenario_cannot_pass) ... ok
+test_scope_can_defer_but_cannot_claim_full_coverage (test_tools.ContractTests.test_scope_can_defer_but_cannot_claim_full_coverage) ... ok
+test_ungrounded_and_private_oracles_rejected (test_tools.ContractTests.test_ungrounded_and_private_oracles_rejected) ... ok
+test_environment_and_selection_invalidate_runtime (test_tools.FingerprintTests.test_environment_and_selection_invalidate_runtime) ... ok
+test_identical_not_a_passing_receipt (test_tools.FingerprintTests.test_identical_not_a_passing_receipt) ... ok
+test_invalid_or_missing_inputs (test_tools.FingerprintTests.test_invalid_or_missing_inputs) ... ok
+test_matching_invalid_fingerprints_cannot_enable_reuse (test_tools.FingerprintTests.test_matching_invalid_fingerprints_cannot_enable_reuse) ... ok
+test_missing_scope_is_unknown (test_tools.FingerprintTests.test_missing_scope_is_unknown) ... ok
+test_preflight_has_explicit_limits_and_rejects_digest (test_tools.FingerprintTests.test_preflight_has_explicit_limits_and_rejects_digest) ... ok
+test_solution_and_prompt_reopen_scope (test_tools.FingerprintTests.test_solution_and_prompt_reopen_scope) ... ok
+test_test_expansion_keeps_scope_semantics_only (test_tools.FingerprintTests.test_test_expansion_keeps_scope_semantics_only) ... ok
+test_bundled_lessons_search_without_inventory (test_tools.InventoryTests.test_bundled_lessons_search_without_inventory) ... ok
+test_provenance_duplicates_archive_errors_and_source_roots (test_tools.InventoryTests.test_provenance_duplicates_archive_errors_and_source_roots) ... ok
+test_revision_copies_are_not_counted_as_distinct_content (test_tools.InventoryTests.test_revision_copies_are_not_counted_as_distinct_content) ... ok
+test_revision_metadata_without_hash_cannot_identify_complete_bytes (test_tools.InventoryTests.test_revision_metadata_without_hash_cannot_identify_complete_bytes) ... ok
+
+======================================================================
+FAIL: test_extra_started_test_cannot_hide_behind_passing_report (test_execution_receipts.RawEventsTest.test_extra_started_test_cannot_hide_behind_passing_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/tests/test_execution_receipts.py", line 110, in test_extra_started_test_cannot_hide_behind_passing_report
+    self.assertIn('Raw start event has no terminal outcome: m::interrupted', r['issues'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Raw start event has no terminal outcome: m::interrupted' not found in ['Malformed raw JSON event.', 'Raw start event has no terminal outcome: m::one', 'JUnit outcomes differ from raw terminal events.', 'No raw terminal events.']
+
+======================================================================
+FAIL: test_extra_started_test_invalidates_expected_behavioral_failure (test_execution_receipts.RawEventsTest.test_extra_started_test_invalidates_expected_behavioral_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/tests/test_execution_receipts.py", line 117, in test_extra_started_test_invalidates_expected_behavioral_failure
+    self.assertIn('Raw start event has no terminal outcome: m::interrupted', r['issues'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Raw start event has no terminal outcome: m::interrupted' not found in ['Malformed raw JSON event.', 'Raw start event has no terminal outcome: m::one', 'JUnit outcomes differ from raw terminal events.', 'No raw terminal events.']
+
+----------------------------------------------------------------------
+Ran 127 tests in 0.358s
+
+FAILED (failures=2)

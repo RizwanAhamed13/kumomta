@@ -1,0 +1,109 @@
+{
+  "captured_at_utc": "2026-09-12T23:54:02.461640+00:00",
+  "source_url": "https://shipd.ai/quests/olympus/submissions",
+  "method": "Safari native accessibility; Accepted9 filter; title/status/date cells only",
+  "accepted_count": 9,
+  "cases": [
+    {
+      "id": "scylla",
+      "title": "Policy-aware coordinator affinity for paging",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-09-05",
+        "2026-09-05"
+      ]
+    },
+    {
+      "id": "dora",
+      "title": "Match concrete values stored in trait objects",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-31",
+        "2026-08-31"
+      ]
+    },
+    {
+      "id": "rust-analyzer",
+      "title": "Macro completion across multiple expanded identifier positions",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-25",
+        "2026-09-06"
+      ]
+    },
+    {
+      "id": "calyx",
+      "title": "Preserve invoke combinational scopes during component inlining",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-16",
+        "2026-08-18"
+      ]
+    },
+    {
+      "id": "ladybug",
+      "title": "Support Composite Primary Keys for Native Node Tables",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-15",
+        "2026-08-15"
+      ]
+    },
+    {
+      "id": "lisette",
+      "title": "Add ownership-safe defaults to record fields",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-14",
+        "2026-08-18"
+      ]
+    },
+    {
+      "id": "kitesql",
+      "title": "Support expressions in CREATE INDEX",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-08-05",
+        "2026-08-10"
+      ]
+    },
+    {
+      "id": "datafusion-parquet",
+      "title": "Use Parquet Map Leaf Metadata for Row-Group Pruning",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-07-24",
+        "2026-07-26"
+      ]
+    },
+    {
+      "id": "datafusion-aggregate",
+      "title": "Preserve Aggregate UDF Overrides Across FFI Boundaries",
+      "status": "Accepted",
+      "displayed_date_columns": [
+        "2026-07-20",
+        "2026-07-21"
+      ]
+    }
+  ],
+  "date_column_qualification": "Original capture lacked headings. A subsequent table-header capture confirms the two displayed date columns are Created and Updated, in that order.",
+  "artifact_identity": "Acceptance status confirmed, archived artifact byte identity still unverified.",
+  "calyx_page": {
+    "url": "https://shipd.ai/quests/olympus/challenges/kh763xwhkq11gc38ata5g1rn358cgw9m",
+    "status": "Accepted",
+    "milestone": "counted",
+    "displayed_submission": "Aug 18, 2026 at 2:46 AM",
+    "artifact_controls": "None exposed in complete accessibility tree at capture",
+    "local_second_case_identity": "UNVERIFIED"
+  },
+  "date_columns_followup": {
+    "captured_at_utc": "2026-09-13T00:03:58.298601+00:00",
+    "source_url": "https://shipd.ai/quests/olympus/submissions",
+    "method": "Safari native accessibility table header and row metadata",
+    "header_text": "Actions, Title\nStatus\nCreated\nUpdated",
+    "date_columns_in_display_order": [
+      "Created",
+      "Updated"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "time": "2026-09-12T23:20:24.547543+00:00",
+  "mode": "bounded source-only happy-path audit",
+  "proposed_plugin_version": "1.1.0+codex.20260912232024",
+  "manifest_version_unchanged": true,
+  "prior_test_result": "133/133 retained R2 Python fixtures; no tests rerun for this documentation change",
+  "script_changes": false,
+  "changes": [
+    "README.md",
+    "skills/shipd-fastlane/SKILL.md",
+    "skills/shipd-fastlane/references/execution-integrity.md",
+    "skills/shipd-fastlane/references/local-quality-gate.md",
+    "skills/shipd-fastlane/references/execution.md",
+    "assets/metrics.example.json",
+    "assets/handoff.md",
+    "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+    "skills/shipd-fastlane/references/thermal-safety.md",
+    "skills/shipd-fastlane/references/fresh-execution-findings.md",
+    "evidence/partition-gate-workflow-lessons.json"
+  ],
+  "after_hashes": {
+    "README.md": "f4c07b552aa52866b88c0f1018154fff662074aa6b0eb84b1636271efecb9fff",
+    "skills/shipd-fastlane/SKILL.md": "f4dfba067877a41c9d36ba2f0adb1ff35025126fb49e468901f57f63d6482da8",
+    "skills/shipd-fastlane/references/execution-integrity.md": "4ca3f15cc26384f8a049bda7c1beb31b02d89e02bb53393bcaca2a9c0e0dc646",
+    "skills/shipd-fastlane/references/local-quality-gate.md": "bfd47c81df505e6c2c7f6c1a4c47758320227a22c1c4a4ec3083f8d5e661d137",
+    "skills/shipd-fastlane/references/execution.md": "b6722aa014b0dac157557bbd393f32bc722104056d9ac7208c6e469a81b43201",
+    "assets/metrics.example.json": "0cb89fc47fa0f61a508ff420cf916c178ad1e6df9ea82b03ae8a970ad3d2afcf",
+    "assets/handoff.md": "d7c10d613885f854e552e0de367f4a913af05e984d61a8c12c4be842af2045f1",
+    "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md": "c5f49e152efe93a333bf579d0cf651c4ff0bf236e570647f65ac77edf15ec3fc",
+    "skills/shipd-fastlane/references/thermal-safety.md": "35451eb68fdddcbd7379dd073dd7517510c77204687100f980de215f40e9c1ff",
+    "skills/shipd-fastlane/references/fresh-execution-findings.md": "93a48c4e1c0bb27868bc77baf975da771aacd9ae06cb232b5ea701ef4868e7f3",
+    "evidence/partition-gate-workflow-lessons.json": "5d5ffd500c6ab42a5c1f0a5b2408f178c0a986ce4a88f7863d1cc57f7a30632c"
+  },
+  "unchanged_gate_hashes": {
+    "scripts/test_result_gate.py": "3ef72439e59d1f3f1faccc96f16da3eae4ede1b6f74609ecb2386cf33dd97c27",
+    "scripts/partition_result_gate.py": "7a400bacbb03dc39dc5cb60c5be780f69e05238da84f42a98ed1176ab052413a"
+  },
+  "remaining_validation": [
+    "Review rendered documentation and relative links; parse the updated metrics template during the next authorized short validation phase.",
+    "No new Python fixture run required solely for documentation changes; revalidate only if executable source or behavior changes.",
+    "Hosted checks/private grader fidelity and historical accepted-artifact identity remain unproven; no paid operation performed."
+  ],
+  "notes": [
+    "Root owns benchmark.json and publication/version selection.",
+    "Explicit no-cap duration honored without changing global defaults.",
+    "Fresh reconstruction withholding does not certify blindness.",
+    "An initial orchestration JavaScript parse error prevented any remote action; corrected quoting before this phase.",
+    "Parent-reported Parquet quota change from 0.25 to 0.1 CPU preserved as an observation, not a thermal guarantee or controlled speed comparison."
+  ],
+  "additional_before_hashes": {
+    "skills/shipd-fastlane/references/thermal-safety.md": "b5fe9ba1695ad5719004941f19a5371b1696680a15ce0217e5ae69f3d0dfb302",
+    "skills/shipd-fastlane/references/fresh-execution-findings.md": "db5c3dc387f0c473aa25c8c575fdecb86c8fefb78d7081bc92eb1d1085ebf4cb",
+    "evidence/partition-gate-workflow-lessons.json": "241e37e39f22b997ceb49706e93c18aeab9db38dd9ea7feed205b3017221dd8d"
+  },
+  "updated_at": "2026-09-12T23:22:06.596906+00:00"
+}

@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "capture_interval_utc": {
+    "start": "2026-09-13T00:31:27Z",
+    "end": "2026-09-13 00:33:44 UTC"
+  },
+  "method": "Authenticated Safari native accessibility reads of Olympus Docs modal on Submissions; observations normalized by root. Not a byte-for-byte page export.",
+  "sources": [
+    {
+      "url": "https://shipd.ai/quests/olympus/docs/problem",
+      "sections_observed": [
+        "Repository requirements and expanded allowed licenses",
+        "Description",
+        "Tests T1-T8",
+        "test.sh and expanded JUnit framework guidance",
+        "Solution",
+        "Dockerfile and base images",
+        "Submitting and solvability",
+        "Local review",
+        "Submission criteria",
+        "Tips"
+      ],
+      "example_seen": "Generic FrostDB example visible while navigating Tips; no pending dogfood case solution exposed."
+    },
+    {
+      "url": "https://shipd.ai/quests/olympus/docs/process",
+      "sections_observed": [
+        "Flow",
+        "Prechecks",
+        "Scope Gate",
+        "Build",
+        "Quality checks",
+        "Agent rollouts",
+        "FP",
+        "Auto Review",
+        "After submit",
+        "Tokens and staleness"
+      ]
+    }
+  ],
+  "repository": {
+    "public_github": true,
+    "minimum_stars": 500,
+    "activity": "At least one commit in last 12 months",
+    "languages": [
+      "TypeScript",
+      "JavaScript",
+      "Python",
+      "Go",
+      "Rust",
+      "C++",
+      "Java"
+    ],
+    "duplicate_checks": "Open, merged, and closed implementing PRs; shipped or deliberately removed capability; maintainer decline in issues/discussions; repo philosophy; platform close matches."
+  },
+  "tests": {
+    "new": "Every feature-dependent new test fails at the base commit and passes with the solution.",
+    "base": "Real affected-area existing regressions must pass before and after; preserve baseline-valid compatibility checks in an explicit reconciled partition.",
+    "coverage": "Requested behaviors plus obvious edge cases; tests must be described or discoverable.",
+    "determinism": "No unstable timing, randomness, or ordering; runtime has no network.",
+    "errors": "Preserve actual failing test identity and assertion output; adapters must not hide upstream errors or misrepresent execution.",
+    "error_wording": "Do not over-pin exact output unless contract or repository patterns establish it.",
+    "harness": "Root test.sh accepts --output_path and base|new; emits JUnit; no fail-fast.",
+    "exclusions": "Flaky, network-dependent, or preexisting-failing tests may be excluded with evidence; valid tests broken by solution may not."
+  },
+  "artifacts": {
+    "description": "Natural maintainer-style prose; lead with ask; no requirement bullet lists/headings/code as description or undiscoverable internals unless essential to contract.",
+    "patches": "No challenge/quest/olympus filenames, quest-referencing comments, or Shipd/Olympus/mars leaks.",
+    "solution": "Complete requirements, no regressions, repository conventions, relevant changes only.",
+    "loc": "Effective required production solution LOC only; excludes tests, generated files, comments, blanks, padding. More test LOC does not increase effective solution LOC."
+  },
+  "docker": {
+    "workdir": "/app",
+    "from": "Language-specific public.ecr.aws/d3j8x8q7/olympus-base-<language>:latest",
+    "dependencies": "Install at build; runtime --network none.",
+    "build": "Build works without test.patch or solution.patch. Do not run tests; docs also literally say no test commands in a RUN step.",
+    "cmd": [
+      "/bin/bash"
+    ]
+  },
+  "order": [
+    "prechecks",
+    "Scope Gate",
+    "Build Image",
+    "quality checks",
+    "agent rollouts",
+    "FP on settled passing runs",
+    "Auto Review",
+    "submit"
+  ],
+  "quality_checks": {
+    "verify_tests": "Test patch on clean repo: base passes, new fails.",
+    "verify_solution": "Solution added: base and new pass.",
+    "verify_flakiness": "Repeat suites with and without solution; identical runs must have stable test outcomes.",
+    "test_quality": "Fairness per test, with advisory coverage feedback.",
+    "task_quality": "Description and tests judged together.",
+    "solution_quality": "Completeness and code quality against repository.",
+    "description_quality": "Tone, redundancy, and unnecessary discoverable detail."
+  },
+  "rollouts": {
+    "solvability": "At least one solving agent.",
+    "counts": "Current submission panel only; docs explicitly avoid fixed count.",
+    "quick_check": "One cheap agent run; still paid and requires user's specific gate authorization.",
+    "full_batch": "Configurable cohort; one settled batch at a time before edits.",
+    "fp": "Reviews all passing runs; one false positive fails criterion."
+  },
+  "auto_review": {
+    "completion": "Required by submission criteria.",
+    "verdict": "Docs say verdict itself does not block submitting.",
+    "timing": "Last after green checks and settled runs; early advisory use becomes stale after changes.",
+    "staleness": "Content edits, check reruns, or changes to agent runs stale Auto Review."
+  },
+  "staleness": "Results bind exact content; any submission field edit stales prior checks/rollouts/reviews. Dockerfile edits require rebuilt matching image.",
+  "unresolved_fields": {
+    "specific_submission_contract": "Not captured by these general docs.",
+    "required_rollout_count": null,
+    "assignment_loc_bar": null,
+    "flakiness_repetitions": null,
+    "current_paid_costs": null,
+    "private_grader_prompts": null,
+    "private_similarity_corpus": null
+  },
+  "ambiguities": [
+    "Narrative local-review sequence applies test.patch before Docker build, while Docker requirement explicitly says image must build without either patch. Use patch-free setup and runtime-applied patch verification; retain both requirements in evidence.",
+    "Generic approved example uses challenge-named paths/comments despite normative rule forbidding them. Treat example as historical illustration, not exception to current rule.",
+    "cargo test --no-run executes no tests but is a test command; prefer cargo build --tests for reusable build-time compilation when equivalent, and verify runtime rematerializes affected components."
+  ],
+  "scope": "Current general documentation evidence only. Does not prove any hosted check passed, authenticate historical artifact bytes, or replace case-specific panel capture.",
+  "paid_actions_started": 0
+}

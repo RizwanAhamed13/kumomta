@@ -1,0 +1,121 @@
+{
+  "at": "2026-09-12T23:52:15.829669+00:00",
+  "scope": "Source/metadata-only traceability audit, no candidate or archive payload reads, builds or tests.",
+  "prior_preflight_error": {
+    "at": "2026-09-12T23:51:33Z",
+    "command": "hostname -I",
+    "exit_code": 64,
+    "reason": "Option unsupported; repaired with ip -o -4 addr show, same authorized host."
+  },
+  "commands": [
+    {
+      "command": [
+        "hostname"
+      ],
+      "exit_code": 0,
+      "stdout": "arch\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "whoami"
+      ],
+      "exit_code": 0,
+      "stdout": "admin\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ip",
+        "-o",
+        "-4",
+        "addr",
+        "show"
+      ],
+      "exit_code": 0,
+      "stdout": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n2: eno1    inet 10.1.25.20/24 brd 10.1.25.255 scope global noprefixroute eno1\\       valid_lft forever preferred_lft forever\n3: tailscale0    inet 100.105.254.33/32 scope global tailscale0\\       valid_lft forever preferred_lft forever\n5: docker0    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0\\       valid_lft forever preferred_lft forever\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "pwd"
+      ],
+      "exit_code": 0,
+      "stdout": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "df",
+        "-h",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  256G  522G  33% /home\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "info",
+        "--format",
+        "{{.ServerVersion}} {{.DockerRootDir}}"
+      ],
+      "exit_code": 0,
+      "stdout": "29.7.2 /mnt/ssd/docker\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "/mnt/ssd/docker"
+      ],
+      "exit_code": 0,
+      "stdout": "TARGET SOURCE                       FSTYPE OPTIONS\n/      /dev/mapper/omarchy_root[/@] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=256,subvol=/@\n",
+      "stderr": ""
+    }
+  ],
+  "input_metadata": {
+    "knowledge/source-receipt.json": {
+      "exists": true,
+      "bytes": 1483,
+      "sha256": "8c39450724225c13a0afc32abb0d28292a045c8f10ac53c3acd56bc847641b92"
+    },
+    "knowledge/accepted-cases.json": {
+      "exists": true,
+      "bytes": 19161,
+      "sha256": "6ff37d015f2d0bf0cd290930ac609d3fa5238d47428f19f81aa22fb0731897d8"
+    },
+    "knowledge/lessons.json": {
+      "exists": true,
+      "bytes": 178113,
+      "sha256": "97fdaa1b0eb475503f27fa490ab7f332cc9b109e34ed0e78438423666f2b43fa"
+    },
+    "knowledge/original-lessons-ledger.md": {
+      "exists": true,
+      "bytes": 11727,
+      "sha256": "6a812130292a21e8b9ca70835608c15a08015d3adc73490e9b0e00f1e63c32a6"
+    },
+    ".codex-plugin/plugin.json": {
+      "exists": true,
+      "bytes": 1056,
+      "sha256": "2b42587d4f9f9f16fb3deb3a854b52c8f70c333a17ba058115c4b0b766f0b103"
+    },
+    "skills/shipd-fastlane/SKILL.md": {
+      "exists": true,
+      "bytes": 12011,
+      "sha256": "f4dfba067877a41c9d36ba2f0adb1ff35025126fb49e468901f57f63d6482da8"
+    }
+  }
+}

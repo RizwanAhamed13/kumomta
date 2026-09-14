@@ -1,0 +1,134 @@
+diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs
+@@ -4,7 +4,7 @@ mod analysis;
+-use std::{iter, sync::LazyLock};
++use std::{iter, rc::Rc, sync::LazyLock};
+@@ -26,7 +26,7 @@ use syntax::{
+-    context::analysis::{AnalysisResult, expand_and_analyze},
++    context::analysis::{AnalysisResult, expand_and_analyze, expand_and_analyze_all},
+@@ -459,7 +459,7 @@ pub(crate) enum ParamKind {
+-    pub(crate) sema: Semantics<'db, RootDatabase>,
++    pub(crate) sema: Rc<Semantics<'db, RootDatabase>>,
+@@ -742,12 +742,32 @@ impl<'db> CompletionContext<'_, 'db> {
+-        position @ FilePosition { file_id, offset }: FilePosition,
++        position: FilePosition,
++        Self::new_impl(db, position, config, trigger_character, false)
++            .and_then(|mut contexts| contexts.pop())
++    }
++
++    pub(crate) fn new_all(
++        db: &'db RootDatabase,
++        position: FilePosition,
++        config: &'a CompletionConfig<'a>,
++        trigger_character: Option<char>,
++    ) -> Option<Vec<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)>> {
++        Self::new_impl(db, position, config, trigger_character, true)
++    }
++
++    fn new_impl(
++        db: &'db RootDatabase,
++        position @ FilePosition { file_id, offset }: FilePosition,
++        config: &'a CompletionConfig<'a>,
++        trigger_character: Option<char>,
++        collect_all: bool,
++    ) -> Option<Vec<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)>> {
+-        let sema = Semantics::new(db);
++        let sema = Rc::new(Semantics::new(db));
+@@ -788,20 +808,102 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
++        let aggregate = collect_all
++            && trigger_character.is_none()
++            && original_token.kind() == IDENT
++            && offset > original_token.text_range().start()
++            && sema.is_inside_macro_call(InFile::new(editioned_file_id.into(), &original_token));
++        let analysis_results = if aggregate {
++            expand_and_analyze_all(
++                &sema,
++                InFile::new(editioned_file_id.into(), original_file.syntax().clone()),
++                file_with_fake_ident.syntax().clone(),
++                offset,
++                &original_token,
++            )
++        } else {
++            expand_and_analyze(
++                &sema,
++                InFile::new(editioned_file_id.into(), original_file.syntax().clone()),
++                file_with_fake_ident.syntax().clone(),
++                offset,
++                &original_token,
++            )
++            .into_iter()
++            .collect()
++        };
++
++        let analysis_results = if aggregate {
++            let is_supported = |result: &AnalysisResult<'_>| match &result.analysis {
++                CompletionAnalysis::NameRef(NameRefContext {
++                    kind: NameRefKind::Path(PathCompletionCtx { kind: PathKind::Expr { .. }, .. }),
++                    ..
++                }) => !result.direct_attribute_output,
++                CompletionAnalysis::NameRef(NameRefContext {
++                    kind: NameRefKind::DotAccess(_) | NameRefKind::RecordExpr { .. },
++                    ..
++                }) => true,
++                _ => false,
++            };
++            if analysis_results.iter().any(is_supported) {
++                analysis_results.into_iter().filter(is_supported).collect()
++            } else if analysis_results.iter().any(|result| {
++                result.direct_attribute_output
++                    && matches!(
++                        result.analysis,
++                        CompletionAnalysis::NameRef(NameRefContext {
++                            kind: NameRefKind::Path(PathCompletionCtx {
++                                kind: PathKind::Expr { .. },
++                                ..
++                            }),
++                            ..
++                        })
++                    )
++            }) {
++                // Direct attribute output is intentionally not an expression completion source.
++                // In particular, don't fall back to it when it is the only mapped occurrence.
++                vec![]
++            } else {
++                analysis_results.into_iter().take(1).collect()
++            }
++        } else {
++            analysis_results
++        };
++
++        let contexts = analysis_results
++            .into_iter()
++            .filter_map(|result| {
++                Self::from_analysis(
++                    db,
++                    position,
++                    config,
++                    trigger_character,
++                    original_token.clone(),
++                    sema.clone(),
++                    result,
++                )
++            })
++            .collect::<Vec<_>>();
++        (!contexts.is_empty()).then_some(contexts)
++    }
++
++    fn from_analysis(
++        db: &'db RootDatabase,
++        position: FilePosition,
++        config: &'a CompletionConfig<'a>,
++        trigger_character: Option<char>,
++        original_token: SyntaxToken,
++        sema: Rc<Semantics<'db, RootDatabase>>,
++        result: AnalysisResult<'db>,
++    ) -> Option<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)> {
+-        } = expand_and_analyze(
+-            &sema,
+-            InFile::new(editioned_file_id.into(), original_file.syntax().clone()),
+-            file_with_fake_ident.syntax().clone(),
+-            offset,
+-            &original_token,
+-        )?;
+-
++            direct_attribute_output: _,
++        } = result;

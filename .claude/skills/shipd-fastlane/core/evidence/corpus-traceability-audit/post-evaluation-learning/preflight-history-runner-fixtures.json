@@ -1,0 +1,76 @@
+{
+  "recorded_at": "2026-09-13T01:28:45.998528+00:00",
+  "phase": "source-only history and runner-fixture preparation",
+  "execution": "NO_TESTS_OR_BUILDS_THERMAL_HOLD",
+  "preflight": {
+    "host": {
+      "argv": [
+        "hostname"
+      ],
+      "exit_code": 0,
+      "stdout": "arch",
+      "stderr": ""
+    },
+    "arch": {
+      "argv": [
+        "uname",
+        "-m"
+      ],
+      "exit_code": 0,
+      "stdout": "x86_64",
+      "stderr": ""
+    },
+    "disk": {
+      "argv": [
+        "df",
+        "-P",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem               1024-blocks      Used Available Capacity Mounted on\n/dev/mapper/omarchy_root   816242688 279869260 536071220      35% /home",
+      "stderr": ""
+    },
+    "filesystem": {
+      "argv": [
+        "findmnt",
+        "-T",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+        "-o",
+        "TARGET,SOURCE,FSTYPE"
+      ],
+      "exit_code": 0,
+      "stdout": "TARGET SOURCE                           FSTYPE\n/home  /dev/mapper/omarchy_root[/@home] btrfs",
+      "stderr": ""
+    },
+    "docker": {
+      "argv": [
+        "docker",
+        "version",
+        "--format",
+        "{{.Server.Version}}"
+      ],
+      "exit_code": 0,
+      "stdout": "29.7.2",
+      "stderr": ""
+    },
+    "docker_root": {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{{.DockerRootDir}}"
+      ],
+      "exit_code": 0,
+      "stdout": "/mnt/ssd/docker",
+      "stderr": ""
+    }
+  },
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "repository_commit": null,
+  "commit_reason": "Plugin source directory is not a Git repository; exact source hashes retained.",
+  "input_hashes": {
+    "evidence/corpus-traceability-audit/post-evaluation-learning/semantic-inspection-ledger.json": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0",
+    "scripts/quality_gate.py": "84c403c4e6e079a682ee41f03a239138f1f16a0c01209754b633e04412e88829",
+    "scripts/docker_contract.py": "4b0f7cbc1f12426eedfddc650914c0072420b06856438b2f732e757e2e807703"
+  }
+}

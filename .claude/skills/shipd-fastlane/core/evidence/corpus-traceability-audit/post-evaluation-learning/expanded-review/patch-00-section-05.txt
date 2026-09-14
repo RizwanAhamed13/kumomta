@@ -1,0 +1,9 @@
+diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs
+@@ -133,6 +133,9 @@ pub(super) fn walk_expression(
++                    if let Some(default) = &f.default {
++                        walk_expression(package, default, graph, alias_map, Some(&enum_ctx));
++                    }
+@@ -157,6 +160,9 @@ pub(super) fn walk_expression(
++                if let Some(default) = &f.default {
++                    walk_expression(package, default, graph, alias_map, Some(&struct_ctx));
++                }

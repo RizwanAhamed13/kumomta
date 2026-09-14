@@ -1,0 +1,48 @@
+{
+  "recorded_at": "2026-09-13T01:44:00.983145+00:00",
+  "read_time": "Earlier two source reads in this turn; exact individual command timestamps unavailable",
+  "source": {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+    "bytes": 57807,
+    "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+    "kind": "artifact",
+    "status": "partial_semantic_inspection",
+    "extents": [
+      "Full sections0,2,3",
+      "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+    ],
+    "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+  },
+  "sections": [
+    {
+      "index": 0,
+      "file": "diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs",
+      "bytes": 5499,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-00.txt",
+      "sha256": "86967d25857720f3059d29a113a3f569747c1720c0aeff81724305027d01c31e"
+    },
+    {
+      "index": 1,
+      "file": "diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs",
+      "bytes": 30831,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-01.txt",
+      "sha256": "8e5c9dc5b489fcc43665183ab7a8f74d1e5e6a7f6eacef983b6968ec10806a4f"
+    },
+    {
+      "index": 2,
+      "file": "diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs",
+      "bytes": 206,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-02.txt",
+      "sha256": "e1e1d7b3eb18a1d55693bc5be7b75cada07a9689f29ea691b28d591ff8be6ff7"
+    },
+    {
+      "index": 3,
+      "file": "diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs",
+      "bytes": 5119,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-07-section-03.txt",
+      "sha256": "9be2bd252a0db35bcda697ddd235db95a4aaf5a89fe9866018122a3676de9f0c"
+    }
+  ],
+  "status": "complete_changed_hunk_semantic_review",
+  "extents": "All four filtered sections. Section1 has 672 lines, read in 1-247,248-452,453-525,526-672; old original/filtered line notation superseded. Unchanged context omitted."
+}

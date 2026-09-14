@@ -1,0 +1,346 @@
+[
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/description-format-repair-2026-09-01.md",
+    "sha256": "8822a14307d8e1379fa5cef0aa57a714d20e1ac0c0dac99010ef60fdc5f38bce",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029110+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/full-repair-aswin-four-state.md",
+    "sha256": "da5bd1b0602c080c8de3ee45525e0da2c31fde41463eb188ea933982bf69fba4",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029132+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/prepared-caching-flake-repair-2026-09-01.md",
+    "sha256": "3af2d499d979940e8c3e1ca13235bb54e56aca779b0b240f88c3b92c7ca2d9bf",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029147+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-bulb-expansion-2026-09-01.md",
+    "sha256": "ffd5911dd669289b754a8bfd0d316ef3e859047386b66cbedf475a002ec879ed",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029162+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-gap-repair-2026-09-01.md",
+    "sha256": "a613a945528f9432814bc01aec49ae78e780be9166c43a077c21b9d6ace38555",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029176+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-and-solution-quality-repair-2026-09-01.md",
+    "sha256": "7fdf5923a1bc760bfc4f696ad31ee9466ce210d9ce8179f0e98bfad2ce633839",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029188+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-repair-2026-08-31.md",
+    "sha256": "0176f1c45349289e0ea856ad909612e5f634dbb3d6a12faa2dd497beac0ddc05",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029198+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-wrapper-repair-2026-08-31.md",
+    "sha256": "567a82df03afaffd40c7045309206df5c092e40c0c97630051771825dcbd0ba9",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029207+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v19/repair-report.md",
+    "sha256": "5dfb13f2915bd03058c293bb7d931898221f4c2f7171aadbc5060c793f7fcbcf",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029230+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/repair-report.md",
+    "sha256": "f7f65e07a23c7fe14d0a0475bf4092d1a2e0bc2a8ba499141185461c44f04a47",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029240+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v21/repair-report.md",
+    "sha256": "287c505b085e8e02393e936aa2faf352101140d10c241b94a8cb7d1017e753b6",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029249+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v22/repair-report.md",
+    "sha256": "b23431e0a1a5fa50b7b1399cb77188a8a6cf077dc0536a6c250c9395e410435d",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029259+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v23/repair-report.md",
+    "sha256": "3dd52d64672fc655db3da34fbf72e33135849e8d3995bf478de5e6bd613de63d",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029270+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v24/repair-report.md",
+    "sha256": "bb5028e4ac58394e0492127ad499dc61760f33911052591cad0ad949dc3d2334",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029281+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v25/repair-report.md",
+    "sha256": "8c62b0bd43ce7709aa229c9df6c9684965eeb5501493f06c2fb34a87e7a56506",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029290+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v26/repair-report.md",
+    "sha256": "5f769c968ce9cf89c5ca1a189ad6d92e0088ef2e73c3117f730cd7087bf6ca11",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029302+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v27/repair-report.md",
+    "sha256": "8c5cadb95e85d4d3bfc3ad913fb5f8a88ada5970bc92f97f8c0a7167013dda47",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029311+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v28/repair-report.md",
+    "sha256": "6809f0ec9eab76b9205b9dc5976580909001a9306968efed0cf630492f9639e3",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029321+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v29/agent-runs-38-environment-blocker-audit.md",
+    "sha256": "2e673aeb5f1ba776436566f77f9139bda7b4c4e44afeaa3988a0e093435a7a27",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029335+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v31/repair-report.md",
+    "sha256": "29ebe1e9cd207ce33909ad796425b5ff62d5edd3a7ae779e8455ea131a999c4c",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029352+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v32/repair-report.md",
+    "sha256": "72959a90753009a40bc91b99217bc43655a88b6ec290d570efd8e8b6c829dba0",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029362+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v33/repair-report.md",
+    "sha256": "41e5ff1a900c5eb2ae7fc7dd14ea5dc4d7396268543916d19767f3ad4ab0e53e",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029371+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v34/repair-report.md",
+    "sha256": "b52f5a5ea7e0ed0a49cb8db54cd5764bfb0a82ed99817fb2ab29d576a924122a",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029381+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v35/repair-report.md",
+    "sha256": "f74f6b9e32b6ba31b28d608d2c5d668a3900d15e4d3f8a82aef94e0d00eb6e77",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029393+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v36/repair-report.md",
+    "sha256": "7219f840f5f5a277c8085e49ef3411aba9fa543b01b442685301cf058aeefa8c",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029404+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v37/repair-report.md",
+    "sha256": "7ab65632543d72a7c0fb5661fd0b62b1aef0bc5f486736b40c3172b8d8b9f8de",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029413+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v38/repair-report.md",
+    "sha256": "b2c1e05651c5b3656edf6b32653fdd1d4844bc00207fefe2d0e4c759ed871376",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029422+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-guarded-catchall-repair-20260830.md",
+    "sha256": "d321fcb5a1bf99ebbaf53d473b66f0eec693bdfbca9e9a447ecd1030f0278d59",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029443+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-interaction-harness-repair-20260830.md",
+    "sha256": "d9ac7bcd0e6df94fcc8ae74117ba7c991de1b25dcbfc2ba80be0b17504d9dad0",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029457+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-nested-heterogeneous-repair-20260830.md",
+    "sha256": "184b935509beb7f3ac358ef6db35007e94841b48c1feffda0fe91229b23b51e2",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029469+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-tuple-arity-repair-20260830.md",
+    "sha256": "3e0038ade0210df6d1553546833de771a6c6e74e82add398c49463bde955bbe7",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029483+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-audit-validation-20260829.md",
+    "sha256": "918faab1e6c08e90cf8721c8c378b0f0871f3426731a32cd421e8b6f25cf5768",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029494+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-test-map-20260829.md",
+    "sha256": "280097d5cd96fc29208f1a0b59d90856e76ca6e9928526f5b24b6cdabb8b863a",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029502+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-test-map-final-20260829.md",
+    "sha256": "a0ae813e116d84cbdd7be1c37c0320c92d3b414dcc52d99d08a82ef97ed8cb3e",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029513+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-associated-inference-repair-20260830.md",
+    "sha256": "78f1b31824cae8be4fce412f04c05da1fc5ee728dc501a600ece5bc767a608ae",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029526+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-impl-bound-usefulness-repair-20260830.md",
+    "sha256": "1d49a5054eb98796e12306bc3d11599c6058d75914fd4cdf2efb80f9d8fa7077",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029535+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-tuple-repair-20260830.md",
+    "sha256": "b853a872d65f7fc59e0986f15194a60f62c088b683a7495fe26245d0d6989a09",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029546+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage5b-verification.md",
+    "sha256": "c970e668b4ace1a9aeeb0bcfa7281abc23ddec5982da104bf02da629e00fb9b4",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029555+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage6-full-golden-20260829.md",
+    "sha256": "da893317a90a23e1a11a4166f26d4921d72b98a161c544b02f8c914c70eb91e7",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029568+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-gate-classification-repair-20260830.md",
+    "sha256": "1adae652febb0d160d5ea0d8ec3d64fb62343927845a7b9807f50c2c6f962bee",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029579+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-materialization-repair-20260830.md",
+    "sha256": "108ac9d4a77c17298c4994026e81092e5b2917a7e15eea4c9dc0733da6164925",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029591+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-offline-runner-repair-20260830.md",
+    "sha256": "d5b009236d1c84cd37f1a59f4029496de389e2efa1f3ac0000326896e1ad48b7",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029603+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-runner-repair-20260830.md",
+    "sha256": "d61a5acdcdd73a18aa2b8d834cf98128c8115376b5f24482ce25a574c17beda6",
+    "extent": "emitted in truncated output; semantic inspection not established for full file",
+    "at": "2026-09-13T00:06:40.029612+00:00",
+    "original_extent_claim": "full narrative",
+    "qualification_at": "2026-09-13T00:10:28.572785+00:00"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-09-12T22:32:54.766386+00:00",
+  "total_seconds": 0.6155216693878174,
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "exit_code": 1,
+  "execution": "Authorized host metadata fixture suite bounded by 30-second timeout",
+  "production_provenance": "unverified",
+  "thermal_docker_fault_probes_repeated": false
+}

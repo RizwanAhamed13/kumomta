@@ -1,0 +1,180 @@
+{
+  "recorded_at": "2026-09-13T00:56:03.019640+00:00",
+  "contract": {
+    "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/live-docs-requirements-20260913.json",
+    "sha256": "26533b0754d5d7950dd1b83e6b30c8c2bae523c76a65595c99a7ef3e48c11654"
+  },
+  "stage": "post-evaluation source and retained-receipt audit",
+  "frozen_bytes_changed": false,
+  "runtime_validation_performed": false,
+  "platform_readiness": "UNPROVEN",
+  "cases": {
+    "kitesql": {
+      "sources": [
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/evidence/baseline-failure-triage.json",
+          "sha256": "715a89f8a5c667ef4bf01b218e4a5740921bc27890e0678e6419e620264b4e47"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/artifacts/requirement-map.json",
+          "sha256": "f861e810198539d97303eb048dc2f34e7de394d6b1ba185884b6919c1a4d59d5"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/artifacts/test_runner.py",
+          "sha256": "3698d23fd4c02a8ba2336607c3ed38aec63143efdfc0f901c9b775f6f404dbd0"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/source/tests/expression_index.rs",
+          "sha256": "c285815ce51423ad14fc73d6317e9be26a0c4410a45dcb63182cf052830d3add"
+        }
+      ],
+      "observed": {
+        "baseline_new": {
+          "executed": 23,
+          "pass": 4,
+          "behavioral_failure": 19
+        },
+        "reference_new": {
+          "pass": 23
+        },
+        "base": 399
+      },
+      "baseline_pass_feature_ids": [
+        "feature_rejects_constant_only_keys",
+        "feature_unique_backfill_collision"
+      ],
+      "baseline_pass_compatibility_ids": [
+        "adjacent_ordinary_column_index_covering_and_update",
+        "adjacent_ordinary_unique_and_composite_indexes"
+      ],
+      "root_cause": "Both feature cases assert only generic is_err on expression DDL. Baseline unsupported DDL satisfies the checks without exercising constant-key validation or uniqueness backfill.",
+      "queued_revision": [
+        "Add a successful supported expression-key positive control to constant-only rejection, retaining rejection assertions.",
+        "Add successful unique backfill with distinct computed keys and assert duplicate error identity for collision case.",
+        "Execute both adjacent checks in base and partition feature cases in new; reconcile complete inventories across each affected binary.",
+        "Runner must reconcile native started and terminal events, not terminal-name dictionary alone."
+      ],
+      "required_validation": [
+        "Clean four-state base/new matrix with all 21 feature tests behaviorally failing baseline and passing reference.",
+        "Runner failure fixtures and partition reconciliation; changed test coverage/mutations where affected."
+      ]
+    },
+    "lisette": {
+      "sources": [
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/frozen-first/runner.py",
+          "sha256": "a8496603930c7142dd60cf0515871225c7b0eb73435da449e6f101fe19a01738"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/replay/summary.json",
+          "sha256": "31675fdee5c1c4469191fdce9b7d581e4cc771d5ee14f54f167705449896b9c1"
+        }
+      ],
+      "observed": {
+        "baseline_new": {
+          "executed": 15,
+          "pass": 0,
+          "behavioral_failure": 15
+        },
+        "reference_new": {
+          "pass": 15
+        },
+        "reference_base": 7451,
+        "existing_excluded": 286
+      },
+      "feature_discrimination": "Observed later replay has 15 real native failed terminal events on baseline and 15 real passes on reference. Lisette-language parse/type failure inside an executing Rust assertion is behavioral; Rust compilation setup failure is not.",
+      "queued_revision": [
+        "Create a separate final runner revision preserving originals: compile/setup/discovery/missing event/process timeout as JUnit error, ignored as skipped, zero executed on failed build.",
+        "Do not fabricate named test failures by regex on a compiler failure; retain real discovery/raw events/receipt and complete complementary inventory.",
+        "Set RUSTC_BOOTSTRAP only on libtest process; bound build jobs to 1; validate binary rebuild/source identities.",
+        "Keep two adjacent checks in base. Audit grounding for 286 excluded existing tests against current rule; do not call full compatibility proven."
+      ],
+      "required_validation": [
+        "Runner setup/timeout/ignored/missing/duplicate-event fixtures.",
+        "Clean matrix on revised runner and correct complete-inventory exclusions; no production change implied."
+      ]
+    },
+    "scylla": {
+      "sources": [
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/final-matrix-results.json",
+          "sha256": "d9316e1ea2b1b0e488a5a2129707c364f2db2ee944c9ffa9ea8889d50459654b"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/artifacts/test.sh",
+          "sha256": "45d8b95f30b54de0521317e80278454a6a4cda0a4fc89853e2c7b194bcd86161"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/readiness.json",
+          "sha256": "88801e036898a6db951255ebad6a555044a62b993d6818e0320f1e6a9a9382c0"
+        }
+      ],
+      "observed": {
+        "baseline_base_pass": 194,
+        "test_only_new": {
+          "rust_compile_exit": 101,
+          "executed": 0,
+          "junit_errors": 1,
+          "behavioral_failure": 0
+        },
+        "combined_base_pass": 194,
+        "combined_new_pass": 8,
+        "excluded_external_db": 16
+      },
+      "feature_discrimination": "BLOCKED: absent new Rust API prevents the test binary from compiling; eight reference passes do not establish eight baseline behavioral failures.",
+      "queued_revision": [
+        "Design baseline-compilable public-behavior tests or an explicitly reviewed compatibility adapter that faithfully supplies baseline behavior without faking the required API; do not relabel compiler failure as F2P.",
+        "Runner maps timeouts/nonzero process exits to assertion failures; classify timeout/setup as errors and retain native start/terminal events.",
+        "Review 16 external-DB exclusions and named affected-area integration coverage against current general contract."
+      ],
+      "required_validation": [
+        "Baseline test binary must build and execute each feature assertion before 100% F2P can be claimed.",
+        "Clean matrix and appropriate affected-area integration or explicit unresolved environment limitation."
+      ]
+    },
+    "rust-analyzer": {
+      "sources": [
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/rust-analyzer/evidence/final-matrix-final-r3/tests-only-new/reconciliation.json",
+          "sha256": "448e9b179fdfd8bd4d9edf6f827163878417357c92cbd35c5def2ba0a0dff5a3"
+        },
+        {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/rust-analyzer/evidence/final-matrix-final-r3/combined-reconciliation-r2-audit.json",
+          "sha256": "5fb9b9c3b2940a7b7f7385221d00906a3eb1a2e6743232f393188431cd9ad4ed"
+        }
+      ],
+      "observed": {
+        "test_only_new": {
+          "status": "EXECUTION_RECONCILED",
+          "counts": {
+            "pass": 0,
+            "failure": 23,
+            "error": 0,
+            "skipped": 0
+          },
+          "executed": 23,
+          "selected": 23,
+          "issues": []
+        },
+        "combined": {
+          "status": "PARTITIONS_RECONCILED",
+          "counts": {
+            "pass": 772,
+            "failure": 0,
+            "error": 0,
+            "skipped": 0
+          },
+          "expected_tests": 772,
+          "executed_unique": 772,
+          "issues": []
+        }
+      },
+      "feature_discrimination": "Current R3 retained receipts establish 23 executed baseline assertion failures and reference 23 passes; complementary base/new combined receipt resolves all 772 tests.",
+      "queued_revision": [
+        "No additional production/test feature revision inferred by this audit. Preserve archived 25/26 result and prompt-grounded GEN_KW exclusion separately.",
+        "Revalidate metadata receipt with changed gate version only when required; do not represent it as new candidate execution."
+      ],
+      "remaining": "Private case-panel checks, exact accepted artifact-byte identity and final package current-live contract audit remain unproven."
+    }
+  }
+}

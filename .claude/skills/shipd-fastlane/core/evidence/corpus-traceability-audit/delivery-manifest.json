@@ -1,0 +1,328 @@
+{
+  "at": "2026-09-13T00:41:02.672540+00:00",
+  "purpose": "private metadata and documentation addendum; no publication",
+  "source_root": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 9032,
+      "sha256": "bd4fb6e5005acd52b934a9fd169062d4ad9a6cfbb311ab7a7bfecc4e949dd5a7"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/COMPLETENESS.md",
+      "bytes": 1304,
+      "sha256": "3659806f51e25cc08f49099e85873761a878716658198d744b4c9b0fffae51a7"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/REPORT.md",
+      "bytes": 13496,
+      "sha256": "2eba4664831656338ad11f22957f3bb24eaa21b33055b50da0a1b59d653b5b7d"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/accepted-cases-before-live-update.json",
+      "bytes": 19161,
+      "sha256": "6ff37d015f2d0bf0cd290930ac609d3fa5238d47428f19f81aa22fb0731897d8"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/archives.json",
+      "bytes": 367032,
+      "sha256": "8447806b5d888f347d0b5be7ef412812750b3751d89526b55a0e76b47af64ab8"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/case-record-index.json",
+      "bytes": 22380,
+      "sha256": "87c9a503a636a6854e3e0b8efa36c75b85d3d6f211d32a1ed8802e54c88e2f67"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/cases.json",
+      "bytes": 511488,
+      "sha256": "8752d831d0a7d7314bc31a4a96c93d5dd835639b8539afe64f43e2594572fc0e"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/completeness-ledger-with-live-addendum.json",
+      "bytes": 31505,
+      "sha256": "ea0a81b6066d9260b8583d240738086ffb1149cd945d45ca8fcf376b5468f665"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/completeness-ledger.json",
+      "bytes": 31159,
+      "sha256": "0c72a0713ef4d0d5166a6f8efca18c770afe786ba9276f81cc284115a79cbc62"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/docs-receipt.json",
+      "bytes": 704,
+      "sha256": "60f224054e694ab23ed39bd8f84aa846ef41eec660d6b23d5fe69a64096e63a7"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/errors.json",
+      "bytes": 139,
+      "sha256": "8256ae2286ab8840b80f1eef46011205c64bef95104b3e9cff5227d8b162c05b"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/gate-reference-index.json",
+      "bytes": 382510,
+      "sha256": "5c504b67e6ecbd7c11f36a4fafbe4b979e969484b364d291b11220dc3ea44a1e"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/historical-record-candidates.json",
+      "bytes": 49901,
+      "sha256": "cf83ae73c2d42c69a391a0ba413e70589773d60f8302ad06b29ade11f7ec1d43"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/inventory.json",
+      "bytes": 3328525,
+      "sha256": "bf31b1e361279dcc15ca1cdef7119999fe9903e129905b31dac996ad0d886e6e"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/live-accepted-submissions-20260913-before-header-followup.json",
+      "bytes": 3253,
+      "sha256": "63766b90fd51946f69110b348ab40783019c6fe2b9d6aa42a7d44b94e9c44188"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/live-accepted-submissions-20260913.json",
+      "bytes": 3253,
+      "sha256": "63766b90fd51946f69110b348ab40783019c6fe2b9d6aa42a7d44b94e9c44188"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/live-docs-requirements-20260913.json",
+      "bytes": 6487,
+      "sha256": "26533b0754d5d7950dd1b83e6b30c8c2bae523c76a65595c99a7ef3e48c11654"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/metadata-input-hashes.json",
+      "bytes": 1224,
+      "sha256": "598c636cff5c0647a99943115176a583825ce2e5fd8e034e08b8a2dfe5bc5234"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/AUDIT.md",
+      "bytes": 11120,
+      "sha256": "c09380d8477ea4a0a2bc3a0db5856f088840108edddb06095c1d336b148b3912"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/authorization-and-transfer-plan.json",
+      "bytes": 702,
+      "sha256": "7b87420527be662ea9233a1174d943d2bf7e765a95ed8ee9f1751e11b48f5ab3"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/buildx-harness-pending.json",
+      "bytes": 930,
+      "sha256": "e8eb7627c2df18fd6f27afeec3bbfd5527cc6bee08def14ca0b3732b3399d907"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/docs-followup-receipt.json",
+      "bytes": 1624,
+      "sha256": "bb1064c4c17892da508fae9963fc4c6d09cf92fb87f0e19ba106e420543c361e"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/docs-link-metadata-check.json",
+      "bytes": 11267,
+      "sha256": "38bdf2dc7523e5cc304d3552e398316a2de7e9317521990a0f0b61761d866bba"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/first-content-read.json",
+      "bytes": 242,
+      "sha256": "f15190bade889760ec7ad2dbd1c68c4e83d784ca1a9991fb4f8dc2faeea677f1"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/live-docs-alignment-receipt.json",
+      "bytes": 2192,
+      "sha256": "a90bdd390ae5c8f4e5fd5c9ad6bf9925c820a042d2a797d4c1af2ab0411a9590"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/patch-structure.json",
+      "bytes": 28550,
+      "sha256": "3aa59fad67a958a0aab979018db918c8d4398127f55315750d33ed53150dd2bc"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/per-case-inspection-coverage.json",
+      "bytes": 51675,
+      "sha256": "7220ab0ca220281614efd26f767fffd8bd983d61af33041c0ffe2fce1134842b"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/preflight-doc-followup.json",
+      "bytes": 732,
+      "sha256": "b597766c46fc42dee84cbc93a621ad56ca3f274dd30f6e1f94fe6cf80c6bcd4d"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/preflight-live-docs-alignment.json",
+      "bytes": 734,
+      "sha256": "e214ccab2a39f3ca54a315f8385ffc1c3fe90028647a27e0673aeae8a0d391c4"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/preflight-source-followup.json",
+      "bytes": 1307,
+      "sha256": "caa0ee61c4d404c05908cc87d8a59701c6dc9b369d4a4c066c6d08c18d257fb5"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-dora-followup.json",
+      "bytes": 2401,
+      "sha256": "e300160c9564804239048085c2ce84830c6dbae13b6f5994aa4df9d5ec498c08"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-dora-scylla-repairs-a.json",
+      "bytes": 2882,
+      "sha256": "58676174e94db678ab57bd4e122f55223b5d7451f1ae8d46156debbab7bf9f03"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-lisette-kite-narratives.json",
+      "bytes": 3553,
+      "sha256": "3476099545e72a6f61d6df6170647522fc75ff206aa16333296d7e6f0693b9f8"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-lisette-production-a.json",
+      "bytes": 417,
+      "sha256": "ff6cb8e33d384780f137000e50584a6d3f46d989218bc0b97d999e7e57e2f7e6"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-narratives-scylla-dora.json",
+      "bytes": 19540,
+      "sha256": "a5fd1c0eec73dd3208c9708646b8262224a35b54f3dbf198cc4d425b97710bfe"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/read-log-scylla-followup.json",
+      "bytes": 1698,
+      "sha256": "7a3c157ededff6cc4d21955d4f2ce57b5dc7da0aa2af2ebedd946ba3b055487e"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/semantic-inspection-ledger.json",
+      "bytes": 44458,
+      "sha256": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/transfer-allowlist.json",
+      "bytes": 33459,
+      "sha256": "98683828d1fb1b54376ab139c24c79be76e8775576f4df576680bd3ba628f10a"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/transfer-files.txt",
+      "bytes": 11817,
+      "sha256": "0ac918d583ea82ce4d1585825ce352892c488be3127d4d5de4a134644fb5b024"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/transfer-verification.json",
+      "bytes": 152,
+      "sha256": "8426d35c15bf5b8f8e0022fa49210a57938ededd20adf85e37ec36f59f07cc0d"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/preflight-later-learning.json",
+      "bytes": 1078,
+      "sha256": "2af8f096eae361af71f148e3383032324ab0b1134d73e1f0fec8a9b1bf4cf22c"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/preflight.json",
+      "bytes": 3638,
+      "sha256": "54c0a6ef8a5c30bd3c3294e86f73fdaa9ee00184ecc6fe42caa82ae74496d5b1"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/revisions.json",
+      "bytes": 864035,
+      "sha256": "29da71cc7a80d0aaa53eba5c2d025ae1a2db5acd887d904078ad75c924ba453c"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/skipped.json",
+      "bytes": 86855,
+      "sha256": "d1815f1b01a6b8f023c62690ea62e8aac69cfb05a2ae17f0beae547eb39972a7"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/summary.json",
+      "bytes": 594,
+      "sha256": "a427adf03cc7c6a1b5c3f14e770777471736443f0206d07c6eace73c1c123083"
+    },
+    {
+      "path": "knowledge/accepted-cases.json",
+      "bytes": 26559,
+      "sha256": "114361b20ecc4618e9c94d45de7917b125cd85eab6cc9940ad90e936c4c91287"
+    },
+    {
+      "path": "knowledge/lessons.json",
+      "bytes": 178113,
+      "sha256": "97fdaa1b0eb475503f27fa490ab7f332cc9b109e34ed0e78438423666f2b43fa"
+    },
+    {
+      "path": "knowledge/source-receipt.json",
+      "bytes": 1483,
+      "sha256": "8c39450724225c13a0afc32abb0d28292a045c8f10ac53c3acd56bc847641b92"
+    },
+    {
+      "path": "skills/shipd-fastlane/SKILL.md",
+      "bytes": 12276,
+      "sha256": "cd95882861be3717480716c83bc7a1f5c35a4bc44656ede3ff63fd19a58e970c"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/accepted-patterns.md",
+      "bytes": 6331,
+      "sha256": "cc52fe38dc006eeee31a24fef1931c9a4a5d8da67d9cfdeda9c7e50ef9f0ea7e"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/corpus-completeness.md",
+      "bytes": 4174,
+      "sha256": "13d0de64f01d72a9a7625e780c5e8b59c8b5dc73542ec4621a5bc94362b0f885"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/current-general-contract.md",
+      "bytes": 5151,
+      "sha256": "6659d272e9cd18f9857012c428d093d84e2c93700848f866d454f73f57909d13"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/execution-integrity.md",
+      "bytes": 8246,
+      "sha256": "1ba50abcaaefccde3e8d5e86f1a7742b52f31e4492b5d2ac832620d992972375"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/execution.md",
+      "bytes": 10312,
+      "sha256": "e10cbd668e9265675f2f73f18ea34f849821100564123065746cc7c0388b2ce5"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "bytes": 4338,
+      "sha256": "5dc16fd46f286b3ad41b78879ecfa81a87e8b5cf18c8d9c7fa8476ac542129c7"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "bytes": 8014,
+      "sha256": "b26024407ab9e56d56a8ad6e3ecb0bd5f535fbf9a5310e6bf8bf43d6960b081a"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "bytes": 14276,
+      "sha256": "8225f7c0e19da8749819ae79fb205821c1db809298663eb8382073f225c44e2e"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/partition-result-gate.md",
+      "bytes": 3936,
+      "sha256": "c8bcafa5b1e6825e272c88814e5fefd7d5df0a4efba78ad682cbd650e1ac00b5"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "bytes": 3074,
+      "sha256": "0ff42e05e49cc302906ff1603286f31e9a7fca0a9ba69568ef2fcf48eb78de4c"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/prevention.md",
+      "bytes": 7010,
+      "sha256": "8f713c57937ce9c635f2169286b8dbcac2d3c0e3f109175ac930fef432f6134c"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/provenance.md",
+      "bytes": 4544,
+      "sha256": "83f95f35a3aa821029d085fe035390d05eac14a9c9cdaf822be8b64498aa73c2"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/repair-case-study.md",
+      "bytes": 2084,
+      "sha256": "b18b62237ca221198372a52ebdd73842ae5a1c4b30bca20749edbbc26b94945a"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/test-coverage.md",
+      "bytes": 10660,
+      "sha256": "b1a356e45b4d79214a98ec039ac27d94c7edbe158d7cc55e2af2af1f4d30ede1"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/thermal-safety.md",
+      "bytes": 7251,
+      "sha256": "35451eb68fdddcbd7379dd073dd7517510c77204687100f980de215f40e9c1ff"
+    }
+  ],
+  "excluded": "Historical payload copies are omitted; original paths and hashes remain in the ledgers. No candidate artifact files changed."
+}

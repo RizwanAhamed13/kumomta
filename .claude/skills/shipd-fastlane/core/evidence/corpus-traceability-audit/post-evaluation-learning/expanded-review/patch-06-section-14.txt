@@ -1,0 +1,148 @@
+diff --git a/dora-frontend/src/sema/impl_matching.rs b/dora-frontend/src/sema/impl_matching.rs
+@@ -8,7 +8,9 @@ use crate::{
+-use super::matching::{block_matches_ty, block_matches_ty_with_context, match_arrays_with_context};
++use super::matching::{
++    block_matches_ty, block_matches_ty_with_context, match_arrays_with_context, match_types,
++};
+@@ -226,6 +228,116 @@ pub fn find_impl(
++pub fn find_trait_pattern_type(
++    sa: &Sema,
++    check_element: &dyn Element,
++    nominal_ty: SourceType,
++    trait_ty: TraitType,
++) -> Option<SourceType> {
++    find_trait_pattern_type_matching(sa, check_element, trait_ty, |actual_ty| {
++        same_nominal_type(&nominal_ty, actual_ty)
++    })
++}
++
++pub fn find_trait_tuple_pattern_type(
++    sa: &Sema,
++    check_element: &dyn Element,
++    trait_ty: TraitType,
++    minimum_arity: usize,
++    exact_arity: Option<usize>,
++) -> Option<SourceType> {
++    find_trait_pattern_type_matching(sa, check_element, trait_ty, |actual_ty| {
++        let arity = match actual_ty {
++            SourceType::Unit => 0,
++            SourceType::Tuple(subtypes) => subtypes.len(),
++            _ => return false,
++        };
++
++        exact_arity
++            .map(|exact_arity| arity == exact_arity)
++            .unwrap_or(arity >= minimum_arity)
++    })
++}
++
++fn find_trait_pattern_type_matching(
++    sa: &Sema,
++    check_element: &dyn Element,
++    trait_ty: TraitType,
++    matches_pattern: impl Fn(&SourceType) -> bool,
++) -> Option<SourceType> {
++    let check_type_param_definition = check_element.type_param_definition(sa);
++    let mut result = None;
++    let mut context = TraitMatchingContext::default();
++
++    'impls: for (_id, impl_) in sa.impls.iter() {
++        let impl_type_param_definition = impl_.type_param_definition(sa);
++        let Some(impl_trait_ty) = impl_.trait_ty() else {
++            continue;
++        };
++        if impl_trait_ty.trait_id != trait_ty.trait_id {
++            continue;
++        }
++
++        let mut bindings = vec![None; impl_type_param_definition.type_param_count()];
++        if !trait_ty_match(
++            sa,
++            impl_,
++            &impl_trait_ty,
++            &trait_ty,
++            check_element,
++            check_type_param_definition,
++            &mut bindings,
++            &mut context,
++        ) {
++            continue;
++        }
++
++        let bindings = SourceTypeArray::with(
++            bindings
++                .into_iter()
++                .map(|binding| binding.expect("missing binding"))
++                .collect(),
++        );
++        let type_args = TypeArgs::from_own(sa, impl_type_param_definition, &bindings);
++        let actual_ty = specialize_type(sa, impl_.extended_ty(), &type_args);
++
++        for bound in impl_type_param_definition.bounds(sa) {
++            let bound_ty = specialize_type(sa, bound.ty(), &type_args);
++
++            if let Some(bound_trait_ty) = bound.trait_ty() {
++                if !implements_trait_with_context(
++                    sa,
++                    bound_ty,
++                    check_element,
++                    bound_trait_ty,
++                    &mut context,
++                ) {
++                    continue 'impls;
++                }
++            }
++        }
++        if !matches_pattern(&actual_ty) {
++            continue;
++        }
++
++        if result.as_ref().is_some_and(|result| result != &actual_ty) {
++            return None;
++        }
++        result = Some(actual_ty);
++    }
++
++    result
++}
++
++fn same_nominal_type(first: &SourceType, second: &SourceType) -> bool {
++    match (first, second) {
++        (SourceType::Class(first, _), SourceType::Class(second, _)) => first == second,
++        (SourceType::Struct(first, _), SourceType::Struct(second, _)) => first == second,
++        (SourceType::Enum(first, _), SourceType::Enum(second, _)) => first == second,
++        _ => false,
++    }
++}
++
+@@ -648,30 +760,28 @@ fn trait_ty_match(
+-    if opt_bindings.iter().any(|t| t.is_none()) {
+-        return false;
+-    }
+-
+-    let bindings = SourceTypeArray::with(
+-        opt_bindings
+-            .clone()
+-            .into_iter()
+-            .map(|t| t.expect("missing binding"))
+-            .collect(),
+-    );
+-    let type_args = TypeArgs::from_own(sa, impl_.type_param_definition(sa), &bindings);
+-
+-        let impl_alias_ty = specialize_type(sa, impl_alias_ty, &type_args);
+-
+-        if type_binding != &impl_alias_ty {
++        if !match_types(
++            sa,
++            type_binding.clone(),
++            check_element,
++            check_type_param_definition,
++            impl_alias_ty,
++            impl_.type_param_definition(sa),
++            opt_bindings,
++            context,
++        ) {
++    if opt_bindings.iter().any(|t| t.is_none()) {
++        return false;
++    }
++

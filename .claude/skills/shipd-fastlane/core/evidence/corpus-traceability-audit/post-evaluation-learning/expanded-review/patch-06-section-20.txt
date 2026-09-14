@@ -1,0 +1,14 @@
+diff --git a/pkgs/boots/bytecode/reader.dora b/pkgs/boots/bytecode/reader.dora
+@@ -376,6 +376,18 @@ impl BytecodeIterator {
++            opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE => {
++                let dest = self.read_register();
++                let obj = self.read_register();
++                let idx = self.read_const_pool_id();
++                BytecodeInstruction::TestTraitObjectType(dest, obj, idx)
++            }
++            opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE => {
++                let dest = self.read_register();
++                let obj = self.read_register();
++                let idx = self.read_const_pool_id();
++                BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx)
++            }

@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-09-13T00:00:30.003231+00:00",
+  "changes": {
+    "skills/shipd-fastlane/references/corpus-completeness.md": {
+      "sha256": "f4f9819d9434047ebace0dfba09453739e1658dc8948a4f3a622b43c61f09a3d",
+      "bytes": 3859
+    },
+    "skills/shipd-fastlane/references/provenance.md": {
+      "sha256": "c11e5d919a137ba15748b72c7c958ece87109411c52221622098d7d11f3b52a4",
+      "bytes": 4012
+    },
+    "evidence/corpus-traceability-audit/COMPLETENESS.md": {
+      "sha256": "3659806f51e25cc08f49099e85873761a878716658198d744b4c9b0fffae51a7",
+      "bytes": 1304
+    }
+  },
+  "validation": "source and metadata only; no tests executed",
+  "publication": "not published or version bumped"
+}

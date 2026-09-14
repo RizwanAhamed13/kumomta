@@ -1,0 +1,56 @@
+diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs
+@@ -560,14 +560,29 @@ pub struct EnumVariant {
+-#[derive(Debug, Clone, PartialEq)]
++#[derive(Clone, PartialEq)]
++    pub default: Option<Box<Expression>>,
++impl std::fmt::Debug for EnumFieldDefinition {
++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        let mut debug = f.debug_struct("EnumFieldDefinition");
++        debug.field("name", &self.name);
++        debug.field("name_span", &self.name_span);
++        debug.field("annotation", &self.annotation);
++        debug.field("ty", &self.ty);
++        if self.default.is_some() {
++            debug.field("default", &self.default);
++        }
++        debug.finish()
++    }
++}
++
+@@ -654,17 +669,35 @@ impl<'a> IntoIterator for &'a mut StructFields {
+-#[derive(Debug, Clone, PartialEq)]
++#[derive(Clone, PartialEq)]
++    pub default: Option<Box<Expression>>,
++impl std::fmt::Debug for StructFieldDefinition {
++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        let mut debug = f.debug_struct("StructFieldDefinition");
++        debug.field("doc", &self.doc);
++        debug.field("name", &self.name);
++        debug.field("name_span", &self.name_span);
++        debug.field("annotation", &self.annotation);
++        debug.field("visibility", &self.visibility);
++        debug.field("ty", &self.ty);
++        if self.default.is_some() {
++            debug.field("default", &self.default);
++        }
++        debug.field("kind", &self.kind);
++        debug.finish()
++    }
++}
++
+@@ -1981,10 +2014,17 @@ impl Expression {
++            Expression::Enum { variants, .. } => variants
++                .iter()
++                .flat_map(|variant| variant.fields.iter())
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
++            Expression::Struct { fields, .. } => fields
++                .iter()
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
+-            | Expression::Enum { .. }
+-            | Expression::Struct { .. }
+@@ -2297,6 +2337,7 @@ pub enum FormatStringPart {
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+@@ -2305,6 +2346,7 @@ pub enum UnaryOperator {
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

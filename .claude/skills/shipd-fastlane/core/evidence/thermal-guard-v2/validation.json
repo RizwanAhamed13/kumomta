@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "temperature": 60.0,
+  "owned_container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf",
+  "stopped": true,
+  "wall_seconds": 14.558,
+  "guard_sha256": "5dfb7caa5a919017104b73351cc5253c16308c67382050ea3f8bae2b44a70e21",
+  "cases": [
+    {
+      "case": "cycle",
+      "exit_code": 143,
+      "status": "PASS",
+      "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/cycle.jsonl",
+      "sha256": "6c6a6ba1e0dc52e637f467cb35978fc82f358e388b32172ab24d91d011aaabd4"
+    },
+    {
+      "case": "preexisting",
+      "exit_code": 143,
+      "status": "PASS",
+      "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/preexisting.jsonl",
+      "sha256": "5190b33382c81513b445e6640b1d0b06134d8680982960133a59ffe187755546"
+    },
+    {
+      "case": "inspect_error",
+      "exit_code": 7,
+      "status": "PASS",
+      "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/inspect_error.jsonl",
+      "sha256": "266d9ffd4678b0d93eb0d6f26da9365b2a29016d6e4e314eeda56e07cee852c1"
+    },
+    {
+      "case": "malformed_json",
+      "exit_code": 7,
+      "status": "PASS",
+      "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/malformed_json.jsonl",
+      "sha256": "6dfb88fb604fc99cdc539ccc138972a98ace023ff9ca8e1382fa52bc996d5908"
+    },
+    {
+      "case": "quota_error",
+      "exit_code": 4,
+      "status": "PASS",
+      "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/quota_error.jsonl",
+      "sha256": "7d0bc2767c20d10eefb3d8405abdea31628d8215e683f44bd0ff4bb0499b0d7d"
+    }
+  ]
+}

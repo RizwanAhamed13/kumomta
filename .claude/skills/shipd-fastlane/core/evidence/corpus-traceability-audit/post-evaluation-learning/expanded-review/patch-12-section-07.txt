@@ -1,0 +1,94 @@
+diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs
+@@ -1,8 +1,10 @@
++use std::sync::Arc;
++use crate::response::Coordinator;
+@@ -71,6 +73,8 @@ pub struct Plan<'a> {
++    preferred: Option<(NodeRef<'a>, Option<Shard>)>,
++    preferred_emitted: bool,
+@@ -87,6 +91,41 @@ impl<'a> Plan<'a> {
++            preferred: None,
++            preferred_emitted: true,
++            state: PlanState::Created,
++        }
++    }
++
++    pub(crate) fn new_with_preferred(
++        policy: &'a dyn LoadBalancingPolicy,
++        routing_info: &'a RoutingInfo<'a>,
++        cluster: &'a ClusterState,
++        preferred: Option<&'a Coordinator>,
++    ) -> Self {
++        let preferred = preferred
++            .filter(|coordinator| {
++                policy.is_coordinator_preferred(routing_info, cluster, coordinator)
++            })
++            .map(|coordinator| (coordinator.node(), coordinator.shard()));
++        Self::new_with_preferred_target(policy, routing_info, cluster, preferred)
++    }
++
++    /// Creates a plan with an optional target to attempt before the policy's
++    /// freshly generated plan.
++    #[doc(hidden)]
++    pub fn new_with_preferred_target(
++        policy: &'a dyn LoadBalancingPolicy,
++        routing_info: &'a RoutingInfo<'a>,
++        cluster: &'a ClusterState,
++        preferred: Option<(NodeRef<'a>, Option<Shard>)>,
++    ) -> Self {
++        Self {
++            policy,
++            routing_info,
++            cluster,
++            preferred,
++            preferred_emitted: false,
+@@ -105,18 +144,20 @@ impl<'a> Plan<'a> {
+-}
+-
+-impl<'a> Iterator for Plan<'a> {
+-    type Item = (NodeRef<'a>, Shard);
++    fn is_preferred_target(&self, target: (NodeRef<'_>, Shard)) -> bool {
++        self.preferred.is_some_and(|preferred| {
++            Arc::ptr_eq(preferred.0, target.0)
++                && preferred.1.is_none_or(|shard| target.1 == shard)
++        })
++    }
+-    fn next(&mut self) -> Option<Self::Item> {
++    fn next_base(&mut self) -> Option<(NodeRef<'a>, Option<Shard>)> {
+-                    Some(Self::with_random_shard_if_unknown(picked))
++                    Some(picked)
+@@ -130,7 +171,7 @@ impl<'a> Iterator for Plan<'a> {
+-                        Some(Self::with_random_shard_if_unknown(node))
++                        Some(node)
+@@ -147,23 +188,33 @@ impl<'a> Iterator for Plan<'a> {
+-                self.next()
++                self.next_base()
+-            } => {
+-                for node in iter {
+-                    if node == *node_to_filter_out {
+-                        continue;
+-                    } else {
+-                        return Some(Self::with_random_shard_if_unknown(node));
+-                    }
+-                }
++            } => iter.find(|node| *node != *node_to_filter_out),
++            PlanState::PickedNone => None,
++        }
++    }
++}
+-                None
++impl<'a> Iterator for Plan<'a> {
++    type Item = (NodeRef<'a>, Shard);
++
++    fn next(&mut self) -> Option<Self::Item> {
++        if !self.preferred_emitted {
++            self.preferred_emitted = true;
++            if let Some(preferred) = self.preferred {
++                return Some(Self::with_random_shard_if_unknown(preferred));
++            }
++        }
++
++        loop {
++            let target = Self::with_random_shard_if_unknown(self.next_base()?);
++            if !self.is_preferred_target(target) {
++                return Some(target);
+-            PlanState::PickedNone => None,

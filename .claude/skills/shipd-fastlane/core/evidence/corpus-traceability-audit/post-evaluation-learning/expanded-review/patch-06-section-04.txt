@@ -1,0 +1,28 @@
+diff --git a/dora-bytecode/src/verifier.rs b/dora-bytecode/src/verifier.rs
+@@ -499,6 +499,32 @@ impl<'a> Verifier<'a> {
++            BytecodeInstruction::TestTraitObjectType { dest, object, idx } => {
++                let ConstPoolEntry::TraitObject {
++                    trait_ty,
++                    actual_object_ty: _,
++                } = self.const_pool(idx)
++                else {
++                    panic!("expected TraitObject constant pool entry");
++                };
++                assert!(trait_ty.is_trait_object());
++                self.assert_type(dest, &BytecodeType::Bool);
++                self.assert_type(object, trait_ty);
++            }
++
++            BytecodeInstruction::LoadTraitObjectValue { dest, object, idx } => {
++                let ConstPoolEntry::TraitObject {
++                    trait_ty,
++                    actual_object_ty,
++                } = self.const_pool(idx)
++                else {
++                    panic!("expected TraitObject constant pool entry");
++                };
++                assert!(trait_ty.is_trait_object());
++                self.assert_type(object, trait_ty);
++                self.assert_type(dest, actual_object_ty);
++            }
++

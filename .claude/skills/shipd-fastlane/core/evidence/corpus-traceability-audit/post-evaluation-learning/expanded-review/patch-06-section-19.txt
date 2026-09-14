@@ -1,0 +1,11 @@
+diff --git a/pkgs/boots/bytecode/opcode.dora b/pkgs/boots/bytecode/opcode.dora
+@@ -71,6 +71,8 @@ pub const BYTECODE_OPCODE_GET_REGISTER_REF: Int32 = 66;
++pub const BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE: Int32 = 70;
++pub const BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE: Int32 = 71;
+@@ -532,6 +534,12 @@ pub fn bytecode_name(opcode: Int32): String {
++    if opcode == BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE {
++        return "TestTraitObjectType";
++    }
++    if opcode == BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE {
++        return "LoadTraitObjectValue";
++    }

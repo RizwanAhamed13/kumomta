@@ -1,0 +1,3 @@
+diff --git a/pkgs/boots/store_elimination.dora b/pkgs/boots/store_elimination.dora
+@@ -251,6 +251,7 @@ fn is_memory_barrier(op: Op): Bool {
++        | Op::ShapeConst

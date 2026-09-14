@@ -1,0 +1,5 @@
+{"utc": "2026-09-12T22:01:01.232905+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "attached", "pre_existing_paused": false}
+{"utc": "2026-09-12T22:01:01.253123+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "quota_update", "returncode": 12, "cpus": 0.5, "diagnostic": "injected quota rejection"}
+{"utc": "2026-09-12T22:01:01.253181+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed", "reason": "quota_update_failed"}
+{"utc": "2026-09-12T22:01:01.458907+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed_pause", "returncode": 0, "diagnostic": ""}
+{"utc": "2026-09-12T22:01:01.458986+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "finished", "reason": "quota_update_failed", "wall_seconds": 0.254, "thermal_pause_seconds": 0.0, "active_elapsed_seconds": 0.254}

@@ -1,0 +1,7 @@
+diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs
+@@ -98,7 +98,7 @@ pub struct CompletionItemImport {
+-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
++#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+@@ -405,7 +405,7 @@ impl CompletionRelevance {
+-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
++#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

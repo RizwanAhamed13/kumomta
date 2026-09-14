@@ -1,0 +1,4 @@
+diff --git a/scylla/src/client/mod.rs b/scylla/src/client/mod.rs
+@@ -21,6 +21,8 @@ mod execution;
++pub mod paging_continuation;
++

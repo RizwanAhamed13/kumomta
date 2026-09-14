@@ -1,0 +1,24 @@
+diff --git a/dora-compiler/src/closure.rs b/dora-compiler/src/closure.rs
+@@ -175,6 +175,28 @@ impl<'a> TransitiveClosureComputation<'a> {
++                BytecodeInstruction::TestTraitObjectType { idx, .. } => {
++                    let ConstPoolEntry::TraitObject {
++                        trait_ty,
++                        actual_object_ty,
++                    } = bytecode_body.const_pool(idx)
++                    else {
++                        unreachable!()
++                    };
++                    self.shape_keys.push(AotShapeKey::TraitObject {
++                        trait_ty: specialize_ty_in_program(
++                            self.program,
++                            trait_ty.clone(),
++                            &type_params,
++                        ),
++                        actual_object_ty: specialize_ty_in_program(
++                            self.program,
++                            actual_object_ty.clone(),
++                            &type_params,
++                        ),
++                    });
++                }
++

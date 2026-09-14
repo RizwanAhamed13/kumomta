@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-13T00:11:49.390020+00:00",
+  "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+  "extent": "emitted in truncated output; full semantic inspection not established for this batch",
+  "sections": [
+    1,
+    2,
+    3,
+    4,
+    11,
+    17
+  ],
+  "original_extent_claim": "changed lines and hunk coordinates only",
+  "qualified_at": "2026-09-13T00:15:59.444005+00:00"
+}

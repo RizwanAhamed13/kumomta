@@ -1,0 +1,536 @@
+--- .olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch
++++ .olympus/cases/lisette-default-field-values/artifacts/solution.patch
+@@ -352,8 +352,123 @@
+  pub(crate) fn emit_struct_literal(
+      ty: &str,
+      fields: &[(String, String)],
++diff --git a/crates/emit/src/expressions/identifiers.rs b/crates/emit/src/expressions/identifiers.rs
++index 13c50bba..14979ac1 100644
++--- a/crates/emit/src/expressions/identifiers.rs
+++++ b/crates/emit/src/expressions/identifiers.rs
++@@ -12,9 +12,17 @@ enum IdentifierKind {
++     /// Public function needing Go capitalization
++     PublicFunction { capitalized: String },
++     /// Enum variant unit constructor → `MakeName[Types]()`
++-    UnitConstructor { name: String, type_args: String },
+++    UnitConstructor {
+++        name: String,
+++        type_args: String,
+++        enum_id: String,
+++    },
++     /// Enum variant constructor as function value → `MakeName[Types]`
++-    ConstructorFunction { name: String, type_args: String },
+++    ConstructorFunction {
+++        name: String,
+++        type_args: String,
+++        enum_id: String,
+++    },
++     /// Regular identifier (may need static method capitalization or cross-package resolution)
++     Regular { name: String },
++ }
++@@ -46,22 +54,31 @@ impl Planner<'_> {
++         if let Some(go_name) = &bound_go_name {
++             self.scope.record_go_use(go_name);
++         }
+++
++         match self.classify_identifier(value, ty, ctx) {
++             IdentifierKind::UnitValue => {
++                 GoExpression::composite_literal("struct{}{}".to_string(), false)
++             }
++             IdentifierKind::PublicFunction { capitalized } => GoExpression::name(capitalized),
++-            IdentifierKind::UnitConstructor { name, type_args } => GoExpression::call(
+++            IdentifierKind::UnitConstructor {
+++                name,
+++                type_args,
+++                enum_id,
+++            } => GoExpression::call(
++                 GoExpression::opaque(format!(
++                     "{}{}",
++-                    self.resolve_go_name(&name, None, false),
+++                    self.qualify_enum_make_function(&name, &enum_id),
++                     type_args
++                 )),
++                 Vec::new(),
++             ),
++-            IdentifierKind::ConstructorFunction { name, type_args } => GoExpression::name(format!(
+++            IdentifierKind::ConstructorFunction {
+++                name,
+++                type_args,
+++                enum_id,
+++            } => GoExpression::name(format!(
++                 "{}{}",
++-                self.resolve_go_name(&name, None, false),
+++                self.qualify_enum_make_function(&name, &enum_id),
++                 type_args
++             )),
++             IdentifierKind::Regular { name } => {
++@@ -120,7 +137,13 @@ impl Planner<'_> {
++                             .unwrap_or_else(|| self.format_type_args(params)),
++                         None => self.format_type_args(params),
++                     };
++-                    return IdentifierKind::UnitConstructor { name, type_args };
+++                    return IdentifierKind::UnitConstructor {
+++                        name,
+++                        type_args,
+++                        enum_id: enum_id
+++                            .expect("enum constructor has an enum type")
+++                            .to_string(),
+++                    };
++                 }
++ 
++                 Type::Function(f) => {
++@@ -129,7 +152,13 @@ impl Planner<'_> {
++                     } = f.return_type.as_ref()
++                     {
++                         let type_args = self.constructor_fn_type_args(&f.params, ret_params, ctx);
++-                        return IdentifierKind::ConstructorFunction { name, type_args };
+++                        return IdentifierKind::ConstructorFunction {
+++                            name,
+++                            type_args,
+++                            enum_id: enum_id
+++                                .expect("enum constructor has an enum type")
+++                                .to_string(),
+++                        };
++                     }
++                 }
++ 
++@@ -140,6 +169,24 @@ impl Planner<'_> {
++         IdentifierKind::Regular { name }
++     }
++ 
+++    fn qualify_enum_make_function(&mut self, make_fn: &str, enum_id: &str) -> String {
+++        let Some(enum_package) = self.facts.package_for_qualified_name(enum_id) else {
+++            return make_fn.to_string();
+++        };
+++        if self.facts.is_current_package(enum_package) {
+++            return make_fn.to_string();
+++        }
+++        if make_fn.starts_with(go_name::PRELUDE_PREFIX) {
+++            let resolved = go_name::resolve(make_fn);
+++            if let Some(package) = resolved.package {
+++                self.require_generated_package(package);
+++            }
+++            return resolved.name;
+++        }
+++        let package = self.require_package_import(enum_package);
+++        format!("{package}.{make_fn}")
+++    }
+++
++     /// Type args for a constructor function reference (e.g. `MakeFoo[T]` used as a value).
++     /// Skips type args when the callee position already supplies them or when they can be
++     /// inferred from the parameter types.
+ diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs
+-index 05e97488..d8d94a95 100644
++index 05e97488..4152372a 100644
+ --- a/crates/format/src/formatter/top_level_item.rs
+ +++ b/crates/format/src/formatter/top_level_item.rs
+ @@ -205,6 +205,13 @@ impl<'a> Formatter<'a> {
+@@ -384,167 +499,134 @@
+          }
+  
+          let split = match prev_anchor {
+-@@ -325,10 +335,16 @@ impl<'a> Formatter<'a> {
++@@ -323,17 +333,77 @@ impl<'a> Formatter<'a> {
++                     .append("),")
++             }
+              VariantFields::Struct(fields) => {
+-                 let field_docs: Vec<_> = fields
++-                let field_docs: Vec<_> = fields
+++                let mut entries: Vec<SiblingEntry<'a>> = Vec::with_capacity(fields.len());
+++                let mut prev_anchor = None;
+++                for field in fields {
+++                    let split = match prev_anchor {
+++                        Some(anchor) => self
+++                            .comments
+++                            .take_split_by_newline_after(anchor, field.name_span.byte_offset),
+++                        None => SplitComments::leading(
+++                            self.comments
+++                                .take_comments_before(field.name_span.byte_offset),
+++                        ),
+++                    };
+++                    if let Some(trailing) = split.trailing
+++                        && let Some(last) = entries.last_mut()
+++                    {
+++                        last.trailing = Some(trailing);
+++                    }
+++
+++                    let definition = Document::string(field.name.to_string())
+++                        .append(": ")
+++                        .append(Self::annotation(&field.annotation));
+++                    let definition = match &field.default {
+++                        Some(default) => definition.append(" = ").append(self.expression(default)),
+++                        None => definition,
+++                    };
+++                    entries.push(SiblingEntry {
+++                        leading: split.leading,
+++                        doc: definition,
+++                        trailing: None,
+++                        has_blank_above: split.has_blank_before_leading,
+++                    });
+++
+++                    let trailing_span = field
+++                        .default
+++                        .as_deref()
+++                        .map_or_else(|| field.annotation.get_span(), Expression::get_span);
+++                    prev_anchor = Some(trailing_span.end());
+++                }
+++
+++                let has_comments = entries
+                      .iter()
+ -                    .map(|f| {
+ -                        Document::string(f.name.to_string())
+-+                    .map(|field| {
+-+                        let definition = Document::string(field.name.to_string())
+-                             .append(": ")
++-                            .append(": ")
+ -                            .append(Self::annotation(&f.annotation))
+-+                            .append(Self::annotation(&field.annotation));
+-+                        match &field.default {
+-+                            Some(default) => {
+-+                                definition.append(" = ").append(self.expression(default))
+-+                            }
+-+                            None => definition,
++-                    })
++-                    .collect();
++-                name.append(" { ")
++-                    .append(join(field_docs, Document::str(", ")))
++-                    .append(" },")
+++                    .any(|entry| entry.leading.is_some() || entry.trailing.is_some());
+++                if !has_comments {
+++                    let field_docs: Vec<_> = entries.into_iter().map(|entry| entry.doc).collect();
+++                    return name
+++                        .append(" { ")
+++                        .append(join(field_docs, Document::str(", ")))
+++                        .append(" },");
+++                }
+++
+++                let mut body = Document::Sequence(vec![]);
+++                for (index, entry) in entries.into_iter().enumerate() {
+++                    if index > 0 {
+++                        body = body.append(Document::Newline);
+++                        if entry.has_blank_above {
+++                            body = body.append(Document::Newline);
+ +                        }
+-                     })
+-                     .collect();
+-                 name.append(" { ")
+++                    }
+++                    if let Some(leading) = entry.leading {
+++                        body = body.append(leading.force_break()).append(Document::Newline);
+++                    }
+++                    body = body.append(entry.doc).append(",");
+++                    if let Some(trailing) = entry.trailing {
+++                        body = body.append(" ").append(trailing);
+++                    }
+++                }
+++                name.append(" {")
+++                    .append(Document::Newline.append(body).nest(INDENT_WIDTH))
+++                    .append(Document::Newline)
+++                    .append("},")
+++                    .force_break()
++             }
++         }
++     }
+ diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+-index e82f8022..0ae1ab0c 100644
++index e82f8022..a64db49f 100644
+ --- a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+ +++ b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+-@@ -4,7 +4,7 @@ use syntax::ast::{Expression, Literal, Span, StructFieldAssignment, StructSpread
+- use syntax::program::DefinitionBody;
+- use syntax::types::{SubstitutionMap, Type, substitute, unqualified_name};
+- 
+--use super::helpers::replacement_drops_comment;
+-+use super::helpers::{expressions_equivalent, replacement_drops_comment};
+- use crate::passes::walk::NodeCtx;
+- use semantics::store::Store;
+- use semantics::zero::has_zero;
+-@@ -29,7 +29,7 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+- 
++@@ -27,6 +27,9 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
++         return;
++     }
++ 
+++    if owner_has_declared_default(ctx.store, ty, name) {
+++        return;
+++    }
+      let zero_count = field_assignments
+          .iter()
+--        .filter(|f| is_obvious_zero(&f.value))
+-+        .filter(|field| assignment_matches_autofill(ctx.store, ty, name, field))
+-         .count();
+-     if zero_count < ZERO_FIELD_THRESHOLD {
+-         return;
+-@@ -45,7 +45,7 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+-         return;
+-     }
+- 
+--    let kept = render_kept_fields(ctx.source(), field_assignments);
+-+    let kept = render_kept_fields(ctx.source(), ctx.store, ty, name, field_assignments);
+-     let owner_span = Span::new(span.file_id, span.byte_offset, name.len() as u32);
+-     let replacement = if kept.is_empty() {
+-         format!("{name} {{ .. }}")
+-@@ -62,10 +62,16 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+-     ctx.sink.push(diagnostic);
+- }
+- 
+--fn render_kept_fields(source: &str, fields: &[StructFieldAssignment]) -> String {
+-+fn render_kept_fields(
+-+    source: &str,
+-+    store: &Store,
+-+    ty: &Type,
+-+    owner_name: &str,
+-+    fields: &[StructFieldAssignment],
+-+) -> String {
+-     fields
+-         .iter()
+--        .filter(|f| !is_obvious_zero(&f.value))
+-+        .filter(|field| !assignment_matches_autofill(store, ty, owner_name, field))
+-         .map(|f| {
+-             let value_span = f.value.get_span();
+-             let start = f.name_span.byte_offset as usize;
+-@@ -93,6 +99,45 @@ fn is_obvious_zero(value: &Expression) -> bool {
++         .filter(|f| is_obvious_zero(&f.value))
++@@ -93,6 +96,25 @@ fn is_obvious_zero(value: &Expression) -> bool {
+      }
+  }
+  
+-+fn assignment_matches_autofill(
+-+    store: &Store,
+-+    ty: &Type,
+-+    owner_name: &str,
+-+    assignment: &StructFieldAssignment,
+-+) -> bool {
+-+    match declared_field_default(store, ty, owner_name, assignment.name.as_str()) {
+-+        Some(Some(default)) => expressions_equivalent(&assignment.value, default),
+-+        Some(None) => is_obvious_zero(&assignment.value),
+-+        None => false,
+-+    }
+-+}
+-+
+-+fn declared_field_default<'a>(
+-+    store: &'a Store,
+-+    ty: &Type,
+-+    owner_name: &str,
+-+    field_name: &str,
+-+) -> Option<Option<&'a Expression>> {
+++fn owner_has_declared_default(store: &Store, ty: &Type, owner_name: &str) -> bool {
+ +    let Type::Nominal { id, .. } = ty.strip_refs() else {
+-+        return None;
+++        return false;
+ +    };
+-+    let definition = store.get_definition(id.as_str())?;
+++    let Some(definition) = store.get_definition(id.as_str()) else {
+++        return false;
+++    };
+ +    match &definition.body {
+-+        DefinitionBody::Struct { fields, .. } => fields
+-+            .iter()
+-+            .find(|field| field.name == field_name)
+-+            .map(|field| field.default.as_deref()),
+++        DefinitionBody::Struct { fields, .. } => fields.iter().any(|field| field.default.is_some()),
+ +        DefinitionBody::Enum { variants, .. } => {
+ +            let variant_name = unqualified_name(owner_name);
+ +            variants
+ +                .iter()
+ +                .find(|variant| variant.name == variant_name)
+-+                .and_then(|variant| variant.fields.iter().find(|field| field.name == field_name))
+-+                .map(|field| field.default.as_deref())
+-+        }
+-+        _ => None,
+++                .is_some_and(|variant| variant.fields.iter().any(|field| field.default.is_some()))
+++        }
+++        _ => false,
+ +    }
+ +}
+  fn is_go_imported(ty: &Type) -> bool {
+      let Type::Nominal { id, .. } = ty.strip_refs() else {
+          return false;
+-@@ -121,14 +166,16 @@ fn rewrite_would_typecheck(
+-         return false;
+-     };
+-     let is_cross_package = struct_package(ty).is_some_and(|m| m.as_str() != from_package);
+--    omitted
+--        .iter()
+--        .all(|f| (!is_cross_package || f.is_public) && has_zero(store, &f.ty, from_package).is_ok())
+-+    omitted.iter().all(|f| {
+-+        (!is_cross_package || f.is_public)
+-+            && (f.has_default || has_zero(store, &f.ty, from_package).is_ok())
+-+    })
+- }
+- 
+- struct OmittedField {
+-     ty: Type,
+-     is_public: bool,
+-+    has_default: bool,
+- }
+- 
+- fn unspecified_fields(
+-@@ -149,7 +196,7 @@ fn post_rewrite_unspecified_fields(
+- ) -> Option<Vec<OmittedField>> {
+-     let kept: HashSet<&str> = field_assignments
+-         .iter()
+--        .filter(|f| !is_obvious_zero(&f.value))
+-+        .filter(|field| !assignment_matches_autofill(store, ty, name, field))
+-         .map(|f| f.name.as_str())
+-         .collect();
+-     fields_filtered(store, ty, name, &kept)
+-@@ -177,6 +224,7 @@ fn fields_filtered(
+-                     .map(|f| OmittedField {
+-                         ty: substitute_or_clone(&f.ty, &map),
+-                         is_public: f.visibility.is_public(),
+-+                        has_default: f.default.is_some(),
+-                     })
+-                     .collect(),
+-             )
+-@@ -200,6 +248,7 @@ fn fields_filtered(
+-                     .map(|f| OmittedField {
+-                         ty: substitute_or_clone(&f.ty, &map),
+-                         is_public: true,
+-+                        has_default: f.default.is_some(),
+-                     })
+-                     .collect(),
+-             )
+ diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs
+ index 6cb6be8e..579e9339 100644
+ --- a/crates/passes/src/passes/lints/ref_graph/extract.rs
+@@ -1615,10 +1697,10 @@
+          self.validate_package_embeds(store, &id);
+          self.check_package_recursive_types(store, &id);
+ diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs
+-index 9ca3348f..3ef80544 100644
++index 9ca3348f..c359b4ce 100644
+ --- a/crates/semantics/src/checker/registration/types.rs
+ +++ b/crates/semantics/src/checker/registration/types.rs
+-@@ -1,17 +1,40 @@
++@@ -1,17 +1,43 @@
+  use crate::checker::EnvResolve;
+  use rustc_hash::{FxHashMap, FxHashSet};
+  use syntax::ast::{
+@@ -1661,10 +1743,13 @@
+ +    imports: Vec<FileImport>,
+ +}
+ +
+++type PendingFieldDefault<K> = (K, Option<Box<Expression>>, Box<Expression>, Type);
+++type InferredFieldDefault<K> = (K, Box<Expression>);
+++
+  impl TaskState {
+      pub(super) fn populate_enum(&mut self, store: &mut Store, expression: &mut Expression) {
+          let Expression::Enum {
+-@@ -342,6 +365,523 @@ impl TaskState {
++@@ -342,6 +368,523 @@ impl TaskState {
+          );
+      }
+  
+@@ -2107,8 +2192,8 @@
+ +        &mut self,
+ +        store: &Store,
+ +        generics: &[Generic],
+-+        sites: Vec<(K, Option<Box<Expression>>, Box<Expression>, Type)>,
+-+    ) -> Vec<(K, Box<Expression>)> {
+++        sites: Vec<PendingFieldDefault<K>>,
+++    ) -> Vec<InferredFieldDefault<K>> {
+ +        self.with_scope(|this| {
+ +            this.put_in_scope(generics);
+ +            let mut ctx = InferCtx::new(this, store);
+@@ -2215,10 +2300,16 @@
+                      f.ty.clone()
+                  } else {
+ diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs
+-index 94722c50..ec38bfaf 100644
++index 94722c50..4e6450ab 100644
+ --- a/crates/syntax/src/ast.rs
+ +++ b/crates/syntax/src/ast.rs
+-@@ -565,6 +565,7 @@ pub struct EnumFieldDefinition {
++@@ -560,14 +560,29 @@ pub struct EnumVariant {
++     pub fields: VariantFields,
++ }
++ 
++-#[derive(Debug, Clone, PartialEq)]
+++#[derive(Clone, PartialEq)]
++ pub struct EnumFieldDefinition {
+      pub name: EcoString,
+      pub name_span: Span,
+      pub annotation: Annotation,
+@@ -2226,7 +2317,32 @@
+      pub ty: Type,
+  }
+  
+-@@ -661,6 +662,7 @@ pub struct StructFieldDefinition {
+++impl std::fmt::Debug for EnumFieldDefinition {
+++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+++        let mut debug = f.debug_struct("EnumFieldDefinition");
+++        debug.field("name", &self.name);
+++        debug.field("name_span", &self.name_span);
+++        debug.field("annotation", &self.annotation);
+++        debug.field("ty", &self.ty);
+++        if self.default.is_some() {
+++            debug.field("default", &self.default);
+++        }
+++        debug.finish()
+++    }
+++}
+++
++ #[derive(Debug, Clone, PartialEq)]
++ pub struct Attribute {
++     pub name: String,
++@@ -654,17 +669,35 @@ impl<'a> IntoIterator for &'a mut StructFields {
++     }
++ }
++ 
++-#[derive(Debug, Clone, PartialEq)]
+++#[derive(Clone, PartialEq)]
++ pub struct StructFieldDefinition {
++     pub doc: Option<String>,
++     pub name: EcoString,
+      pub name_span: Span,
+      pub annotation: Annotation,
+      pub visibility: Visibility,
+@@ -2234,7 +2350,28 @@
+      pub ty: Type,
+      pub kind: StructFieldKind,
+  }
+-@@ -1981,10 +1983,17 @@ impl Expression {
++ 
+++impl std::fmt::Debug for StructFieldDefinition {
+++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+++        let mut debug = f.debug_struct("StructFieldDefinition");
+++        debug.field("doc", &self.doc);
+++        debug.field("name", &self.name);
+++        debug.field("name_span", &self.name_span);
+++        debug.field("annotation", &self.annotation);
+++        debug.field("visibility", &self.visibility);
+++        debug.field("ty", &self.ty);
+++        if self.default.is_some() {
+++            debug.field("default", &self.default);
+++        }
+++        debug.field("kind", &self.kind);
+++        debug.finish()
+++    }
+++}
+++
++ #[derive(Debug, Clone, PartialEq)]
++ pub enum StructFieldKind {
++     Named { attributes: Vec<Attribute> },
++@@ -1981,10 +2014,17 @@ impl Expression {
+              Expression::Interface {
+                  method_signatures, ..
+              } => method_signatures.iter().collect(),
+@@ -2254,7 +2391,7 @@
+              | Expression::TypeAlias { .. }
+              | Expression::VariableDeclaration { .. }
+              | Expression::PackageImport { .. }
+-@@ -2297,6 +2306,7 @@ pub enum FormatStringPart {
++@@ -2297,6 +2337,7 @@ pub enum FormatStringPart {
+  }
+  
+  #[derive(Debug, Clone, PartialEq)]
+@@ -2262,7 +2399,7 @@
+  pub enum UnaryOperator {
+      Negative,
+      Not,
+-@@ -2305,6 +2315,7 @@ pub enum UnaryOperator {
++@@ -2305,6 +2346,7 @@ pub enum UnaryOperator {
+  }
+  
+  #[derive(Debug, Clone, Copy, PartialEq)]

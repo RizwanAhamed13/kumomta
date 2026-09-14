@@ -1,0 +1,1585 @@
+{
+  "artifact_dir": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/artifacts",
+  "artifact_set_id": "0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6",
+  "artifacts": {
+    "Dockerfile": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/artifacts/Dockerfile",
+      "sha256": "e1363394bf8461647c3d93dd31ba5a48f6f0462757c22630bdf430215e213a7b",
+      "size": 1782
+    },
+    "problem.md": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/artifacts/problem.md",
+      "sha256": "2d46c9ea618ec0eacbdf95317ff593f059cb30c5143209115372efeb6038925a",
+      "size": 1791
+    },
+    "solution.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+      "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+      "size": 98757
+    },
+    "test.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/artifacts/test.patch",
+      "sha256": "06d5e121b64745de17e519244b2da1da6dfe6485157a07b769ddc5d90f6ec95e",
+      "size": 47682
+    }
+  },
+  "budget": {
+    "authorized": null,
+    "entries": [],
+    "spent": 0.0
+  },
+  "case_id": "lisette-default-field-values",
+  "created_at": "2026-08-11T10:01:35+00:00",
+  "last_blocker": "Submitted test.patch restored exactly; known Batch 94 underscore-private discriminator is archived but not canonical",
+  "live_panel_snapshot": null,
+  "mode": "REVIEW",
+  "next_legal_stage": "Use restored submitted platform evidence; stronger underscore-private discriminator intentionally remains outside the canonical verifier",
+  "proofs": {
+    "current": {
+      "review-portability-docker-build": {
+        "artifact_set_id": "c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0",
+        "command": "docker build --progress=plain -t lisette-olympus-d166 -f Dockerfile .",
+        "depends_on": [
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell Docker 29.7.2; resolved Olympus Rust base sha256:211a2e3a...; final manifest list sha256:e9026b5a...",
+        "evidence": "evidence/c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0/review-portability/audit.md",
+        "exit_code": 0,
+        "name": "review-portability-docker-build",
+        "recorded_at": "2026-08-16T15:34:48+00:00"
+      },
+      "review-v2-workspace-clippy": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+        "depends_on": [
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/audit.md",
+        "exit_code": 0,
+        "name": "review-v2-workspace-clippy",
+        "recorded_at": "2026-08-15T18:28:44+00:00"
+      }
+    },
+    "stale": {
+      "base-feature-exclusion-b97": {
+        "artifact_set_id": "0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6",
+        "command": "cargo test -p tests --test e2e_q7m with the exact eight base skips; 0 run, 8 filtered, exit 0",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6/base-skip-repair/audit.md",
+        "exit_code": 0,
+        "name": "base-feature-exclusion-b97",
+        "recorded_at": "2026-08-17T10:56:35+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "base-feature-exclusion-b98": {
+        "artifact_set_id": "445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7",
+        "command": "cargo test -q -p tests --test e2e_q7m -- <nine feature skips>",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; clean pinned commit plus test.patch only",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7/private-nonliteral-constants/audit.md",
+        "exit_code": 0,
+        "name": "base-feature-exclusion-b98",
+        "recorded_at": "2026-08-17T12:02:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "base-regression": {
+        "artifact_set_id": "052e96808904c7f9099275b338dffc9545804e18917ed37aee837fca1c39d0f0",
+        "command": "cargo +1.97.0 test -p tests --test suite struct_autofill",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "codespace",
+        "evidence": "Pinned base: 22 passed, 0 failed in isolated Codespace worktree",
+        "exit_code": 0,
+        "name": "base-regression",
+        "recorded_at": "2026-08-11T11:54:35+00:00",
+        "stale_reason": "artifact changed: problem.md, solution.patch, test.patch"
+      },
+      "base-runner-b92": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "./test.sh --output_path /tmp/b92-base-junit.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, test.patch only, Rust 1.97.0, Go 1.25.10, offline Cargo, isolated target",
+        "evidence": "rollouts/batch-92/b92-base-junit.xml; 9051 tests, 0 failures, 0 errors",
+        "exit_code": 0,
+        "name": "base-runner-b92",
+        "recorded_at": "2026-08-17T08:32:19+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "batch91-candidate-new": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "cargo test suite declared_fill_q7m (17/17) and e2e_q7m (4/4) on exact Batch91 candidate",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; isolated candidate target; 21/21",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/b91-direct-candidate-e2e.log",
+        "exit_code": 0,
+        "name": "batch91-candidate-new",
+        "recorded_at": "2026-08-17T04:42:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "batch91-clean-patch-application": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "git apply --check/apply test.patch alone and solution.patch+test.patch at pinned commit; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; fresh detached worktrees at dc060ecd; no build",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/audit.md",
+        "exit_code": 0,
+        "name": "batch91-clean-patch-application",
+        "recorded_at": "2026-08-17T04:42:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "batch91-lint-semantic-oracle": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "cargo test -p tests --test suite violet_rewrite_never_changes_declared_fill -- --nocapture on reference, exact Batch91 candidate, and preserved genuine Nova10",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned dc060ecd; Rust 1.97.0; Cargo offline; isolated clean targets; all 1/1",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/audit.md",
+        "exit_code": 0,
+        "name": "batch91-lint-semantic-oracle",
+        "recorded_at": "2026-08-17T04:42:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "batch91-reference-new": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "cargo test suite declared_fill_q7m (17/17) and e2e_q7m (4/4) on exact reference",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; isolated reference target; 21/21",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/b91-direct-ref-e2e.log",
+        "exit_code": 0,
+        "name": "batch91-reference-new",
+        "recorded_at": "2026-08-17T04:42:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "batch91-saved-genuine-new": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "cargo test suite declared_fill_q7m (17/17) and e2e_q7m (4/4) on preserved genuine Batch88 Nova10",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; isolated genuine target; 21/21",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/b91-direct-genuine-e2e.log",
+        "exit_code": 0,
+        "name": "batch91-saved-genuine-new",
+        "recorded_at": "2026-08-17T04:42:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "carve-reference-discrimination": {
+        "artifact_set_id": "cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80",
+        "command": "Google Cloud Shell isolated reference-new PASS and untouched-base-new expected FAIL",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97, Go 1.25.10, separate /tmp targets",
+        "evidence": "evidence/cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80/replay",
+        "exit_code": 0,
+        "name": "carve-reference-discrimination",
+        "recorded_at": "2026-08-14T03:13:42+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "carve-static-validation": {
+        "artifact_set_id": "cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80",
+        "command": "validate_submission.py --repo pinned-local --commit dc060ecd --artifacts artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS, no Docker",
+        "evidence": "evidence/cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80/static/validate-submission.json",
+        "exit_code": 0,
+        "name": "carve-static-validation",
+        "recorded_at": "2026-08-14T03:13:42+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "collision-fp-discriminator": {
+        "artifact_set_id": "55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4",
+        "command": "cargo test -p tests --test e2e_q7m b90_public_function_does_not_collide_with_default_lowering -- --nocapture",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; exact Batch 90 candidate exit 101, exact reference exit 0, preserved genuine Nova 10 exit 0",
+        "evidence": "evidence/55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4/collision-hardening/audit.md",
+        "exit_code": 0,
+        "name": "collision-fp-discriminator",
+        "recorded_at": "2026-08-17T02:01:36+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "completeness-bulbs-b95": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "hosted demonstrated gaps incorporated; reference/test-only/genuine replay",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "completeness-bulbs-b95",
+        "recorded_at": "2026-08-17T10:12:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "completeness-reference-replay": {
+        "artifact_set_id": "ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e",
+        "command": "Google Cloud Shell isolated reference new replay",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97, Go 1.25.10, separate target",
+        "evidence": "evidence/ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e/replay/lisette-complete-reference-new.xml",
+        "exit_code": 0,
+        "name": "completeness-reference-replay",
+        "recorded_at": "2026-08-14T05:46:05+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "completeness-saved-agent-replay": {
+        "artifact_set_id": "ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e",
+        "command": "Google Cloud Shell isolated Nova_6 new replay",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97, Go 1.25.10, isolated target",
+        "evidence": "evidence/ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e/replay/lisette-complete-agent6-new.xml",
+        "exit_code": 0,
+        "name": "completeness-saved-agent-replay",
+        "recorded_at": "2026-08-14T05:46:05+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "completeness-static-validation": {
+        "artifact_set_id": "ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e",
+        "command": "validate_submission.py on ff82e1ee artifacts",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local macOS, no Docker",
+        "evidence": "evidence/ff82e1ee5a6c8e7b0a9c612af472232833dbbade9a3f623aff29a01188020a5e/static/validate-submission.json",
+        "exit_code": 0,
+        "name": "completeness-static-validation",
+        "recorded_at": "2026-08-14T05:46:05+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-base-base": {
+        "artifact_set_id": "febc43d5b5e8da7e0286b9e9eddfe4f94ab83e3648f3c02ba0b064209410f1c8",
+        "command": "./test.sh --output_path /tmp/lisette-q7m-final-base.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Pinned base plus exact test.patch: 1/1 base-mode test passed; valid JUnit",
+        "exit_code": 0,
+        "name": "exact-base-base",
+        "recorded_at": "2026-08-11T12:13:52+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-base-new": {
+        "artifact_set_id": "febc43d5b5e8da7e0286b9e9eddfe4f94ab83e3648f3c02ba0b064209410f1c8",
+        "command": "./test.sh --output_path /tmp/lisette-q7m-final-new-fail.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Pinned base plus exact test.patch: 3/3 command groups failed as intended; valid JUnit records 3 failures",
+        "exit_code": 1,
+        "name": "exact-base-new",
+        "recorded_at": "2026-08-11T12:13:52+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-current-base-base": {
+        "artifact_set_id": "9b87f850ccfd3db27bdf82128d97ae30710e0aefbbb8e5c61716444804124045",
+        "command": "./test.sh --output_path ~/lisette-review-base-base.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root user; Rust 1.97.0; CARGO_NET_OFFLINE=true; isolated base target; no Docker",
+        "evidence": "Pinned base + exact repaired test.patch: baseline 1/1 PASS; JUnit under evidence/9b87f850.../matrix.",
+        "exit_code": 0,
+        "name": "exact-current-base-base",
+        "recorded_at": "2026-08-11T18:20:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-current-base-new": {
+        "artifact_set_id": "9b87f850ccfd3db27bdf82128d97ae30710e0aefbbb8e5c61716444804124045",
+        "command": "./test.sh --output_path ~/lisette-review-base-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root user; Rust 1.97.0; CARGO_NET_OFFLINE=true; isolated base target; no Docker",
+        "evidence": "Pinned base + exact repaired test.patch: both new command groups fail as required; JUnit 2/2 failures.",
+        "exit_code": 1,
+        "name": "exact-current-base-new",
+        "recorded_at": "2026-08-11T18:20:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-current-solved-base": {
+        "artifact_set_id": "9b87f850ccfd3db27bdf82128d97ae30710e0aefbbb8e5c61716444804124045",
+        "command": "./test.sh --output_path ~/lisette-review-solved-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root user; Rust 1.97.0; CARGO_NET_OFFLINE=true; isolated solved target; no Docker",
+        "evidence": "Exact solution + repaired tests: baseline 1/1 PASS.",
+        "exit_code": 0,
+        "name": "exact-current-solved-base",
+        "recorded_at": "2026-08-11T18:20:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-current-solved-new": {
+        "artifact_set_id": "9b87f850ccfd3db27bdf82128d97ae30710e0aefbbb8e5c61716444804124045",
+        "command": "./test.sh --output_path ~/lisette-review-solved-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root user; Rust 1.97.0; Go 1.25.10; CARGO_NET_OFFLINE=true; isolated solved target; no Docker",
+        "evidence": "Exact solution + repaired tests: 7 direct tests and expanded cold/warm runtime/cache test PASS, including boolean/operator families, generic enum override, and declaration recovery.",
+        "exit_code": 0,
+        "name": "exact-current-solved-new",
+        "recorded_at": "2026-08-11T18:20:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-final-four-state": {
+        "artifact_set_id": "8cee9e1c3f903dfaadc5e89247075937fd772afad8bd9dce668c5b60a2d9d101",
+        "command": "exact-final-four-state",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell exact pinned worktrees; no Docker",
+        "evidence": "Exact final artifacts: base/base PASS, base/new FAIL (2/2 groups), solution/base PASS, solution/new PASS with real Go 1.25.10 cold/warm execution. JUnit under evidence/8cee9e1c.../matrix.",
+        "exit_code": 0,
+        "name": "exact-final-four-state",
+        "recorded_at": "2026-08-11T19:16:32+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-solved-base": {
+        "artifact_set_id": "febc43d5b5e8da7e0286b9e9eddfe4f94ab83e3648f3c02ba0b064209410f1c8",
+        "command": "./test.sh --output_path /tmp/lisette-q7m-solved-base.xml base",
+        "depends_on": [
+          "solution.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Exact solution.patch plus test.patch: 1/1 base-mode test passed; valid JUnit",
+        "exit_code": 0,
+        "name": "exact-solved-base",
+        "recorded_at": "2026-08-11T12:13:53+00:00",
+        "stale_reason": "artifact changed: solution.patch"
+      },
+      "exact-solved-new": {
+        "artifact_set_id": "febc43d5b5e8da7e0286b9e9eddfe4f94ab83e3648f3c02ba0b064209410f1c8",
+        "command": "./test.sh --output_path /tmp/lisette-q7m-solved-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Exact solution.patch plus test.patch: 7 direct + 1 runtime/cache + 1 cache-hit test passed across 3 JUnit cases",
+        "exit_code": 0,
+        "name": "exact-solved-new",
+        "recorded_at": "2026-08-11T12:13:53+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "exact-solved-new-solution": {
+        "artifact_set_id": "febc43d5b5e8da7e0286b9e9eddfe4f94ab83e3648f3c02ba0b064209410f1c8",
+        "command": "./test.sh --output_path /tmp/lisette-q7m-solved-new.xml new",
+        "depends_on": [
+          "solution.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Exact solution.patch plus test.patch: new-mode semantic/runtime/cache suite passed",
+        "exit_code": 0,
+        "name": "exact-solved-new-solution",
+        "recorded_at": "2026-08-11T12:14:01+00:00",
+        "stale_reason": "artifact changed: solution.patch"
+      },
+      "exact-static-fairness-fp": {
+        "artifact_set_id": "a12e7ec7f00e42716ee4b46a43245ce4bb96286c9b41f2c0df2a8e407e0a3d99",
+        "command": "bounded multi-agent exact-byte 14b/14c/14d audit",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "read-only static audit; no Docker or paid gate",
+        "evidence": "Fairness PASS; minimality APPROVE with zero removals; prior enum, cache, .d.lis, and unary/paren FP gaps closed; high static FP confidence.",
+        "exit_code": 0,
+        "name": "exact-static-fairness-fp",
+        "recorded_at": "2026-08-11T12:30:50+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fairness-generated-name-discriminator": {
+        "artifact_set_id": "475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7",
+        "command": "cargo test -p tests --test e2e_q7m indigo_defaults_preserve_user_declaration_names -- --nocapture; exact Batch90 candidate=101, reference=0, genuine Nova10=0",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned dc060ecd; Rust 1.97.0; Go 1.25.10; isolated worktrees and targets",
+        "evidence": "evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/audit.md",
+        "exit_code": 0,
+        "name": "fairness-generated-name-discriminator",
+        "recorded_at": "2026-08-17T02:55:04+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fairness-reference-new": {
+        "artifact_set_id": "475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7",
+        "command": "./test.sh new on exact reference",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned dc060ecd; Rust 1.97.0; Go 1.25.10; isolated target; 21/21",
+        "evidence": "evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/fairness-reference-new.xml",
+        "exit_code": 0,
+        "name": "fairness-reference-new",
+        "recorded_at": "2026-08-17T02:55:04+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fairness-saved-genuine-new": {
+        "artifact_set_id": "475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7",
+        "command": "./test.sh new on preserved genuine Batch88 Nova10",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned dc060ecd; Rust 1.97.0; Go 1.25.10; isolated target; 21/21",
+        "evidence": "evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/fairness-genuine-new.xml",
+        "exit_code": 0,
+        "name": "fairness-saved-genuine-new",
+        "recorded_at": "2026-08-17T02:55:05+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "flaky-skip-saved-nova-replay": {
+        "artifact_set_id": "0d7f04fb55e8bd460de43a101999fcad0bbb99ee6f6558e6ff9ab0e89fc50477",
+        "command": "./test.sh --output_path ~/lisette-replay-0d7-nova10-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root UID 1000; pinned commit; saved Nova_Nova_10; Rust 1.97.0; Go 1.25.10; UID-isolated target; native JUnit 20/20",
+        "evidence": "evidence/0d7f04fb55e8bd460de43a101999fcad0bbb99ee6f6558e6ff9ab0e89fc50477/flaky-skip/audit.md",
+        "exit_code": 0,
+        "name": "flaky-skip-saved-nova-replay",
+        "recorded_at": "2026-08-16T16:38:04+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "flaky-skip-static-validation": {
+        "artifact_set_id": "0d7f04fb55e8bd460de43a101999fcad0bbb99ee6f6558e6ff9ab0e89fc50477",
+        "command": "validate_submission.py --repo https://github.com/ivov/lisette --commit dc060ecd16224ad01cdb8d7bafe89230e477446a --artifacts artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS; structural and clean-application validation",
+        "evidence": "evidence/0d7f04fb55e8bd460de43a101999fcad0bbb99ee6f6558e6ff9ab0e89fc50477/flaky-skip/validate-submission.json",
+        "exit_code": 0,
+        "name": "flaky-skip-static-validation",
+        "recorded_at": "2026-08-16T16:38:04+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-b94-private-underscore-targeted": {
+        "artifact_set_id": "82e27d59b0a6e65670b01d8526e5ee153dc4634555ae24be92c85ba80fbcf02f",
+        "command": "Cloud Shell targeted mica replay: reference PASS; exact Batch 94 Nova #7 FAIL; preserved Nova #8 PASS; preserved Nova #9 PASS",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97; Go 1.25.10; offline Cargo",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/rollouts/batch-94/audit.md",
+        "exit_code": 0,
+        "name": "fp-b94-private-underscore-targeted",
+        "recorded_at": "2026-08-17T15:02:58+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-batch92-replay": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "cargo test -p tests --test e2e_q7m zinc_distinct_default_owners_do_not_share_generated_names",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97.0, Go 1.25.10, offline Cargo, isolated targets",
+        "evidence": "rollouts/batch-92/audit.md; reference exit 0; exact Nova #7 exit 101 duplicate LisetteDefault__entry__Config_retry_count",
+        "exit_code": 0,
+        "name": "fp-batch92-replay",
+        "recorded_at": "2026-08-17T08:22:56+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-cached-imported-lint-b93": {
+        "artifact_set_id": "7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02",
+        "command": "cargo test silver_cached_imported_defaults_keep_lint_fixes_safe",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; exact Batch 92 Nova 7; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02/cache-lint-fp/b93-nova7-silver.log",
+        "exit_code": 101,
+        "name": "fp-cached-imported-lint-b93",
+        "recorded_at": "2026-08-17T09:01:58+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "generic-scope-static-validation": {
+        "artifact_set_id": "7c39b70d3501e9114678c6933ad01ce93df4eda7a6f88c6cb8a7507e17581cec",
+        "command": "validate_submission.py on 7c39b70d artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local macOS, no Docker",
+        "evidence": "evidence/7c39b70d3501e9114678c6933ad01ce93df4eda7a6f88c6cb8a7507e17581cec/static/validate-submission.json",
+        "exit_code": 0,
+        "name": "generic-scope-static-validation",
+        "recorded_at": "2026-08-14T09:40:32+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "grader-loop": {
+        "artifact_set_id": "c785287258d03684f2e6419be9e523b971ce82fb273ef5185cb28a3a066defb0",
+        "command": "Exact-byte Task Quality/14a/14b/14c/14d rerun",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "REVIEW mode; no Docker or paid action",
+        "evidence": "Task Quality/14a PASS; 14b PASS; 14c no surviving gap; 14d APPROVE with empty removal list. Structured result grader-results/task-quality-repair-c785/result.json.",
+        "exit_code": 0,
+        "name": "grader-loop",
+        "recorded_at": "2026-08-11T20:19:36+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "hardened-reference-new": {
+        "artifact_set_id": "55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4",
+        "command": "./test.sh new --output_path ~/b90-harden-reference-new.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; Rust 1.97.0; Go 1.25.10; isolated target; 21/21 native JUnit",
+        "evidence": "evidence/55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4/collision-hardening/b90-harden-reference-new.xml",
+        "exit_code": 0,
+        "name": "hardened-reference-new",
+        "recorded_at": "2026-08-17T02:01:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "hardened-saved-genuine-new": {
+        "artifact_set_id": "55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4",
+        "command": "./test.sh new --output_path ~/b90-harden-genuine-new.xml",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; preserved Batch 88 Nova 10; Rust 1.97.0; Go 1.25.10; 21/21 native JUnit",
+        "evidence": "evidence/55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4/collision-hardening/b90-harden-genuine-new.xml",
+        "exit_code": 0,
+        "name": "hardened-saved-genuine-new",
+        "recorded_at": "2026-08-17T02:01:36+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "hardened-testonly-new-fails": {
+        "artifact_set_id": "55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4",
+        "command": "./test.sh new --output_path ~/b90-harden-testonly-new.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned base commit plus test.patch only; expected 21/21 fail-to-pass failures",
+        "evidence": "evidence/55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4/collision-hardening/b90-harden-testonly-new.xml",
+        "exit_code": 1,
+        "name": "hardened-testonly-new-fails",
+        "recorded_at": "2026-08-17T02:01:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "imaginary-literal-clarification-alignment": {
+        "artifact_set_id": "fa74ab57e9b020ab133b7aa947ffb644fcce3764d56e6df28423d9ebfd83c5f7",
+        "command": "semantic diff against constant-subset-and-types requirement and unchanged 20-test suite",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "local exact-byte static alignment and no-new-FP-impact audit; no Docker or paid action",
+        "evidence": "evidence/fa74ab57e9b020ab133b7aa947ffb644fcce3764d56e6df28423d9ebfd83c5f7/imaginary-literal-clarification/audit.md",
+        "exit_code": 0,
+        "name": "imaginary-literal-clarification-alignment",
+        "recorded_at": "2026-08-16T05:12:21+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "integrated-hidden": {
+        "artifact_set_id": "052e96808904c7f9099275b338dffc9545804e18917ed37aee837fca1c39d0f0",
+        "command": "./test.sh",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "codespace",
+        "evidence": "Exact solution+test patches: 6 direct, 1 runtime/cross-package/cache, 1 cache-hit test pass in isolated Codespace target; JUnit emitted",
+        "exit_code": 0,
+        "name": "integrated-hidden",
+        "recorded_at": "2026-08-11T11:54:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "libtest-skip-discriminator": {
+        "artifact_set_id": "2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e",
+        "command": "cargo test -p tests --test e2e_run an_executable_script_runs_through_its_shebang -- --format junit -Z unstable-options --skip an_executable_script_runs_through_its_shebang",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root; pinned base commit; Rust 1.97.0; isolated target; exact wrong-vs-correct filter reproduction",
+        "evidence": "evidence/2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e/libtest-skip/audit.md",
+        "exit_code": 0,
+        "name": "libtest-skip-discriminator",
+        "recorded_at": "2026-08-16T17:10:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "libtest-skip-saved-nova-replay": {
+        "artifact_set_id": "2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e",
+        "command": "./test.sh --output_path ~/lisette-replay-2bef-nova10-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root UID 1000; pinned commit; saved Nova_Nova_10; Rust 1.97.0; Go 1.25.10; native JUnit 20/20",
+        "evidence": "evidence/2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e/libtest-skip/lisette-replay-2bef-nova10-new.xml",
+        "exit_code": 0,
+        "name": "libtest-skip-saved-nova-replay",
+        "recorded_at": "2026-08-16T17:10:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "libtest-skip-static-validation": {
+        "artifact_set_id": "2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e",
+        "command": "validate_submission.py --repo https://github.com/ivov/lisette --commit dc060ecd16224ad01cdb8d7bafe89230e477446a --artifacts artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS; structural and clean-application validation",
+        "evidence": "evidence/2befc8ead903b62ba64170079bf8c7ea95ecda18204c9f557df05a65fe912c4e/libtest-skip/validate-submission.json",
+        "exit_code": 0,
+        "name": "libtest-skip-static-validation",
+        "recorded_at": "2026-08-16T17:10:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "local-validation": {
+        "artifact_set_id": "df832e414dfc2d868727b3999cc005983df6699926fa94943ad5bef3876dba4a",
+        "command": "Exact final four-state matrix in isolated Google Cloud Shell worktrees",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root uid 1000; CARGO_NET_OFFLINE=true; separate target dirs",
+        "evidence": "artifact set df832: base/base PASS 2/2, base/new FAIL 2/2, reference/base PASS 2/2, reference/new PASS 2/2 (10 spec + 2 e2e). XML evidence/df832.../matrix.",
+        "exit_code": 0,
+        "name": "local-validation",
+        "recorded_at": "2026-08-12T04:18:17+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "mutation-inventory": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "Eight entries closed or invalid; three hosted demonstrated alias/cycle mutations bound to new discriminators",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Local state audit plus Google Cloud Shell execution",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "mutation-inventory",
+        "recorded_at": "2026-08-17T10:12:34+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "mutation-inventory-batch91": {
+        "artifact_set_id": "7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc",
+        "command": "Classify exact Batch91 safe-lint architecture as conformant; repaired oracle checks applied semantics",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Exact candidate/reference/genuine Google Cloud Shell replay",
+        "evidence": "evidence/7a433e2b92b2af2d1e30624ae20c123fd8fa3d43bb5796390a703fd04f7ad8dc/batch91-lint-oracle/audit.md",
+        "exit_code": 0,
+        "name": "mutation-inventory-batch91",
+        "recorded_at": "2026-08-17T04:44:22+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-before-solution-b92": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "./test.sh --output_path /tmp/b92-testonly-new-junit.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, test.patch only, Rust 1.97.0, Go 1.25.10, offline Cargo, isolated target",
+        "evidence": "rollouts/batch-92/b92-testonly-new-junit.xml; 22 tests, 22 failures, 0 unexpectedly passing",
+        "exit_code": 1,
+        "name": "new-before-solution-b92",
+        "recorded_at": "2026-08-17T08:33:39+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-before-solution-b93": {
+        "artifact_set_id": "7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02",
+        "command": "./test.sh --output_path /tmp/b93-testonly-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Cargo offline; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02/cache-lint-fp/b93-testonly-new.xml",
+        "exit_code": 1,
+        "name": "new-before-solution-b93",
+        "recorded_at": "2026-08-17T09:01:57+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-before-solution-b94": {
+        "artifact_set_id": "229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c",
+        "command": "./test.sh --output_path /tmp/b94-testonly-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Cargo offline; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c/predictive-fp/b94-testonly-new.xml",
+        "exit_code": 1,
+        "name": "new-before-solution-b94",
+        "recorded_at": "2026-08-17T09:36:52+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-before-solution-b95": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "cargo test for 17 spec and 8 e2e tests on test-only state; all 25 fail",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "new-before-solution-b95",
+        "recorded_at": "2026-08-17T10:12:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-reference-b93": {
+        "artifact_set_id": "7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02",
+        "command": "./test.sh --output_path /tmp/b93-ref-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; Cargo offline; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02/cache-lint-fp/b93-ref-new.xml",
+        "exit_code": 0,
+        "name": "new-reference-b93",
+        "recorded_at": "2026-08-17T09:01:58+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-reference-b94": {
+        "artifact_set_id": "229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c",
+        "command": "./test.sh --output_path /tmp/b94-ref-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; Cargo offline; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c/predictive-fp/b94-ref-new.xml",
+        "exit_code": 0,
+        "name": "new-reference-b94",
+        "recorded_at": "2026-08-17T09:36:53+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-reference-b95": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "cargo test -p tests --test suite declared_fill_q7m && cargo test -p tests --test e2e_q7m (reference)",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "new-reference-b95",
+        "recorded_at": "2026-08-17T10:12:22+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "new-runner-b92": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "./test.sh --output_path /tmp/b92-ref-new-junit.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, exact reference, offline Cargo, isolated target",
+        "evidence": "rollouts/batch-92/b92-ref-new-junit.xml; 22 tests, 0 failures, 0 errors",
+        "exit_code": 0,
+        "name": "new-runner-b92",
+        "recorded_at": "2026-08-17T08:22:56+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "nongeneric-completeness-agent-replay": {
+        "artifact_set_id": "f26a1a4bc82098a9d24694c8f3ce7e848a8ef091d3745e46e3857bed52f09231",
+        "command": "Google Cloud Shell isolated Nova_6 new replay",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97, Go 1.25.10, isolated target",
+        "evidence": "evidence/f26a1a4bc82098a9d24694c8f3ce7e848a8ef091d3745e46e3857bed52f09231/replay/lisette-latest-agent6-new.xml",
+        "exit_code": 0,
+        "name": "nongeneric-completeness-agent-replay",
+        "recorded_at": "2026-08-14T10:50:22+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "nongeneric-completeness-static": {
+        "artifact_set_id": "f26a1a4bc82098a9d24694c8f3ce7e848a8ef091d3745e46e3857bed52f09231",
+        "command": "validate_submission.py on f26a1a4b artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local macOS, no Docker",
+        "evidence": "evidence/f26a1a4bc82098a9d24694c8f3ce7e848a8ef091d3745e46e3857bed52f09231/static/validate-submission.json",
+        "exit_code": 0,
+        "name": "nongeneric-completeness-static",
+        "recorded_at": "2026-08-14T10:50:22+00:00",
+        "stale_reason": "artifact changed: problem.md, solution.patch, test.patch"
+      },
+      "opal-hardening-reverted": {
+        "artifact_set_id": "0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6",
+        "command": "sha256sum canonical test.patch; compare with lisette-base-skip-repair.zip; git apply --numstat; parse requirement and mutation JSON",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "local static exact-byte verification; no build, Docker, or UI",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6/opal-reversion/audit.md",
+        "exit_code": 0,
+        "name": "opal-hardening-reverted",
+        "recorded_at": "2026-08-17T12:16:04+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b92": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "git apply --check test.patch; apply test.patch; git apply --check solution.patch; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, REVIEW",
+        "evidence": "Cloud Shell ~/lisette-b92-patchcheck2; canonical test.patch applies alone and before batch90-reference.patch",
+        "exit_code": 0,
+        "name": "patch-application-b92",
+        "recorded_at": "2026-08-17T08:22:56+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b93": {
+        "artifact_set_id": "7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02",
+        "command": "git apply --check test.patch; git apply test.patch; git apply --check solution.patch; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned clean worktree",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02/cache-lint-fp/audit.md",
+        "exit_code": 0,
+        "name": "patch-application-b93",
+        "recorded_at": "2026-08-17T09:01:57+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b94": {
+        "artifact_set_id": "229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c",
+        "command": "git apply --check test.patch; git apply test.patch; git apply --check solution.patch; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned clean worktree",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c/predictive-fp/audit.md",
+        "exit_code": 0,
+        "name": "patch-application-b94",
+        "recorded_at": "2026-08-17T09:36:52+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b95": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "git apply --check test.patch alone and after applying solution.patch at dc060ecd16224ad01cdb8d7bafe89230e477446a",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "patch-application-b95",
+        "recorded_at": "2026-08-17T10:12:22+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b97": {
+        "artifact_set_id": "0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6",
+        "command": "git apply --check test.patch on pristine dc060ecd; apply; bash -n test.sh",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6/base-skip-repair/audit.md",
+        "exit_code": 0,
+        "name": "patch-application-b97",
+        "recorded_at": "2026-08-17T10:56:35+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "patch-application-b98": {
+        "artifact_set_id": "445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7",
+        "command": "git apply --check test.patch; git apply test.patch; git apply --check solution.patch; bash -n test.sh; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, clean pinned worktrees, no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7/private-nonliteral-constants/audit.md",
+        "exit_code": 0,
+        "name": "patch-application-b98",
+        "recorded_at": "2026-08-17T12:02:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "predictive-package-route-mutants-b94": {
+        "artifact_set_id": "229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c",
+        "command": "cargo test saffron_gate_rejects_dynamic_and_mismatched_values",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; two isolated one-defect mutants",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c/predictive-fp/audit.md",
+        "exit_code": 101,
+        "name": "predictive-package-route-mutants-b94",
+        "recorded_at": "2026-08-17T09:36:53+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "prompt-alignment-local": {
+        "artifact_set_id": "28a71f4b75e2752a0869f76063220fe11cc3599b8304215779db4843a764f564",
+        "command": "manual requirement-to-oracle audit after batch 79 prompt clarification",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "read-only rollout audit plus exact current problem/test mapping; no hosted grader",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/rollouts/batch-79/audit.md",
+        "exit_code": 0,
+        "name": "prompt-alignment-local",
+        "recorded_at": "2026-08-13T09:20:39+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "prompt-clarification-alignment": {
+        "artifact_set_id": "8c3dcd4595086b9dc1641b54ce95c5413492821da2693d340777e36f7beb8411",
+        "command": "semantic diff of problem.md against unchanged requirement map and 20-test suite",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "local static fairness and description audit",
+        "evidence": "evidence/8c3dcd4595086b9dc1641b54ce95c5413492821da2693d340777e36f7beb8411/prompt-clarification/audit.md",
+        "exit_code": 0,
+        "name": "prompt-clarification-alignment",
+        "recorded_at": "2026-08-16T03:04:07+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "reference-new-b98": {
+        "artifact_set_id": "445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7",
+        "command": "./test.sh --output_path /tmp/b98-reference.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; offline Cargo; Go 1.25.10; reference worktree",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7/private-nonliteral-constants/audit.md",
+        "exit_code": 0,
+        "name": "reference-new-b98",
+        "recorded_at": "2026-08-17T12:02:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "repaired-base-regression": {
+        "artifact_set_id": "c93363b4707de883226be8f2bc55d6a84b452a012c778d53b6dfa2f09ed7b892",
+        "command": "./test.sh --output_path /tmp/lisette-review-base.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell uid 1000; CARGO_NET_OFFLINE=true; isolated /tmp target",
+        "evidence": "Google Cloud Shell non-root offline run: workspace library regressions and e2e library pipeline passed; JUnit evidence/c933.../partial-matrix/lisette-review-base.xml",
+        "exit_code": 0,
+        "name": "repaired-base-regression",
+        "recorded_at": "2026-08-11T22:22:29+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "repaired-feature-suite": {
+        "artifact_set_id": "82e27d59b0a6e65670b01d8526e5ee153dc4634555ae24be92c85ba80fbcf02f",
+        "command": "Cloud Shell cargo test -p tests --test suite declared_fill_q7m; cargo test -p tests --test e2e_q7m",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97; Go 1.25.10; Cargo offline",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/82e27d59b0a6e65670b01d8526e5ee153dc4634555ae24be92c85ba80fbcf02f",
+        "exit_code": 0,
+        "name": "repaired-feature-suite",
+        "recorded_at": "2026-08-17T15:05:26+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "repaired-solved-new": {
+        "artifact_set_id": "c7d3b7663f395dd67dd705c36cae906127033513b41c488923ee13b7c5f11b4e",
+        "command": "./test.sh --output_path /tmp/lisette-76c-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root uid 1000; Rust 1.97; Go 1.25.10; real cold/warm Go runtime; no Docker",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/c7d3b766-fp-ownership-matrix/lisette-new.xml",
+        "exit_code": 0,
+        "name": "repaired-solved-new",
+        "recorded_at": "2026-08-13T13:09:41+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "requirement-map": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "Updated bidirectional ownership/alias/cycle requirement-to-test mapping; JSON schema parsed",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Local state audit plus Google Cloud Shell execution",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "requirement-map",
+        "recorded_at": "2026-08-17T10:12:34+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-portability-saved-nova-replay": {
+        "artifact_set_id": "c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0",
+        "command": "./test.sh --output_path ~/lisette-replay-47ce-nova10-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell non-root UID 1000; exact pinned commit; saved Nova_Nova_10; Rust 1.97.0; Go 1.25.10; UID-isolated /tmp target",
+        "evidence": "evidence/d1666134bf84441771fb42e37dd780a26c69ca7c1155701c14de8b5626c85c49/non-root-replay/lisette-replay-47ce-nova10-new.xml",
+        "exit_code": 0,
+        "name": "review-portability-saved-nova-replay",
+        "recorded_at": "2026-08-16T15:34:48+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-portability-static-validation": {
+        "artifact_set_id": "c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0",
+        "command": "validate_submission.py --repo https://github.com/ivov/lisette --commit dc060ecd16224ad01cdb8d7bafe89230e477446a --artifacts artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS; structural and clean-application validation; no Docker",
+        "evidence": "evidence/c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0/review-portability/validate-submission.json",
+        "exit_code": 0,
+        "name": "review-portability-static-validation",
+        "recorded_at": "2026-08-16T15:34:48+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v2-base-base": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "./test.sh base --output_path /tmp/lisette-v2-testonly-base.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/lisette-v2-testonly-base.xml",
+        "exit_code": 0,
+        "name": "review-v2-base-base",
+        "recorded_at": "2026-08-15T18:28:44+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v2-base-new": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "./test.sh new --output_path /tmp/lisette-v2-testonly-new.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/lisette-v2-testonly-new.xml",
+        "exit_code": 1,
+        "name": "review-v2-base-new",
+        "recorded_at": "2026-08-15T18:28:44+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v2-genuine-nova-replay": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "./test.sh new --output_path /tmp/lisette-v2-nova2-new.xml",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/lisette-v2-nova2-new.xml",
+        "exit_code": 0,
+        "name": "review-v2-genuine-nova-replay",
+        "recorded_at": "2026-08-15T18:28:44+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v2-solved-base": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "./test.sh base --output_path /tmp/lisette-v2-base-final.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/lisette-v2-base-final.xml",
+        "exit_code": 0,
+        "name": "review-v2-solved-base",
+        "recorded_at": "2026-08-15T18:28:43+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v2-solved-new": {
+        "artifact_set_id": "591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e",
+        "command": "./test.sh new --output_path /tmp/lisette-review-v2-new.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo",
+        "evidence": "evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/lisette-review-v2-new.xml",
+        "exit_code": 0,
+        "name": "review-v2-solved-new",
+        "recorded_at": "2026-08-15T18:28:43+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-base-base": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "./test.sh base --output_path /tmp/lisette-review-v3-base-base.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/lisette-review-v3-base-base.xml",
+        "exit_code": 0,
+        "name": "review-v3-base-base",
+        "recorded_at": "2026-08-15T20:06:08+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-base-new": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "./test.sh new --output_path /tmp/lisette-review-v3-base-new.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/lisette-review-v3-base-new.xml",
+        "exit_code": 1,
+        "name": "review-v3-base-new",
+        "recorded_at": "2026-08-15T20:06:08+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-fairness-repair": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "cargo test -p tests --test suite amber_route_keeps_following_named_shape",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/audit.md",
+        "exit_code": 0,
+        "name": "review-v3-fairness-repair",
+        "recorded_at": "2026-08-15T20:06:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-genuine-nova-replay": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "./test.sh new --output_path /tmp/lisette-review-v3-nova-new.xml",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/lisette-review-v3-nova-new.xml",
+        "exit_code": 0,
+        "name": "review-v3-genuine-nova-replay",
+        "recorded_at": "2026-08-15T20:06:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-solved-base": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "./test.sh base --output_path /tmp/lisette-review-v3-solved-base.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/lisette-review-v3-solved-base.xml",
+        "exit_code": 0,
+        "name": "review-v3-solved-base",
+        "recorded_at": "2026-08-15T20:06:08+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v3-solved-new": {
+        "artifact_set_id": "db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d",
+        "command": "./test.sh new --output_path /tmp/lisette-review-v3-new.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97.1, Go 1.25.10, offline Cargo, isolated worktree/target",
+        "evidence": "evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/lisette-review-v3-new.xml",
+        "exit_code": 0,
+        "name": "review-v3-solved-new",
+        "recorded_at": "2026-08-15T20:06:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v4-base-base": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "./test.sh --output_path /tmp/lisette-review-v4-base-base.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97, Go 1.25.10, Cargo offline, isolated worktree/target",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/lisette-review-v4-base-base.xml",
+        "exit_code": 0,
+        "name": "review-v4-base-base",
+        "recorded_at": "2026-08-15T21:08:01+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v4-base-new": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "./test.sh --output_path /tmp/lisette-review-v4-base-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97, Go 1.25.10, Cargo offline, isolated worktree/target",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/lisette-review-v4-base-new.xml",
+        "exit_code": 1,
+        "name": "review-v4-base-new",
+        "recorded_at": "2026-08-15T21:08:01+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v4-fairness-and-classification": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "static assertion grounding plus exact per-test base/reference JUnit comparison",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Local static audit plus Google Cloud Shell exact JUnit evidence",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/audit.md",
+        "exit_code": 0,
+        "name": "review-v4-fairness-and-classification",
+        "recorded_at": "2026-08-15T21:09:36+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "review-v4-genuine-nova-replay": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "./test.sh --output_path /tmp/lisette-review-v4-nova-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97, Go 1.25.10, Cargo offline, isolated worktree/target",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/lisette-review-v4-nova-new.xml",
+        "exit_code": 0,
+        "name": "review-v4-genuine-nova-replay",
+        "recorded_at": "2026-08-15T21:08:01+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "review-v4-reference-new": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "./test.sh --output_path /tmp/lisette-review-v4-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97, Go 1.25.10, Cargo offline, isolated worktree/target",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/lisette-review-v4-new.xml",
+        "exit_code": 0,
+        "name": "review-v4-reference-new",
+        "recorded_at": "2026-08-15T21:08:01+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-v4-solved-base": {
+        "artifact_set_id": "c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5",
+        "command": "./test.sh --output_path /tmp/lisette-review-v4-solved-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell, pinned dc060ecd, Rust 1.97, Go 1.25.10, Cargo offline, isolated worktree/target",
+        "evidence": "evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/lisette-review-v4-solved-base.xml",
+        "exit_code": 0,
+        "name": "review-v4-solved-base",
+        "recorded_at": "2026-08-15T21:08:01+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "rollout-batch-01-observed": {
+        "artifact_set_id": "a12e7ec7f00e42716ee4b46a43245ce4bb96286c9b41f2c0df2a8e407e0a3d99",
+        "command": "audit agent-runs (63).zip",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Shipd rollout ZIP; included platform JUnit; local read-only audit",
+        "evidence": "Two of two Nova runs are legitimate platform passes; elapsed 41m03s and 39m50s; 22/+1254 and 20/+1450 production patches; no cheating. This is an ease warning, not a completed cohort. Independent Codespace replay blocked by GitHub billing HTTP 402.",
+        "exit_code": 0,
+        "name": "rollout-batch-01-observed",
+        "recorded_at": "2026-08-11T14:41:50+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "rollout-batch93-local-fp-audit": {
+        "artifact_set_id": "0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6",
+        "command": "inspect 8 eval/JUnit/trajectory/solution patches; materialize Nova #8 and #9; run private nonliteral ownership probe; test Nova #9 collision hypothesis",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; exact pinned commit and current test.patch; no Docker or UI",
+        "evidence": ".olympus/cases/lisette-default-field-values/rollouts/batch-93/audit.md",
+        "exit_code": 0,
+        "name": "rollout-batch93-local-fp-audit",
+        "recorded_at": "2026-08-17T14:32:55+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-agent-replay": {
+        "artifact_set_id": "403ae75dfa820859ccd9d46c2aba8fa62d2d9ef0f37dbc993ff6edde053d0732",
+        "command": "Reconcile all preserved failures and replay the only formerly durable construction_default passer against the current suite",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell isolated replay worktree and target; current test.patch; Nova4 exit 101 on foreign enum constructor names",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/nova4-current-replay.log",
+        "exit_code": 0,
+        "name": "saved-agent-replay",
+        "recorded_at": "2026-08-13T13:37:59+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "saved-agent-replay-carve": {
+        "artifact_set_id": "cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80",
+        "command": "Google Cloud Shell isolated replay: Nova_6 test.sh new and base",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, Rust 1.97, Go 1.25.10, isolated /tmp target",
+        "evidence": "evidence/cbeff45e635b270b60e7420dc6aa7ecf15040c3228893a3432afed7c7f8b8d80/replay/lisette-replay81-agent6-carved-new.xml",
+        "exit_code": 0,
+        "name": "saved-agent-replay-carve",
+        "recorded_at": "2026-08-14T03:13:42+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-genuine-b92-replay": {
+        "artifact_set_id": "c5655ca1b69e1fb446a911d75a85015ed31b4383ddde40998877eaa8f4b8ad78",
+        "command": "cargo test -p tests --test suite declared_fill_q7m; cargo test -p tests --test e2e_q7m",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell, exact Batch 92 Nova #1, Rust 1.97.0, Go 1.25.10, isolated target",
+        "evidence": "rollouts/batch-92/b92-nova1-full.log; 17/17 spec and 5/5 e2e pass",
+        "exit_code": 0,
+        "name": "saved-genuine-b92-replay",
+        "recorded_at": "2026-08-17T08:22:56+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-genuine-b93": {
+        "artifact_set_id": "7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02",
+        "command": "cargo test spec; cargo test e2e",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; exact Batch 92 Nova 1; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/7e443b2bc3102c38bd2ff583f6eac4d99e5f5c31f7e4f156ce89a491b78bfe02/cache-lint-fp/b93-nova1-full.log",
+        "exit_code": 0,
+        "name": "saved-genuine-b93",
+        "recorded_at": "2026-08-17T09:01:58+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-genuine-b94": {
+        "artifact_set_id": "229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c",
+        "command": "cargo test spec; cargo test e2e",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; exact Batch 92 Nova 1; isolated target",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/229a37c7475a387197583869c8734ab8496bd3a65a1c67c0642396ae7192544c/predictive-fp/b94-nova1-full.log",
+        "exit_code": 0,
+        "name": "saved-genuine-b94",
+        "recorded_at": "2026-08-17T09:36:53+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-genuine-b95": {
+        "artifact_set_id": "ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6",
+        "command": "cargo test -p tests --test suite declared_fill_q7m && cargo test -p tests --test e2e_q7m (Batch 92 Nova 1)",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; Go 1.25.10; offline Cargo; no Docker",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/completeness-bulbs/audit.md",
+        "exit_code": 0,
+        "name": "saved-genuine-b95",
+        "recorded_at": "2026-08-17T10:12:22+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-nova1-opal-rejected-b98": {
+        "artifact_set_id": "445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7",
+        "command": "cargo test -q -p tests --test e2e_q7m opal_foreign_defaults_preserve_nonliteral_private_constants -- --nocapture",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; exact saved Batch 92 Nova #1 plus current opal test",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7/private-nonliteral-constants/audit.md",
+        "exit_code": 101,
+        "name": "saved-nova1-opal-rejected-b98",
+        "recorded_at": "2026-08-17T12:02:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "solution-regression": {
+        "artifact_set_id": "c7d3b7663f395dd67dd705c36cae906127033513b41c488923ee13b7c5f11b4e",
+        "command": "./test.sh --output_path /tmp/lisette-76c-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell non-root uid 1000; existing syntax/format/semantics/emit/passes library suites plus e2e library pipeline; no Docker",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/c7d3b766-fp-ownership-matrix/lisette-base.xml",
+        "exit_code": 0,
+        "name": "solution-regression",
+        "recorded_at": "2026-08-13T13:09:46+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "static-submission-validation": {
+        "artifact_set_id": "403ae75dfa820859ccd9d46c2aba8fa62d2d9ef0f37dbc993ff6edde053d0732",
+        "command": "validate_submission.py on exact 403ae75d artifacts without Docker build",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "macOS structural validation; clean pinned application; no Docker",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/static-validation.json",
+        "exit_code": 0,
+        "name": "static-submission-validation",
+        "recorded_at": "2026-08-13T13:17:10+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "task-quality": {
+        "artifact_set_id": "fbf1579ae7dbb2fd1b1b473c6ad1e0cfdca77636c0ff8bbe4bc830a46f9c3a07",
+        "command": "Hosted Task Quality result",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Hosted Shipd Task Quality; completed in 267.1s",
+        "evidence": "VERDICT FAIL: Criterion 04 fairness; Choice.Full constructor-function default is tested but not explicitly called out within the inherited top-level-constant domain. Raw output grader-results/task-quality-fbf157/raw.txt.",
+        "exit_code": 1,
+        "name": "task-quality",
+        "recorded_at": "2026-08-11T20:16:24+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "test-fairness": {
+        "artifact_set_id": "8cee9e1c3f903dfaadc5e89247075937fd772afad8bd9dce668c5b60a2d9d101",
+        "command": "Hosted Test Fairness result",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Hosted Shipd Test Fairness grader; completed in 232.0s",
+        "evidence": "VERDICT FAIL \u2014 3 of 27 unfair: exact warm rendering, exact leading-comment rendering, and exact enum-record rendering pin whitespace/line layout not required by the prompt or pinned repository. Raw output: attachment 313904fd-10ec-4818-a502-b8f7515c550d/pasted-text.txt.",
+        "exit_code": 1,
+        "name": "test-fairness",
+        "recorded_at": "2026-08-11T19:27:49+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "testonly-opal-fails-b98": {
+        "artifact_set_id": "445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7",
+        "command": "cargo test -q -p tests --test e2e_q7m opal_foreign_defaults_preserve_nonliteral_private_constants -- --nocapture",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; clean pinned commit plus test.patch only",
+        "evidence": ".olympus/cases/lisette-default-field-values/evidence/445aaf31c6ddf0bcfd00a40606a54a113b8c61258cf2b2dbb757602735ec85a7/private-nonliteral-constants/audit.md",
+        "exit_code": 101,
+        "name": "testonly-opal-fails-b98",
+        "recorded_at": "2026-08-17T12:02:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "tests-reject-base": {
+        "artifact_set_id": "c7d3b7663f395dd67dd705c36cae906127033513b41c488923ee13b7c5f11b4e",
+        "command": "cargo +1.97 test -p tests --test e2e_q7m mica_q7m_preserves_values_across_owners_and_cache -- --nocapture on pinned base plus exact final test sources",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell pinned base; isolated base worktree; expected parse failure before feature implementation; no Docker",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/evidence/c7d3b766-fp-ownership-matrix/base-focused-failure.log",
+        "exit_code": 1,
+        "name": "tests-reject-base",
+        "recorded_at": "2026-08-13T13:09:54+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "verifier-completeness-audit": {
+        "artifact_set_id": "c93363b4707de883226be8f2bc55d6a84b452a012c778d53b6dfa2f09ed7b892",
+        "command": "Hosted Verifier Completeness Audit",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Hosted Shipd verifier; report supplied by user",
+        "evidence": "Incomplete: 4 demonstrated gaps; raw verdict at grader-results/verifier-completeness-c933/completeness-audit.txt",
+        "exit_code": 1,
+        "name": "verifier-completeness-audit",
+        "recorded_at": "2026-08-12T03:33:07+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      }
+    }
+  },
+  "repository": {
+    "clean": false,
+    "commit": "dc060ecd16224ad01cdb8d7bafe89230e477446a",
+    "commit_matches": true,
+    "head": "dc060ecd16224ad01cdb8d7bafe89230e477446a",
+    "root": "/private/tmp/lisette-patch-check.7ySsRp",
+    "root_matches": true,
+    "url": "https://github.com/ivov/lisette"
+  },
+  "requirement_map": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/lisette-default-field-values/requirement-map.json",
+  "schema_version": 2,
+  "stage": "5c",
+  "updated_at": "2026-08-17T16:24:28+00:00",
+  "verdict": "IN_PROGRESS"
+}

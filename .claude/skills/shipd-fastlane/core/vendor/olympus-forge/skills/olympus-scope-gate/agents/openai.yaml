@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Scope Gate"
+  short_description: "Gate a frozen full solution with reduced tests"
+  default_prompt: "Use $olympus-scope-gate to validate and run the authorized Scope Gate on this hardness-proven full solution with frozen problem and solution bytes and reduced representative tests."

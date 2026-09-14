@@ -1,0 +1,1686 @@
+{
+  "artifact_dir": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/artifacts",
+  "artifact_set_id": "66407f04d657da3cc6202141c56b87d729317db732c232207abe0b37d275b1a9",
+  "artifacts": {
+    "Dockerfile": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/artifacts/Dockerfile",
+      "sha256": "ee8e4fc4c84a9df9ded752c4e5d6b020b1c794383f84182e04a224979eac9ef6",
+      "size": 938
+    },
+    "problem.md": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/artifacts/problem.md",
+      "sha256": "39d9e64fec87c06d1ed6495435df4ded6d4b88a12b214fbf92180f8aaf75b6d7",
+      "size": 2750
+    },
+    "solution.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+      "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+      "size": 57807
+    },
+    "test.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/artifacts/test.patch",
+      "sha256": "302483f2d23c173e74c6b4f4b5790651958de491c24b0198aa1562bed6ad54ff",
+      "size": 80418
+    }
+  },
+  "budget": {
+    "authorized": 550.0,
+    "entries": [
+      {
+        "artifact_set_id": "e793a1beef7952af2a046b5090d33d8b3da96631df3ffe05eb05aed621cf1a98",
+        "at": "2026-08-25T19:27:13+00:00",
+        "cost": 1.0,
+        "name": "verifier-completeness-audit",
+        "panel_snapshot": "v2 live panel; 3 revision tickets + 1 token",
+        "result_id": "v2-audit-20260826"
+      },
+      {
+        "artifact_set_id": "e793a1beef7952af2a046b5090d33d8b3da96631df3ffe05eb05aed621cf1a98",
+        "at": "2026-08-25T19:27:13+00:00",
+        "cost": 4.0,
+        "name": "nova-quick-check",
+        "panel_snapshot": "v2 live panel; Quick Check 1 Nova",
+        "result_id": "v2-nova-quick-20260826"
+      },
+      {
+        "artifact_set_id": "ecc0780a9c60745c8b1765f30b032566278ce3d20ff95d81ef97b19a591697d3",
+        "at": "2026-08-25T19:41:06+00:00",
+        "cost": 0.5,
+        "name": "v2-audit30-prechecks",
+        "panel_snapshot": "live v2 exact 30-test patch",
+        "result_id": "v2-audit30-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "ecc0780a9c60745c8b1765f30b032566278ce3d20ff95d81ef97b19a591697d3",
+        "at": "2026-08-25T19:41:06+00:00",
+        "cost": 10.25,
+        "name": "v2-audit30-quality-batch",
+        "panel_snapshot": "live v2 exact 30-test patch; seven quality checks",
+        "result_id": "v2-audit30-quality-20260826"
+      },
+      {
+        "artifact_set_id": "54bb16e952f424034f463a4e7d1297fb855e1aed862e102ec4cf4f78dbffc8f3",
+        "at": "2026-08-25T19:58:42+00:00",
+        "cost": 0.5,
+        "name": "v2-final-prechecks",
+        "panel_snapshot": "live v2 exact final solution; prechecks 5/5",
+        "result_id": "v2-final-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "54bb16e952f424034f463a4e7d1297fb855e1aed862e102ec4cf4f78dbffc8f3",
+        "at": "2026-08-25T20:03:07+00:00",
+        "cost": 6.5,
+        "name": "v2-final-quality-batch",
+        "panel_snapshot": "live v2 exact final solution; four stale quality checks",
+        "result_id": "v2-final-quality-20260826"
+      },
+      {
+        "artifact_set_id": "e768b73c00ed01de8bfded83b243af1fdd7c7eab812e065def1fe85cd56857de",
+        "at": "2026-08-25T20:27:11+00:00",
+        "cost": 0.5,
+        "name": "v2-final4-prechecks",
+        "panel_snapshot": "live v2 exact 29-test final artifacts",
+        "result_id": "v2-final4-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "e768b73c00ed01de8bfded83b243af1fdd7c7eab812e065def1fe85cd56857de",
+        "at": "2026-08-25T20:30:41+00:00",
+        "cost": 10.25,
+        "name": "v2-final4-quality-batch",
+        "panel_snapshot": "live v2 exact 29-test final artifacts; seven quality checks",
+        "result_id": "v2-final4-quality-20260826"
+      },
+      {
+        "artifact_set_id": "55ee8dced8fca8e6ac79c5ea1c1e992c75177521af32be13b5a63f580c6017c3",
+        "at": "2026-08-25T20:42:33+00:00",
+        "cost": 0.5,
+        "name": "v2-final7-prechecks",
+        "panel_snapshot": "live v2 exact terminal-budget fix",
+        "result_id": "v2-final7-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "55ee8dced8fca8e6ac79c5ea1c1e992c75177521af32be13b5a63f580c6017c3",
+        "at": "2026-08-25T20:45:00+00:00",
+        "cost": 6.5,
+        "name": "v2-final7-quality-batch",
+        "panel_snapshot": "live v2 exact terminal-budget fix; four solution-dependent checks",
+        "result_id": "v2-final7-quality-20260826"
+      },
+      {
+        "artifact_set_id": "55ee8dced8fca8e6ac79c5ea1c1e992c75177521af32be13b5a63f580c6017c3",
+        "at": "2026-08-25T20:53:49+00:00",
+        "cost": 2.0,
+        "name": "v2-final-scope-gate",
+        "panel_snapshot": "live v2 exact final artifacts; all 7 quality gates pass",
+        "result_id": "v2-final-scope-20260826"
+      },
+      {
+        "artifact_set_id": "55ee8dced8fca8e6ac79c5ea1c1e992c75177521af32be13b5a63f580c6017c3",
+        "at": "2026-08-25T20:56:17+00:00",
+        "cost": 4.0,
+        "name": "v2-final-verifier-audit",
+        "panel_snapshot": "live v2 exact final artifacts; scope and all quality gates pass",
+        "result_id": "v2-final-audit-20260826"
+      },
+      {
+        "artifact_set_id": "35d5e9d221dac7f6bb1301c236d6f960c2438d98d626d708870ddf5a1a6674b5",
+        "at": "2026-08-25T21:20:17+00:00",
+        "cost": 0.5,
+        "name": "v2-audit-final-prechecks",
+        "panel_snapshot": "live v2 exact 31-test audit-hardened artifacts",
+        "result_id": "v2-audit-final-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "35d5e9d221dac7f6bb1301c236d6f960c2438d98d626d708870ddf5a1a6674b5",
+        "at": "2026-08-25T21:22:48+00:00",
+        "cost": 10.25,
+        "name": "v2-audit-final-quality-batch",
+        "panel_snapshot": "live v2 exact 31-test audit-hardened artifacts; seven quality checks",
+        "result_id": "v2-audit-final-quality-20260826"
+      },
+      {
+        "artifact_set_id": "7dc2bb8e9b70a75bbb4af08d40dcc9435f7c238437964f03a6b0e090d01d9d60",
+        "at": "2026-08-25T21:33:11+00:00",
+        "cost": 0.5,
+        "name": "v2-final11-prechecks",
+        "panel_snapshot": "live v2 exact full ancestor role validation",
+        "result_id": "v2-final11-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "7dc2bb8e9b70a75bbb4af08d40dcc9435f7c238437964f03a6b0e090d01d9d60",
+        "at": "2026-08-25T21:36:08+00:00",
+        "cost": 6.5,
+        "name": "v2-final11-quality-batch",
+        "panel_snapshot": "live v2 exact full ancestor role validation; four affected checks",
+        "result_id": "v2-final11-quality-20260826"
+      },
+      {
+        "artifact_set_id": "7dc2bb8e9b70a75bbb4af08d40dcc9435f7c238437964f03a6b0e090d01d9d60",
+        "at": "2026-08-25T21:46:16+00:00",
+        "cost": 2.5,
+        "name": "v2-final11-solution-quality-rerun",
+        "panel_snapshot": "unchanged exact artifacts; clean cloud cargo check --lib with RUSTFLAGS=-Dwarnings",
+        "result_id": "v2-final11-sq-rerun-20260826"
+      },
+      {
+        "artifact_set_id": "c523bb1b46e9c1576e6d9a55c074530d10b6d20dae64b458ecc01e783c824de3",
+        "at": "2026-08-25T21:59:45+00:00",
+        "cost": 0.5,
+        "name": "v2-final12-prechecks",
+        "panel_snapshot": "live v2 exact edition-aware final artifacts",
+        "result_id": "v2-final12-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "c523bb1b46e9c1576e6d9a55c074530d10b6d20dae64b458ecc01e783c824de3",
+        "at": "2026-08-25T22:02:22+00:00",
+        "cost": 10.25,
+        "name": "v2-final12-quality-batch",
+        "panel_snapshot": "live v2 exact edition-aware final artifacts; seven quality checks",
+        "result_id": "v2-final12-quality-20260826"
+      },
+      {
+        "artifact_set_id": "c523bb1b46e9c1576e6d9a55c074530d10b6d20dae64b458ecc01e783c824de3",
+        "at": "2026-08-25T22:11:32+00:00",
+        "cost": 2.0,
+        "name": "v2-final12-scope",
+        "panel_snapshot": "live v2 exact edition-aware artifacts; all seven quality gates pass",
+        "result_id": "v2-final12-scope-20260826"
+      },
+      {
+        "artifact_set_id": "c523bb1b46e9c1576e6d9a55c074530d10b6d20dae64b458ecc01e783c824de3",
+        "at": "2026-08-25T22:14:16+00:00",
+        "cost": 4.0,
+        "name": "v2-final12-verifier-audit",
+        "panel_snapshot": "live v2 exact final artifacts; accepted audit tests included; all gates pass",
+        "result_id": "v2-final12-audit-20260826"
+      },
+      {
+        "artifact_set_id": "bac17063b8d54ba9455412b25c9e49231450ab7c79dba2d5a9eed2946e966875",
+        "at": "2026-08-25T22:32:02+00:00",
+        "cost": 0.5,
+        "name": "v2-final13-prechecks",
+        "panel_snapshot": "live v2 exact 33-test dedup-hardened artifacts",
+        "result_id": "v2-final13-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "bac17063b8d54ba9455412b25c9e49231450ab7c79dba2d5a9eed2946e966875",
+        "at": "2026-08-25T22:34:36+00:00",
+        "cost": 10.25,
+        "name": "v2-final13-quality-batch",
+        "panel_snapshot": "live v2 exact 33-test dedup-hardened artifacts; seven checks",
+        "result_id": "v2-final13-quality-20260826"
+      },
+      {
+        "artifact_set_id": "af05dc100fa29b9f97913806bbdbafd3a0301cb8f4474814c5ca794a7d25f748",
+        "at": "2026-08-25T22:59:25+00:00",
+        "cost": 0.5,
+        "name": "v2-final14-prechecks",
+        "panel_snapshot": "live v2 exact raw-identifier-hardened artifacts; 15 successful, 2 warnings",
+        "result_id": "v2-final14-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "af05dc100fa29b9f97913806bbdbafd3a0301cb8f4474814c5ca794a7d25f748",
+        "at": "2026-08-25T23:20:26+00:00",
+        "cost": 10.25,
+        "name": "v2-final14-quality-batch",
+        "panel_snapshot": "live v2 exact raw-identifier-hardened artifacts; six pass, Solution Quality static attribute-drop claim failed",
+        "result_id": "v2-final14-quality-20260826"
+      },
+      {
+        "artifact_set_id": "af05dc100fa29b9f97913806bbdbafd3a0301cb8f4474814c5ca794a7d25f748",
+        "at": "2026-08-25T23:25:12+00:00",
+        "cost": 2.5,
+        "name": "v2-final14-solution-quality-rerun",
+        "panel_snapshot": "unchanged exact raw-identifier artifacts; rerun passes after disproven attribute-drop static claim",
+        "result_id": "v2-final14-sq-rerun-20260826"
+      },
+      {
+        "artifact_set_id": "af05dc100fa29b9f97913806bbdbafd3a0301cb8f4474814c5ca794a7d25f748",
+        "at": "2026-08-25T23:26:34+00:00",
+        "cost": 2.0,
+        "name": "v2-final14-scope",
+        "panel_snapshot": "live v2 exact raw-identifier artifacts; all seven quality gates pass",
+        "result_id": "v2-final14-scope-20260826"
+      },
+      {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "at": "2026-08-25T23:50:11+00:00",
+        "cost": 4.0,
+        "name": "v2-final14-verifier-audit",
+        "panel_snapshot": "live v2 audit demonstrated edit-range and bare-underscore routing mutants; proposed two tests",
+        "result_id": "v2-final14-audit-20260826"
+      },
+      {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "at": "2026-08-25T23:53:21+00:00",
+        "cost": 0.5,
+        "name": "v2-final16-prechecks",
+        "panel_snapshot": "live v2 exact 34-test audit-hardened patch; 14 successful, 3 warnings",
+        "result_id": "v2-final16-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "at": "2026-08-26T00:04:13+00:00",
+        "cost": 10.25,
+        "name": "v2-final16-quality-batch",
+        "panel_snapshot": "live exact 34-test audit-hardened patch; six initial passes, false unused-warning claim",
+        "result_id": "v2-final16-quality-20260826"
+      },
+      {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "at": "2026-08-26T00:04:13+00:00",
+        "cost": 2.5,
+        "name": "v2-final16-solution-quality-rerun",
+        "panel_snapshot": "unchanged exact artifacts; isolated rerun passed; seven quality gates current",
+        "result_id": "v2-final16-sq-rerun-20260826"
+      },
+      {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "at": "2026-08-26T00:05:37+00:00",
+        "cost": 2.0,
+        "name": "v2-final16-scope",
+        "panel_snapshot": "live exact 34-test audit-hardened artifacts; seven quality gates pass",
+        "result_id": "v2-final16-scope-20260826"
+      },
+      {
+        "artifact_set_id": "5309e7bae6d1815f35229b4598956aa9abc67b851335c6c15e29d9be17cc4dae",
+        "at": "2026-08-26T00:49:48+00:00",
+        "cost": 0.5,
+        "name": "v2-final17-prechecks",
+        "panel_snapshot": "live v2 exact 36-test boundary-complete artifacts; 15 successful, 2 warnings",
+        "result_id": "v2-final17-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "5309e7bae6d1815f35229b4598956aa9abc67b851335c6c15e29d9be17cc4dae",
+        "at": "2026-08-26T01:15:07+00:00",
+        "cost": 0.5,
+        "name": "v2-final17-verify-solution",
+        "panel_snapshot": "live exact 36-test artifacts; PASS 746 P2P / 36 F2P",
+        "result_id": "v2-final17-verify-solution-20260826"
+      },
+      {
+        "artifact_set_id": "5309e7bae6d1815f35229b4598956aa9abc67b851335c6c15e29d9be17cc4dae",
+        "at": "2026-08-26T01:15:07+00:00",
+        "cost": 2.5,
+        "name": "v2-final17-solution-quality",
+        "panel_snapshot": "live exact 36-test artifacts; PASS",
+        "result_id": "v2-final17-solution-quality-20260826"
+      },
+      {
+        "artifact_set_id": "5309e7bae6d1815f35229b4598956aa9abc67b851335c6c15e29d9be17cc4dae",
+        "at": "2026-08-26T01:15:08+00:00",
+        "cost": 1.25,
+        "name": "v2-final17-test-quality",
+        "panel_snapshot": "live exact 36-test artifacts; FAIL one unfair compatibility assertion plus one open-ended non-identifier advisory",
+        "result_id": "v2-final17-test-quality-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:18:57+00:00",
+        "cost": 0.5,
+        "name": "v2-final18-prechecks",
+        "panel_snapshot": "live v2 exact fairness-aligned 36-test artifacts; all prechecks pass",
+        "result_id": "v2-final18-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:30:08+00:00",
+        "cost": 0.5,
+        "name": "v2-final18-verify-solution",
+        "panel_snapshot": "live exact final artifacts; PASS 746 P2P / 36 F2P",
+        "result_id": "v2-final18-verify-solution-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:30:08+00:00",
+        "cost": 2.5,
+        "name": "v2-final18-solution-quality",
+        "panel_snapshot": "live exact final artifacts; PASS",
+        "result_id": "v2-final18-solution-quality-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:30:08+00:00",
+        "cost": 1.25,
+        "name": "v2-final18-test-quality",
+        "panel_snapshot": "live exact final artifacts; PASS all 39 logical tests fair; 4 advisory bulbs accepted as non-blocking per user freeze",
+        "result_id": "v2-final18-test-quality-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:35:28+00:00",
+        "cost": 0.5,
+        "name": "v2-final18-verify-tests",
+        "panel_snapshot": "live exact final artifacts; PASS",
+        "result_id": "v2-final18-verify-tests-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:35:29+00:00",
+        "cost": 0.5,
+        "name": "v2-final18-flakiness",
+        "panel_snapshot": "live exact final artifacts; PASS 6x clean and 6x patched",
+        "result_id": "v2-final18-flakiness-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:35:29+00:00",
+        "cost": 3.0,
+        "name": "v2-final18-task-quality",
+        "panel_snapshot": "live exact final artifacts; PASS",
+        "result_id": "v2-final18-task-quality-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:35:29+00:00",
+        "cost": 2.0,
+        "name": "v2-final18-description-quality",
+        "panel_snapshot": "live exact final artifacts; PASS",
+        "result_id": "v2-final18-description-quality-20260826"
+      },
+      {
+        "artifact_set_id": "33c2dba32ea07313d068fe4e209b91ee88fcbaa04b8badcb0b93595716d99a32",
+        "at": "2026-08-26T01:36:32+00:00",
+        "cost": 2.0,
+        "name": "v2-final18-scope",
+        "panel_snapshot": "live exact final artifacts; Scope Gate PASS; all seven quality gates PASS",
+        "result_id": "v2-final18-scope-20260826"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T02:59:04+00:00",
+        "cost": 40.0,
+        "name": "v2-final18-rollout-batch",
+        "panel_snapshot": "Run Aug 26 7:06 AM; 8 Nova + 2 Orion; 0/10 solved; 9 missed requirement, 1 regression; no blockers",
+        "result_id": "run-rd72dagmftpvaa92nzf321xgnx8d6svt"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T03:25:56+00:00",
+        "cost": 4.25,
+        "name": "v2-relax32-priority-quality",
+        "panel_snapshot": "Verify Solution PASS 747 P2P / 32 F2P; Solution Quality PASS; Test Quality PASS 23/25 covered with 2 advisory bulbs",
+        "result_id": "v2-relax32-priority-20260826"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T03:25:56+00:00",
+        "cost": 6.0,
+        "name": "v2-relax32-remaining-quality",
+        "panel_snapshot": "Verify Tests, Verify Flakiness, Task Quality, Description Quality all PASS",
+        "result_id": "v2-relax32-remaining-20260826"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T03:25:56+00:00",
+        "cost": 0.5,
+        "name": "v2-relax32-prechecks",
+        "panel_snapshot": "all prechecks PASS; 15 successful, 2 warnings",
+        "result_id": "v2-relax32-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T03:25:56+00:00",
+        "cost": 2.0,
+        "name": "v2-relax32-scope",
+        "panel_snapshot": "Scope Gate PASS; funnel unlocked",
+        "result_id": "v2-relax32-scope-20260826"
+      },
+      {
+        "artifact_set_id": "c46d44b5171e4048a77cf4f0ad77e6700eaeb320dcccc1e3ae13126ce8ab0237",
+        "at": "2026-08-26T03:27:36+00:00",
+        "cost": 40.0,
+        "name": "v2-relax32-nova-rollouts",
+        "panel_snapshot": "10 Nova solver / Nova evaluator runs launched on exact 32-F2P artifacts",
+        "result_id": "run-aug26-0857"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T07:31:33+00:00",
+        "cost": 0.5,
+        "name": "reduced56d-build",
+        "panel_snapshot": "live exact 56d artifacts; Rebuild 0.5 started",
+        "result_id": "pending-live-build-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T07:44:20+00:00",
+        "cost": 0.5,
+        "name": "reduced56d-prechecks",
+        "panel_snapshot": "live exact 56d artifacts; Run Prechecks confirmed",
+        "result_id": "pending-live-prechecks-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T07:48:51+00:00",
+        "cost": 0.5,
+        "name": "reduced56d-verify-solution",
+        "panel_snapshot": "live exact 56d artifacts; Verify Solution confirmed",
+        "result_id": "pending-live-verify-solution-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T07:49:21+00:00",
+        "cost": 2.5,
+        "name": "reduced56d-solution-quality",
+        "panel_snapshot": "live exact 56d artifacts; Solution Quality confirmed",
+        "result_id": "pending-live-solution-quality-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T07:50:19+00:00",
+        "cost": 1.25,
+        "name": "reduced56d-test-quality",
+        "panel_snapshot": "live exact 56d artifacts; Test Quality confirmed",
+        "result_id": "pending-live-test-quality-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:05:43+00:00",
+        "cost": 0.5,
+        "name": "reduced56d-verify-tests",
+        "panel_snapshot": "live exact 56d artifacts; Verify Tests confirmed",
+        "result_id": "pending-live-verify-tests-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:06:08+00:00",
+        "cost": 0.5,
+        "name": "reduced56d-flakiness",
+        "panel_snapshot": "live exact 56d artifacts; Verify Flakiness confirmed",
+        "result_id": "pending-live-flakiness-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:06:29+00:00",
+        "cost": 3.0,
+        "name": "reduced56d-task-quality",
+        "panel_snapshot": "live exact 56d artifacts; Task Quality confirmed",
+        "result_id": "pending-live-task-quality-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:06:49+00:00",
+        "cost": 2.0,
+        "name": "reduced56d-description-quality",
+        "panel_snapshot": "live exact 56d artifacts; Description Quality confirmed",
+        "result_id": "pending-live-description-quality-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:11:45+00:00",
+        "cost": 2.0,
+        "name": "reduced56d-scope-gate",
+        "panel_snapshot": "live exact 56d artifacts; all seven checks current PASS; Scope Gate confirmed",
+        "result_id": "pending-live-scope-20260826"
+      },
+      {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "at": "2026-08-26T08:14:41+00:00",
+        "cost": 48.0,
+        "name": "reduced56d-full-rollouts",
+        "panel_snapshot": "live exact 56d artifacts; Full Evaluation 8 Nova + 2 Orion confirmed; cost 48",
+        "result_id": "pending-run-20260826"
+      },
+      {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "at": "2026-08-26T11:02:18+00:00",
+        "cost": 0.5,
+        "name": "prechecks-reduced-contract",
+        "panel_snapshot": "shipd-v2-2026-08-26-post-upload",
+        "result_id": "shipd-20260826-prechecks-reduced-contract"
+      },
+      {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "at": "2026-08-26T11:02:18+00:00",
+        "cost": 10.25,
+        "name": "seven-standard-checks-reduced-contract",
+        "panel_snapshot": "shipd-v2-2026-08-26-post-upload",
+        "result_id": "shipd-20260826-seven-checks-reduced-contract"
+      },
+      {
+        "artifact_set_id": "6274ecfab3210feedf4844bd915d53fab17238f6fe31971ee487954d037f5493",
+        "at": "2026-08-26T11:14:27+00:00",
+        "cost": 0.5,
+        "name": "prechecks-description-concision",
+        "panel_snapshot": "shipd-v2-2026-08-26-description-concision",
+        "result_id": "shipd-20260826-prechecks-concision"
+      },
+      {
+        "artifact_set_id": "434f46ce24fa211b69546328e01d4ca4299ae2ee9e591d20e977474f4475b568",
+        "at": "2026-08-26T11:17:30+00:00",
+        "cost": 0.5,
+        "name": "prechecks-final-ascii",
+        "panel_snapshot": "shipd-v2-2026-08-26-final-ascii-description",
+        "result_id": "shipd-20260826-prechecks-final-ascii"
+      },
+      {
+        "artifact_set_id": "434f46ce24fa211b69546328e01d4ca4299ae2ee9e591d20e977474f4475b568",
+        "at": "2026-08-26T11:20:20+00:00",
+        "cost": 2.0,
+        "name": "scope-gate-final-reduced-contract",
+        "panel_snapshot": "shipd-v2-2026-08-26-final-reduced-contract",
+        "result_id": "shipd-20260826-scope-final-reduced"
+      },
+      {
+        "artifact_set_id": "434f46ce24fa211b69546328e01d4ca4299ae2ee9e591d20e977474f4475b568",
+        "at": "2026-08-26T11:24:11+00:00",
+        "cost": 8.75,
+        "name": "four-description-dependent-checks-final",
+        "panel_snapshot": "shipd-v2-2026-08-26-final-ascii-description",
+        "result_id": "shipd-20260826-four-final-checks"
+      },
+      {
+        "artifact_set_id": "66407f04d657da3cc6202141c56b87d729317db732c232207abe0b37d275b1a9",
+        "at": "2026-09-03T17:15:51+00:00",
+        "cost": 0.5,
+        "name": "v5-review-repair-prechecks",
+        "panel_snapshot": "live v5: Run Prechecks dialog 0.5 / 561.25; title/problem/environment unchanged",
+        "result_id": "kh77464b6425ndr9rth3wcyv4d8cyh4z-prechecks-20260903"
+      },
+      {
+        "artifact_set_id": "66407f04d657da3cc6202141c56b87d729317db732c232207abe0b37d275b1a9",
+        "at": "2026-09-03T17:15:51+00:00",
+        "cost": 2.0,
+        "name": "v5-review-repair-scope-gate",
+        "panel_snapshot": "live v5: Re-run Scope Gate dialog 2 / 560.75; prechecks complete",
+        "result_id": "kh77464b6425ndr9rth3wcyv4d8cyh4z-scope-20260903"
+      }
+    ],
+    "spent": 325.25
+  },
+  "case_id": "rust-analyzer-multi-macro-completion",
+  "created_at": "2026-08-22T02:47:43Z",
+  "last_blocker": "Current test/solution bytes locally validated; live prechecks, scope, quality checks, and rollout re-evaluation remain stale.",
+  "live_panel_snapshot": "v5 live 2026-09-03: artifact edit saved; Prechecks 0.50, Scope Gate 2, quality batch 10.25, Re-eval 10 runs 12; title/problem/environment unchanged.",
+  "local_status": "HARDENED",
+  "mode": "LIVE",
+  "next_legal_stage": "5b",
+  "platform_status": "UNPROVEN",
+  "proofs": {
+    "current": {},
+    "stale": {
+      "attribute-budget-clean-application": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "command": "fresh pinned worktrees apply test then solution and solution then test; git apply --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da",
+        "evidence": "Google Cloud Shell: /home/shabnamhasan2/ra-attrfix-order-ts and ra-attrfix-order-st; BOTH_ORDERS_OK",
+        "exit_code": 0,
+        "name": "attribute-budget-clean-application",
+        "recorded_at": "2026-08-29T04:51:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "attribute-budget-prior-reference-discriminator": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "command": "prior solution plus repaired test; focused direct_attribute_sites_share_the_sixty_four_site_budget",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0",
+        "evidence": "evidence/attribute-speculative-budget-2026-08-29/prior-reference-focused.log; later completion absent",
+        "exit_code": 101,
+        "name": "attribute-budget-prior-reference-discriminator",
+        "recorded_at": "2026-08-29T04:51:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "attribute-budget-reference-base": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "command": "./test.sh base --output_path reference-base.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; native JUnit",
+        "evidence": "evidence/attribute-speculative-budget-2026-08-29/reference-base.xml; 756/756 pass",
+        "exit_code": 0,
+        "name": "attribute-budget-reference-base",
+        "recorded_at": "2026-08-29T04:51:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "attribute-budget-reference-new": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "command": "./test.sh new --output_path reference-new.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; native JUnit",
+        "evidence": "evidence/attribute-speculative-budget-2026-08-29/reference-new.xml; 29/29 pass",
+        "exit_code": 0,
+        "name": "attribute-budget-reference-new",
+        "recorded_at": "2026-08-29T04:51:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "attribute-budget-testonly-new": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "command": "pinned base plus test.patch; ./test.sh new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; native JUnit",
+        "evidence": "evidence/attribute-speculative-budget-2026-08-29/testonly-new.xml; 29/29 fail as required",
+        "exit_code": 101,
+        "name": "attribute-budget-testonly-new",
+        "recorded_at": "2026-08-29T04:51:25+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "budget-role-mismatch": {
+        "artifact_set_id": "55ee8dced8fca8e6ac79c5ea1c1e992c75177521af32be13b5a63f580c6017c3",
+        "command": "cargo fmt --check; cargo test terminal_role_mismatches_consume_the_global_budget",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned d2e55da; Rust 1.97.0",
+        "evidence": "Google Cloud Shell /tmp/ra-final7: formatting clean, targeted budget test passed without warnings; behavior-only predecessor /tmp/ra-final5 full suite 775 passed",
+        "exit_code": 0,
+        "name": "budget-role-mismatch",
+        "recorded_at": "2026-08-25T20:42:07+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "ci-warnings-gate": {
+        "artifact_set_id": "656964d0731776f4d11e15c9e5c90a5c6ff04166ec4608feb874da14e0e365bc",
+        "command": "RUSTFLAGS=-D warnings cargo test --offline --locked -p ide-completion --lib",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; Rust 1.97.0; warnings denied; 782 passed",
+        "evidence": "evidence/solution-quality32-2026-08-25/cloud/reference-full.log",
+        "exit_code": 0,
+        "name": "ci-warnings-gate",
+        "recorded_at": "2026-08-24T19:08:21+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "dedup-final-matrix": {
+        "artifact_set_id": "bac17063b8d54ba9455412b25c9e49231450ab7c79dba2d5a9eed2946e966875",
+        "command": "./test.sh new; cargo fmt --check; RUSTFLAGS=-Dwarnings cargo check --lib; cargo test --lib",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned d2e55da; exact 33-test audit-hardened suite",
+        "evidence": "Google Cloud Shell /tmp/ra-final13: unsolved JUnit 33/33 failures; warnings-denied build passes; full suite 779/779",
+        "exit_code": 0,
+        "name": "dedup-final-matrix",
+        "recorded_at": "2026-08-25T22:31:05+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "description-quality-local": {
+        "artifact_set_id": "4bab00337922e0e966b267df39baca230b05b1123e5c6a0acb1e26e7689ac9a1",
+        "command": "Accepted and rewrote all three Description Quality comments as sentence-level presentation changes; verified no sentence exceeds 35 words and artifact scope is unchanged",
+        "depends_on": [
+          "problem.md"
+        ],
+        "environment": "Mac orchestration-only prose and state validation",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/description-quality-2026-09-03/disposition.md",
+        "exit_code": 0,
+        "name": "description-quality-local",
+        "recorded_at": "2026-09-03T05:11:57+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "docker-evaluator": {
+        "artifact_set_id": "4f76c38d459d26015371c0ad780a2c5623edba0d5c00770847ff3cd44bb41b54",
+        "command": "build untouched pinned source; create NetworkMode=none container; copy/apply both patches as uid1000; run test.sh new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell Docker, image sha256:7e4cc28b2132961a44e2fdcf5e7dbcd9059fd14b881ce4ae7c48ff44733e4cd2",
+        "evidence": "evidence/evaluator-docker/evaluator.xml",
+        "exit_code": 0,
+        "name": "docker-evaluator",
+        "recorded_at": "2026-08-22T12:18:43+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "dot-access-cloud-matrix": {
+        "artifact_set_id": "0bef31b7573016f3c153a0f8adcb555c54bcbd53e4327c284d9fe8cd0c123943",
+        "command": "Google Cloud Shell CLI final test/solution bytes: reference new/base, exact FP candidate new, untouched new/base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell, commit d2e55da, Rust 1.97.0; executable artifacts unchanged by prompt-only clarification",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/dot-access-fp-2026-08-27/cloud/provenance.txt",
+        "exit_code": 0,
+        "name": "dot-access-cloud-matrix",
+        "recorded_at": "2026-08-27T14:14:09+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "duplicate-final": {
+        "artifact_set_id": "806befe84ab563e6b638561548570013a9ab379b6f2b3afce7012c0bc2adb4f5",
+        "command": "reuse final GitHub issue/PR/timeline audit after behavior-only prompt narrowing",
+        "depends_on": [
+          "problem.md"
+        ],
+        "environment": "GitHub CLI/API final audit",
+        "evidence": "evidence/final-duplicate-audit",
+        "exit_code": 0,
+        "name": "duplicate-final",
+        "recorded_at": "2026-08-22T12:35:50+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "edition-aware-final-matrix": {
+        "artifact_set_id": "c523bb1b46e9c1576e6d9a55c074530d10b6d20dae64b458ecc01e783c824de3",
+        "command": "./test.sh new; cargo fmt --check; RUSTFLAGS=-Dwarnings cargo check --lib; cargo test --lib",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned d2e55da; exact 31-test suite and edition-aware final solution",
+        "evidence": "Google Cloud Shell /tmp/ra-final12: unsolved exits 101; warnings-denied normal build passes; full suite 777/777",
+        "exit_code": 0,
+        "name": "edition-aware-final-matrix",
+        "recorded_at": "2026-08-25T21:59:05+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-literal-then-identifier": {
+        "artifact_set_id": "b6a8c28744bf491ee0e33b7dc8ed41890e425da5567eaccd1a5794e358caff9a",
+        "command": "focused ignored_paths_do_not_consume_the_viable_site_budget on reference, exact Nova2, and test-only",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; exact saved Nova2 production patch",
+        "evidence": "evidence/literal-then-record-2026-09-02/{literal-ref-new.xml,literal-n26nova2.log,literal-testonly-new.xml}",
+        "exit_code": 0,
+        "name": "fp-literal-then-identifier",
+        "recorded_at": "2026-09-02T14:22:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fp-repair-field-access-mutant": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-n6 ./test.sh --output_path /tmp/ra33b-fp-field.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; exact Nova_Nova_5 workspace diff; isolated target; 28/29 pass, strengthened existing test fails",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-fp-field.xml",
+        "exit_code": 101,
+        "name": "fp-repair-field-access-mutant",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fp-repair-genuine-nova-base": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-n2 ./test.sh --output_path /tmp/ra33b-genuine-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; exact Nova_Nova_2 workspace diff; isolated target; 753/753 pass",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-genuine-base.xml",
+        "exit_code": 0,
+        "name": "fp-repair-genuine-nova-base",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-repair-genuine-nova-new": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-n2 ./test.sh --output_path /tmp/ra33b-genuine.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; exact Nova_Nova_2 workspace diff; isolated target; 29/29 pass",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-genuine.xml",
+        "exit_code": 0,
+        "name": "fp-repair-genuine-nova-new",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fp-repair-qualified-path-mutant": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-n4 ./test.sh --output_path /tmp/ra33b-fp-path.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; exact Nova_Nova_4 workspace diff; isolated target; 28/29 pass, strengthened existing test fails",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-fp-path.xml",
+        "exit_code": 101,
+        "name": "fp-repair-qualified-path-mutant",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fp-repair-reference-base": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-ref ./test.sh --output_path /tmp/ra33b-ref-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; reference plus test.patch; isolated target; 747/747 pass",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-ref-base.xml",
+        "exit_code": 0,
+        "name": "fp-repair-reference-base",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "fp-repair-reference-new": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-ref ./test.sh --output_path /tmp/ra33b-ref.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; commit d2e55da; Rust 1.97.0; isolated target; 29/29 pass",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-ref.xml",
+        "exit_code": 0,
+        "name": "fp-repair-reference-new",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "fp-repair-testonly-new": {
+        "artifact_set_id": "ac6fb68411938c8a8c50c905b40ba95ea1e39b65aac480930ae97a99133cb6f1",
+        "command": "CARGO_TARGET_DIR=/tmp/ra30target-exacttest ./test.sh --output_path /tmp/ra33b-testonly.xml new",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; untouched commit plus test.patch; isolated target; 29/29 fail",
+        "evidence": "evidence/fp-repair-2026-08-28-cloud/ra33b-testonly.xml",
+        "exit_code": 101,
+        "name": "fp-repair-testonly-new",
+        "recorded_at": "2026-08-28T08:47:51+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "full-role-shape": {
+        "artifact_set_id": "7dc2bb8e9b70a75bbb4af08d40dcc9435f7c238437964f03a6b0e090d01d9d60",
+        "command": "cargo fmt --check; cargo test -p ide-completion --lib",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned d2e55da; exact 31-test audit-hardened suite",
+        "evidence": "Google Cloud Shell /tmp/ra-final11: 777 passed, 0 failed; full ancestor role comparison",
+        "exit_code": 0,
+        "name": "full-role-shape",
+        "recorded_at": "2026-08-25T21:32:18+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "grader-loop": {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "command": "independent graders 14a-14e plus validate_evidence.py",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local artifact metadata and independent Google Cloud execution reports",
+        "evidence": "evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/grader-results; requirements.json; mutation-inventory.json",
+        "exit_code": 0,
+        "name": "grader-loop",
+        "recorded_at": "2026-08-26T07:10:53+00:00",
+        "stale_reason": "artifact changed: problem.md, solution.patch, test.patch"
+      },
+      "keyword-route-genuine-nova-base": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-genuine ./test.sh --output_path /tmp/ra35b-genuine-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; preserved genuine Nova; 753/753 pass",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-genuine-base.xml",
+        "exit_code": 0,
+        "name": "keyword-route-genuine-nova-base",
+        "recorded_at": "2026-08-28T16:38:25+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "keyword-route-genuine-nova-new": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-genuine ./test.sh --output_path /tmp/ra35b-genuine.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; preserved genuine Nova workspace diff; isolated target; 29/29 pass",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-genuine.xml",
+        "exit_code": 0,
+        "name": "keyword-route-genuine-nova-new",
+        "recorded_at": "2026-08-28T16:38:24+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "keyword-route-orion-fp": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-fp ./test.sh --output_path /tmp/ra35b-fp.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; exact hosted Orion passer; isolated target; 28/29 and keyword isolation panic",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-fp.xml",
+        "exit_code": 101,
+        "name": "keyword-route-orion-fp",
+        "recorded_at": "2026-08-28T16:38:25+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "keyword-route-reference-base": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-ref ./test.sh --output_path /tmp/ra35b-ref-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; reference state; 747/747 pass",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-ref-base.xml",
+        "exit_code": 0,
+        "name": "keyword-route-reference-base",
+        "recorded_at": "2026-08-28T16:38:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-route-reference-new": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-ref ./test.sh --output_path /tmp/ra35b-ref.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; Rust 1.97.0; isolated target; 29/29 pass",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-ref.xml",
+        "exit_code": 0,
+        "name": "keyword-route-reference-new",
+        "recorded_at": "2026-08-28T16:38:24+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-route-testonly-new": {
+        "artifact_set_id": "2a5f993e076ffd017bd7727bfb14039f74f39fccfa5712aebb808f1fb6506a07",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-testonly ./test.sh --output_path /tmp/ra35b-testonly-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; untouched commit plus test patch; isolated target; 29/29 fail",
+        "evidence": "evidence/keyword-route-repair-2026-08-28-cloud/ra35b-testonly-new.xml",
+        "exit_code": 101,
+        "name": "keyword-route-testonly-new",
+        "recorded_at": "2026-08-28T16:38:25+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "keyword-start-clean-application": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "Cloud fresh worktree: git apply --check solution.patch; apply solution; git apply --check test.patch; apply test; git diff --check",
+        "depends_on": [
+          "solution.patch",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/provenance.txt",
+        "exit_code": 0,
+        "name": "keyword-start-clean-application",
+        "recorded_at": "2026-08-28T17:56:42+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-start-genuine-nova-new": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "preserved genuine Nova plus current test delta; ./test.sh new",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; preserved genuine Nova; isolated target",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/genuine-nova-new.xml; 29/29 pass",
+        "exit_code": 0,
+        "name": "keyword-start-genuine-nova-new",
+        "recorded_at": "2026-08-28T17:56:42+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "keyword-start-prior-reference-discriminator": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "prior exact solution plus current keyword-start assertion; focused unsupported_roles test",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/prior-reference-focused.log; expected historical selfself, got regressed self",
+        "exit_code": 101,
+        "name": "keyword-start-prior-reference-discriminator",
+        "recorded_at": "2026-08-28T17:56:43+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-start-reference-base": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "CARGO_TARGET_DIR=/tmp/ra-sq-a054b-target ./test.sh base --output_path /tmp/ra-sq-a054b-base.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; isolated target",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/reference-base.xml; 747/747 pass",
+        "exit_code": 0,
+        "name": "keyword-start-reference-base",
+        "recorded_at": "2026-08-28T17:56:42+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-start-reference-new": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "CARGO_TARGET_DIR=/tmp/ra-sq-a054b-target ./test.sh new --output_path /tmp/ra-sq-a054b-new.xml",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; isolated target",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/reference-new.xml; 29/29 pass",
+        "exit_code": 0,
+        "name": "keyword-start-reference-new",
+        "recorded_at": "2026-08-28T17:56:42+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "keyword-start-testonly-new": {
+        "artifact_set_id": "d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e",
+        "command": "CARGO_TARGET_DIR=/tmp/ra35target-testonly ./test.sh new --output_path /tmp/ra-sq-a054b-testonly-new.xml",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned base plus current test.patch",
+        "evidence": "evidence/d26c9f49be72be80b2ab7109074c915b007149684edd50aa3ad3b71edfaec37e/cloud-matrix/testonly-new.xml; 29/29 fail",
+        "exit_code": 101,
+        "name": "keyword-start-testonly-new",
+        "recorded_at": "2026-08-28T17:56:42+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "latest-two-cohort-replay": {
+        "artifact_set_id": "34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f",
+        "command": "audit unchanged-test failures in agent-runs-7 and agent-runs-8; exact replay sole candidate from each cohort",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell exact candidate replays plus preserved JUnit audit",
+        "evidence": "agent-runs-7 Nova_Nova_1: evidence/34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f/cloud-matrix/carve-n7-n1-{new,base}.xml; agent-runs-8 Nova_Nova_3: evidence/1e5dd78072bdc860d4e5faddb686e78ef5773aaa44f3fcd3d8ae348092abbda7/cloud-matrix/carve-n3-{new,base}.xml; every other run retains unchanged failures",
+        "exit_code": 0,
+        "name": "latest-two-cohort-replay",
+        "recorded_at": "2026-08-29T12:33:46+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "local-validation": {
+        "artifact_set_id": "6bf0ba84811a31222aeec285877014721d8483c6ad940565aae4cca75dedd319",
+        "command": "Codespaces four-state full matrix plus two historical genuine Nova replays",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "GitHub Codespaces codespaces-14482c; Rust 1.97.0; isolated worktrees and targets; serialized builds",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/scope-carve-2026-09-03/provenance.md",
+        "exit_code": 0,
+        "name": "local-validation",
+        "recorded_at": "2026-09-03T04:52:40+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "mutation-inventory": {
+        "artifact_set_id": "b6a8c28744bf491ee0e33b7dc8ed41890e425da5567eaccd1a5794e358caff9a",
+        "command": "add execution-proven M55 and validate JSON",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Mac orchestration-only ledger update bound to Aswin evidence",
+        "evidence": "mutation-inventory.json; fp-proof.json",
+        "exit_code": 0,
+        "name": "mutation-inventory",
+        "recorded_at": "2026-09-02T14:22:51+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "patch-application": {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "command": "fresh worktrees apply test.patch and solution.patch at d2e55da",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell only",
+        "evidence": "evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/provenance.txt",
+        "exit_code": 0,
+        "name": "patch-application",
+        "recorded_at": "2026-08-26T07:27:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "reduced-orion-fp-rejection": {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "command": "Cloud Shell: test.sh new on pinned base + final test.patch + Orion false-positive patch",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only; Cargo offline",
+        "evidence": "evidence/ra-reduced-contract-evidence/orion-new.xml; evidence/ra-reduced-contract-evidence/orion-new.log",
+        "exit_code": 101,
+        "name": "reduced-orion-fp-rejection",
+        "recorded_at": "2026-08-26T10:58:49+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "reduced-patch-application": {
+        "artifact_set_id": "b6a8c28744bf491ee0e33b7dc8ed41890e425da5567eaccd1a5794e358caff9a",
+        "command": "fresh pinned worktrees apply test then solution and solution then test; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; pinned d2e55da",
+        "evidence": "evidence/literal-then-record-2026-09-02/provenance.txt",
+        "exit_code": 0,
+        "name": "reduced-patch-application",
+        "recorded_at": "2026-09-02T14:22:51+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "reduced-reference-base": {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "command": "Cloud Shell: test.sh base on pinned base + final test.patch + final solution.patch",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only; Cargo offline",
+        "evidence": "evidence/ra-reduced-contract-evidence/ref-base.xml; evidence/ra-reduced-contract-evidence/ref-base.log",
+        "exit_code": 0,
+        "name": "reduced-reference-base",
+        "recorded_at": "2026-08-26T10:58:48+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "reduced-reference-new": {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "command": "Cloud Shell: test.sh new on pinned base + final test.patch + final solution.patch",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only; Cargo offline",
+        "evidence": "evidence/ra-reduced-contract-evidence/ref-new.xml; evidence/ra-reduced-contract-evidence/ref-new.log; evidence/ra-reduced-contract-evidence/provenance.txt",
+        "exit_code": 0,
+        "name": "reduced-reference-new",
+        "recorded_at": "2026-08-26T10:58:48+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "reduced-saved-nova-replay": {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "command": "Cloud Shell: test.sh new/base on pinned base + final test.patch + saved Nova patch a8734f97",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only; Cargo offline",
+        "evidence": "evidence/ra-reduced-contract-evidence/nova-new.xml; evidence/ra-reduced-contract-evidence/nova-base.xml; evidence/ra-reduced-contract-evidence/provenance.txt",
+        "exit_code": 0,
+        "name": "reduced-saved-nova-replay",
+        "recorded_at": "2026-08-26T10:58:49+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "reduced-untouched-f2p": {
+        "artifact_set_id": "2a1e073e1e60c035369ef6a4edb31bf9943b8ed898ac865111a49020eb41c936",
+        "command": "Cloud Shell: test.sh new on pinned untouched base + final test.patch",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only; Cargo offline",
+        "evidence": "evidence/ra-reduced-contract-evidence/untouched-new.xml; evidence/ra-reduced-contract-evidence/untouched-new.log",
+        "exit_code": 101,
+        "name": "reduced-untouched-f2p",
+        "recorded_at": "2026-08-26T10:58:49+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "regression-suite": {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "command": "test.sh base across untouched and reference states",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only",
+        "evidence": "evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/base-base.xml; evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/ref-base.xml",
+        "exit_code": 0,
+        "name": "regression-suite",
+        "recorded_at": "2026-08-26T07:27:25+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "requirement-map": {
+        "artifact_set_id": "6bf0ba84811a31222aeec285877014721d8483c6ad940565aae4cca75dedd319",
+        "command": "Aligned RA11058-04, assertions, and M55 disposition to the explicit one-edge carve",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "local JSON validation",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/requirements.json",
+        "exit_code": 0,
+        "name": "requirement-map",
+        "recorded_at": "2026-09-03T04:52:40+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "review-20260901-combined-base": {
+        "artifact_set_id": "aaf633af7490be699e1be08db96afec360c02a43dfa2bdf2fd8604cef386a368",
+        "command": "./test.sh --output_path combined-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus rustc 1.98.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-01/combined-base.xml",
+        "exit_code": 0,
+        "name": "review-20260901-combined-base",
+        "recorded_at": "2026-09-01T01:17:19+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "review-20260901-combined-new": {
+        "artifact_set_id": "aaf633af7490be699e1be08db96afec360c02a43dfa2bdf2fd8604cef386a368",
+        "command": "./test.sh --output_path combined-new.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus rustc 1.98.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-01/combined-new.xml",
+        "exit_code": 0,
+        "name": "review-20260901-combined-new",
+        "recorded_at": "2026-09-01T01:17:19+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "review-20260901-test-only-base": {
+        "artifact_set_id": "aaf633af7490be699e1be08db96afec360c02a43dfa2bdf2fd8604cef386a368",
+        "command": "./test.sh --output_path test-only-base.xml base",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "aswin/ladybug-olympus rustc 1.98.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-01/test-only-base.xml",
+        "exit_code": 0,
+        "name": "review-20260901-test-only-base",
+        "recorded_at": "2026-09-01T01:17:19+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "review-20260901-test-only-new": {
+        "artifact_set_id": "aaf633af7490be699e1be08db96afec360c02a43dfa2bdf2fd8604cef386a368",
+        "command": "./test.sh --output_path test-only-new.xml new",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "aswin/ladybug-olympus rustc 1.98.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-01/test-only-new.xml",
+        "exit_code": 101,
+        "name": "review-20260901-test-only-new",
+        "recorded_at": "2026-09-01T01:17:19+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "rollout-audit": {
+        "artifact_set_id": "02f0235d37662bb74fa3a5cca87294028d594ff75ace8bee03d456116eaff001",
+        "command": "Audit 22 hosted patches; reject unsafe one-clause rescue; preserve prior genuine solve and clarify common missed behaviors",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "22-run hosted cohort plus preserved current-byte Nova7 proof",
+        "evidence": "evidence/rollout30-clarified-description-2026-08-24/audit.md; rollouts/agent-runs-2026-08-24T214736-319/",
+        "exit_code": 0,
+        "name": "rollout-audit",
+        "recorded_at": "2026-08-24T16:22:11+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "run26-nova2-reduced-replay": {
+        "artifact_set_id": "0b7e8e8523ce0d643008fee44c23ee49500c3dec8b74033fa759d241877717db",
+        "command": "apply reduced test.patch then exact Nova2 production patch; run new and base",
+        "depends_on": [
+          "problem.md",
+          "test.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; exact run rd7cakat5p74k30nr8k6pzgqd18dn70c production patch; Rust 1.97.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/agent-runs-26-reduced/{nova2-reduced-new.xml,nova2-reduced-base.xml}; 25/25 and 747/747 pass",
+        "exit_code": 0,
+        "name": "run26-nova2-reduced-replay",
+        "recorded_at": "2026-09-02T05:37:31+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "saved-agent-replay": {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "command": "saved Nova10 solution replay: new 29/29 and base 756/756",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only",
+        "evidence": "evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/nova10-new.xml; evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/nova10-base.xml; evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/provenance.txt",
+        "exit_code": 0,
+        "name": "saved-agent-replay",
+        "recorded_at": "2026-08-26T07:27:25+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "saved-agent-replay-audit": {
+        "artifact_set_id": "86519c03b0330989fc23b58ecbca444563e6f48cc4b60e8174c53329eb69c3a0",
+        "command": "compare all 20 preserved failure sets to unchanged final 27-test suite; exact replay sole zero-remaining candidate",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "preserved rollout artifacts plus exact Nova replay",
+        "evidence": "evidence/1e5dd78072bdc860d4e5faddb686e78ef5773aaa44f3fcd3d8ae348092abbda7/historical-replay-audit.md",
+        "exit_code": 0,
+        "name": "saved-agent-replay-audit",
+        "recorded_at": "2026-08-29T12:15:04+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "scope-carve-clean-application": {
+        "artifact_set_id": "34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f",
+        "command": "final formatted solution and test patches applied in both orders from pinned commit; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da",
+        "evidence": "Google Cloud /tmp/carve-order-final; test-then-solution-clean; solution-then-test-clean",
+        "exit_code": 0,
+        "name": "scope-carve-clean-application",
+        "recorded_at": "2026-08-29T12:21:30+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "scope-carve-historical-nova-replay": {
+        "artifact_set_id": "86519c03b0330989fc23b58ecbca444563e6f48cc4b60e8174c53329eb69c3a0",
+        "command": "exact Nova_Nova_3 execution on unchanged final test/solution bytes; conformance re-audited against final prompt wording",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell execution plus exact final prompt audit",
+        "evidence": "evidence/1e5dd78072bdc860d4e5faddb686e78ef5773aaa44f3fcd3d8ae348092abbda7/cloud-matrix/{carve-n3-new.xml,carve-n3-base.xml}; 27/27 and 758/758; problem-only final edit clarifies opening-parenthesis scope",
+        "exit_code": 0,
+        "name": "scope-carve-historical-nova-replay",
+        "recorded_at": "2026-08-29T12:15:04+00:00",
+        "stale_reason": "artifact changed: problem.md, test.patch"
+      },
+      "scope-carve-reference-matrix": {
+        "artifact_set_id": "34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f",
+        "command": "final formatted reference ./test.sh new and base; unchanged exact test-only new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; isolated targets",
+        "evidence": "evidence/34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f/cloud-matrix/{carve-ref-final-new.xml,carve-ref-final-base.xml}; 27/27 and 747/747 pass; exact test-only 27/27 failures preserved under evidence/1e5dd.../cloud-matrix/carve-testonly-new.xml",
+        "exit_code": 0,
+        "name": "scope-carve-reference-matrix",
+        "recorded_at": "2026-08-29T12:21:30+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "scope-gate": {
+        "artifact_set_id": "ae9950ca50f59cca49ca4e6d29d197d3974533602bbb7f36e21528b438e8b923",
+        "command": "live Shipd Scope Gate",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Shipd live v2 exact 34-test artifacts",
+        "evidence": "Passed: distinct multi-site macro-completion union task; no confirmed upstream solution, rejection, removal, or repo-goal conflict",
+        "exit_code": 0,
+        "name": "scope-gate",
+        "recorded_at": "2026-08-26T00:05:37+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "scope-gate-override": {
+        "artifact_set_id": "2de7291d57a04c4b34141596342531a9dc6b18acab96915c29d276761f2374ed",
+        "authorization_kind": "explicit-user-scope-gate-override",
+        "depends_on": [
+          "problem.md"
+        ],
+        "environment": "user-authorized workflow bypass; Scope Gate not run",
+        "evidence": "User instructions in active Codex task on 2026-08-29; problem edit only clarifies the tested actual-token viability rule.",
+        "name": "scope-gate-override",
+        "recorded_at": "2026-08-29T04:51:09+00:00",
+        "stale_reason": "artifact changed: problem.md",
+        "user_instruction": "Do not reduce or expand scope; clear the valid false-positive and keep pass-rate guidance without weakening solution comprehensiveness."
+      },
+      "solution-format-warnings": {
+        "artifact_set_id": "34155a9a3e05a94f50e61bc6a4a3445872a1dc45e04748fe4188cc82027e613f",
+        "command": "cargo fmt --all --check; RUSTFLAGS=-Dwarnings cargo check --locked -p ide-completion --lib",
+        "depends_on": [
+          "solution.patch",
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; Rust 1.97.0; offline Cargo",
+        "evidence": "Google Cloud Shell session output: format-and-warnings-clean; finished dev profile",
+        "exit_code": 0,
+        "name": "solution-format-warnings",
+        "recorded_at": "2026-08-29T12:21:31+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "solution-quality": {
+        "artifact_set_id": "56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762",
+        "command": "reference new/base Cloud matrix",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell only",
+        "evidence": "evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/ref-new.xml; evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/ref-base.xml; evidence/56d584b59d2d83cecbaf08628fad033c994de38e3ad60011e46b6da099916762/cloud-matrix/provenance.txt",
+        "exit_code": 0,
+        "name": "solution-quality",
+        "recorded_at": "2026-08-26T07:27:25+00:00",
+        "stale_reason": "artifact changed: problem.md, solution.patch, test.patch"
+      },
+      "solution-quality-ci-warning-disproof": {
+        "artifact_set_id": "6d44d33732388fe54e5e7dbe535824120829f9c6da8312209ce5fb2014ce02bf",
+        "command": "RUSTFLAGS=\"-D warnings -W unreachable-pub --cfg no_salsa_async_drops\" cargo +stable check --locked -p ide-completion",
+        "depends_on": [
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus rustc 1.98.0",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality-2026-09-01/ci-check.log",
+        "exit_code": 0,
+        "name": "solution-quality-ci-warning-disproof",
+        "recorded_at": "2026-09-01T01:39:12+00:00",
+        "stale_reason": "artifact changed: solution.patch"
+      },
+      "sq-empty-sibling-discriminator": {
+        "artifact_set_id": "abd3dbe188d82c0587ce3317e9e3e0904972ce2c20bd4510a2d90d7acd2c3e84",
+        "command": "targeted repeated_occurrences_do_not_contaminate_each_other before and after mapped-fanout repair",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; prior golden fails; repaired golden passes",
+        "evidence": "evidence/sq-empty-sibling-2026-08-27/pre-fix.log; evidence/sq-empty-sibling-2026-08-27/post-fix.log",
+        "exit_code": 0,
+        "name": "sq-empty-sibling-discriminator",
+        "recorded_at": "2026-08-26T18:55:31+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "sq-empty-sibling-reference-base": {
+        "artifact_set_id": "abd3dbe188d82c0587ce3317e9e3e0904972ce2c20bd4510a2d90d7acd2c3e84",
+        "command": "RUSTUP_TOOLCHAIN=1.97.0 CARGO_TARGET_DIR=/tmp/ra-review-ref-target CARGO_NET_OFFLINE=true ./test.sh --output_path reference-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; Rust 1.97.0; 747/747 pass",
+        "evidence": "evidence/sq-empty-sibling-2026-08-27/reference-base.xml",
+        "exit_code": 0,
+        "name": "sq-empty-sibling-reference-base",
+        "recorded_at": "2026-08-26T18:55:01+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "sq-empty-sibling-reference-new": {
+        "artifact_set_id": "abd3dbe188d82c0587ce3317e9e3e0904972ce2c20bd4510a2d90d7acd2c3e84",
+        "command": "RUSTUP_TOOLCHAIN=1.97.0 CARGO_TARGET_DIR=/tmp/ra-review-ref-target CARGO_NET_OFFLINE=true ./test.sh --output_path reference-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; Rust 1.97.0; 29/29 pass",
+        "evidence": "evidence/sq-empty-sibling-2026-08-27/reference-new.xml",
+        "exit_code": 0,
+        "name": "sq-empty-sibling-reference-new",
+        "recorded_at": "2026-08-26T18:54:51+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "sq-empty-sibling-untouched-base": {
+        "artifact_set_id": "abd3dbe188d82c0587ce3317e9e3e0904972ce2c20bd4510a2d90d7acd2c3e84",
+        "command": "RUSTUP_TOOLCHAIN=1.97.0 CARGO_TARGET_DIR=/tmp/ra-review-ref-target CARGO_NET_OFFLINE=true ./test.sh --output_path testonly-base.xml base",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; Rust 1.97.0; 747/747 pass",
+        "evidence": "evidence/sq-empty-sibling-2026-08-27/testonly-base.xml",
+        "exit_code": 0,
+        "name": "sq-empty-sibling-untouched-base",
+        "recorded_at": "2026-08-26T18:55:21+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "sq-empty-sibling-untouched-new": {
+        "artifact_set_id": "abd3dbe188d82c0587ce3317e9e3e0904972ce2c20bd4510a2d90d7acd2c3e84",
+        "command": "RUSTUP_TOOLCHAIN=1.97.0 CARGO_TARGET_DIR=/tmp/ra-review-ref-target CARGO_NET_OFFLINE=true ./test.sh --output_path testonly-new.xml new",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Google Cloud Shell CLI; pinned d2e55da; Rust 1.97.0; 29/29 fail as required",
+        "evidence": "evidence/sq-empty-sibling-2026-08-27/testonly-new.xml",
+        "exit_code": 101,
+        "name": "sq-empty-sibling-untouched-new",
+        "recorded_at": "2026-08-26T18:55:11+00:00",
+        "stale_reason": "artifact changed: problem.md"
+      },
+      "structural-repair-patch-application": {
+        "artifact_set_id": "d7942c4d9b32e9721f78a17fb1e66f9d99457a75d500673730ace0cc4e32e913",
+        "command": "temporary Git index: read-tree d2e55da; apply --cached test.patch; apply --cached solution.patch; git diff --check",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; pinned d2e55da",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/sq-structural-repair/SHA256SUMS.final",
+        "exit_code": 0,
+        "name": "structural-repair-patch-application",
+        "recorded_at": "2026-09-01T12:20:26+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "structural-repair-reference-base": {
+        "artifact_set_id": "d7942c4d9b32e9721f78a17fb1e66f9d99457a75d500673730ace0cc4e32e913",
+        "command": "CARGO_PROFILE_DEV_DEBUG=0 ./test.sh --output_path base-clean.xml base",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; pinned d2e55da; Rust 1.97.0; isolated case target",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/sq-structural-repair/base-clean.xml; 747 tests, 0 failures, 0 errors",
+        "exit_code": 0,
+        "name": "structural-repair-reference-base",
+        "recorded_at": "2026-09-01T12:20:26+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "structural-repair-reference-new": {
+        "artifact_set_id": "d7942c4d9b32e9721f78a17fb1e66f9d99457a75d500673730ace0cc4e32e913",
+        "command": "CARGO_PROFILE_DEV_DEBUG=0 ./test.sh --output_path new-clean.xml new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "aswin/ladybug-olympus; pinned d2e55da; Rust 1.97.0; isolated case target",
+        "evidence": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/sq-structural-repair/new-clean.xml; 25 tests, 0 failures, 0 errors",
+        "exit_code": 0,
+        "name": "structural-repair-reference-new",
+        "recorded_at": "2026-09-01T12:20:26+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "targeted-mutation-hardening": {
+        "artifact_set_id": "0a13c28cac3aee2c5a6b0c0ce927f629cb901fcc9b4c2d9ac85f9377ec28fd46",
+        "command": "Prior exact reference fails generated-marker discriminator; fixed reference and preserved Nova pass current 21-test suite",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell exact reference/candidate reproduction",
+        "evidence": "evidence/auto-review-fix-2026-08-25/cloud/old-reference-generated-marker.log; final-reference-new.xml; final-nova-new.xml",
+        "exit_code": 0,
+        "name": "targeted-mutation-hardening",
+        "recorded_at": "2026-08-25T08:09:05+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "unsolved-f2p-matrix": {
+        "artifact_set_id": "9edc42e18c80e5123eddc59e359ac00581a37c8002449ad06a4dc5c1674dbe58",
+        "command": "./test.sh new --output_path /tmp/cal29-base-new.xml on untouched pinned tree plus test.patch",
+        "depends_on": [
+          "test.patch"
+        ],
+        "environment": "Google Cloud Shell; CARGO_NET_OFFLINE=true",
+        "evidence": "evidence/9edc42e18c80e5123eddc59e359ac00581a37c8002449ad06a4dc5c1674dbe58/cloud/cal29-base-new.xml",
+        "exit_code": 101,
+        "name": "unsolved-f2p-matrix",
+        "recorded_at": "2026-08-26T05:29:16+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "verifier-audit-matrix": {
+        "artifact_set_id": "35d5e9d221dac7f6bb1301c236d6f960c2438d98d626d708870ddf5a1a6674b5",
+        "command": "./test.sh new (unsolved); cargo fmt --check; cargo test -p ide-completion --lib",
+        "depends_on": [
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Google Cloud Shell; pinned d2e55da; exact audit-hardened test.patch and final solution.patch",
+        "evidence": "Google Cloud Shell /tmp/ra-final9: unsolved JUnit 31/31 failures; reference 777/777 pass",
+        "exit_code": 0,
+        "name": "verifier-audit-matrix",
+        "recorded_at": "2026-08-25T21:20:03+00:00",
+        "stale_reason": "artifact changed: solution.patch"
+      }
+    }
+  },
+  "repository": {
+    "clean": null,
+    "commit": "d2e55da49132fa70a13dfbdc99122432b02cf464",
+    "commit_matches": true,
+    "head": null,
+    "root": null,
+    "root_matches": false,
+    "url": "https://github.com/rust-lang/rust-analyzer"
+  },
+  "requirement_map": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/rust-analyzer-multi-macro-completion/requirements.json",
+  "schema_version": 2,
+  "stage": "5",
+  "updated_at": "2026-09-03T17:15:51+00:00",
+  "verdict": "IN_PROGRESS"
+}
