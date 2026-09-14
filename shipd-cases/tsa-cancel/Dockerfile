@@ -50,6 +50,13 @@ RUN mkdir -p docs/reference \
        --output docs/reference/tsa-daemon.openapi.json \
     && chown -R model:model docs
 
+# The verifier applies test.patch/solution.patch to a container started from
+# this already-built image, not by rebuilding it - so the runtime user (which
+# may not be "model") needs write access to the checked-out source tree
+# itself in order for `git apply` to succeed, not just to target/ (handled
+# separately below once it exists).
+RUN chmod -R a+rwX /app
+
 USER model
 
 RUN cargo fetch --locked && cargo build --locked -j 5 -p kumod -p tsa-daemon -p kcli && cargo test --locked -j 5 -p integration-tests test::tsa_basic_automation::tsa_basic_automation --no-run

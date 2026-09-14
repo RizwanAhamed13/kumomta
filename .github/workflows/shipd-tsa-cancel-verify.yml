@@ -2,6 +2,18 @@ name: Shipd Fastlane - TSA Cancel Verify Solution
 
 # Builds the tsa_cancel candidate (shipd-cases/tsa-cancel/) against its pinned
 # upstream commit and runs the same test.sh contract the Shipd grader uses.
+#
+# Per Olympus's own submission docs, the Dockerfile "works without test.patch
+# or solution.patch applied; we apply them after the build" - the image is
+# built ONCE from the vanilla, unpatched repo, and test.patch/solution.patch
+# are applied to a container spun up from that already-built image, not
+# rebuilt in. Earlier revisions of this workflow applied both patches to the
+# checkout BEFORE building the image, which let the Dockerfile's own `cargo
+# build`/`cargo test --no-run` step pre-compile the *patched* source and
+# masked how much rebuilding test.sh actually has to do at grading time.
+# This mirrors the real sequence instead: build from vanilla source, then
+# `git apply` inside a fresh container per mode, matching what Shipd does.
+#
 # Docker layers are cached via the GitHub Actions cache backend so repeat
 # runs after a small patch edit don't recompile the whole kumomta workspace
 # from scratch.
@@ -29,27 +41,20 @@ jobs:
             shipd-cases/tsa-cancel
           sparse-checkout-cone-mode: false
 
-      - name: Checkout pinned kumomta commit (candidate base)
+      - name: Checkout pinned kumomta commit (candidate base, vanilla)
         uses: actions/checkout@v4
         with:
           repository: KumoCorp/kumomta
           ref: ${{ env.PINNED_COMMIT }}
           path: candidate
 
-      - name: Apply solution.patch and test.patch
-        run: |
-          set -euo pipefail
-          cd candidate
-          git apply --check ../this-repo/shipd-cases/tsa-cancel/solution.patch
-          git apply --check ../this-repo/shipd-cases/tsa-cancel/test.patch
-          git apply ../this-repo/shipd-cases/tsa-cancel/solution.patch
-          git apply ../this-repo/shipd-cases/tsa-cancel/test.patch
-          cp ../this-repo/shipd-cases/tsa-cancel/Dockerfile Dockerfile
+      - name: Copy in the candidate Dockerfile (no patches applied yet)
+        run: cp this-repo/shipd-cases/tsa-cancel/Dockerfile candidate/Dockerfile
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build verifier image (cached)
+      - name: Build verifier image from vanilla source (cached)
         uses: docker/build-push-action@v6
         with:
           context: candidate
@@ -74,23 +79,41 @@ jobs:
           docker commit cargo-perm-fix tsa-cancel-verify:latest
           docker rm cargo-perm-fix
 
-      - name: Run test.sh new (Verify Solution)
+      - name: Run test.sh new (Verify Solution: test.patch + solution.patch applied live)
         run: |
-          mkdir -p out && chmod 777 out
+          mkdir -p out patches && chmod 777 out
+          cp this-repo/shipd-cases/tsa-cancel/test.patch patches/
+          cp this-repo/shipd-cases/tsa-cancel/solution.patch patches/
           docker run --rm -u 54321:54321 -e HOME=/home/model \
             --tmpfs /tmp:rw,size=4g \
             -v "$PWD/out:/out" \
+            -v "$PWD/patches:/patches:ro" \
             tsa-cancel-verify:latest \
-            bash -c './test.sh new --output_path /out/new.xml'
+            bash -c '
+              set -euo pipefail
+              cd /app
+              git apply --check /patches/solution.patch
+              git apply --check /patches/test.patch
+              git apply /patches/solution.patch
+              git apply /patches/test.patch
+              ./test.sh new --output_path /out/new.xml
+            '
 
-      - name: Run test.sh base (regression)
+      - name: Run test.sh base (regression: test.patch only, fresh container)
         if: always()
         run: |
           docker run --rm -u 54321:54321 -e HOME=/home/model \
             --tmpfs /tmp:rw,size=4g \
             -v "$PWD/out:/out" \
+            -v "$PWD/patches:/patches:ro" \
             tsa-cancel-verify:latest \
-            bash -c './test.sh base --output_path /out/base.xml'
+            bash -c '
+              set -euo pipefail
+              cd /app
+              git apply --check /patches/test.patch
+              git apply /patches/test.patch
+              ./test.sh base --output_path /out/base.xml
+            '
 
       - name: Publish JUnit results
         if: always()
