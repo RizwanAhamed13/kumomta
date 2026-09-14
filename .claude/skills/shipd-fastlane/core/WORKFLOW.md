@@ -236,6 +236,8 @@ At an authorized stage boundary, persist the result and next action. Continue ac
 
 ## 16. Execute safely on the designated Arch server
 
+**If this case is running inside this repository's own sandboxed Claude Code remote execution container (or an equivalent ephemeral cloud sandbox) instead of on the shared Arch workstation, read `LOCAL-EXECUTION.md` and follow it in place of this section.** It routes builds/tests to that container's own Docker daemon, replaces the Arch preflight and drops the thermal/CPU-affinity/shared-host controls that only make sense on physical shared hardware, while keeping every quality, evidence and authorization requirement elsewhere in this workflow intact.
+
 All repositories, code generation, patches, dependencies, builds, tests, Docker, benchmarks and mutations run through:
 
 ```sh
