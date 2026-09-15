@@ -1,0 +1,7 @@
+diff --git a/pkgs/boots/graph/verifier.dora b/pkgs/boots/graph/verifier.dora
+@@ -129,6 +129,7 @@ impl GraphVerifier {
++            | Op::ShapeConst
+@@ -142,6 +143,9 @@ impl GraphVerifier {
++                if inst.op() == Op::ShapeConst {
++                    inst.get_trait_object_info();
++                }

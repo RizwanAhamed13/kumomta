@@ -1,0 +1,4109 @@
+[
+  {
+    "source": ".olympus/lessons.md",
+    "line": 4,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | hidden Rust integration test used predictable path tests/trailers.rs | test-filename collision gate failed and all dependent proofs became stale | generate a six-hex suffix before authoring hidden test files, use it in the filename and every runner target, and run the collision check before other paid checks",
+    "tags": [
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 4
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 4
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 5,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | Rust dependencies were fetched as root but the platform executed tests as model; registry source files remained 0640 | Verify Solution reported only the aggregate new-test failure while root Docker checks stayed green | after Cargo preparation, expose unreadable Cargo registry entries without rewriting the full toolchain layer, then execute the final offline matrix as the same unprivileged UID used by the platform",
+    "tags": [
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 5
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 5
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 6,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | after proving a Docker-only permission defect, reran the entire workflow instead of the proofs that actually depended on Docker | unnecessary elapsed time and Codex token use | for focused failures, run the smallest discriminating reproduction first, map staleness by artifact dependency, and refresh only affected proofs unless the user explicitly requests the full workflow",
+    "tags": [
+      "discrimination",
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 6
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 6
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 7,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | the first unprivileged probe injected CARGO_HOME and RUSTUP_HOME even though the platform login shell did not | the permission repair passed locally but Verify Solution failed again | reproduce the verifier's login-shell environment without helper variables, and publish required toolchain homes through image ENV plus profile.d before running the focused solution test",
+    "tags": [
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 7
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 7
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 8,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | a secondary response conversion still used expect and the fluent bulk API normalized an empty collection differently from its builder counterpart | Solution Quality failed and every solution-dependent proof became stale | before freezing a solution, audit every new conversion in both directions for panic-free propagation and compare singular/bulk empty-state semantics across parallel public APIs",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 8
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 8
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 9,
+    "date": "2026-08-10",
+    "case": "httpmock-response-trailers",
+    "text": "2026-08-10 | httpmock-response-trailers | predicted a 20-35% pass rate from architectural breadth before platform evidence, but three Nova runs independently produced comprehensive 285-342 LOC solutions and all passed | 3 paid runs established 100% observed pass rate and made the current candidate commercially nonviable | treat a 3/3 legitimate Quick Check cohort as a stop signal when every solver converges on the same prompt-enumerated architecture; preserve the batch, avoid artificial hardening, and pivot instead of buying the remaining runs",
+    "tags": [
+      "contract",
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 9
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 9
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 10,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | the first three-test vertical slice passed but did not exercise the remote and SQLite boundaries required by the prompt | a locally green package was not yet upload-ready and its narrow proof could permit partial implementations | before freezing, map every problem requirement to at least one behavioral assertion and expand only the missing boundary cells",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 10
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 10
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 11,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | base and solved worktrees initially shared one Cargo target directory, allowing local-package artifacts with aligned mtimes to be reused across states | a base run could observe solved artifacts and give a false matrix result | use separate target directories per patch state or clean the changed workspace packages before every cross-state comparison",
+    "tags": [
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 11
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 11
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 12,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | captured Rust tracing output contained ANSI and XML-invalid control bytes | otherwise correct tests produced unreadable JUnit and could be reported as a verifier failure | strip ANSI escape sequences and invalid XML control bytes before writing wrapper JUnit",
+    "tags": [
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 12
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 12
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 13,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | adding an already-present workspace crate dependency still changed that package's dependency list in Cargo.lock | an omitted lockfile delta would make the uploaded test patch differ from the verified tree | regenerate and include the exact lockfile delta whenever a hidden-test crate manifest changes, even if no package version changes",
+    "tags": [
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 13
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 13
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 14,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | test.patch modified the repository's `.dockerignore`, but Docker omitted that control file from `COPY . .` before the platform applied patches inside `/app` | Verify Solution stopped before running any tests | never include `.dockerignore` in a test patch unless the live platform applies patches before Docker context creation; reproduce the clean-build-then-patch order explicitly",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 14
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 14
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 15,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | the description named pending-page bookkeeping, segment codecs, and a detailed VFS operation checklist even though the hidden suite asserted public outcomes | Description Quality failed and problem-dependent platform results became stale | express each requirement as an observable outcome at the tested public boundary; remove internal mechanism names and unasserted implementation checklists before running description gates",
+    "tags": [
+      "contract",
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 15
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 15
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 16,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | hidden tests matched exact newly invented Rust error variants and expected/actual payload fields when the prompt guaranteed only logical rejection, write rejection, and non-mutation | Test Fairness failed 2 of 23 assertions and all test-dependent proofs became stale | classify each failure contract as exact representation, existing category, or rejection only; assert no more than prompt or pinned-repository grounding, then prove the promised observable aftermath",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 16
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 16
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 17,
+    "date": "2026-08-10",
+    "case": "graft-page-size-per-volume",
+    "text": "2026-08-10 | graft-page-size-per-volume | inferred hardness from a 17-file reference and broad persistence/remote/SQLite reach, but the work was mostly compiler-guided propagation of one page-size value | two independent Nova agents both passed legitimately in about 14 minutes, changing 19-21 source files, so the observed cohort was 2/2 | require the hardness kill sheet before building; reject add-field/serialize/propagate/replace-constant tasks regardless of size, and pivot after two fast same-architecture passes instead of appending scope",
+    "tags": [
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 17
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 17
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 18,
+    "date": "2026-08-10",
+    "case": "lance-btree-address-domain",
+    "text": "2026-08-10 | lance-btree-address-domain | submitted a Stage 5b vertical-slice test with the full future lifecycle brief and an exact explain-plan/index-name assertion | Problem and Tests Quality failed coverage and warned about implementation coupling; all problem/test-dependent proof became stale | at vertical-slice gates, state only the behavior the slice test enforces and keep future full-golden lifecycle requirements in case state; never use planner class or generated index labels as a substitute for public-result evidence",
+    "tags": [
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 18
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 18
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 19,
+    "date": "2026-08-11",
+    "case": "lance-btree-address-domain",
+    "text": "2026-08-11 | lance-btree-address-domain | Dockerfile compiled a hidden integration target during the untouched-base image build, before test.patch created that target | paid image build failed for 0.5 without reaching dependency or test validation | keep hidden-target compilation out of Docker build stages; fetch/install dependencies in the image and let test.sh compile hidden targets only after platform patch application",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 19
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 19
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 20,
+    "date": "2026-08-11",
+    "case": "lance-btree-address-domain",
+    "text": "2026-08-11 | lance-btree-address-domain | Dockerfile exposed Cargo and Rustup homes under `/root` but left the platform verifier unable to traverse or update them | Environment Quality failed in 113.2 seconds before repository tests could run, and redirecting homes lost the cached Rust 1.97 toolchain and `arrow` dependency | after root-owned Cargo preparation, reproduce the unprivileged runtime boundary and make the configured offline toolchain/cache homes traversable and writable without redirecting to an empty home",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 20
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 20
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 21,
+    "date": "2026-08-11",
+    "case": "lance-btree-address-domain",
+    "text": "2026-08-11 | lance-btree-address-domain | after review-driven scope reduction, treated repository size and cross-file reach as difficulty even though the golden collapsed to four files and roughly 100 additions of domain-flag propagation | about six hours were spent building and repairing an environment for a task below the KiteSQL bar | rerun the anti-mechanical hardness kill sheet after every material scope reduction and reject before build when the final golden is add-field/serialize/thread/replace work, regardless of Scope acceptance or repository size",
+    "tags": [
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 21
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 21
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 22,
+    "date": "2026-08-11",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-11 | ladybug-composite-node-identity | Docker prebuilt the test binary before Verify Solution applied the production patch, and test.sh ran that stale binary | Verify Solution reported the exact pre-solution 1-pass/9-fail signature | When Docker warms a compiled test target, test.sh must incrementally rebuild it after runtime patch application before executing tests.",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 22
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 22
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 23,
+    "date": "2026-08-11",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-11 | ladybug-composite-node-identity | repaired stale-binary execution by invoking the full single-worker Release test build while buffering all output and deferring JUnit creation until the build returned | Verify Solution killed test.sh after 672.8 seconds with empty output and no JUnit | after runtime patch application, rebuild only the selected test target and its dependencies with bounded parallelism, stream progress, enforce an inner timeout, and validate or emit JUnit before the platform timeout.",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 23
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 23
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 24,
+    "date": "2026-08-11",
+    "case": "rolldown-post-inline-dce",
+    "text": "2026-08-11 | rolldown-post-inline-dce | repository-native fixture entry/config names were placed under semantically predictable new directories | the test-name collision check failed twice with identical output and made all test-dependent proofs stale | when fixture filenames are toolchain-mandated defaults, generate one six-hex suffix before authoring and append it to each hidden fixture parent directory; preserve the mandatory filenames and record the suffix-generation command",
+    "tags": [
+      "environment",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 24
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 24
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 25,
+    "date": "2026-08-11",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-11 | ladybug-composite-node-identity | forced libc++ while using the C++ Olympus base whose prebuilt GTest archive uses libstdc++ | two image builds spent roughly 47 minutes compiling before failing at test-executable link with undefined std::ostream symbols | use the C++ base's native standard-library ABI unless every linked prebuilt C++ archive is rebuilt for the selected alternate standard library",
+    "tags": [
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 25
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 25
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 26,
+    "date": "2026-08-11",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-11 | ladybug-composite-node-identity | protected only the preconfigured Release tree with PREFER_SYSTEM_DEPS=FALSE while fresh canonical CMake trees still selected the base image's libstdc++ GTest | optional Environment Quality failed after 1312.6 seconds before any test executed | when an alternate C++ standard library is required, install ABI-compatible dependency builds system-wide and verify a fresh network-disabled canonical build tree rather than relying on one cache-local CMake option",
+    "tags": [
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 26
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 26
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 27,
+    "date": "2026-08-11",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-11 | lisette-default-field-values | treated a 22-file ownership/cache/compiler feature as KiteSQL-class from static coupling, but the behavioral prompt named nearly every required subsystem | two independent Nova agents passed legitimately in about 40 minutes with 20-22 production files and 1,254-1,450 additions, yielding an observed 2/2 cohort | distinguish implementation burden from Nova solvability; preserve the environment but pivot to a distinct repository-native feature-pioneer seam whose central rule must be discovered from code, and never append tests merely to lower a legitimate pass rate",
+    "tags": [
+      "contract",
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 27
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 27
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 28,
+    "date": "2026-08-11",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-11 | lisette-default-field-values | initially classified a function-valued enum constructor as a forbidden new enum-default form without checking that the pinned top-level const domain already accepted it | the proposed rejection discriminator failed the reference and would have turned inherited behavior into an unfair hidden restriction | when a feature inherits an existing expression domain, probe that domain first; clarify and positively test inherited valid forms instead of narrowing them around the golden's classifier",
+    "tags": [
+      "contract",
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 28
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 28
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 29,
+    "date": "2026-08-11",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-11 | lisette-default-field-values | A runner selected +1.97.0 through root-owned rustup and positive const-expression coverage sampled too few operator families | Auto Review revision and stale downstream checks | Install the guaranteed toolchain in a shared Cargo/Rustup home, invoke plain cargo with offline mode, and cross every promised expression family with a behavioral cold/warm oracle before paid review.",
+    "tags": [
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 29
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 29
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 30,
+    "date": "2026-08-12",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-12 | lisette-default-field-values | formatter tests asserted three exact new-syntax whitespace and line layouts even though the prompt required only idempotence and comment/default preservation | hosted Test Fairness failed 3 of 27 and all test-dependent proofs became stale | test formatter semantics with valid reparsing, token preservation, and relative comment attachment; never pin canonical wrapping or spacing unless the public contract does",
+    "tags": [
+      "contract",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 30
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 30
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 31,
+    "date": "2026-08-12",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-12 | ladybug-composite-node-identity | normalized floating signed zero with `if (value == 0) value = 0` before byte encoding, which an optimizing hosted build preserved as the original negative-zero bits | Verify Solution failed 1 of 11 after 389.8 seconds despite the local architecture passing | canonicalize representation-level equality classes on the encoded unsigned bits, then test the exact Release wrapper across available architectures rather than relying on a numerically redundant source assignment",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 31
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 31
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 32,
+    "date": "2026-08-12",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-12 | lisette-default-field-values | base mode ran only one filtered integration test despite production changes across parser, formatter, semantics, passes, cache, and emission | Auto Review assigned Tests 0/3 and required another artifact revision | pair the focused baseline integration test with the repository's workspace library regressions so every materially touched compiler layer receives genuine pre-existing coverage",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 32
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 32
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 33,
+    "date": "2026-08-12",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-12 | ladybug-composite-node-identity | transaction coverage sampled create rollback but not delete rollback, duplicate-name validation sampled only adjacent repeats, and supported scalar coverage omitted DECIMAL/TIMESTAMP_NS | Verifier Completeness demonstrated three plausible false positives after the suite otherwise passed | enumerate inverse transaction operations, non-adjacent positional repeats, and every promised logical type family before freezing a verifier",
+    "tags": [
+      "discrimination",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 33
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 33
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 34,
+    "date": "2026-08-12",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-12 | ladybug-composite-node-identity | an agent implemented composite identity with ordinary component-wise scan equality, which admitted duplicate NaN tuples while passing the former 11-case suite | agent-runs 67 produced one reported pass that failed the hardened replay 13/14 | when extending identity across existing scalar domains, test representation-level equality classes such as NaN and signed zero against real agent architectures, not only ordinary query equality",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 34
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 34
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 35,
+    "date": "2026-08-12",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-12 | ladybug-composite-node-identity | classified an alternate scan-based solution as an NaN false positive before reconciling the discriminator with pinned scalar PK tests | the hardening would have unfairly converted a genuine solve into a failure and reduced the observed rate from 40% to 20% | when a prompt promises scalar compatibility, pinned scalar edge behavior outranks representation-level identity inference; run fairness review before counting an FP",
+    "tags": [
+      "contract",
+      "discrimination",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 35
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 35
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 36,
+    "date": "2026-08-13",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-13 | ladybug-composite-node-identity | focused export/import regression coverage on populated values, allowing a passing candidate to globally disable CSV string null recognition while preserving empty composite keys | agent-runs 76 produced one false-positive pass among three reported passes | whenever feature work changes shared conversion or serialization options, cross the new boundary value with the inverse legacy value; here empty string preservation must not destroy NULL preservation",
+    "tags": [
+      "discrimination",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 36
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 36
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 37,
+    "date": "2026-08-13",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-13 | ladybug-composite-node-identity | prebuilt unchanged generated parser output hid the Java and ANTLR-jar dependencies needed when a solver legitimately edits Cypher.g4 | a 95-minute rollout passed all 14 feature tests but ended as an external execution error because the baseline rebuild could not regenerate ANTLR | prehydrate both the grammar generator jar and its runtime in the Docker image, then prove a network-isolated grammar-touch rebuild before rollouts",
+    "tags": [
+      "discrimination",
+      "environment",
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 37
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 37
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 38,
+    "date": "2026-08-13",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-13 | ladybug-composite-node-identity | relationship COPY coverage crossed endpoint arity and ordering but only used disjoint primary-key property names and different endpoint tables | one of five reported passes failed on duplicate binder variables for shared key names and every composite self-referencing rel table | cross endpoint shape with namespace collision: include overlapping key names and a same-table relationship, then replay the exact raw-name aliasing agent",
+    "tags": [
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 38
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 38
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 39,
+    "date": "2026-08-14",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-14 | ladybug-composite-node-identity | incremental verification trusted a cached ANTLR parser object after a solver session regenerated it, while the delivered patch retained a stale serialized ATN and pinned the grammar hash | a candidate passed 14/14 only through a non-reproducible build artifact | before testing grammar features, content-stamp and force-recompile the delivered parser translation unit under the shared build lock; validate the patch, not solver-session objects",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 39
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 39
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 40,
+    "date": "2026-08-14",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-14 | ladybug-composite-node-identity | hardened a shared CSV NULL regression discovered in a solver patch even though the composite-key prompt and pinned export test did not establish that exact NULL/second-format contract | Test Fairness failed 1 of 24 and all test-dependent evidence became stale again | a real candidate regression is not automatically a fair hidden requirement; retain only the exact repository regression unless the prompt or pinned tests establish the added boundary/path combination",
+    "tags": [
+      "contract",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 40
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 40
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 41,
+    "date": "2026-08-13",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-13 | lisette-default-field-values | Ownership tests crossed private sibling identifiers and qualified imports but omitted a public bare declaration constant at a foreign autofill site | another hosted false-positive pass and stale verification cycle | For declaration-owned expressions, enumerate visibility (private/public), syntax (bare/qualified), origin (same file/sibling/import alias), consumer package (local/foreign), and each changed construction shape before rollout.",
+    "tags": [
+      "discrimination",
+      "environment",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 41
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 41
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 42,
+    "date": "2026-08-13",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-13 | lisette-default-field-values | Extending constant ownership coverage exposed that declaration-owned enum values and constructor functions were canonicalized to resolved identifiers whose generated Make names stayed local at foreign autofill sites | the reference itself failed the expanded cold Go build until emitter qualification was fixed | For every declaration-owned default family, cross constants and enum values/constructors with foreign direct, nested, and enum-record construction, and preserve generic constructor inference while qualifying the generated owner name.",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 42
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 42
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 43,
+    "date": "2026-08-14",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-14 | ladybug-composite-node-identity | composite identity tests covered CRUD and persistence but did not cross reused components through optimizer functional-dependency simplification or non-leading key names through ALTER plus reopen | Verifier Completeness demonstrated two high-plausibility survivors after prior hardening | For vectorized identity metadata, audit every legacy singular consumer, including optimizers and schema mutation, and require a reference-versus-mutant discriminator before rollout.",
+    "tags": [
+      "discrimination",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 43
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 43
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 44,
+    "date": "2026-08-14",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-14 | ladybug-composite-node-identity | deletion/reinsertion coverage exercised persisted rows and rollback but omitted create-delete-reinsert before the first commit | a visibility-blind local tuple-index shortcut passed all 14 cases and rejected a valid replacement CREATE | Cross lifecycle operations with row origin and transaction phase; local uniqueness must follow live offsets rather than key-map presence.",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 44
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 44
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 45,
+    "date": "2026-08-14",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-14 | ladybug-composite-node-identity | correlated lookup only matched declaration order, missing components only exercised null defaults, and COPY coverage stopped at relationships | three separate broken implementations passed 15 new and 8 base tests | Cross declared ordering with predicate traversal, syntactic omission with materialized defaults, and every repository-native insertion path with duplicate rollback semantics.",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 45
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 45
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 46,
+    "date": "2026-08-14",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-14 | lisette-default-field-values | clarified the full generic ownership/cache contract after a zero-pass cohort instead of first isolating the common solvability driver | batch 81 still produced zero genuine hosted solves; two near-pass agents failed only generic specialization before one revealed a separate core ownership defect | after a fresh zero-solve cohort, replay near-pass patches and carve one independently removable semantic axis from prompt and tests; retain every proven FP discriminator and require one saved genuine pass before buying another rollout",
+    "tags": [
+      "contract",
+      "discrimination",
+      "environment",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 46
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 46
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 47,
+    "date": "2026-08-14",
+    "case": "lance-btree-address-domain-tutorial",
+    "text": "2026-08-14 | lance-btree-address-domain-tutorial | test.sh compiled Lance's full default-feature unit-test binary at verifier runtime and buffered every Cargo diagnostic, so all five cases surfaced only as compile errors with an empty panel log | Verify Tests failed after 226.7 seconds with baseline 0/2 and new 0/3 | keep hidden behavior in a focused no-default-features binary, prebuild the unchanged production library and a fixed baseline executable in Docker, and stream each case log so environment failures remain diagnosable",
+    "tags": [
+      "discrimination",
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 47
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 47
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 48,
+    "date": "2026-08-14",
+    "case": "lance-btree-address-domain-tutorial",
+    "text": "2026-08-14 | lance-btree-address-domain-tutorial | installed the protoc executable without the standard protobuf include tree required by Lance's build scripts | image build failed in lance-encoding because google/protobuf/empty.proto was absent | for Debian Rust images compiling protobuf schemas, install libprotobuf-dev alongside protobuf-compiler and verify the imported well-known type exists under /usr/include",
+    "tags": [
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 48
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 48
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 49,
+    "date": "2026-08-15",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-15 | ladybug-composite-node-identity | signed-zero equality and atomic direct-node COPY were each covered independently but not crossed in the same batch-dedup path | one 18/18 rollout pass was adjudicated a functional false positive because raw float serialization distinguished +0.0 from -0.0 | cross every special scalar equality class with each independent uniqueness implementation, especially same-batch bulk-loader deduplication, and replay reference, exact passer, and known genuine solve",
+    "tags": [
+      "discrimination",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 49
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 49
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 50,
+    "date": "2026-08-15",
+    "case": "ladybug-composite-node-identity",
+    "text": "2026-08-15 | ladybug-composite-node-identity | Focused scalar regressions covered relationship COPY mapping and export NULL round trips but missed an over-broad solver change to shared quoted CSV null parsing | one rollout false positive | When a passing patch changes a shared conversion path outside the feature core, add the smallest base/reference behavioral discriminator for that pre-existing scalar behavior before counting the pass.",
+    "tags": [
+      "discrimination",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 50
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 50
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 51,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | base mode hand-picked a narrow surface and collapsed native Rust tests into four aggregate JUnit cases, hiding 58 parser snapshot regressions plus LSP, binary, and manifest coverage | repeated Auto Review revision and another full artifact cycle | run the normal workspace surface in base mode, preserve native per-test JUnit, fail on XML failures even if Cargo exits zero, and preserve old debug shapes for absent optional AST fields",
+    "tags": [
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 51
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 51
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 52,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | validation reused one Cargo target across baseline and candidate worktrees, producing a false missing-field failure; earlier tests also combined independent mismatches, self-compared an enum value, and sampled too few operators | invalid solver replay and avoidable review gaps | isolate every worktree build cache, keep repository-native target paths for base tests, split independent errors, assert exact expected values, cross operator families through each shape and analysis route, then replay an adjudicated genuine pass after the final artifact edit",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 52
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 52
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 53,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | a hidden rejection test required parser errors even though the prompt allowed semantic rejection, while the full base surface included an unrelated Unix permission test that passed twice locally and failed once in the hosted model environment | Test Fairness and Verify Solution both failed on otherwise correct bytes | test rejection at the weakest grounded stage through whole analysis, retain only the promised recovery oracle, and narrowly skip a proven unrelated permission-sensitive regression in base mode while preserving every other native workspace test",
+    "tags": [
+      "contract",
+      "environment",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 53
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 53
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 54,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | aggregate new mode failed on base, but four individually reported new tests were regression-only or negative-only and therefore passed without the feature | Verify Solution rejected an otherwise green 9052-test baseline and 20-test solved suite | inspect per-test base-versus-solved JUnit classification before upload; every new-mode testcase must be F2P or base-skipped, so keep standalone regressions in base mode or pair them with a fair positive feature prerequisite",
+    "tags": [
+      "discrimination",
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 54
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 54
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 55,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | test.sh accepted the mode only as the first argument, while Verify Solution placed `--output_path` first | hosted Verify Solution exited 2 before assertions, produced no JUnit, and showed empty P2P/F2P panels | parse runner modes and options in any evaluator-supported order, then locally compare per-test base and solved JUnit to prove nonempty P2P and F2P sets before upload",
+    "tags": [
+      "environment",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 55
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 55
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 56,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | successful build setup was emitted as the same `build-calyx` JUnit testcase in both base and new modes | Verify Solution reached 4 P2P and 31 F2P entries but rejected the overlapping test ID | keep base and new JUnit identities disjoint; omit successful setup steps from JUnit and emit only mode-prefixed synthetic setup cases on failure",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 56
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 56
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 57,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | the image prebuilt Cargo artifacts as root but left `target/` unwritable to auxiliary unprivileged evaluators, while base and new could also interleave separate Cargo phases | the main verifier passed 3 P2P and 29 F2P tests, but offline UID and Harbor oracle runs failed synthesized base-build and new-compile setup cases | make the prebuilt Cargo target writable to the evaluator UID, serialize all mutable Cargo setup across modes, and run the compiled Rust test binary directly after setup",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 57
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 57
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 58,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | the Docker build compiled only the production binary and therefore did not hydrate locked workspace dev/test crates such as `cast` and `adler2` | Environment Quality rejected an image where production build worked but canonical Cargo test commands could not resolve dependencies offline | run `cargo fetch --locked` during the networked image build, make the resolved Cargo cache readable to the evaluator UID, then prove the all-target graph and workspace test compilation with offline mode",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 58
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 58
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 59,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | dependency fetching was added without replacing the narrow single-binary image build with a locked workspace build | follow-up environment feedback still found the image construction surface incomplete | pair `cargo fetch --locked` with `cargo build --workspace --locked`, keep test execution out of Docker build, and prove both the clean offline workspace build and subsequent offline test-target compilation",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 59
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 59
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 60,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | the workspace build was validated on a developer host with native tools but the submitted Rust base image did not install CMake or the full C++/Bindgen toolchain required by `rustsat-minisat` | hosted image construction failed at the CMake build script before any test or agent run | trace every workspace native build dependency before upload and install CMake, the C/C++ build toolchain, Clang, and libclang during the networked image phase",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 60
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 60
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 61,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | a fairness repair normalized generated assignment destinations but still required byte-identical printed guard prefixes for semantic lifetime equality | follow-up Test Fairness rejected 1 of 30 checks after the other 29 were accepted | when the contract is semantic guard equivalence, execute both assignments across multiple in-scope states and an out-of-scope state instead of comparing any printer representation",
+    "tags": [
+      "contract",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 61
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 61
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 62,
+    "date": "2026-08-16",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-16 | calyx-inline-invoke-comb-second | the semantic lifetime suite used only unguarded scope assignments and unattributed invokes and never crossed the new dynamic control into a static context | Verifier Completeness demonstrated three independent broken implementations that each passed all 29 original new tests | for a new control node, cross original assignment guards, control attributes, and dynamic-versus-static context boundaries before rollout; require reference-versus-mutant proof for each added discriminator",
+    "tags": [
+      "discrimination",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 62
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 62
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 63,
+    "date": "2026-08-17",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-17 | calyx-inline-invoke-comb-second | runtime lifetime tests proved lowered assignments were active but did not cross the new scope through an optimization consumer, and runner discovery relied on process-substitution status | solution review found cell sharing could coalesce a register read for the entire scope and the harness could pass with zero discovered tests | for new control lifetime semantics, test at least one downstream resource/liveness consumer with an observable value and capture discovery status plus nonzero count before emitting JUnit",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 63
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 63
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 64,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | the broad base suite retained an executable-shebang test that fails in the evaluator filesystem despite being unrelated to field defaults | Verify Solution spent 1203 seconds and failed after 9051 base tests passed while all 20 feature tests passed | preserve the broad deterministic base suite but explicitly skip a narrowly identified pre-existing environment-dependent test once the hosted result proves it is the sole failure",
+    "tags": [
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 64
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 64
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 65,
+    "date": "2026-08-16",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-16 | lisette-default-field-values | the flaky exclusion copied the JUnit display name `integration::test_name` even though native libtest filtering receives only `test_name` | a second 1193-second Verify Solution run repeated the identical failure with `skipped: 0` | reproduce every exclusion with the exact native test binary and require the skip discriminator to return zero selected tests before uploading",
+    "tags": [
+      "discrimination",
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 65
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 65
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 66,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | a declaration-owned default implementation introduced fixed exported Go helper names without registering them in the existing collision pass; the broad ownership/cache suite passed but a valid public user function produced duplicate Go | one rollout pass was overturned by the FP panel | whenever a feature synthesizes package-level names, add one public user-name collision discriminator and require either collision-aware allocation/diagnosis or symbol-free lowering; replay a preserved genuine solve before shipping it",
+    "tags": [
+      "discrimination",
+      "environment",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 66
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 66
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 67,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | the valid generated-name collision discriminator was added before its user-visible hygiene invariant was stated in the problem | Test Fairness rejected 1 of 32 assertions and staled the prompt-dependent gates | before adding an FP discriminator, ground the observable invariant behaviorally in the prompt without naming the broken implementation strategy; then replay the exact FP, reference, and every preserved genuine pass",
+    "tags": [
+      "contract",
+      "discrimination",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 67
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 67
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 68,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | the lint safety test asserted that no diagnostic existed even though the prompt required only that an offered rewrite preserve explicit values | a 20/21 candidate was unfairly classified as failing until its safe alternative rewrite was inspected | test a lint's applied semantic result rather than whether the reference chooses to suppress the warning; accept every suggestion that preserves the promised behavior",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 68
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 68
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 69,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | the first generated-name test crossed one synthesized helper with one user declaration but did not cross two distinct owner/field boundaries that sanitize to the same helper name | a second rollout implementation passed 21 hidden tests yet emitted duplicate Go helpers for Config.retry_count and Config_retry.count | whenever a feature derives generated names from concatenated components, test both generated-versus-user and generated-versus-generated collisions with boundary-shifting identifiers; replay the exact reference, accused candidate, and preserved genuine solve",
+    "tags": [
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 69
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 69
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 70,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | cache coverage proved runtime values and private-field diagnostics but never exercised a post-cache consumer that needed the full declared default expression for a safe lint rewrite | a candidate stored only has_default, passed the suite, then warm analysis suggested changing explicit zero to a nonzero default | for cached semantic objects, enumerate every downstream consumer of the uncached representation; compare cold and warm applied transformations and execute both results, not only build output or diagnostic counts",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 70
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 70
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 71,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | single-file rejection tests and package positive tests were treated as sufficient parity, leaving package-only omissions of both dynamic and composite validation green | two predictive mutants passed all 23 hidden tests while violating the explicit single-file/package agreement | for duplicated analysis routes, cross every independent accept/reject classifier result through both routes; one positive route check does not cover separate negative branches",
+    "tags": [
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 71
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 71
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 72,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | Ownership tests covered direct sibling and imported constants but not transitive private aliases, declaration-file import origins, or cycles | Verifier Completeness found three demonstrated survivors after 23 feature tests | For declaration-owned expressions, cross alias depth, source-file context, and cyclic graphs before shipping; require a normal diagnostic rather than nontermination.",
+    "tags": [
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 72
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 72
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 73,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | two new fail-to-pass e2e tests were added without adding their names to the base-mode exclusion list | Verify Solution spent 1374 seconds and failed baseline with exactly those two feature tests | every new hidden test must be added atomically to the new-mode discovery list and base-mode exclusion list, then prove it discovers in new mode and zero instances in base mode before upload",
+    "tags": [
+      "discrimination",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 73
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 73
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 74,
+    "date": "2026-08-17",
+    "case": "lisette-default-field-values",
+    "text": "2026-08-17 | lisette-default-field-values | declaration-ownership coverage used positive primitive aliases and direct enum defaults but never crossed ownership with a private negative initializer or private enum-valued alias | Verifier Completeness demonstrated two survivors, and the saved Nova pass emitted wrapped `-17` as an overflowing Go integer | cross declaration ownership with materially distinct constant representations—positive, negative/unary, and enum-valued aliases—then require valid foreign build/runtime behavior and replay every preserved genuine solve before accepting the test",
+    "tags": [
+      "contract",
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 74
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 74
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 75,
+    "date": "2026-08-17",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-17 | calyx-inline-invoke-comb-second | completeness hardening imported invoke-attribute transfer and exact generated-name spelling without checking prompt and repository contracts | Test Fairness failed 2 of 39 and staled the dependent GCP matrix and saved-agent replays | completeness mutants cannot legalize unstated policy; test generated artifacts semantically, never by exact synthesized names",
+    "tags": [
+      "contract",
+      "discrimination",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 75
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 75
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 76,
+    "date": "2026-08-18",
+    "case": "copper-live-log-follow",
+    "text": "2026-08-18 | copper-live-log-follow | snapshot CLI tests asserted only exit success and format markers, while version compatibility asserted only the version constant | quality review showed no-op snapshots and mutually changed readers/writers could pass, forcing a full matrix refresh | assert decoded snapshot values on every public route and read an immutable fixture produced by the pinned writer whenever on-disk backward compatibility is promised",
+    "tags": [
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 76
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 76
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 77,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | Seven valid safety and preservation tests were placed in new mode even though pinned behavior already satisfied them, causing Verify Solution to reject before_f2p_unexpectedly_passing | one hosted Verify Solution run, 438.8 seconds | Put preservation/safety assertions that intentionally pass on the pinned commit in base mode; reserve new mode for tests whose stated behavior genuinely requires solution.patch, and verify the exact per-test before classification locally before upload.",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 77
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 77
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 78,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | Dockerfile reinstalled rustup with curl-to-shell, replaced Rust tools with proxy symlinks, and omitted a build cache warmup even though the allowed Rust base already contained a complete toolchain | one Dockerfile Guidelines rejection | Inspect the allowed base image first; use its concrete toolchain bin directory, install no duplicate package manager, avoid remote installer scripts, and run a non-test cargo build during image construction.",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 78
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 78
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 79,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | Dockerfile installed the Rust toolchain into root-owned /opt paths, then switched to the unprivileged model user for cargo fetch and build without providing a writable Cargo home; model group creation was also implicit | a second Dockerfile Guidelines rejection | Before switching users, create the evaluator user and group explicitly, give it a writable per-user CARGO_HOME and HOME, keep shared toolchains read-only, and run the build as the same unprivileged user used at evaluation time.",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 79
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 79
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 80,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | Dockerfile changed CARGO_HOME to the model user's empty directory before invoking the base image's /opt rustup proxy | image construction stopped immediately after downloading Rust 1.97 because rustup could not find its installation under the premature CARGO_HOME | Keep the base image's CARGO_HOME active through rustup toolchain installation; create the evaluator cache separately and switch CARGO_HOME only after rustup completes.",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 80
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 80
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 81,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | COPY --chown made repository contents model-owned but WORKDIR had already created the /app directory itself as root | Cargo fetch failed creating its target staging path directly under /app | Explicitly assign the WORKDIR directory to the evaluator user before switching users; COPY --chown alone does not guarantee ownership of a pre-existing destination directory.",
+    "tags": [
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 81
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 81
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 82,
+    "date": "2026-08-22",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-22 | rust-analyzer-multi-macro-completion | Seven newly added safety and preservation tests were moved into base mode to satisfy per-ID fail-to-pass classification, but the platform requires base mode to contain only tests that pre-existed at the pinned commit | one Test Patch Sanity rejection and another test-dependent artifact refresh | Keep base mode strictly pre-existing; when a necessary new regression assertion already passes on the pinned code, execute it as a helper inside the related genuine fail-to-pass test so every new test ID remains solution-dependent without losing regression coverage.",
+    "tags": [
+      "discrimination",
+      "environment",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 82
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 82
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 83,
+    "date": "2026-08-22",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-22 | perry-profile-replay-b00e261f | the Dockerfile fetched the LLVM signing key from apt.llvm.org's mutable unversioned key URL even though later source-restoration downloads were commit-pinned and checksummed | one rebuild-safety rejection and a Docker-dependent proof refresh | fetch every build-time file from an immutable commit/release URL or vendor it, and verify its checksum before use; audit all Dockerfile URLs as one reproducibility set before rebuilding.",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 83
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 83
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 84,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | the specialization discriminator used objdump and private runtime symbol spellings, while an AI sanity check also misclassified the valid tempfile 3.27 TempDir::keep API | one quality-gate rejection and a full prompt/test-dependent proof refresh | express code-generation selection through a public artifact difference plus runtime semantics, avoid external disassemblers/private symbols, and verify suspected API errors against the exact locked dependency before editing.",
+    "tags": [
+      "contract",
+      "discrimination",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 84
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 84
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 85,
+    "date": "2026-08-23",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-23 | rust-analyzer-multi-macro-completion | the dedup contract said to collapse copies of the same item but illustrated preservation only with different public kinds, allowing a coarse label-plus-kind implementation to receive a genuine-pass adjudication despite dropping distinct same-kind imports | the original seven-passer FP panel settled at five genuine and two false positives, exactly 50%, requiring a prompt/test refresh for the harder band | when observable identity includes edits or required imports, state those discriminants explicitly before rollout; never retroactively relabel a hosted genuine pass after clarifying the contract, and report old hosted rate separately from hardened replay rate.",
+    "tags": [
+      "contract",
+      "discrimination",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 85
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 85
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 86,
+    "date": "2026-08-23",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-23 | rust-analyzer-multi-macro-completion | safe-failure coverage exercised only declarative expansion and the opening-parenthesis test began with a contributing visibility context | Verifier Completeness found a real fall-through survivor, and a saved genuine candidate later panicked on an inconsistent proc-macro expansion despite passing the prior suite | cross a general expansion-safety promise over declarative and procedural paths, and test trigger continuation with both contributing and non-contributing earlier contexts; incorporate only after the reference and preserved-candidate replay discriminates.",
+    "tags": [
+      "discrimination",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 86
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 86
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 87,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | test.sh parsed the mode positionally before options, while Verify Solution invokes `--output_path` before `base` | one hosted Verify Solution run exited 2 after 294.2 seconds, emitted no JUnit, and discovered no P2P/F2P tests | parse evaluator CLI options in both supported orders and reproduce the exact hosted invocation before uploading a runner revision.",
+    "tags": [
+      "environment",
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 87
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 87
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 88,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | successful setup and pre-existing sanity commands were emitted as independent new-mode JUnit cases, and root-owned prebuilt Cargo targets blocked the evaluator UID | one 1937.9-second Verify Solution run rejected three solution-independent passes and showed permission denied on target lock files | fold mandatory setup into a genuine fail-to-pass suite, omit redundant pre-existing checks from new-mode discovery, and make prebuilt target state writable to the evaluator before upload.",
+    "tags": [
+      "discrimination",
+      "environment",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 88
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 88
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 89,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | hidden tests required author-chosen public JSON field names absent from the prompt and a case-sensitive documentation phrase absent from both prompt and repository convention | one Test Fairness run flagged 2 of 35 checks after 443.3 seconds | explicitly specify interoperable public schema names, and test documentation through prompt-grounded concepts instead of prose spelling or casing.",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 89
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 89
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 90,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | a positive eligibility fixture conflated `observation_count` (distinct observation kinds) with `observed_count` (repeated events) | one Test Fairness run flagged 1 of 29 checks after 388.9 seconds | preserve repository field semantics in synthetic profiles; mutate repeated-event totals through `observed_count` while leaving monomorphic `observation_count` at one.",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 90
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 90
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 91,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | a hand-maintained patch passed local structural checks but the uploaded bytes were rejected as corrupt at line 8 | Verify Flakiness stopped before execution after 7.7 seconds | regenerate final patches mechanically from a Git index, preserve canonical full blob metadata and modes, and upload the exact frozen file rather than reconstructing it through copy/paste.",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 91
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 91
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 92,
+    "date": "2026-08-23",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-23 | perry-profile-replay-b00e261f | multiple divergent Perry artifact directories made it possible to upload a stale test.patch even after the canonical hardened patch was repaired | Verify Tests repeated the same line-8 corruption while the frozen hardened bytes passed independent apply checks | publish one explicit final delivery directory containing only the four hash-frozen artifacts, and upload from that directory rather than any recovered or side-hardened copy.",
+    "tags": [
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 92
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 92
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 93,
+    "date": "2026-08-23",
+    "case": "lisette-configurable-lint-levels",
+    "text": "2026-08-23 | lisette-configurable-lint-levels | the R2/R3 audit minimized issue #1034 as aggregate-only even though its body explicitly requested a lisette.toml warnings-as-errors setting and local suppression | a full local artifact build and matrix were completed for a candidate that violated the no-issue pioneer requirement | read full issue bodies and treat overlap in requested configuration or semantics as a collision before artifact construction",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 93
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 93
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 94,
+    "date": "2026-08-23",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-23 | ladybug-rel-art-index-feature-pioneer | a hidden transaction test asserted post-error rollback state without an explicit rollback even though the prompt promised rollback behavior, not automatic abort semantics | one Task Quality fairness rejection after 407.4 seconds | when a transaction contract promises explicit rollback, issue the repository-native ROLLBACK before state assertions; do not infer automatic-abort semantics from an error path",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 94
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 94
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 95,
+    "date": "2026-08-23",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-23 | ladybug-rel-art-index-feature-pioneer | the description promised rejection of foreign-backed relationships and compared behavior to secondary node ART indexes even though the hidden suite neither exercised the former nor needed the latter | one Description Quality rejection after 243.3 seconds | remove untested input classes and repository-relative analogies; state only direct observable behavior required by the hidden oracles",
+    "tags": [
+      "contract",
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 95
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 95
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 96,
+    "date": "2026-08-23",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-23 | ladybug-rel-art-index-feature-pioneer | two hidden assertions required a newly introduced lookup function to throw for a missing index even though the prompt said only unavailable and neighboring named-index lookup returned no rows | one Test Fairness rejection with 2 of 18 assertions unfair after 291.6 seconds | when the repository has a discoverable not-found convention, use it; never pin error versus empty-result behavior for a new API unless the prompt explicitly makes that distinction contractual",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 96
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 96
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 97,
+    "date": "2026-08-23",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-23 | ladybug-rel-art-index-feature-pioneer | replacing an unfair missing-index error assertion with a mandatory empty result still pinned the opposite representation despite conflicting repository precedents | a second Test Fairness rejection with 2 of 24 assertions unfair after 208.8 seconds | when a new API's absent-object representation is not contractual and repository precedents conflict, assert only catalog/data aftermath and omit the API call rather than choosing error or empty rows",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 97
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 97
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 98,
+    "date": "2026-08-23",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-23 | rust-analyzer-multi-macro-completion | mapped-token accounting assumed one completion marker per token, item identity omitted the downstream `ref_match` variant, and identifier aggregation accidentally widened legacy literal behavior | a passing candidate lost a later exact site and Auto Review requested another revision after a 20-test hardening cycle | count actual marker cardinality, derive dedup identity from every materialized public variant, and cross new multi-site traversal with a mixed legacy non-identifier mapping before freezing artifacts",
+    "tags": [
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 98
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 98
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 99,
+    "date": "2026-08-23",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-23 | rust-analyzer-multi-macro-completion | attribute traversal was covered only through an identity wrapper, while trigger continuation and the 64-site limit were tested independently | Auto Review found one branch-only survivor and two reference boundary defects after the 22-test matrix had passed | exercise each distinct expansion branch directly and cross contribution filters with the exact global-cap boundary; apply the cap after semantic contribution classification and recover isolated targets structurally rather than by edited offsets",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 99
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 99
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 100,
+    "date": "2026-08-23",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-23 | rust-analyzer-multi-macro-completion | dedup coverage distinguished absent versus present reference edits and item identity, but did not cross distinct reference modes or verify which duplicate payload survived | Verifier Completeness found two plausible survivors after the 25-test package | for every stable dedup contract, cross all stated identity variants and assert first-occurrence payload retention with a faithful reference-versus-mutant discriminator",
+    "tags": [
+      "contract",
+      "discrimination",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 100
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 100
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 101,
+    "date": "2026-08-24",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-24 | perry-profile-replay-b00e261f | rejection checks proved only a reason record, freshness changed only serialized metadata, and target/unknown finalization used generic-first or current-module-only logic | Auto Review found two false-negative test gaps plus Android, Apple-mobile, absent-module, and recording-example reference defects | assert rejection mutual exclusion and baseline codegen, change real source for freshness, normalize specific targets before generic families, register the full live module set before parallel finalization, and carry recording environment into execution examples",
+    "tags": [
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 101
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 101
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 102,
+    "date": "2026-08-24",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-24 | perry-profile-replay-b00e261f | a zero-observation fixture pinned an unstated rejection-reason mapping, documentation greps pinned three unrequired literal tokens, and the semantic freshness edit also introduced a new feedback site | one 439.6-second fairness rejection and one 2684.9-second reference-solution failure | for inconsistent rows assert rejection plus aftermath without inventing a reason mapping, test documentation substance rather than internal tokens, and change HIR with a structure-preserving literal edit when site identity must remain stable",
+    "tags": [
+      "contract",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 102
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 102
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 103,
+    "date": "2026-08-24",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-24 | perry-profile-replay-b00e261f | rejection non-selection was encoded as whole-object equality even though only row-order determinism promised exact bytes, and documentation substance used an unstated adjective | one 288.1-second fairness rejection | observe rejection through coherent public lowering decisions plus rejected/never-consumed facts, reserve whole-object equality for explicitly deterministic cases, and test documented concepts rather than preferred vocabulary",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 103
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 103
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 104,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | cross-context dedup identity covered labels, edits, imports, and reference modes but omitted public documentation, deprecation, detail, and trigger-call metadata | Auto Review revision plus one exact reference failure after a 23-test de-variation | enumerate every observable field at the final merge boundary, test at least one same-label/same-kind collision where only public metadata differs, and replay the preserved genuine solve before shipping",
+    "tags": [
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 104
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 104
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 105,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | de-variation was encoded with internal marker mechanics, an untested trigger-budget cross-product, and an untested relevance carve | Description Quality failed three comments after the 24-test package passed execution | after retiring compound probes, describe only independently asserted public behaviors and remove implementation-facing carve language from both the prompt and requirement map",
+    "tags": [
+      "contract"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 105
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 105
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 106,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | a proposed same-kind method-label discriminator passed on the pinned implementation when executed as a standalone test, despite being presented as new fail-to-pass coverage | adding it directly would have failed the platform base/new sanity rule and needlessly killed a preserved genuine solve | replay every proposed assertion on the exact clean base; when it is valuable preservation coverage, compose it as a helper inside a related genuine fail-to-pass test and replay the preserved solve before shipping",
+    "tags": [
+      "discrimination",
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 106
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 106
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 107,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | a description cleanup removed three untested implementation clauses but left an adjacent equal-rank tie promise without a dedicated fixture | a later Description Quality run repeated three stale comments and found the surviving fourth over-specification | search the exact final description and requirement map for every rejected phrase and neighboring mechanism promise before packaging; remove unsupported tie-break contracts even when broader ordering is tested",
+    "tags": [
+      "contract",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 107
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 107
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 108,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | a result-count oracle was described as an internal traversal-resource guarantee, and broad “fully equivalent” wording implicitly expanded identity to untested relevance metadata; an unused reference binding also escaped normal test flags | Auto Review scored Solution 1/3 despite all feature tests passing | phrase caps and identity only at the observable level proved by tests, and always run the repository's exact warnings-as-errors build in addition to the evaluator matrix",
+    "tags": [
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 108
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 108
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 109,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | the historical rollout ZIP showed 0/12 on an older compound suite, making it tempting to loosen another current behavior from summary counts alone | exact replay of all twelve patches on the current 24-test bytes found Nova 7 at 24/24 while every other candidate retained a concrete failure; Nova 7 also passed 782/782 under CI warnings | replay the whole saved cohort after de-variation and stop loosening once one independently complete architecture survives; never rescue a near-pass by removing its remaining prompt-grounded failing cell",
+    "tags": [
+      "contract",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 109
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 109
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 110,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | a 22-run cohort produced zero passes, with the closest patch failing legacy non-identifier behavior and panicking on the required mixed-context union | dropping those tests would have converted a materially unsafe implementation into a pass | when zero-pass agents cluster on requirements already fairly tested, improve solver-facing behavioral grouping and examples without deleting the discriminator; a clearer prompt is legitimate calibration, a rescued broken patch is not",
+    "tags": [
+      "contract",
+      "discrimination",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 110
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 110
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 111,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | Base mode targeted nonexistent Cargo integration target `spec` and reopened `/dev/stderr` through `tee` under the evaluator UID | Verify Solution spent 343.4s and synthesized five failed invocation cases before any selected regression ran | Derive integration target names from the pinned Cargo manifest and capture combined output with ordinary file-descriptor redirection; never use `tee /dev/stderr` in the unprivileged runner.",
+    "tags": [
+      "environment",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 111
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 111
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 112,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | Two hidden tests asserted rejection or recovered type output without a solution-dependent acceptance precondition, so parser rejection and recovery passed them on the base | Verify Solution spent 476.0s and rejected two non-discriminating F2P cases | For every negative or recovery-backed feature test, first assert that a valid feature use is accepted without errors so the same test necessarily fails on the base and passes with the reference.",
+    "tags": [
+      "discrimination",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 112
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 112
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 113,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | Reference-specific AST snapshot updates were shipped in test.patch even though the prompt disclaimed internal representation | Test Fairness spent 192.0s and flagged 5 of 21 assertions as unfair | Put unavoidable native snapshot and obsolete-fixture maintenance in solution.patch; keep test.patch limited to representation-independent behavioral assertions and the runner.",
+    "tags": [
+      "contract",
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 113
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 113
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 114,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | Suffix-aware array normalization eagerly materialized every rest-covered position and replaced the pinned lazy prefix-only path | Verify Solution spent 509.2s and the reference broke three array-rest regressions, including the two-billion-element termination case | Branch new normalization on the actual new shape and preserve the old lazy path byte-for-byte for suffix-free patterns; never expand a rest-covered cardinality into an allocation.",
+    "tags": [
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 114
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 114
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 115,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | The first Fairness repair moved reference-native snapshots from test.patch to solution.patch, but the structural validator forbids every test path in solution.patch | static validation rejected seven solution test paths before another hosted run | When internal snapshots are neither candidate requirements nor permitted solution content, omit them from both submitted patches and retain them only as authoring/full-suite maintenance evidence.",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 115
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 115
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 116,
+    "date": "2026-08-24",
+    "case": "lisette-trailing-slice-rest-patterns",
+    "text": "2026-08-24 | lisette-trailing-slice-rest-patterns | Repository-local duplicate searches found no Lisette implementation, but the task-level pool already contained movable sequence-rest semantics in another accepted repository | the complete four-artifact package and three hosted repair rounds were discarded by a terminal overlap blocker | Deduplicate semantic solver work across repositories before construction: search for generic behavior phrases and invariants, not only repository, issue, syntax, and PR names; burn the entire movable-rest concept after overlap.",
+    "tags": [
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 116
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 116
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 117,
+    "date": "2026-08-24",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-24 | rust-analyzer-multi-macro-completion | a preservation helper assumed a non-identifier request kept the first ranked mapped string even when that expansion contributed nothing, while the clean pinned implementation continued to the later viable format site | Solution Quality found a high regression, invalidating both the old golden and the previously preserved Nova 7 solve | execute every claimed legacy-preservation oracle on the clean pinned commit before using it to reject candidates; rank orders candidates, but pinned single-site selection still skips ignored mappings before choosing its result",
+    "tags": [
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 117
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 117
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 118,
+    "date": "2026-08-25",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-25 | rust-analyzer-multi-macro-completion | multi-site fanout crossed the identifier/lifetime token-kind boundary, public duplicate identity accidentally included internal relevance, all-suppressed dispatch changed raw None into Some(empty), and dedup was placed in the ordinary accumulator | Solution Quality found four HIGH defects and invalidated the preserved independent pass despite a green feature matrix | derive token-kind boundary probes from the exact public contract, test raw result-state preservation and both included/excluded identity fields, and isolate cross-context merging from the legacy completion accumulator so feature dedup cannot change ordinary complexity or semantics",
+    "tags": [
+      "contract",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 118
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 118
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 119,
+    "date": "2026-08-25",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-25 | perry-profile-replay-b00e261f | replay tests trained with --no-auto-optimize, so they never proved the documented producer path selected the diagnostics runtime or escaped a warm non-instrumented build-cache hit | Solution Quality found a HIGH completeness defect and the exact end-to-end reference/mutant proof required two optimized runtime builds | every profile/replay workflow must execute its documented producer command with default optimization after a warm cache entry and verify the physical profile artifact before testing its consumer",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 119
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 119
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 120,
+    "date": "2026-08-25",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-25 | perry-profile-replay-b00e261f | mobile replay fabricated target strings by rewriting a host profile and explain tests pinned exact JSON buckets despite explicitly layout-free wording | Test Fairness rejected 2 of 27 assertion groups and invalidated the test/prompt proof set | never infer cross-target profile identity from triples without an executable producer; when a report layout is free, recursively assert one coherent semantic row and never name its container or fact buckets",
+    "tags": [
+      "contract",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 120
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 120
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 121,
+    "date": "2026-08-25",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-25 | perry-profile-replay-b00e261f | a stale completeness proposal mixed two already-closed gaps with four live ones | accepting it wholesale would duplicate tests and invalidate more evidence than necessary | diff every proposed gap against the current exact bytes and fold only current prompt-grounded cells into existing solution-dependent scenarios",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 121
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 121
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 122,
+    "date": "2026-08-25",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-25 | perry-profile-replay-b00e261f | Docker prebuilt root-owned Cargo state with a different CARGO_INCREMENTAL fingerprint while base and new wrappers could rebuild one target concurrently | Verify Solution ran 1681 seconds without JUnit and Verify Flakiness ran 3423 seconds while treating every cold-missing new case as flaky | prebuild with the exact runtime Cargo fingerprint, transfer mutable build-tree ownership to evaluator UID, and hold one build-wide lock across every wrapper mode",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 122
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 122
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 123,
+    "date": "2026-08-25",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-25 | perry-profile-replay-b00e261f | a dense prompt referred generically to observations and replay facts without naming the established trace fields or distinguishing ordinary native artifacts from explain output | ten Nova runs produced zero passes; the closest passed 9/10 Rust feature tests and failed only because an invented alias overrode `observed_kinds` | clarify the public schema and evidence channel while retaining codegen, cache, rejection, determinism, and runtime discriminators; require a fresh rollout before claiming a recovered pass",
+    "tags": [
+      "contract",
+      "discrimination",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 123
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 123
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 124,
+    "date": "2026-08-26",
+    "case": "datafusion-ffi-custom-physical-expr",
+    "text": "2026-08-26 | datafusion-ffi-custom-physical-expr | paper hardness and FFI lifecycle breadth were trusted before the full golden compressed to 196 effective production LOC across three files | a complete cloud/offline artifact cycle was built for a candidate below the requested scope band | treat any natural reference under 500 production LOC as a rejection signal for full-scope requests; preserve the package as fallback and pivot instead of padding with adjacent parity work",
+    "tags": [
+      "environment",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 124
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 124
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 125,
+    "date": "2026-08-26",
+    "case": "accepted-hardness-calibration",
+    "text": "2026-08-26 | accepted-hardness-calibration | candidate audits relied on a numeric 8/10 sheet and two remembered positives while the live account contained six accepted architectures spanning compiler control lifetime, tuple identity, declaration ownership, structural expression identity, conservative metadata proof, and FFI lifecycle | weak or mechanical candidates could clear paper breadth checks by cherry-picking one comparator, while six duplicate pasted samples misleadingly appeared to be six repositories | before selection, read the complete lessons ledger and compare every candidate against all six live-verified accepted tasks; require the shared semantic floor and two closest-analogue matches, count only live `Accepted` cases as positives, and never enlarge scope or tune tests to manufacture comparability",
+    "tags": [
+      "environment",
+      "runtime",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 125
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 125
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 126,
+    "date": "2026-08-26",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-26 | ladybug-rel-art-index-feature-pioneer | the hidden suite pinned an author-chosen storage version, the image left root-owned incremental build state for Harbor's evaluator UID, and the reference used an old ART for same-transaction updates, rejected implicit scalar casts, and rescanned every relationship after lookup | Verify Solution, Test Quality, and Solution Quality all failed on the same hosted artifact set | keep migration mechanism out of behavioral hidden tests, prove final-UID rebuildability, cross clean-index paths with transaction and narrow-type cases, and require successful lookups to resolve candidates without an unconditional table scan",
+    "tags": [
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 126
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 126
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 127,
+    "date": "2026-08-26",
+    "case": "ladybug-rel-art-index-feature-pioneer",
+    "text": "2026-08-26 | ladybug-rel-art-index-feature-pioneer | a rebuild generation counter detected commits during the scan but not commits after the checkpoint snapshot and before the scan began | a 525-second Solution Quality run rejected the otherwise comprehensive reference | pair dirty generations with commit timestamps and clear them only when the rebuilding snapshot includes the latest observed mutation as well as surviving an unchanged-generation check",
+    "tags": [
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 127
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 127
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 128,
+    "date": "2026-08-27",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-27 | perry-profile-replay-b00e261f | replay byte oracles compared profiled instrumented builds with uninstrumented baselines, and the shared recorder fixture depended on an unstated recorder cache invalidation | Test Quality rejected four assertion groups and the shared fixture could prevent otherwise conformant solutions from reaching replay checks | hold instrumentation mode constant for every replay/no-profile comparison and make the warmed training binary recorder-capable before testing only explicit replay cache bypass",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 128
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 128
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 129,
+    "date": "2026-08-27",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-27 | perry-profile-replay-b00e261f | a hidden runner shipped evaluator-facing comments, the documentation oracle rejected grammatical and line-wrapped equivalents, and eligibility tested only an empty observed-kinds array | Auto Review requested revision despite 7/10 genuine passes and six stable repeats | keep harness prose repository-neutral, normalize prose before semantic matching, and discriminate exact predicates with both non-empty negative and mixed positive inputs; never append unrelated scope merely to tune pass rate",
+    "tags": [
+      "discrimination",
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 129
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 129
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 130,
+    "date": "2026-08-27",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-27 | rust-analyzer-multi-macro-completion | the sole dot-access verifier repeated the same receiver, so a near-complete implementation could reuse the historical first receiver while passing all 29 feature tests | a 1/10 apparent pass was overturned as a high-confidence false positive after the reference returned both methods for distinct receiver types | whenever a promised multi-site role depends on surrounding context, use disjoint contexts at each site and replay the exact passer; clarify the public context dependency without adding a new route or weakening any requirement",
+    "tags": [
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 130
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 130
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 131,
+    "date": "2026-08-28",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-28 | perry-profile-replay-b00e261f | the documentation verifier encoded author-chosen phrase order for uninstrumented replay and soft rejection instead of checking the promised concepts | two independent Nova implementations passed all 13 behavioral tests but were classified Test Mismatch solely by the docs process | documentation tests should check semantic vocabulary and required public facts, never narrow prose templates; preserve and replay affected candidates after the verifier repair",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 131
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 131
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 132,
+    "date": "2026-08-28",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-28 | perry-profile-replay-b00e261f | native-only replay compatibility collapsed target identity to ARCH-OS, while unknown-key tests assumed unreserved opaque literals | Solution Quality found GNU/musl aliasing and Test Quality rejected 2 of 21 logical checks | verify native ABI family separately from the public envelope key, derive unknown identifiers by proving absence from emitted identities, and reorder only real rows when testing determinism",
+    "tags": [
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 132
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 132
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 133,
+    "date": "2026-08-28",
+    "case": "delta-rs-restore-deletion-vectors",
+    "text": "2026-08-28 | delta-rs-restore-deletion-vectors | Used a semantic hidden integration-test filename that an implementer could predict | one precheck rerun and dependent proof refresh | Generate a random 3-byte suffix before first upload, apply it to every new hidden-test path, and keep the Cargo target plus harness reference aligned.",
+    "tags": [
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 133
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 133
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 134,
+    "date": "2026-08-28",
+    "case": "delta-rs-restore-deletion-vectors",
+    "text": "2026-08-28 | delta-rs-restore-deletion-vectors | GitHub novelty and deterministic semantics were treated as sufficient even though an older Olympus task owned the same RESTORE path-plus-deletion-vector identity lesson | one precheck run and a terminal 90%-confidence derivative rejection | Before artifact construction, compare the verb-object-invariant and exact production surface against older Olympus submissions; additive lifecycle coverage never rescues a shared core lesson.",
+    "tags": [
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 134
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 134
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 135,
+    "date": "2026-08-28",
+    "case": "calyx-inline-invoke-comb-second",
+    "text": "2026-08-28 | calyx-inline-invoke-comb-second | Reused an existing workspace case with hosted rollout history as a supposedly new replacement without proving it was unoccupied | unnecessary repackaging and local matrix refresh; zero platform tokens | Treat every existing `.olympus/cases` entry and every artifact with hosted rollout history as occupied until explicit evidence proves otherwise; replacement scouting must start from a fresh repository and semantic core.",
+    "tags": [
+      "environment",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 135
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 135
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 136,
+    "date": "2026-08-29",
+    "case": "gitoxide-commitgraph-writer",
+    "text": "2026-08-29 | gitoxide-commitgraph-writer | The first minimal slice omitted the live panel's executable root `test.sh` contract and described a root-tree field that Git's commit-graph format cannot represent | one 0.5-token precheck bundle and full dependent proof refresh | Before first upload, replay the live runner contract byte-for-byte and reject every prompt requirement that the target format cannot expose; map every remaining promised field to an explicit parsed-value assertion.",
+    "tags": [
+      "contract",
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 136
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 136
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 137,
+    "date": "2026-08-29",
+    "case": "gitoxide-commitgraph-writer",
+    "text": "2026-08-29 | gitoxide-commitgraph-writer | A repository-roadmap feature looked original publicly, but an older Olympus submission already owned the same deterministic commit-graph serialization core inside a broader chain-management task | one repaired precheck rerun and a deliberately avoided 2-token Scope Gate | Treat an older broader task as prior art for every narrower task sharing its central serializer, invariant, and production surface; lifecycle differences do not rescue the subset, so burn the repository/concept at the duplicate precheck.",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 137
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 137
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 138,
+    "date": "2026-08-29",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-29 | perry-profile-replay-b00e261f | Documentation checks used arbitrary three-block proximity and the runner held one explicit lock across every compiler invocation | Test Quality rejected four documentation assertions and concurrent verification repetitions queued for the full suite duration | Check prompt-named documentation concepts globally unless the repository establishes layout, and hold an explicit harness lock only around the one destructive preparation step while relying on Cargo's own build locks thereafter.",
+    "tags": [
+      "contract",
+      "environment",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 138
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 138
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 139,
+    "date": "2026-08-29",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-29 | rust-analyzer-multi-macro-completion | The attribute-budget test asserted a local name available from invalid speculative expression sites, so it did not prove that a later actual identifier remained reachable; sibling isolation also removed marker bytes without restoring changed-width actual token text | two Solution Quality failures and another full Cloud matrix refresh | For changed-text proc-macro budgeting, assert a suggestion unique to the later valid role, correlate only structurally aligned actual/speculative token streams, and restore each skipped sibling's actual token text while tracking the true byte delta.",
+    "tags": [
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 139
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 139
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 140,
+    "date": "2026-08-29",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-29 | rust-analyzer-multi-macro-completion | Repeatedly adding fair edge requirements drove two saved Nova cohorts to zero durable solves even though one near-complete implementation differed only on trigger fan-out and exact filtering of non-required identifier roles | twenty saved runs, repeated quality/FP refreshes, and substantial rollout spend | When a task reaches repeated zero-pass cohorts, classify every remaining failure by unchanged public behavior and carve one coherent contract boundary; keep panic, regression, and required-sibling guards, and accept the carve only after the reference plus an exact historical candidate pass while every other candidate still has an unchanged in-scope failure.",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 140
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 140
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 141,
+    "date": "2026-08-29",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-29 | perry-profile-replay-b00e261f | The Docker context omitted tracked documentation, edited tracked Cargo.toml, and kept thousands of Cargo outputs under the repository, so legitimate all-green agents were flagged by the post-agent patch collector | two 9/9 baseline plus 15/15 new genuine solves were excluded as environment blockers | Restore the complete commit-pinned source tree in the image, never mutate tracked base files during image setup, and place build output in an external writable CARGO_TARGET_DIR before buying rollout cohorts.",
+    "tags": [
+      "discrimination",
+      "environment",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 141
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 141
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 142,
+    "date": "2026-08-29",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-08-29 | rust-analyzer-multi-macro-completion | narrowed the proc/attribute contract but retained three marker-sensitive assertions from the superseded contract, producing a 0/10 cohort even though three agents passed every in-scope assertion | 10 rollout runs plus repeated quality checks | after any contract carve, delete or replace every assertion and fixture branch that exercised the removed class, then replay the nearest genuine candidates before buying another cohort",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 142
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 142
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 143,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | test.sh accepted only mode-first arguments while hosted Verify Solution placed --output_path before the mode | Verify Solution exited 2 before producing JUnit or running an assertion | parse mode and output flags order-independently and exercise the exact hosted command order before every upload",
+    "tags": [
+      "environment",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 143
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 143
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 144,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | the alignment graph encoded only author-enumerated nominal and literal pattern classes, so it reported full triad coverage while the prompt's broader existing-pattern contract also included repository-supported tuple and unit forms | Solution Quality failed comprehensiveness after Test Quality passed all 32 groups | derive requirement input classes from the pinned repository's complete public form inventory before accepting graph coverage; an internally complete graph cannot detect a form omitted from both its ledger and tests",
+    "tags": [
+      "contract"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 144
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 144
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 145,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | runtime groups launched the image-installed pytester through `uv run`, which tried to resolve `hatchling` from PyPI in the network-isolated evaluator; compiled output also relied on one fixed UID | Verify Solution spent 953 seconds and synthesized 18 runtime failures before any Dora assertion ran | install the harness at image-build time, invoke its executable directly, force offline mode, create Cargo outputs with evaluator-writable modes, and test the exact command under `--network none`",
+    "tags": [
+      "environment",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 145
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 145
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 146,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | one broad associated-binding graph node conflated negative compatibility checking with positive generic inference | Solution Quality found that the reference rejected a uniquely associated-bound generic pattern despite nominal 100% triad coverage | decompose broad requirements into validation, inference, ambiguity, runtime, and preservation roles; require every role to bind input classes, assertions, production paths, and evidence before description controls open",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 146
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 146
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 147,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | the alignment graph mapped new bytecode files but did not trace the object-representation invariant from verifier to JIT/AOT consumers | Solution Quality found two unsafe new verifier branches | for every new low-level operation, inventory producer, representation, encoding, decoding, verification, and runtime consumers and fail closed when any consumed invariant lacks a validation site",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 147
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 147
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 148,
+    "date": "2026-08-30",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-30 | perry-profile-replay-b00e261f | the alignment graph proved requirement-to-test links but did not validate assertion form or enumerate OS × architecture-alias × target-environment × routing-state cells, and validate_evidence.py ignored both alignment artifacts | documentation synonym/proximity checks caused repeated Test Mismatch while Windows GNU/MSVC and i686 normalization defects escaped nominal full coverage | blind-inventory every contract dimension, enumerate its full Cartesian product, classify each oracle mechanism, require conformant alternatives, and make the deterministic validator reject missing cells or ungrounded presentation constraints",
+    "tags": [
+      "contract",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 148
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 148
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 149,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | local four-state validation accepted a nonzero `new` wrapper even though 19 baseline-valid rejection cases passed before the solution; Docker bootstrap also copied over a root-owned generated Boots executable and failed during metadata preservation | Verify Solution completed the implementation successfully but rejected the testcase transition partition after 790 seconds | require zero passing JUnit cases in pre-solution `new`, classify baseline-valid rejection and preservation checks as `base` regardless of fixture novelty, and recreate root-owned generated executables before post-patch materialization",
+    "tags": [
+      "discrimination",
+      "environment",
+      "runtime",
+      "hardness",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 149
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 149
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 150,
+    "date": "2026-08-30",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-30 | perry-profile-replay-b00e261f | target compatibility was graphed only from explicit target triples and test comments retained challenge-review vocabulary | static review found that a musl-built compiler's default route still selected GNU and that a hidden-test comment disclosed challenge context even though explicit GNU/musl rejection tests existed | for every resolved-target gate trace both explicit and omitted/default inputs across architecture, OS, and ABI, and scan added test text for challenge, grader, reference, or hidden-test language before freezing artifacts",
+    "tags": [
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 150
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 150
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 151,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | requirement-level graph edges accepted self-attested role coverage and a green writable-output path, but did not prove nested finite-domain propagation, recursive alternative usefulness, or reporting failure propagation | Auto Review requested revision after the package had repeatedly passed coarse alignment checks | require blind bounded analysis-interaction cells plus injected output-parent, JUnit-emission, and final-status failure probes; prove each promoted cell with an exact reference-versus-mutant discriminator rather than expanding an unbounded Cartesian product",
+    "tags": [
+      "discrimination",
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 151
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 151
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 152,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | one AI precheck treated compile-time preservation tests as uncovered because they were correctly placed in base/pass-to-pass rather than new/fail-to-pass | one transient failed quality verdict that passed unchanged on rerun | classify tests by observed four-state transition; solved-base execution validates patched preservation behavior, and a baseline-valid test must never be copied into new merely to satisfy a reviewer that ignores the P2P partition",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 152
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 152
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 153,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | the alignment graph covered nested constructors and nested literals independently but never modeled their coexistence after trait-object support made a formerly homogeneous exhaustiveness column heterogeneous | Auto Review found two compiler-panicking reference defects after the graph reported full triad coverage | when nested contracts open an analysis column to multiple concrete families, require same-column composition cells for distinct constructor identities/arity and constructor-plus-literal specialization; isolated family nodes do not prove their interaction",
+    "tags": [
+      "contract",
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 153
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 153
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 154,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | the alignment graph represented wildcard and variable catchalls but omitted the guarded/unguarded Boolean dimension, allowing a pattern-shape-only exhaustiveness shortcut to survive | Auto Review reduced Tests to 1/3 despite a clean description and solution | whenever catchalls and guards share an exhaustiveness path, require all wildcard/variable by guarded/unguarded cells and pair every guarded rejection with its unguarded acceptance so the discriminator remains fail-to-pass and diagnostic-independent",
+    "tags": [
+      "contract",
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 154
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 154
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 155,
+    "date": "2026-08-30",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-30 | perry-profile-replay-b00e261f | an alias test called a newly invented private replay helper while the production fix normalized profiles without completing native x86 default, archive, manifest, and linker routing | Test Quality rejected the helper pin and Solution Quality found native i686 replay unreachable | test target aliases through an existing public resolver, and trace every normalized architecture from default/explicit CLI resolution through archive selection, native manifests, linker routing, and the replay gate before calling the requirement complete",
+    "tags": [
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 155
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 155
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 156,
+    "date": "2026-08-30",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-30 | perry-profile-replay-b00e261f | replacing a private-helper pin with raw LLVM triples on Perry's existing short-name resolver still imposed an unrelated API expansion and exact canonical triple spelling | a second Test Quality failure staled problem, test, solution, and all dependent proofs | enforce target normalization through emitted/replayed profile behavior; never repurpose a neighboring public resolver whose documented input domain does not include the tested form",
+    "tags": [
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 156
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 156
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 157,
+    "date": "2026-08-30",
+    "case": "dora-trait-object-concrete-patterns",
+    "text": "2026-08-30 | dora-trait-object-concrete-patterns | Same-column interaction coverage varied arity only across different nominal constructors, so an arity-free tuple identity survived and panicked on nested 2-vs-3 tuple arms | Auto Review revision after otherwise clean tests | For any widened sum/constructor representation, vary every downstream specialization discriminant while holding the constructor family constant; require exact reference-vs-old-golden execution before adding the bounded cell.",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 157
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 157
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 158,
+    "date": "2026-08-31",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-31 | perry-profile-replay-b00e261f | the graph named explicit/default routing and conformant documentation alternatives but did not cross route source with accept/reject polarity, execute alternative prose fixtures, or audit JSON integer storage across host widths | seven functionally complete Nova runs were rejected only by lexical docs checks, while Auto Review found explicit-native acceptance and usize-width observation parsing gaps | require explicit/default x accept/reject routing cells, 32/64-bit numeric-domain audits with a value above u32::MAX, and two executed independently authored prose variants before accepting graph closure",
+    "tags": [],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 158
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 158
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 159,
+    "date": "2026-08-31",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-08-31 | scylla-policy-aware-paging-affinity | the Scope Gate slice compile-tested two newly public Rust interfaces while the prompt described only their behavior and omitted their exact names, paths, and signatures | the hosted problem-test alignment check failed and the problem-dependent proof set became stale | when a hidden test requires an exact newly invented public interface, disclose its complete path and signature under Test assumptions before running alignment",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 159
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 159
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 160,
+    "date": "2026-08-31",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-08-31 | perry-profile-replay-b00e261f | the graph covered replay-consumer cache bypass but omitted the producer recording compile from the documented profile lifecycle | Solution Quality found that a warmed uninstrumented executable could contaminate recording; the repaired reference passed and the cache-key omission mutant failed the exact producer-to-replay scenario | for every producer-to-artifact-to-consumer workflow, cross cold/warm cache states on both stages and trace every compile-time producer switch into cache identity before claiming lifecycle coverage",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 160
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 160
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 161,
+    "date": "2026-08-31",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-08-31 | scylla-policy-aware-paging-affinity | runner assumed the mode was argv[1], and a regenerated golden omitted an untracked new module while retaining a stale paging snapshot | one Verify Solution failure and one Solution Quality failure | parse mode/options order-independently, force the exact platform invocation before upload, include untracked production files when regenerating patches, and compile the final patch from a clean pinned export",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 161
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 161
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 162,
+    "date": "2026-08-31",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-08-31 | ladybug-relationship-art-indexes | FP hardening promoted a bitwise ART NaN lookup, a replacement binder message, and storage format 47 into hidden requirements even though repository equality makes NaN unsearchable and the public contract promises only rejection plus durable behavior | Test Quality rejected 3 of 29 cases and staled all artifact-dependent proofs | classify baseline-valid regressions as base, assert only nonempty rejection when wording is free, test format migration through a repository-grounded lower bound and preserved data rather than an exact new version, and make the golden follow existing numeric equality before using an FP discriminator",
+    "tags": [
+      "contract",
+      "discrimination",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 162
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 162
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 163,
+    "date": "2026-09-01",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-01 | ladybug-relationship-art-indexes | the reference cast every lookup key to the indexed property type, so DOUBLE 2.25 rounded to INT64 2 and produced a false match despite the stated repository-equality contract | Solution Quality failed after fairness repair; a description-only narrowing would have legalized a golden defect and risked another fairness rejection | derive the equality binder's common comparison type, use direct index bytes only when they preserve that equality, otherwise compare scanned values in the common type, and test both widening and narrowing directions",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 163
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 163
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 164,
+    "date": "2026-09-01",
+    "case": "goboscript-procedure-overloading",
+    "text": "2026-09-01 | goboscript-procedure-overloading | local issue/PR and claim-ledger searches missed an older accepted platform task in the same repository with the same overload-resolution architecture | three hosted precheck runs and one 2-token Scope Gate ended in an overlap rejection after a complete 657-LOC reference | before full construction, search the live accepted-submission corpus by repository and central solver lesson; an absent public PR does not exclude a private older platform submission",
+    "tags": [
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 164
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 164
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 165,
+    "date": "2026-09-02",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-09-02 | perry-profile-replay-b00e261f | a new collision fixture inherited the suite-wide per-site replay loop even though its recording count and global key uniqueness already killed the identity-collapse defect | Verify Solution ran for 3737 seconds and was terminated with only the provisional runner::interrupted JUnit case | when strengthening a long compiler integration test, identify the minimum distinct oracle before reusing an expensive loop; preserve each requirement once, but do not multiply compiler invocations that observe the same defect",
+    "tags": [
+      "environment",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 165
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 165
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 166,
+    "date": "2026-09-02",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-02 | scylla-policy-aware-paging-affinity | the wrapper treated a nonzero Cargo exit as proof that no usable JUnit existed and replaced valid per-test failures with a synthetic suite | Auto Review rejected the harness and partial multi-suite failures lost accurate diagnostics | validate and preserve each emitted JUnit independently of process status; synthesize only the suite that is actually missing, while returning the original failing status",
+    "tags": [
+      "environment"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 166
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 166
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 167,
+    "date": "2026-09-02",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-09-02 | perry-profile-replay-b00e261f | documentation tests encoded semantic intent through paragraph windows and synonym/cache-word whitelists | Test Quality rejected 3 of 25 assertion groups and all test-dependent proofs became stale | Documentation oracles may check prompt-named identifiers, commands, links, and exact public tokens globally; never require paragraph proximity, sliding windows, or author-selected equivalent-prose vocabulary without repository grounding.",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 167
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 167
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 168,
+    "date": "2026-09-02",
+    "case": "perry-profile-replay-b00e261f",
+    "text": "2026-09-02 | perry-profile-replay-b00e261f | a documentation checker required both discoverable instrumentation environment-variable spellings even though the prompt required workflows and either repository mechanism could express them | Test Quality rejected 1 of 32 assertion groups and another artifact refresh was required | repository discoverability permits testing a behavior, not mandating every equivalent mechanism name in docs; exact documentation tokens must be prompt-mandated public names or removed.",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 168
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 168
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 169,
+    "date": "2026-09-02",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-02 | kumomta-tsa-cancel | reduced gate tests asserted newly invented private Rust methods, boolean returns, tombstone storage, handler types, and unstated route, CLI, and websocket names | hosted Test Quality rejected 11 of 12 groups after Scope Gate | test new semantics through registered production paths and observable aftermath; disclose exact public protocol names when they are genuinely contractual, but never expose private golden structure merely to legalize a test.",
+    "tags": [
+      "contract",
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 169
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 169
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 170,
+    "date": "2026-09-02",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-09-02 | rust-analyzer-multi-macro-completion | a hidden proc-macro budget fixture required actual-keyword correspondence across divergent speculative marker layouts even though the prompt described only a corresponding token and ten Nova implementations converged on positional accounting | a valid 0/10 cohort, with four agents passing 24/25 and substantial repeated rollout spend | when one exotic hidden edge is the sole failure for several independent near-solves, audit whether its input-shape mechanics are actually disclosed; prefer an explicit narrow carve that retains the natural semantic rule, and ship it only after exact reference, test-only, and preserved-candidate replay.",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 170
+      },
+      {
+        "source": "olympus-forge-opencode/.olympus/lessons.md",
+        "line": 170
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 171,
+    "date": "2026-09-02",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-02 | scylla-policy-aware-paging-affinity | Rustdoc opacity oracle accepted only named-field plain structs and rejected an equally conformant private tuple struct | one hosted Test Quality failure and a full dependent rerun | Opacity checks must accept every representation that hides the required state; execute at least two conformant shapes and one exposed-field counterexample before upload.\\n",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 171
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 172,
+    "date": "2026-09-02",
+    "case": "rust-analyzer-multi-macro-completion",
+    "text": "2026-09-02 | rust-analyzer-multi-macro-completion | A function-like proc-macro test exercised literal outputs only in separate nested calls, so fixed marker-length positional accounting passed while a different-length literal in the same expansion hid a later mapped identifier | one hosted false-positive pass and another artifact refresh | When actual/speculative correspondence is stated, include one same-expansion nonidentifier-before-identifier discriminator; prove reference pass, exact-candidate failure, and untouched F2P before promotion, while keeping unrelated punctuation/attribute hypotheses advisory.",
+    "tags": [
+      "discrimination",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 172
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 173,
+    "date": "2026-09-02",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-02 | kumomta-tsa-cancel | hidden tests injected golden-specific Rust source shape and pinned unstated repeat, persistence, and CLI representations while the reference counted expired state and allowed unordered saves | two hosted quality failures | grade public entry-to-observable behavior, permit unspecified idempotent responses and presentation, serialize persistence snapshots, and test expired-but-unpruned state.",
+    "tags": [
+      "contract",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 173
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 174,
+    "date": "2026-09-03",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-03 | kumomta-tsa-cancel | the stale-event oracle asserted an exact lifetime creation total, conflating required suppression with an optional duplicate-snapshot replacement policy; one-second expiry could lapse before its event was observed | one hosted Test Quality failure after 22 fair groups | checkpoint observable state immediately around the event under test, accept retention and replacement architectures, and synchronize asynchronous lifecycle tests with public event barriers or bounded state polling.",
+    "tags": [
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 174
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 175,
+    "date": "2026-09-03",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-03 | ladybug-relationship-art-indexes | the ordering oracle used creation-order IDs and sparse samples, leaving post-index insertion order insufficiently distinguished | Auto Review requested another test-dependent artifact refresh | for a promised sorted lookup, insert the higher ID into a key first, move the lower ID into that key after index creation, assert the complete ordered list, and repeat after persistence while retaining an interleaved large traversal case.",
+    "tags": [
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 175
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 176,
+    "date": "2026-09-03",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-03 | scylla-policy-aware-paging-affinity | Hidden tests patched the same production files agents naturally edited; verifier conflict fallback reset solution hunks and produced two uncompilable hybrid rollouts | 2 broken Nova runs, 199.5 minutes combined | Keep the submitted test patch additive and outside natural implementation paths; prove candidate+test application before rollouts, preserve solution files on fixture installation, and exclude any run where no behavioral assertion executed.",
+    "tags": [
+      "runtime",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 176
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 177,
+    "date": "2026-09-03",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-03 | kumomta-tsa-cancel | malformed-hash coverage overrode the pinned empty-site parser and a suspension-only fixture required a config bump despite the prompt's conditional “when required” language | one hosted Test Quality failure with two current unfair pins and one stale finding | derive grammar from the reusable repository parser, never convert conditional behavior into an unconditional internal side effect, and compare hosted findings with current artifact hashes before editing.",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 177
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 178,
+    "date": "2026-09-11",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-11 | kumomta-tsa-cancel | a third synthetic generic websocket reconnect began with action records but omitted prompt-required SnapshotStart/SnapshotEnd framing | Test Quality rejected 1 of 24 groups and all test-dependent proofs became stale | every synthetic initial generic websocket connection must use the public snapshot delimiters before asserting reconnect or stale-replay behavior.",
+    "tags": [
+      "contract",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 178
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 179,
+    "date": "2026-09-03",
+    "case": "perry-profile-replay",
+    "text": "2026-09-03 | perry-profile-replay | a shared training fixture warmed an uninstrumented build cache and silently promoted recording-cache invalidation into a requirement even though the task scoped cache guarantees to explicit replay | one hosted Test Quality failure and broad cascading fixture risk | audit producer and consumer cache promises separately; a consumer replay-bypass contract does not authorize a producer cache-transition assertion without prompt or pinned-repository grounding.",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 179
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 180,
+    "date": "2026-09-03",
+    "case": "perry-profile-replay",
+    "text": "2026-09-03 | perry-profile-replay | a per-occurrence identity test inferred that two different selected profiles must yield mutually different object bytes, although the contract required only distinct keys and each selected result to differ from baseline | one hosted Test Quality failure after 22 otherwise fair groups | never turn identity uniqueness into artifact inequality between distinct inputs unless the public contract requires that relation; preserve direct uniqueness and per-input baseline oracles instead.",
+    "tags": [
+      "contract",
+      "discrimination",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 180
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 181,
+    "date": "2026-09-03",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-03 | ladybug-relationship-art-indexes | an internal storage-format bump was asserted as exact version 47 in hidden tests even though the prompt and pinned repository did not require that counter | one Test Quality failure after 28 otherwise fair groups and a full dependent matrix rerun | keep internal migration counters out of hidden behavioral oracles; preserve the pinned public version when a backward-compatible catalog discriminator can identify optional serialized payloads.",
+    "tags": [
+      "contract",
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 181
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 182,
+    "date": "2026-09-03",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-03 | ladybug-relationship-art-indexes | catalog-signaled decoding let the new reader recognize optional bytes but left older version-46 binaries accepting and misparsing the changed layout; empty ART roots also consumed one page and violated populated-shard reporting | one Solution Quality failure immediately after the fairness repair | separate hidden oracle fairness from reference format safety: feature-gate a new on-disk version without asserting its integer in hidden tests, prove ordinary databases retain their prior version, and test storage allocation with an all-NULL physical shard.",
+    "tags": [
+      "contract",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 182
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 183,
+    "date": "2026-09-03",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-03 | ladybug-relationship-art-indexes | the storage-version selector looked only for relationship indexes while every relationship table unconditionally wrote the new payload, leaving multi-pair unindexed checkpoints misaligned and crashing on reopen; the relationship DROP branch also bypassed the existing IF EXISTS conflict action | one additional Solution Quality failure and two full rebuild cycles | derive a format-version predicate from every writer that emits the new layout, prove it with at least two consecutive records so unread trailing bytes cannot be benign, and cross new object kinds with existing conflict-action behavior while preserving legacy throwing paths.",
+    "tags": [
+      "runtime",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 183
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 184,
+    "date": "2026-09-03",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-03 | scylla-policy-aware-paging-affinity | retry-winner and resumed-page fallback tests each stopped at a different lifecycle boundary, so neither proved that a fallback winner on an intermediate resumed page became the following page's preference | Auto Review reduced Tests to 1/3 after the reference and 13-test suite were otherwise green | for stateful continuation contracts, compose failure, recovery, nonterminal output, and one subsequent consumption in the same scenario; isolated retry and resume tests do not prove state replacement across their boundary.",
+    "tags": [
+      "contract",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 184
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 185,
+    "date": "2026-09-03",
+    "case": "godot-rapier-shape-topology",
+    "text": "2026-09-03 | godot-rapier-shape-topology | owner-map emptiness was used as a proxy for joint-vs-collision-object state, exempting valid ownerless collision objects from atomic validation; new resource scalars also ignored Godot's precision-dependent real alias | one Solution Quality failure and a full four-state rebuild | discriminate saved object variants directly, test empty as a valid set value rather than absence, and use repository precision aliases for engine-facing scalar state while retaining explicitly packed f32 payloads only where the API requires them.",
+    "tags": [
+      "discrimination",
+      "runtime",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 185
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 186,
+    "date": "2026-09-04",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-04 | scylla-policy-aware-paging-affinity | a zero-interval speculative request raced an immediate resumed-page response, so exact attempt and history-fiber counts varied with scheduling even though the first page dropped a fixed proxy node | one Verify Flakiness failure across six runs and one Verify Solution failure | for speculative-execution tests, identify and drop the actual primary coordinator on every page, then reconfigure the proxy from the returned coordinator before resumption; zero duration alone is not deterministic synchronization.",
+    "tags": [
+      "runtime"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 186
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 187,
+    "date": "2026-09-04",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-04 | scylla-policy-aware-paging-affinity | the filtered-target eligibility case also disabled the node, so the enabled-state guard masked omission of the independent active latency predicate | one Auto Review revision after a stable 15-test suite | isolate each rejection reason while holding all sibling eligibility predicates true; prove the exact omission mutant passed the prior suite and fails only the new discriminator before promotion.",
+    "tags": [
+      "discrimination",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 187
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 188,
+    "date": "2026-09-04",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-04 | scylla-policy-aware-paging-affinity | a paused-clock latency test assumed one advance and one yield guaranteed a spawned periodic updater had consumed measurements | one hosted Verify Flakiness failure despite six local passes | synchronize spawned periodic workers through a bounded virtual-time loop and their public observable; repeat the isolated test substantially more than the hosted sample before upload.",
+    "tags": [
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 188
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 189,
+    "date": "2026-09-04",
+    "case": "scylla-policy-aware-paging-affinity",
+    "text": "2026-09-04 | scylla-policy-aware-paging-affinity | the opacity oracle generalized private named/tuple structs but still required rustdoc-local struct ownership and kind | one hosted Test Quality failure after 22 fair groups | test absence of exposed representation without requiring local ownership or a concrete item kind; execute external opaque carriers and non-struct opaque representations alongside public-field and transparent-alias negatives.",
+    "tags": [
+      "contract",
+      "environment",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 189
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 190,
+    "date": "2026-09-05",
+    "case": "perry-profile-replay",
+    "text": "2026-09-05 | perry-profile-replay | normalized module identity used lossy path conversion plus separator replacement, while hidden harness paths and sentinels leaked the platform codename | one Auto Review revision and full proof staleness | encode filesystem identity from raw platform units, and scan every hidden filename, path, and sentinel for platform-specific terms before freezing artifacts.",
+    "tags": [
+      "environment",
+      "packaging",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 190
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 191,
+    "date": "2026-09-05",
+    "case": "perry-profile-replay",
+    "text": "2026-09-05 | perry-profile-replay | the documentation oracle required unknown-row isolation even though the prompt required that runtime behavior but omitted it from the explicit documentation topics | one Test Quality rejection and another triad refresh | map every documentation assertion separately from its runtime requirement; semantic behavior grounding does not automatically authorize requiring that topic in user documentation.",
+    "tags": [
+      "contract",
+      "runtime",
+      "hardness"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 191
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 192,
+    "date": "2026-09-05",
+    "case": "perry-profile-replay",
+    "text": "2026-09-05 | perry-profile-replay | a documentation checker accepted several phrasings but still imposed hidden 40–240 character windows and executed non-discriminating checker self-examples | one Test Quality rejection after functional coverage was otherwise strong | documentation topic checks must be global and layout-independent, accept ordinary equivalent vocabulary, and exclude checker self-tests from the graded suite; verify structured public terms separately from prose layout.",
+    "tags": [
+      "discrimination"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 192
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 193,
+    "date": "2026-09-06",
+    "case": "perry-profile-replay",
+    "text": "2026-09-06 | perry-profile-replay | removing prose-distance limits still left an automated English-vocabulary oracle that could reject semantically complete documentation | a second Test Quality rejection plus another test-artifact refresh | hidden documentation tests should assert only exact public paths, identifiers, schema members, and links; leave unconstrained explanatory prose to human review unless the public contract defines a structured documentation format.",
+    "tags": [
+      "contract",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 193
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 194,
+    "date": "2026-09-05",
+    "case": "ladybug-relationship-art-indexes",
+    "text": "2026-09-05 | ladybug-relationship-art-indexes | ordinary INT/DOUBLE coercion tests allowed a scan-backed query implementation to route INT128-backed DECIMAL through binary64 and collapse adjacent high-precision keys | one platform false-positive adjudication and stale rollout evidence | when a contract adopts repository numeric equality, cross the repository's wide exact numeric representation with a value beyond binary64 precision and compare the new lookup against the repository equality operator in the same scenario.",
+    "tags": [
+      "contract",
+      "discrimination",
+      "environment",
+      "hardness",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 194
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 195,
+    "date": "2026-09-05",
+    "case": "godot-rapier-shape-topology",
+    "text": "2026-09-05 | godot-rapier-shape-topology | 9/10 legitimate rollout passes; successful solutions could naturally remain in one state-manager file despite high LOC/messages | full 10-run cohort could not meet the long-horizon file/difficulty target | file count is not behavior; after broad genuine convergence, retire the candidate instead of appending unrelated scope or prescribing decomposition",
+    "tags": [
+      "hardness",
+      "state"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 195
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 196,
+    "date": "2026-09-12",
+    "case": "kumomta-tsa-cancel",
+    "text": "2026-09-12 | kumomta-tsa-cancel | regenerating solution.patch omitted an intended untracked kcli source module while retaining its module declaration and dispatch | hosted Solution Quality failed because the submitted repository did not compile | before regenerating a patch, mark every intended untracked file with intent-to-add and verify all declared modules in a clean artifact-only build.",
+    "tags": [
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 196
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 197,
+    "date": "2026-09-12",
+    "case": "walrus-quorum-replication",
+    "text": "2026-09-12 | walrus-quorum-replication | test patch used custom diff prefixes and omitted the evaluator base/new --output_path contract, while Dockerfile chowned /app before creation | one Test Patch Sanity failure and one Dockerfile Guidelines failure | regenerate patches with standard a/b prefixes, exercise the exact runner CLI and aggregate JUnit path, and build the Dockerfile from untouched bytes before upload.",
+    "tags": [
+      "contract",
+      "environment",
+      "runtime",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 197
+      }
+    ]
+  },
+  {
+    "source": ".olympus/lessons.md",
+    "line": 199,
+    "date": "2026-09-12",
+    "case": "walrus-quorum-replication",
+    "text": "2026-09-12 | walrus-quorum-replication | An integration test used the predictable feature name quorum_replication.rs | The hosted collision check rejected the path | Generate a random suffix before freezing new test filenames, update every runner target, and regenerate a standard-prefix patch from intent-to-add files.",
+    "tags": [
+      "environment",
+      "packaging"
+    ],
+    "provenance": [
+      {
+        "source": ".olympus/lessons.md",
+        "line": 199
+      }
+    ]
+  }
+]

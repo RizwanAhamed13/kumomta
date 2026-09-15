@@ -1,0 +1,65 @@
+{
+  "recorded_at": "2026-09-13T01:53:44.893340+00:00",
+  "phase": "source-only-history-consolidation",
+  "execution": "No builds, tests, images, containers, or candidate validation; source metadata and authorized historical reads only.",
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "checks": [
+    {
+      "argv": [
+        "hostname"
+      ],
+      "exit_code": 0,
+      "stdout": "arch",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "uname",
+        "-m"
+      ],
+      "exit_code": 0,
+      "stdout": "x86_64",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "df",
+        "-h",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  268G  512G  35% /home",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "findmnt",
+        "-T",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+        "-o",
+        "SOURCE,TARGET,FSTYPE,OPTIONS"
+      ],
+      "exit_code": 0,
+      "stdout": "SOURCE                           TARGET FSTYPE OPTIONS\n/dev/mapper/omarchy_root[/@home] /home  btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "version",
+        "--format",
+        "{{.Server.Version}}"
+      ],
+      "exit_code": 0,
+      "stdout": "29.7.2",
+      "stderr": ""
+    }
+  ],
+  "commit": null,
+  "commit_reason": "Plugin source copy has no .git; no candidate execution.",
+  "input_hashes": {
+    "semantic-inspection-ledger.json": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0",
+    "expanded-review/index.json": "23f128dc50a7e85e1ebb39b04ab6abce55b737e7dc2baf0229076edf1db6366b",
+    "revision-deltas/index.json": "92d08447bb21b52d9c4d8f26a7fe4b85bbff36d427c5bf9328c1ade87a285ebc"
+  }
+}

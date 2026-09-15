@@ -1,0 +1,4 @@
+diff --git a/dora-bytecode/src/opcode.rs b/dora-bytecode/src/opcode.rs
+@@ -73,6 +73,8 @@ pub const BYTECODE_OPCODE_GET_REGISTER_REF: u8 = 66;
++pub const BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE: u8 = 70;
++pub const BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE: u8 = 71;

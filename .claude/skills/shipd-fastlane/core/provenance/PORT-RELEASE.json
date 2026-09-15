@@ -1,0 +1,12 @@
+{
+  "release": "2026.09.13.1",
+  "upstream_version": "1.0.0+codex.20260913023652",
+  "upstream_release_manifest_sha256": "f6b59ce32154e74230b67351d335ee6fa157189d3a91db87e459cfb45298f34c",
+  "upstream_file_count": 533,
+  "forge_version": "1.0.0+codex.20260823071000",
+  "forge_input_files": 28,
+  "forge_input_inventory_sha256": "f28959e953f2c5f8bf550b9dfcb74a6ded7bb3016eb0f0559309c4d6a5590ecc",
+  "eligibility_list_sha256": "c06179804a3e18d3983d3e795b46699b5bd8459b1d74988fe99fec9c8878d906",
+  "active_source_code_changed": false,
+  "global_settings_changed": false
+}

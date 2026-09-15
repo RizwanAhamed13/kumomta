@@ -1,0 +1,47 @@
+{
+  "host": "arch",
+  "workdir": "/home/admin/olympus-work/CASE",
+  "image_identity": "record resolved image digest here; do not put it in submitted FROM",
+  "toolchain": "record exact observed versions",
+  "uid": "record numeric runtime UID and login environment",
+  "build_flags": {
+    "jobs": null,
+    "features": "record exact flags/features",
+    "allocation_note": "Fill the current case allocation; respect aggregate concurrency and any lower thermal limit. Do not infer five available jobs from the global maximum."
+  },
+  "cache_policy": "record cold/warm state, cache directories and invalidation rules",
+  "preflight": {
+    "phase_id": null,
+    "captured_at": null,
+    "docker_available": null,
+    "docker_server_version": null,
+    "workdir_realpath": "/home/admin/olympus-work/CASE",
+    "free_bytes": null,
+    "docker_root_dir": "/mnt/ssd/docker",
+    "workspace_filesystem": {
+      "source": "/dev/mapper/omarchy_root[/@home]",
+      "target": "/home",
+      "fstype": "btrfs",
+      "physical_device": "/dev/sda",
+      "rotational": true
+    },
+    "docker_filesystem": {
+      "source": "/dev/mapper/omarchy_root[/@]",
+      "target": "/",
+      "fstype": "btrfs",
+      "physical_device": "/dev/sda",
+      "rotational": true
+    }
+  },
+  "preflight_note": "Observed storage layout on 2026-09-12; replace with fresh realpath, df, docker info, findmnt and lsblk output before each computational phase. Null free_bytes blocks validation. Record a fresh phase_id, timezone-aware captured_at and actual Docker daemon availability/version. Null availability or phase metadata blocks validation; the checker never contacts Docker itself.",
+  "thermal_policy": {
+    "cpu_quota": null,
+    "sample_seconds": null,
+    "launch_below_celsius": null,
+    "pause_at_celsius": null,
+    "resume_below_celsius": null,
+    "owned_container_id": null,
+    "monitor_supervision": "Record the independently supervised guard command, heartbeat and exit status; fail closed if it stops while owned work is active.",
+    "note": "Fill actual per-phase quota and thresholds from the active policy. CPU quotas are tunable controls, not a temperature guarantee. Record quota changes and pauses separately from artifact runtime."
+  }
+}

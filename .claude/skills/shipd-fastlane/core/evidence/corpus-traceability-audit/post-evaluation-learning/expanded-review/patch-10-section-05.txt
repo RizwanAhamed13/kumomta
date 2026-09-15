@@ -1,0 +1,3 @@
+diff --git a/crates/ide-completion/src/tests/expression.rs b/crates/ide-completion/src/tests/expression.rs
+@@ -2691,6 +2691,7 @@ fn main() {
++            kw return

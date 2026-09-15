@@ -1,0 +1,291 @@
+diff --git a/dora-frontend/src/exhaustiveness.rs b/dora-frontend/src/exhaustiveness.rs
+@@ -14,6 +14,7 @@ use crate::sema::{
++use crate::ty::SourceType;
+@@ -193,7 +194,10 @@ fn check_match(
+-    let mut matrix = Vec::new();
++    let mut matrix: Vec<Vec<Pattern>> = Vec::new();
++    let trait_object_scrutinee = match_expr
++        .expr
++        .is_some_and(|scrutinee| body.ty(scrutinee).is_trait_object());
+@@ -209,7 +213,11 @@ fn check_match(
+-        let useless = check_useful_expand(sa, matrix.clone(), row.clone());
++        let useless = if trait_object_scrutinee {
++            check_trait_object_useful(&matrix, &row)
++        } else {
++            check_useful_expand(sa, matrix.clone(), row.clone())
++        };
+@@ -228,7 +236,19 @@ fn check_match(
+-    let missing_patterns = check_exhaustive(sa, matrix, patterns_per_row);
++    let trait_object_has_catch_all = match_expr
++        .arms
++        .iter()
++        .any(|arm| arm.cond.is_none() && pattern_catches_erased_value(body, arm.pattern));
++    let missing_patterns = if trait_object_scrutinee {
++        if trait_object_has_catch_all {
++            Vec::new()
++        } else {
++            vec![vec![Pattern::any_no_span(); patterns_per_row]]
++        }
++    } else {
++        check_exhaustive(sa, matrix, patterns_per_row)
++    };
+@@ -259,6 +279,59 @@ fn check_match(
++fn check_trait_object_useful(matrix: &[Vec<Pattern>], row: &[Pattern]) -> Useless {
++    if matrix
++        .iter()
++        .any(|row| row.iter().all(pattern_catches_concrete_trait_object_value))
++    {
++        return Useless::Yes;
++    }
++
++    let mut spans = HashSet::new();
++    if let Some(pattern) = row.last() {
++        let mut catches_all = false;
++        collect_useless_trait_object_alternatives(pattern, &mut catches_all, &mut spans);
++    }
++    Useless::Set(spans)
++}
++
++fn collect_useless_trait_object_alternatives(
++    pattern: &Pattern,
++    catches_all: &mut bool,
++    spans: &mut HashSet<Span>,
++) {
++    if let Pattern::Alt { alts, .. } = pattern {
++        for alt in alts {
++            if *catches_all {
++                spans.insert(alt.span());
++            } else {
++                collect_useless_trait_object_alternatives(alt, catches_all, spans);
++                *catches_all |= pattern_catches_concrete_trait_object_value(alt);
++            }
++        }
++    }
++}
++
++fn pattern_catches_concrete_trait_object_value(pattern: &Pattern) -> bool {
++    match pattern {
++        Pattern::Any { .. } => true,
++        Pattern::Alt { alts, .. } => alts.iter().any(pattern_catches_concrete_trait_object_value),
++        Pattern::Literal { .. } | Pattern::Constructor { .. } | Pattern::Guard => false,
++    }
++}
++
++fn pattern_catches_erased_value(body: &Body, pattern_id: PatternId) -> bool {
++    match body.pattern(pattern_id) {
++        SemaPattern::Underscore => true,
++        SemaPattern::Ident(_) => matches!(body.get_ident(pattern_id), Some(IdentType::Var(_))),
++        SemaPattern::Alt(alt) => alt
++            .patterns
++            .iter()
++            .any(|&id| pattern_catches_erased_value(body, id)),
++        _ => false,
++    }
++}
++
+@@ -317,7 +390,7 @@ fn display_pattern(sa: &Sema, pattern: Pattern, output: &mut String) -> fmt::Res
+-            ConstructorId::Tuple => {
++            ConstructorId::Tuple(_) => {
+@@ -417,7 +490,7 @@ fn check_exhaustive(sa: &Sema, matrix: Vec<Vec<Pattern>>, n: usize) -> Vec<Vec<P
+-                        .flat_map(|r| specialize_row_for_constructor(r.clone(), id, arity))
++                        .flat_map(|r| specialize_row_for_constructor(r.clone(), &first, id, arity))
+@@ -499,10 +572,15 @@ enum Signature {
++    let mut open_domain = false;
+-        discover_signature_for_pattern(pattern, &mut ctors, &mut first);
++        discover_signature_for_pattern(pattern, &mut ctors, &mut first, &mut open_domain);
++    }
++
++    if open_domain {
++        return Signature::Incomplete;
+@@ -519,33 +597,39 @@ fn discover_signature_for_pattern(
++    open_domain: &mut bool,
+-                discover_signature_for_pattern(param, ctors, kind);
++                discover_signature_for_pattern(param, ctors, kind, open_domain);
++            }
++        }
++        Pattern::Literal { value, open, .. } => {
++            *open_domain |= *open;
++            match value {
++                LiteralValue::Bool(value) => {
++                    match kind {
++                        None => *kind = Some(ConstructorId::Bool),
++                        Some(ConstructorId::Bool) => (),
++                        Some(_) => unreachable!(),
++                    }
++                    ctors.insert(*value as usize, 0);
++                }
++                LiteralValue::Char(..)
++                | LiteralValue::Float(..)
++                | LiteralValue::Int(..)
++                | LiteralValue::String(..) => {}
+-        Pattern::Literal { value, .. } => match value {
+-            LiteralValue::Bool(value) => {
+-                match kind {
+-                    None => *kind = Some(ConstructorId::Bool),
+-                    Some(ConstructorId::Bool) => (),
+-                    Some(_) => unreachable!(),
+-                }
+-                ctors.insert(*value as usize, 0);
+-            }
+-            LiteralValue::Char(..)
+-            | LiteralValue::Float(..)
+-            | LiteralValue::Int(..)
+-            | LiteralValue::String(..) => {}
+-        },
++            open,
++            *open_domain |= *open;
+@@ -718,7 +802,12 @@ fn check_useful_expand_inner(sa: &Sema, matrix: Vec<SplitRow>, mut pattern: Spli
+-                        specialize_row_for_constructor(r, constructor_id.variant_id(), arity)
++                        specialize_row_for_constructor(
++                            r,
++                            &constructor_id,
++                            constructor_id.variant_id(),
++                            arity,
++                        )
+@@ -882,7 +971,9 @@ fn check_useful(sa: &Sema, matrix: Vec<Vec<Pattern>>, mut pattern: Vec<Pattern>)
+-                                .flat_map(|r| specialize_row_for_constructor(r.clone(), id, arity))
++                                .flat_map(|r| {
++                                    specialize_row_for_constructor(r.clone(), &first, id, arity)
++                                })
+@@ -915,7 +1006,14 @@ fn check_useful(sa: &Sema, matrix: Vec<Vec<Pattern>>, mut pattern: Vec<Pattern>)
+-                .flat_map(|r| specialize_row_for_constructor(r, constructor_id.variant_id(), arity))
++                .flat_map(|r| {
++                    specialize_row_for_constructor(
++                        r,
++                        &constructor_id,
++                        constructor_id.variant_id(),
++                        arity,
++                    )
++                })
+@@ -979,10 +1077,10 @@ fn specialize_row_for_literal<T: SpecializeRow + Clone>(
+-        // This should never be reached because literals and tuples shouldn't type check.
+-        Pattern::Constructor { .. } | Pattern::Guard => {
+-            unreachable!()
+-        }
++        // Trait-object columns are heterogeneous: an unrelated concrete
++        // constructor does not contribute to a literal specialization.
++        Pattern::Constructor { .. } => Vec::new(),
++        Pattern::Guard => unreachable!(),
+@@ -1032,6 +1130,7 @@ impl SpecializeRow for Vec<Pattern> {
++    target: &ConstructorId,
+@@ -1043,12 +1142,12 @@ fn specialize_row_for_constructor<T: SpecializeRow + Clone>(
+-                let rows = specialize_row_for_constructor(p_row, id, arity);
++                let rows = specialize_row_for_constructor(p_row, target, id, arity);
+-        Pattern::Literal { value, .. } => match value {
+-            LiteralValue::Bool(value) => {
++        Pattern::Literal { value, .. } => match (target, value) {
++            (ConstructorId::Bool, LiteralValue::Bool(value)) => {
+@@ -1057,19 +1156,16 @@ fn specialize_row_for_constructor<T: SpecializeRow + Clone>(
+-            // These cases here should be unreachable. This is because
+-            // literal values of these types never have a complete signature.
+-            LiteralValue::Char(..)
+-            | LiteralValue::Float(..)
+-            | LiteralValue::Int(..)
+-            | LiteralValue::String(..) => unreachable!(),
++            // An open trait-object column can contain unrelated literals and
++            // nominal constructors. They are disjoint specializations.
++            _ => Vec::new(),
+-            if id == constructor_id.variant_id() {
++            if target.matches(&constructor_id, id) {
+@@ -1114,15 +1210,34 @@ enum ConstructorId {
+-    Tuple,
++    Tuple(usize),
++    fn matches(&self, other: &ConstructorId, variant_id: usize) -> bool {
++        match (self, other) {
++            (ConstructorId::Enum(enum_id, _), ConstructorId::Enum(other_enum_id, other_id)) => {
++                enum_id == other_enum_id && variant_id == *other_id
++            }
++            (ConstructorId::Class(cls_id), ConstructorId::Class(other_cls_id)) => {
++                cls_id == other_cls_id && variant_id == 0
++            }
++            (ConstructorId::Struct(struct_id), ConstructorId::Struct(other_struct_id)) => {
++                struct_id == other_struct_id && variant_id == 0
++            }
++            (ConstructorId::Tuple(arity), ConstructorId::Tuple(other_arity)) => {
++                arity == other_arity && variant_id == 0
++            }
++            (ConstructorId::Bool, _) => false,
++            _ => false,
++        }
++    }
++
+-            ConstructorId::Tuple | ConstructorId::Class(..) | ConstructorId::Struct(..) => 0,
++            ConstructorId::Tuple(_) | ConstructorId::Class(..) | ConstructorId::Struct(..) => 0,
+@@ -1133,6 +1248,7 @@ impl ConstructorId {
++                    open: false,
+@@ -1140,24 +1256,28 @@ impl ConstructorId {
++                open: false,
++                open: false,
+-            ConstructorId::Tuple => Pattern::Constructor {
++            ConstructorId::Tuple(arity) => Pattern::Constructor {
+-                constructor_id: ConstructorId::Tuple,
++                constructor_id: ConstructorId::Tuple(*arity),
++                open: false,
++                open: false,
+@@ -1165,7 +1285,7 @@ impl ConstructorId {
+-            ConstructorId::Class(..) | ConstructorId::Struct(..) | ConstructorId::Tuple => 1,
++            ConstructorId::Class(..) | ConstructorId::Struct(..) | ConstructorId::Tuple(_) => 1,
+@@ -1179,11 +1299,13 @@ enum Pattern {
++        open: bool,
++        open: bool,
+@@ -1259,6 +1381,7 @@ fn convert_pattern(
++    let open = body.pattern_input_ty(pattern_id).is_trait_object();
+@@ -1269,6 +1392,7 @@ fn convert_pattern(
++            open,
+@@ -1280,6 +1404,7 @@ fn convert_pattern(
++                open,
+@@ -1293,6 +1418,7 @@ fn convert_pattern(
++                open,
+@@ -1305,6 +1431,7 @@ fn convert_pattern(
++                open,
+@@ -1316,20 +1443,35 @@ fn convert_pattern(
++                open,
+-            let patterns: Vec<Pattern> = tuple
++            let arity = match body.ty(pattern_id) {
++                SourceType::Unit => 0,
++                SourceType::Tuple(subtypes) => subtypes.len(),
++                _ => unreachable!("tuple pattern without tuple type"),
++            };
++            let explicit = tuple
+-                .rev()
+-                .map(|&subpattern_id| convert_pattern(sa, body, file_id, subpattern_id))
+-                .collect();
++                .filter(|&&subpattern_id| !matches!(body.pattern(subpattern_id), SemaPattern::Rest))
++                .count();
++            let mut patterns = Vec::with_capacity(arity);
++            for &subpattern_id in &tuple.patterns {
++                if matches!(body.pattern(subpattern_id), SemaPattern::Rest) {
++                    patterns.extend((explicit..arity).map(|_| Pattern::any_no_span()));
++                } else {
++                    patterns.push(convert_pattern(sa, body, file_id, subpattern_id));
++                }
++            }
++            patterns.reverse();
+-                constructor_id: ConstructorId::Tuple,
++                constructor_id: ConstructorId::Tuple(arity),
++                open,
+@@ -1341,12 +1483,13 @@ fn convert_pattern(
++                        open,
+-                IdentType::Const(const_id) => convert_const_pattern(sa, const_id, span),
++                IdentType::Const(const_id) => convert_const_pattern(sa, const_id, span, open),
+@@ -1374,6 +1517,7 @@ fn convert_pattern(
++                        open,
+@@ -1383,6 +1527,7 @@ fn convert_pattern(
++                        open,
+@@ -1392,13 +1537,14 @@ fn convert_pattern(
++                        open,
+-                    convert_const_pattern(sa, const_id, span)
++                    convert_const_pattern(sa, const_id, span, open)
+@@ -1407,27 +1553,37 @@ fn convert_pattern(
+-fn convert_const_pattern(sa: &Sema, const_id: ConstDefinitionId, span: Span) -> Pattern {
++fn convert_const_pattern(
++    sa: &Sema,
++    const_id: ConstDefinitionId,
++    span: Span,
++    open: bool,
++) -> Pattern {
++            open,
++            open,
++            open,
++            open,
++            open,

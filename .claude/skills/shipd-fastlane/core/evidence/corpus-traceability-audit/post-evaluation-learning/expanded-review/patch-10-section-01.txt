@@ -1,0 +1,350 @@
+diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs
+@@ -4,7 +4,7 @@ mod analysis;
+-use std::{iter, sync::LazyLock};
++use std::{iter, rc::Rc, sync::LazyLock};
+@@ -459,7 +459,7 @@ pub(crate) enum ParamKind {
+-    pub(crate) sema: Semantics<'db, RootDatabase>,
++    pub(crate) sema: Rc<Semantics<'db, RootDatabase>>,
+@@ -740,14 +740,24 @@ impl<'db> CompletionContext<'_, 'db> {
++    #[cfg(test)]
+-        position @ FilePosition { file_id, offset }: FilePosition,
++        position: FilePosition,
+-        let _p = tracing::info_span!("CompletionContext::new").entered();
+-        let sema = Semantics::new(db);
++        Self::new_all(db, position, config, trigger_character).into_iter().next()
++    }
++
++    pub(crate) fn new_all(
++        db: &'db RootDatabase,
++        position @ FilePosition { file_id, offset }: FilePosition,
++        config: &'a CompletionConfig<'a>,
++        trigger_character: Option<char>,
++    ) -> Vec<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)> {
++        let _p = tracing::info_span!("CompletionContext::new_all").entered();
++        let sema = Rc::new(Semantics::new(db));
+@@ -763,17 +773,22 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
+-        let original_token = original_file.syntax().token_at_offset(offset).left_biased()?;
++        let Some(original_token) = original_file.syntax().token_at_offset(offset).left_biased()
++        else {
++            return Vec::new();
++        };
+-            let prev_token = original_token.prev_token()?;
++            let Some(prev_token) = original_token.prev_token() else {
++                return Vec::new();
++            };
+-                return None;
++                return Vec::new();
+@@ -784,162 +799,183 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
+-                return None;
++                return Vec::new();
+-        let AnalysisResult {
+-            analysis,
+-            expected: (expected_type, expected_name),
+-            qualifier_ctx,
+-            token,
+-            original_offset,
+-        } = expand_and_analyze(
++        let analyses = expand_and_analyze(
+-        )?;
+-
+-        // adjust for macro input, this still fails if there is no token written yet
+-        let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
+-
+-        let krate = scope.krate();
+-        let module = scope.module();
+-        let containing_function = scope.containing_function();
+-        let edition = krate.edition(db);
+-
+-        let toolchain = toolchain_channel(db, krate.into());
+-        // `toolchain == None` means we're in some detached files. Since we have no information on
+-        // the toolchain being used, let's just allow unstable items to be listed.
+-        let is_nightly = matches!(toolchain, Some(base_db::ReleaseChannel::Nightly) | None);
+-
+-        let mut locals = FxHashMap::default();
+-        scope.process_all_names(&mut |name, scope| {
+-            if let ScopeDef::Local(local) = scope {
+-                // synthetic names currently leak out as we lack synthetic hygiene, so filter them
+-                // out here
+-                if name.as_str().starts_with('<') {
+-                    return;
+-                }
+-                locals.insert(name, local);
+-            }
+-        });
+-
+-        let depth_from_crate_root = iter::successors(Some(module), |m| m.parent(db))
+-            // `BlockExpr` modules do not count towards module depth
+-            .filter(|m| !matches!(m.definition_source(db).value, ModuleSource::BlockExpr(_)))
+-            .count()
+-            // exclude `m` itself
+-            .saturating_sub(1);
+-
+-        let exclude_traits: FxHashSet<_> = config
+-            .exclude_traits
+-            .iter()
+-            .filter_map(|path| {
+-                hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern)).find_map(
+-                    |it| match it {
+-                        hir::ItemInNs::Types(ModuleDef::Trait(t)) => Some(t),
+-                        _ => None,
+-                    },
+-                )
+-            })
+-            .collect();
+-
+-        let mut exclude_flyimport: FxHashMap<_, _> = config
+-            .exclude_flyimport
+-            .iter()
+-            .flat_map(|(path, kind)| {
+-                hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
+-                    .map(|it| (it.into_module_def(), *kind))
+-            })
+-            .collect();
+-        let exclude_subitems = exclude_flyimport
+-            .iter()
+-            .flat_map(|it| match it {
+-                (ModuleDef::Module(module), AutoImportExclusionType::SubItems) => {
+-                    module.scope(db, None)
+-                }
+-                _ => vec![],
+-            })
+-            .filter_map(|(_, def)| match def {
+-                ScopeDef::ModuleDef(module_def) => Some(module_def),
+-                _ => None,
+-            })
+-            .collect::<Vec<_>>();
+-        let exclude_variants = exclude_flyimport
+-            .iter()
+-            .flat_map(|it| match it {
+-                (ModuleDef::Adt(hir::Adt::Enum(enum_)), AutoImportExclusionType::Variants) => {
+-                    enum_.variants(db)
+-                }
+-                _ => vec![],
+-            })
+-            .collect::<Vec<_>>();
+-        exclude_flyimport
+-            .extend(exclude_traits.iter().map(|&t| (t.into(), AutoImportExclusionType::Always)));
+-        exclude_flyimport
+-            .extend(exclude_subitems.into_iter().map(|it| (it, AutoImportExclusionType::Always)));
+-        exclude_flyimport.extend(
+-            exclude_variants.into_iter().map(|it| (it.into(), AutoImportExclusionType::Always)),
+-        // FIXME: This should be part of `CompletionAnalysis` / `expand_and_analyze`
+-        let complete_semicolon = if !config.add_semicolon_to_unit {
+-            CompleteSemicolon::DoNotComplete
+-        } else if let Some(term_node) =
+-            sema.token_ancestors_with_macros(token.clone()).find(|node| {
+-                matches!(
+-                    node.kind(),
+-                    BLOCK_EXPR
+-                        | MATCH_ARM
+-                        | CLOSURE_EXPR
+-                        | ARG_LIST
+-                        | PAREN_EXPR
+-                        | ARRAY_EXPR
+-                        | MATCH_EXPR
+-                )
+-            })
+-        {
+-            let next_token = iter::successors(token.next_token(), |it| it.next_token())
+-                .map(|it| it.kind())
+-                .find(|kind| !kind.is_trivia());
+-            match term_node.kind() {
+-                MATCH_ARM if next_token != Some(T![,]) => CompleteSemicolon::CompleteComma,
+-                BLOCK_EXPR if next_token != Some(T![;]) => CompleteSemicolon::CompleteSemi,
+-                _ => CompleteSemicolon::DoNotComplete,
+-            }
+-        } else {
+-            CompleteSemicolon::DoNotComplete
+-        };
+-
+-        let display_target = krate.to_display_target(db);
+-        let ctx = CompletionContext {
+-            sema,
+-            scope,
+-            db,
+-            config,
+-            position,
+-            trigger_character,
+-            original_token,
+-            token,
+-            krate,
+-            module,
+-            containing_function,
+-            is_nightly,
+-            edition,
+-            expected_name,
+-            expected_type,
+-            qualifier_ctx,
+-            locals,
+-            depth_from_crate_root,
+-            exclude_flyimport,
+-            exclude_traits,
+-            complete_semicolon,
+-            display_target,
+-        };
+-        Some((ctx, analysis))
++        analyses
++            .into_iter()
++            .filter_map(
++                |AnalysisResult {
++                     analysis,
++                     expected: (expected_type, expected_name),
++                     qualifier_ctx,
++                     token,
++                     original_offset,
++                 }| {
++                    let sema = sema.clone();
++                    // Adjust for macro input; this still fails if there is no token written yet.
++                    let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
++
++                    let krate = scope.krate();
++                    let module = scope.module();
++                    let containing_function = scope.containing_function();
++                    let edition = krate.edition(db);
++
++                    let toolchain = toolchain_channel(db, krate.into());
++                    // `toolchain == None` means we're in some detached files. Since we have no information on
++                    // the toolchain being used, let's just allow unstable items to be listed.
++                    let is_nightly =
++                        matches!(toolchain, Some(base_db::ReleaseChannel::Nightly) | None);
++
++                    let mut locals = FxHashMap::default();
++                    scope.process_all_names(&mut |name, scope| {
++                        if let ScopeDef::Local(local) = scope {
++                            // synthetic names currently leak out as we lack synthetic hygiene, so filter them
++                            // out here
++                            if name.as_str().starts_with('<') {
++                                return;
++                            }
++                            locals.insert(name, local);
++                        }
++                    });
++
++                    let depth_from_crate_root = iter::successors(Some(module), |m| m.parent(db))
++                        // `BlockExpr` modules do not count towards module depth
++                        .filter(|m| {
++                            !matches!(m.definition_source(db).value, ModuleSource::BlockExpr(_))
++                        })
++                        .count()
++                        // exclude `m` itself
++                        .saturating_sub(1);
++
++                    let exclude_traits: FxHashSet<_> = config
++                        .exclude_traits
++                        .iter()
++                        .filter_map(|path| {
++                            hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
++                                .find_map(|it| match it {
++                                    hir::ItemInNs::Types(ModuleDef::Trait(t)) => Some(t),
++                                    _ => None,
++                                })
++                        })
++                        .collect();
++
++                    let mut exclude_flyimport: FxHashMap<_, _> = config
++                        .exclude_flyimport
++                        .iter()
++                        .flat_map(|(path, kind)| {
++                            hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
++                                .map(|it| (it.into_module_def(), *kind))
++                        })
++                        .collect();
++                    let exclude_subitems = exclude_flyimport
++                        .iter()
++                        .flat_map(|it| match it {
++                            (ModuleDef::Module(module), AutoImportExclusionType::SubItems) => {
++                                module.scope(db, None)
++                            }
++                            _ => vec![],
++                        })
++                        .filter_map(|(_, def)| match def {
++                            ScopeDef::ModuleDef(module_def) => Some(module_def),
++                            _ => None,
++                        })
++                        .collect::<Vec<_>>();
++                    let exclude_variants = exclude_flyimport
++                        .iter()
++                        .flat_map(|it| match it {
++                            (
++                                ModuleDef::Adt(hir::Adt::Enum(enum_)),
++                                AutoImportExclusionType::Variants,
++                            ) => enum_.variants(db),
++                            _ => vec![],
++                        })
++                        .collect::<Vec<_>>();
++                    exclude_flyimport.extend(
++                        exclude_traits.iter().map(|&t| (t.into(), AutoImportExclusionType::Always)),
++                    );
++                    exclude_flyimport.extend(
++                        exclude_subitems
++                            .into_iter()
++                            .map(|it| (it, AutoImportExclusionType::Always)),
++                    );
++                    exclude_flyimport.extend(
++                        exclude_variants
++                            .into_iter()
++                            .map(|it| (it.into(), AutoImportExclusionType::Always)),
++                    );
++
++                    // FIXME: This should be part of `CompletionAnalysis` / `expand_and_analyze`
++                    let complete_semicolon = if !config.add_semicolon_to_unit {
++                        CompleteSemicolon::DoNotComplete
++                    } else if let Some(term_node) =
++                        sema.token_ancestors_with_macros(token.clone()).find(|node| {
++                            matches!(
++                                node.kind(),
++                                BLOCK_EXPR
++                                    | MATCH_ARM
++                                    | CLOSURE_EXPR
++                                    | ARG_LIST
++                                    | PAREN_EXPR
++                                    | ARRAY_EXPR
++                                    | MATCH_EXPR
++                            )
++                        })
++                    {
++                        let next_token = iter::successors(token.next_token(), |it| it.next_token())
++                            .map(|it| it.kind())
++                            .find(|kind| !kind.is_trivia());
++                        match term_node.kind() {
++                            MATCH_ARM if next_token != Some(T![,]) => {
++                                CompleteSemicolon::CompleteComma
++                            }
++                            BLOCK_EXPR if next_token != Some(T![;]) => {
++                                CompleteSemicolon::CompleteSemi
++                            }
++                            _ => CompleteSemicolon::DoNotComplete,
++                        }
++                    } else {
++                        CompleteSemicolon::DoNotComplete
++                    };
++
++                    let display_target = krate.to_display_target(db);
++                    let ctx = CompletionContext {
++                        sema,
++                        scope,
++                        db,
++                        config,
++                        position,
++                        trigger_character,
++                        original_token: original_token.clone(),
++                        token,
++                        krate,
++                        module,
++                        containing_function,
++                        is_nightly,
++                        edition,
++                        expected_name,
++                        expected_type,
++                        qualifier_ctx,
++                        locals,
++                        depth_from_crate_root,
++                        exclude_flyimport,
++                        exclude_traits,
++                        complete_semicolon,
++                        display_target,
++                    };
++                    Some((ctx, analysis))
++                },
++            )
++            .collect()

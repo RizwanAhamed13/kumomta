@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Candidate Audit"
+  short_description: "Scout and qualify Olympus candidates"
+  default_prompt: "Use $olympus-candidate-audit to scout and qualify a Shipd/Olympus repository task before spending platform tokens."

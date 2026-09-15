@@ -1,0 +1,486 @@
+--- .olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch
++++ .olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch
+@@ -1,5 +1,5 @@
+ diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs
+-index 705305f55..fb7dfe01a 100644
++index 705305f557..b0d9003ec0 100644
+ --- a/crates/ide-completion/src/context.rs
+ +++ b/crates/ide-completion/src/context.rs
+ @@ -4,7 +4,7 @@ mod analysis;
+@@ -64,7 +64,7 @@
+  
+          let editioned_file_id = sema.attach_first_edition(file_id);
+          let original_file = sema.parse(editioned_file_id);
+-@@ -788,20 +808,105 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
++@@ -788,20 +808,102 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
+              }
+          }
+  
+@@ -72,9 +72,6 @@
+ +            && trigger_character.is_none()
+ +            && original_token.kind() == IDENT
+ +            && offset > original_token.text_range().start()
+-+            && original_token
+-+                .parent_ancestors()
+-+                .any(|ancestor| ast::MacroCall::can_cast(ancestor.kind()))
+ +            && sema.is_inside_macro_call(InFile::new(editioned_file_id.into(), &original_token));
+ +        let analysis_results = if aggregate {
+ +            expand_and_analyze_all(
+@@ -179,7 +176,7 @@
+          let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
+  
+ diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs
+-index 7280fd1ad..7f157f68f 100644
++index 7280fd1ad5..5e85087ea6 100644
+ --- a/crates/ide-completion/src/context/analysis.rs
+ +++ b/crates/ide-completion/src/context/analysis.rs
+ @@ -42,8 +42,11 @@ struct ExpansionResult {
+@@ -302,11 +299,11 @@
+ +    };
+ +
+ +    let multi_marker = expansions.iter().any(|expansion| {
+-+        expansion.fake_ident_token.parent_ancestors().last().is_some_and(|file| {
+-+            completion_marker_count(&file)
+-+                .saturating_sub(completion_marker_count(&expansion.original_file))
+-+                > 1
+-+        })
+++        expansion
+++            .fake_ident_token
+++            .parent_ancestors()
+++            .last()
+++            .is_some_and(|file| completion_marker_count(&file) > 1)
+ +    });
+ +    expansions
+ +        .into_iter()
+@@ -630,7 +627,7 @@
+                          }
+                      }
+                  }
+-@@ -391,45 +540,44 @@ fn expand(
++@@ -391,45 +540,40 @@ fn expand(
+      }
+      let speculative_args = macro_call_with_fake_ident.token_tree()?;
+  
+@@ -643,11 +640,7 @@
+ +    let preserved_declarative_macro = direct_attribute_output
+ +        && is_declarative_macro
+ +        && sema.original_syntax_node_rooted(actual_macro_call.syntax()).is_some();
+-+    if state.collect_all
+-+        && direct_attribute_output
+-+        && is_declarative_macro
+-+        && !preserved_declarative_macro
+-+    {
+++    if direct_attribute_output && is_declarative_macro && !preserved_declarative_macro {
+ +        // A declarative macro synthesized by an attribute's output is not an original
+ +        // completion position. An invocation preserved by the attribute maps back to a
+ +        // source node and is handled below.
+@@ -707,7 +700,7 @@
+          }
+          // at least one expansion failed, we won't have anything to expand from this point
+          // onwards so break out
+-@@ -444,6 +592,7 @@ fn analyze<'db>(
++@@ -444,6 +588,7 @@ fn analyze<'db>(
+      expansion_result: ExpansionResult,
+      original_token: &SyntaxToken,
+      self_token: &SyntaxToken,
+@@ -715,7 +708,7 @@
+  ) -> Option<(CompletionAnalysis<'db>, (Option<Type<'db>>, Option<ast::NameOrNameRef>), QualifierCtx)>
+  {
+      let _p = tracing::info_span!("CompletionContext::analyze").entered();
+-@@ -454,6 +603,7 @@ fn analyze<'db>(
++@@ -454,6 +599,7 @@ fn analyze<'db>(
+          speculative_offset,
+          fake_ident_token,
+          derive_ctx,
+@@ -723,7 +716,7 @@
+      } = expansion_result;
+  
+      if original_token.kind() != self_token.kind()
+-@@ -474,7 +624,7 @@ fn analyze<'db>(
++@@ -474,7 +620,7 @@ fn analyze<'db>(
+          {
+              let parent = name_ref.syntax().parent()?;
+              let (mut nameref_ctx, _) =
+@@ -732,7 +725,7 @@
+              if let NameRefKind::Path(path_ctx) = &mut nameref_ctx.kind {
+                  path_ctx.kind = PathKind::Derive {
+                      existing_derives: sema
+-@@ -558,6 +708,7 @@ fn analyze<'db>(
++@@ -558,6 +704,7 @@ fn analyze<'db>(
+                  name_ref,
+                  expansion_result.original_offset,
+                  parent,
+@@ -740,7 +733,7 @@
+              )?;
+  
+              if let NameRefContext {
+-@@ -578,7 +729,7 @@ fn analyze<'db>(
++@@ -578,7 +725,7 @@ fn analyze<'db>(
+              CompletionAnalysis::NameRef(nameref_ctx)
+          }
+          ast::NameLike::Name(name) => {
+@@ -749,7 +742,7 @@
+              CompletionAnalysis::Name(name_ctx)
+          }
+      };
+-@@ -911,6 +1062,7 @@ fn classify_name(
++@@ -911,6 +1058,7 @@ fn classify_name(
+      sema: &Semantics<'_, RootDatabase>,
+      original_file: &SyntaxNode,
+      name: ast::Name,
+@@ -757,7 +750,7 @@
+  ) -> Option<NameContext> {
+      let parent = name.syntax().parent()?;
+      let kind = match_ast! {
+-@@ -920,9 +1072,15 @@ fn classify_name(
++@@ -920,9 +1068,15 @@ fn classify_name(
+              ast::Enum(_) => NameKind::Enum,
+              ast::Fn(_) => NameKind::Function,
+              ast::IdentPat(bind_pat) => {
+@@ -775,7 +768,7 @@
+                  }
+  
+                  NameKind::IdentPat(pat_ctx)
+-@@ -943,7 +1101,7 @@ fn classify_name(
++@@ -943,7 +1097,7 @@ fn classify_name(
+              _ => return None,
+          }
+      };
+@@ -784,7 +777,7 @@
+      Some(NameContext { name, kind })
+  }
+  
+-@@ -953,6 +1111,7 @@ fn classify_name_ref<'db>(
++@@ -953,6 +1107,7 @@ fn classify_name_ref<'db>(
+      name_ref: ast::NameRef,
+      original_offset: TextSize,
+      parent: SyntaxNode,
+@@ -792,7 +785,7 @@
+  ) -> Option<(NameRefContext<'db>, QualifierCtx)> {
+      let nameref = find_node_at_offset(original_file, original_offset);
+  
+-@@ -962,10 +1121,11 @@ fn classify_name_ref<'db>(
++@@ -962,10 +1117,11 @@ fn classify_name_ref<'db>(
+          let dot_prefix = previous_non_trivia_token(name_ref.syntax().clone())
+              .is_some_and(|it| T![.] == it.kind());
+  
+@@ -805,7 +798,7 @@
+          )
+          .map(|expr| NameRefKind::RecordExpr { expr, dot_prefix })
+          .map(make_res);
+-@@ -976,18 +1136,24 @@ fn classify_name_ref<'db>(
++@@ -976,18 +1132,24 @@ fn classify_name_ref<'db>(
+              has_type_ascription: false,
+              ref_token: None,
+              mut_token: None,
+@@ -833,7 +826,7 @@
+          let receiver_is_ambiguous_float_literal = match &receiver {
+              Some(ast::Expr::Literal(l)) => {
+                  matches!(l.kind(), ast::LiteralKind::FloatNumber { .. })
+-@@ -1039,7 +1205,12 @@ fn classify_name_ref<'db>(
++@@ -1039,7 +1201,12 @@ fn classify_name_ref<'db>(
+                  return Some(make_res(kind));
+              },
+              ast::MethodCallExpr(method) => {
+@@ -847,7 +840,7 @@
+                  let has_parens = has_parens(&method);
+                  if !has_parens && let Some(res) = field_expr_handle(method.receiver(), method.syntax()) {
+                      return Some(res)
+-@@ -1057,8 +1228,7 @@ fn classify_name_ref<'db>(
++@@ -1057,8 +1224,7 @@ fn classify_name_ref<'db>(
+      };
+  
+      let path = segment.parent_path();
+@@ -857,7 +850,7 @@
+      let mut path_ctx = PathCompletionCtx {
+          has_call_parens: false,
+          has_macro_bang: false,
+-@@ -1073,7 +1243,7 @@ fn classify_name_ref<'db>(
++@@ -1073,7 +1239,7 @@ fn classify_name_ref<'db>(
+  
+      let func_update_record = |syn: &SyntaxNode| {
+          if let Some(record_expr) = syn.ancestors().nth(2).and_then(ast::RecordExpr::cast) {
+@@ -866,7 +859,7 @@
+          } else {
+              None
+          }
+-@@ -1145,10 +1315,11 @@ fn classify_name_ref<'db>(
++@@ -1145,10 +1311,11 @@ fn classify_name_ref<'db>(
+  
+      let generic_arg_location = |arg: ast::GenericArg| {
+          let mut override_location = None;
+@@ -879,7 +872,7 @@
+          )
+          .map(|args| {
+              let mut in_trait = None;
+-@@ -1323,7 +1494,7 @@ fn classify_name_ref<'db>(
++@@ -1323,7 +1490,7 @@ fn classify_name_ref<'db>(
+                  ast::GenericArg(it) => generic_arg_location(it),
+                  // is this case needed?
+                  ast::GenericArgList(it) => {
+@@ -888,7 +881,7 @@
+                      TypeLocation::GenericArg { args, of_trait: None, corresponding_param: None }
+                  },
+                  ast::TupleField(_) => TypeLocation::TupleField,
+-@@ -1388,7 +1559,7 @@ fn classify_name_ref<'db>(
++@@ -1388,7 +1555,7 @@ fn classify_name_ref<'db>(
+                  }
+              };
+  
+@@ -897,7 +890,7 @@
+                  Some(it) => {
+                      // buggy
+                      let innermost_ret_ty = sema
+-@@ -1407,7 +1578,7 @@ fn classify_name_ref<'db>(
++@@ -1407,7 +1574,7 @@ fn classify_name_ref<'db>(
+          };
+          let innermost_breakable_ty = innermost_breakable
+              .and_then(ast::Expr::cast)
+@@ -906,7 +899,7 @@
+              .and_then(|expr| sema.type_of_expr(&expr))
+              .map(|ty| if ty.original.is_never() { ty.adjusted() } else { ty.original() });
+          let is_func_update = func_update_record(it);
+-@@ -1421,7 +1592,7 @@ fn classify_name_ref<'db>(
++@@ -1421,7 +1588,7 @@ fn classify_name_ref<'db>(
+              .is_some_and(|it| it.semicolon_token().is_none())
+              || after_incomplete_let && incomplete_expr_stmt.unwrap_or(true) && !before_else_kw;
+          let in_value = is_in_value(&expr);
+@@ -915,7 +908,7 @@
+              .and_then(Either::left);
+  
+          let in_match_guard = match it.parent().and_then(ast::MatchArm::cast) {
+-@@ -1467,7 +1638,12 @@ fn classify_name_ref<'db>(
++@@ -1467,7 +1634,12 @@ fn classify_name_ref<'db>(
+                          match it {
+                              ast::Trait(_) => ItemListKind::Trait,
+                              ast::Impl(it) => if it.trait_().is_some() {
+@@ -929,7 +922,7 @@
+                              } else {
+                                  ItemListKind::Impl
+                              },
+-@@ -1500,7 +1676,9 @@ fn classify_name_ref<'db>(
++@@ -1500,7 +1672,9 @@ fn classify_name_ref<'db>(
+          let kind = match_ast! {
+              match parent {
+                  ast::MacroExpr(expr) => make_path_kind_expr(expr.into()),
+@@ -940,7 +933,7 @@
+                  ast::MacroType(ty) => make_path_kind_type(ty.into()),
+                  _ => return None,
+              }
+-@@ -1568,14 +1746,20 @@ fn classify_name_ref<'db>(
++@@ -1568,14 +1742,20 @@ fn classify_name_ref<'db>(
+                  },
+                  ast::TupleStructPat(it) => {
+                      path_ctx.has_call_parens = true;
+@@ -964,7 +957,7 @@
+                  },
+                  ast::MacroCall(it) => {
+                      kind_macro_call(it)?
+-@@ -1597,14 +1781,35 @@ fn classify_name_ref<'db>(
++@@ -1597,14 +1777,35 @@ fn classify_name_ref<'db>(
+                              },
+                              ast::TupleStructPat(it) => {
+                                  path_ctx.has_call_parens = true;
+@@ -1003,7 +996,7 @@
+                              },
+                              ast::MacroCall(it) => {
+                                  kind_macro_call(it)?
+-@@ -1640,7 +1845,7 @@ fn classify_name_ref<'db>(
++@@ -1640,7 +1841,7 @@ fn classify_name_ref<'db>(
+          } else {
+              let qualifier = qualifier
+                  .segment()
+@@ -1012,7 +1005,7 @@
+                  .map(|it| it.parent_path());
+              if let Some(qualifier) = qualifier {
+                  let type_anchor = match qualifier.segment().and_then(|it| it.kind()) {
+-@@ -1770,6 +1975,7 @@ fn pattern_context_for(
++@@ -1770,6 +1971,7 @@ fn pattern_context_for(
+      sema: &Semantics<'_, RootDatabase>,
+      original_file: &SyntaxNode,
+      pat: ast::Pat,
+@@ -1020,7 +1013,7 @@
+  ) -> PatternContext {
+      let mut param_ctx = None;
+  
+-@@ -1792,7 +1998,12 @@ fn pattern_context_for(
++@@ -1792,7 +1994,12 @@ fn pattern_context_for(
+                          let has_type_ascription = param.ty().is_some();
+                          param_ctx = (|| {
+                              let fake_param_list = param.syntax().parent().and_then(ast::ParamList::cast)?;
+@@ -1034,7 +1027,7 @@
+                              let param_list_owner = param_list.syntax().parent()?;
+                              let kind = match_ast! {
+                                  match param_list_owner {
+-@@ -1882,7 +2093,12 @@ fn pattern_context_for(
++@@ -1882,7 +2089,12 @@ fn pattern_context_for(
+          mut_token,
+          ref_token,
+          record_pat: None,
+@@ -1048,7 +1041,7 @@
+          missing_variants,
+      }
+  }
+-@@ -1891,10 +2107,15 @@ fn fetch_immediate_impl_or_trait(
++@@ -1891,10 +2103,15 @@ fn fetch_immediate_impl_or_trait(
+      sema: &Semantics<'_, RootDatabase>,
+      original_file: &SyntaxNode,
+      node: &SyntaxNode,
+@@ -1067,7 +1060,7 @@
+  
+      match ancestors.next()? {
+          ast::Item::Const(_) | ast::Item::Fn(_) | ast::Item::TypeAlias(_) => (),
+-@@ -1926,7 +2147,7 @@ fn find_node_in_file<N: AstNode>(syntax: &SyntaxNode, node: &N) -> Option<N> {
++@@ -1926,7 +2143,7 @@ fn find_node_in_file<N: AstNode>(syntax: &SyntaxNode, node: &N) -> Option<N> {
+  
+  /// Attempts to find `node` inside `syntax` via `node`'s text range while compensating
+  /// for the offset introduced by the fake ident.
+@@ -1076,7 +1069,7 @@
+  fn find_node_in_file_compensated<N: AstNode>(
+      sema: &Semantics<'_, RootDatabase>,
+      in_file: &SyntaxNode,
+-@@ -1947,7 +2168,6 @@ fn ancestors_in_file_compensated<'sema>(
++@@ -1947,7 +2164,6 @@ fn ancestors_in_file_compensated<'sema>(
+          return None;
+      }
+      let range = TextRange::new(range.start(), end);
+@@ -1084,7 +1077,7 @@
+      let intersection = range.intersect(syntax_range)?;
+      let node = match in_file.covering_element(intersection) {
+          NodeOrToken::Node(node) => node,
+-@@ -1956,15 +2176,138 @@ fn ancestors_in_file_compensated<'sema>(
++@@ -1956,15 +2172,102 @@ fn ancestors_in_file_compensated<'sema>(
+      Some(sema.ancestors_with_macros(node))
+  }
+  
+@@ -1106,21 +1099,20 @@
+ +}
+ +
+ +fn find_opt_node_in_file_mode<N: AstNode>(
++     sema: &Semantics<'_, RootDatabase>,
++     syntax: &SyntaxNode,
++     node: Option<N>,
+++    multi_marker: bool,
+++) -> Option<N> {
+++    find_node_in_file_mode(sema, syntax, &node?, multi_marker)
+++}
+++
+++fn find_opt_node_in_file_aggregate<N: AstNode>(
+ +    sema: &Semantics<'_, RootDatabase>,
+ +    syntax: &SyntaxNode,
+ +    node: Option<N>,
+ +    multi_marker: bool,
+ +) -> Option<N> {
+-+    find_node_in_file_mode(sema, syntax, &node?, multi_marker)
+-+}
+-+
+-+fn find_opt_node_in_file_aggregate<N: AstNode>(
+-     sema: &Semantics<'_, RootDatabase>,
+-     syntax: &SyntaxNode,
+-     node: Option<N>,
+-+    multi_marker: bool,
+- ) -> Option<N> {
+--    find_node_in_file_compensated(sema, syntax, &node?)
+ +    match (multi_marker, node) {
+ +        (true, Some(node)) => find_node_in_file_multi(sema, syntax, &node),
+ +        (false, Some(node)) => find_node_in_file(syntax, &node),
+@@ -1146,7 +1138,8 @@
+ +    sema: &Semantics<'_, RootDatabase>,
+ +    in_file: &SyntaxNode,
+ +    node: &N,
+-+) -> Option<N> {
++ ) -> Option<N> {
++-    find_node_in_file_compensated(sema, syntax, &node?)
+ +    ancestors_in_file_multi(sema, in_file, node.syntax())?.find_map(N::cast)
+ +}
+ +
+@@ -1158,8 +1151,9 @@
+ +    let syntax_range = in_file.text_range();
+ +    let range = node.text_range();
+ +    let fake_file = node.ancestors().last()?;
+-+    let start = corresponding_offset(in_file, &fake_file, range.start())?;
+-+    let end = corresponding_offset(in_file, &fake_file, range.end())?;
+++    let start =
+++        range.start().checked_sub(completion_marker_len_before(&fake_file, range.start()))?;
+++    let end = range.end().checked_sub(completion_marker_len_before(&fake_file, range.end()))?;
+ +    if end < start {
+ +        return None;
+ +    }
+@@ -1173,51 +1167,14 @@
+ +    Some(sema.ancestors_with_macros(node))
+ +}
+ +
+-+fn corresponding_offset(
+-+    actual_file: &SyntaxNode,
+-+    speculative_file: &SyntaxNode,
+-+    speculative_offset: TextSize,
+-+) -> Option<TextSize> {
+-+    let actual_tokens = actual_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
+-+    let speculative_tokens =
+-+        speculative_file.descendants_with_tokens().filter_map(NodeOrToken::into_token);
+-+
+-+    for (actual, speculative) in actual_tokens.zip(speculative_tokens) {
+-+        let range = speculative.text_range();
+-+        if speculative_offset < range.start() || speculative_offset > range.end() {
+-+            continue;
+-+        }
+-+        let relative = usize::from(speculative_offset - range.start());
+-+        let relative = corresponding_token_offset(actual.text(), speculative.text(), relative)?;
+-+        return actual.text_range().start().checked_add(TextSize::try_from(relative).ok()?);
+-+    }
+-+    None
+-+}
+-+
+-+fn corresponding_token_offset(actual: &str, speculative: &str, offset: usize) -> Option<usize> {
+-+    if offset > speculative.len() {
+-+        return None;
+-+    }
+-+
+-+    let actual = actual.as_bytes();
+-+    let speculative = speculative.as_bytes();
+-+    let marker = COMPLETION_MARKER.as_bytes();
+-+    let (mut actual_offset, mut speculative_offset) = (0, 0);
+-+    while speculative_offset < offset {
+-+        if actual.get(actual_offset) == speculative.get(speculative_offset) {
+-+            actual_offset += 1;
+-+            speculative_offset += 1;
+-+        } else if speculative[speculative_offset..].starts_with(marker) {
+-+            let remaining = offset - speculative_offset;
+-+            if remaining <= marker.len() {
+-+                return Some(actual_offset);
+-+            }
+-+            speculative_offset += marker.len();
+-+        } else {
+-+            return None;
+-+        }
+-+    }
+-+    Some(actual_offset)
+++fn completion_marker_len_before(file: &SyntaxNode, offset: TextSize) -> TextSize {
+++    let len = file
+++        .descendants_with_tokens()
+++        .filter_map(NodeOrToken::into_token)
+++        .filter(|token| token.text_range().start() < offset)
+++        .map(|token| token.text().matches(COMPLETION_MARKER).count())
+++        .sum::<usize>();
+++    TextSize::try_from(len * COMPLETION_MARKER.len()).unwrap_or_default()
+ +}
+ +
+ +fn completion_marker_count(file: &SyntaxNode) -> usize {
+@@ -1229,7 +1186,7 @@
+  
+  fn path_or_use_tree_qualifier(path: &ast::Path) -> Option<(ast::Path, bool)> {
+ diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs
+-index 675ffac04..f256c0c3d 100644
++index 675ffac040..f256c0c3da 100644
+ --- a/crates/ide-completion/src/item.rs
+ +++ b/crates/ide-completion/src/item.rs
+ @@ -465,7 +465,7 @@ impl CompletionItemKind {
+@@ -1242,7 +1199,7 @@
+      Reference(Mutability),
+      Dereference,
+ diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs
+-index 4ca3257c5..81a41eef8 100644
++index 4ca3257c5c..81a41eef8f 100644
+ --- a/crates/ide-completion/src/lib.rs
+ +++ b/crates/ide-completion/src/lib.rs
+ @@ -194,18 +194,33 @@ pub fn completions(

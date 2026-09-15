@@ -1,0 +1,4 @@
+diff --git a/crates/semantics/src/checker/registration/declarations.rs b/crates/semantics/src/checker/registration/declarations.rs
+@@ -57,6 +57,8 @@ impl TaskState {
++        let const_initializers = self.collect_current_file_field_default_const_initializers(items);
++        self.infer_and_install_field_defaults(store, items, &const_initializers);

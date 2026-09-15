@@ -1,0 +1,32 @@
+diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs
+@@ -0,0 +1,30 @@
++//! Coordinator-aware state for manually paged requests.
++
++use crate::response::{Coordinator, PagingState, PagingStateResponse};
++
++/// Opaque state used to resume a manually paged request.
++///
++/// Besides the server-provided paging state, this value remembers the coordinator
++/// which completed the preceding page. The coordinator is only a preference: the
++/// active load-balancing policy revalidates it before every resumed request.
++#[derive(Debug, Clone)]
++pub struct PagingContinuation {
++    state: PagingState,
++    coordinator: Coordinator,
++}
++
++impl PagingContinuation {
++    pub(crate) fn from_response(
++        response: PagingStateResponse,
++        coordinator: Coordinator,
++    ) -> Option<Self> {
++        match response {
++            PagingStateResponse::HasMorePages { state } => Some(Self { state, coordinator }),
++            PagingStateResponse::NoMorePages => None,
++        }
++    }
++
++    pub(crate) fn into_parts(self) -> (PagingState, Coordinator) {
++        (self.state, self.coordinator)
++    }
++}

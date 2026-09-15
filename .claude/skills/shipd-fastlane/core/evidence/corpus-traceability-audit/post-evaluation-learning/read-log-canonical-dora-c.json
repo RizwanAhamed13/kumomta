@@ -1,0 +1,132 @@
+{
+  "recorded_at": "2026-09-13T01:38:33.189693+00:00",
+  "sections": [
+    {
+      "index": 1,
+      "file": "diff --git a/dora-bytecode/src/dumper.rs b/dora-bytecode/src/dumper.rs",
+      "bytes": 614,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-01.txt",
+      "sha256": "fdbd1e4009a0624bbeab99d77caf4e9ff47d36e927e5858edd889811c799005b"
+    },
+    {
+      "index": 2,
+      "file": "diff --git a/dora-bytecode/src/opcode.rs b/dora-bytecode/src/opcode.rs",
+      "bytes": 263,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-02.txt",
+      "sha256": "4b3039dee3ecc0cefd468c75f318a69de4464fb70f417a458118588db7cfaf7e"
+    },
+    {
+      "index": 6,
+      "file": "diff --git a/dora-cannon-compiler/src/asm.rs b/dora-cannon-compiler/src/asm.rs",
+      "bytes": 263,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-06.txt",
+      "sha256": "7da1db8729664557d7d250a374d431888dcd509fa3cfc54eee8f5a0ed7744f50"
+    },
+    {
+      "index": 8,
+      "file": "diff --git a/dora-compiler/src/closure.rs b/dora-compiler/src/closure.rs",
+      "bytes": 1068,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-08.txt",
+      "sha256": "c3fd7fd9b19de01148be4ccfab3caa537eea743d15eeb5382d109662bd3cd453"
+    },
+    {
+      "index": 10,
+      "file": "diff --git a/dora-frontend/src/generator/bytecode.rs b/dora-frontend/src/generator/bytecode.rs",
+      "bytes": 707,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-10.txt",
+      "sha256": "be746aa82dd4aab7a934ce06385a65b7d70c0d1e0f5888008db9840c809b14b9"
+    },
+    {
+      "index": 12,
+      "file": "diff --git a/dora-frontend/src/sema.rs b/dora-frontend/src/sema.rs",
+      "bytes": 424,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-12.txt",
+      "sha256": "f8576a29b9dccbb7aed7c78eee6fea8c27ef17f811d0ea7ac4fe1bf59f8ff029"
+    },
+    {
+      "index": 13,
+      "file": "diff --git a/dora-frontend/src/sema/body.rs b/dora-frontend/src/sema/body.rs",
+      "bytes": 757,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-13.txt",
+      "sha256": "a23c6d7be9af044cf8e7be7c4b8e6e3d7bcc837c110ebc9f3303d0032aa8ed04"
+    },
+    {
+      "index": 15,
+      "file": "diff --git a/dora-frontend/src/sema/matching.rs b/dora-frontend/src/sema/matching.rs",
+      "bytes": 191,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-15.txt",
+      "sha256": "19c8870eab4a006e1815843b5dd0ddf713f16776e032b727898aae6603e6db30"
+    },
+    {
+      "index": 16,
+      "file": "diff --git a/dora-frontend/src/typeck/pattern.rs b/dora-frontend/src/typeck/pattern.rs",
+      "bytes": 5178,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-16.txt",
+      "sha256": "a432e3c304455f8c05bc074752892c421af8921353108a127c74a98f93726239"
+    },
+    {
+      "index": 17,
+      "file": "diff --git a/pkgs/boots/bytecode/dump.dora b/pkgs/boots/bytecode/dump.dora",
+      "bytes": 511,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-17.txt",
+      "sha256": "f185d893230fb40ea01f8affe41138137b7d255ac925a35873e8e058a5baf442"
+    },
+    {
+      "index": 18,
+      "file": "diff --git a/pkgs/boots/bytecode/instruction.dora b/pkgs/boots/bytecode/instruction.dora",
+      "bytes": 289,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-18.txt",
+      "sha256": "d4870535a6b84eafeeb03e68feafbe560e25dd1c82f5f2a8c5d893085fa39511"
+    },
+    {
+      "index": 19,
+      "file": "diff --git a/pkgs/boots/bytecode/opcode.dora b/pkgs/boots/bytecode/opcode.dora",
+      "bytes": 559,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-19.txt",
+      "sha256": "14592e3842e2bd96f20292c3d8842349ffa1bf16e7ce9ae64b1a654a993fa89c"
+    },
+    {
+      "index": 20,
+      "file": "diff --git a/pkgs/boots/bytecode/reader.dora b/pkgs/boots/bytecode/reader.dora",
+      "bytes": 734,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-20.txt",
+      "sha256": "68f0c3aa543148a84ca07a80577906b3c0405ae09ef69edaf39c28b4d8ad2ce0"
+    },
+    {
+      "index": 25,
+      "file": "diff --git a/pkgs/boots/graph.dora b/pkgs/boots/graph.dora",
+      "bytes": 689,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-25.txt",
+      "sha256": "ea399e47e10c8bd157db15575317004c6f3225297d5d1b32ff69b54a92200602"
+    },
+    {
+      "index": 26,
+      "file": "diff --git a/pkgs/boots/graph/dump.dora b/pkgs/boots/graph/dump.dora",
+      "bytes": 171,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-26.txt",
+      "sha256": "abe5cdee06bfb17c83483c0ae115058b66887af89f234605cc37ed0cec937d60"
+    },
+    {
+      "index": 28,
+      "file": "diff --git a/pkgs/boots/location.dora b/pkgs/boots/location.dora",
+      "bytes": 141,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-28.txt",
+      "sha256": "ce19bb5fec5312dac117f01ae56c9707ffda6143c49ab41e62a509b3107430d3"
+    },
+    {
+      "index": 29,
+      "file": "diff --git a/pkgs/boots/store_elimination.dora b/pkgs/boots/store_elimination.dora",
+      "bytes": 166,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-29.txt",
+      "sha256": "79d105501a4d64701e90a3325acbf10331be150d3468c7bda1a607dd56497e5a"
+    },
+    {
+      "index": 30,
+      "file": "diff --git a/tools/bytecode.toml b/tools/bytecode.toml",
+      "bytes": 143,
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/expanded-review/patch-06-section-30.txt",
+      "sha256": "59d896005b2279cf6d4197022f94d6a7d24641ee7e6b2ace2c4011559457163c"
+    }
+  ],
+  "extent": "complete retained changed-hunk sections, unchanged context excluded"
+}

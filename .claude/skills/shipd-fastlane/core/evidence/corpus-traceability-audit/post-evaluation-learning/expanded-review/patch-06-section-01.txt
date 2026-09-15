@@ -1,0 +1,20 @@
+diff --git a/dora-bytecode/src/dumper.rs b/dora-bytecode/src/dumper.rs
+@@ -917,6 +917,24 @@ impl<'a> BytecodeVisitor for BytecodeDumper<'a> {
++
++    fn visit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_new_trait_object("TestTraitObjectType", dest, object, idx);
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_new_trait_object("LoadTraitObjectValue", dest, object, idx);
++    }

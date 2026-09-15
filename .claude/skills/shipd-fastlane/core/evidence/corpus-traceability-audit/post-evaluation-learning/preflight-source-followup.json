@@ -1,0 +1,62 @@
+{
+  "at": "2026-09-13T00:10:28.572785+00:00",
+  "phase": "source-only-post-learning",
+  "commands": [
+    {
+      "argv": [
+        "hostname"
+      ],
+      "returncode": 0,
+      "stdout": "arch",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "uname",
+        "-m"
+      ],
+      "returncode": 0,
+      "stdout": "x86_64",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "pwd"
+      ],
+      "returncode": 0,
+      "stdout": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "df",
+        "-h",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  257G  522G  33% /home",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "findmnt",
+        "-T",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "version",
+        "--format",
+        "{{.Server.Version}}"
+      ],
+      "returncode": 0,
+      "stdout": "29.7.2",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+diff --git a/src/optimizer/core/statistics_meta.rs b/src/optimizer/core/statistics_meta.rs
+@@ -156,7 +156,9 @@ impl StatisticsMeta {
++    use crate::catalog::ColumnRef;
++    use crate::expression::ScalarExpression;
+@@ -168,6 +170,7 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],

@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-09-12T22:58:49.912110+00:00",
+  "total_seconds": 0.36461424827575684,
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "exit_code": 0,
+  "revision": "Two gate fixes plus six source-audit regressions: common partition source snapshot and reject negative signal exit as behavioral discrimination.",
+  "expected_tests": 133,
+  "production_provenance": "unverified"
+}

@@ -1,0 +1,78 @@
+diff --git a/crates/semantics/src/checker/infer/expressions/mod.rs b/crates/semantics/src/checker/infer/expressions/mod.rs
+@@ -22,7 +22,7 @@ pub mod select;
+-use syntax::program::CallKind;
++use syntax::program::{CallKind, DotAccessResolution};
+@@ -48,6 +48,9 @@ impl InferCtx<'_> {
++        if self.is_in_field_default() && self.is_owner_aware_package_const(&expression) {
++            return self.infer_owner_aware_package_const(expression, expected_ty);
++        }
+@@ -118,7 +121,7 @@ impl InferCtx<'_> {
+-            Expression::Enum { .. } => expression,
++            Expression::Enum { .. } => self.infer_enum_definition(expression),
+@@ -428,6 +431,72 @@ impl InferCtx<'_> {
++    fn is_owner_aware_package_const(&self, expression: &Expression) -> bool {
++        let Expression::DotAccess {
++            expression,
++            member,
++            resolution:
++                DotAccessResolution::PackageMember {
++                    definition: Some(definition),
++                },
++            ..
++        } = expression
++        else {
++            return false;
++        };
++        let owner_type = expression.get_type();
++        let Some(package_id) = owner_type.as_import_namespace() else {
++            return false;
++        };
++        let Some(definition_package) = self.store.package_for_qualified_name(definition.as_str())
++        else {
++            return false;
++        };
++        let Some(definition_value) = self.store.get_definition(definition.as_str()) else {
++            return false;
++        };
++        definition_package == package_id
++            && definition_value.visibility.is_public()
++            && definition_value.is_const()
++            && definition
++                .as_str()
++                .strip_prefix(package_id)
++                .and_then(|suffix| suffix.strip_prefix('.'))
++                .is_some_and(|resolved_member| resolved_member == member.as_str())
++    }
++
++    fn infer_owner_aware_package_const(
++        &mut self,
++        expression: Expression,
++        expected_ty: &Type,
++    ) -> Expression {
++        let Expression::DotAccess {
++            expression,
++            member,
++            span,
++            resolution,
++            ..
++        } = expression
++        else {
++            unreachable!()
++        };
++        let definition_ty = resolution
++            .definition()
++            .and_then(|definition| self.store.get_definition(definition))
++            .expect("validated owner-aware constant must remain registered")
++            .ty
++            .clone();
++        let (ty, _) = self.instantiate(&definition_ty);
++        self.unify(expected_ty, &ty, &span);
++        Expression::DotAccess {
++            expression,
++            member,
++            ty,
++            span,
++            resolution,
++        }
++    }
++

@@ -1,0 +1,20 @@
+diff --git a/dora-frontend/src/sema/body.rs b/dora-frontend/src/sema/body.rs
+@@ -255,6 +255,7 @@ pub struct Body {
++    map_pattern_input_tys: RefCell<NodeMap<SourceType>>,
+@@ -329,6 +330,7 @@ impl Body {
++            map_pattern_input_tys: RefCell::new(NodeMap::new()),
+@@ -582,6 +584,20 @@ impl Body {
++    pub fn set_pattern_input_ty(&self, id: PatternId, ty: SourceType) {
++        self.map_pattern_input_tys
++            .borrow_mut()
++            .insert_or_replace(id.to_universal_id(), ty);
++    }
++
++    pub fn pattern_input_ty(&self, id: PatternId) -> SourceType {
++        self.map_pattern_input_tys
++            .borrow()
++            .get(id.to_universal_id())
++            .expect("no pattern input type found")
++            .clone()
++    }
++

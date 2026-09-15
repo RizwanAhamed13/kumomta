@@ -1,0 +1,35 @@
+{
+  "at": "2026-09-13T00:29:51.756070+00:00",
+  "rows": [
+    {
+      "narrative_index": 70,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v25/repair-report.md",
+      "sha256": "8c62b0bd43ce7709aa229c9df6c9684965eeb5501493f06c2fb34a87e7a56506",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 72,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v26/repair-report.md",
+      "sha256": "5f769c968ce9cf89c5ca1a189ad6d92e0088ef2e73c3117f730cd7087bf6ca11",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 77,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v31/repair-report.md",
+      "sha256": "29ebe1e9cd207ce33909ad796425b5ff62d5edd3a7ae779e8455ea131a999c4c",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 78,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v32/repair-report.md",
+      "sha256": "72959a90753009a40bc91b99217bc43655a88b6ec290d570efd8e8b6c829dba0",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 79,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v33/repair-report.md",
+      "sha256": "41e5ff1a900c5eb2ae7fc7dd14ea5dc4d7396268543916d19767f3ad4ab0e53e",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    }
+  ]
+}

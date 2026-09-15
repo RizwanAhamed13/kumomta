@@ -1,0 +1,62 @@
+[
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-guarded-catchall-repair-20260830.md",
+    "sha256": "d321fcb5a1bf99ebbaf53d473b66f0eec693bdfbca9e9a447ecd1030f0278d59",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417598+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-interaction-harness-repair-20260830.md",
+    "sha256": "d9ac7bcd0e6df94fcc8ae74117ba7c991de1b25dcbfc2ba80be0b17504d9dad0",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417659+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-nested-heterogeneous-repair-20260830.md",
+    "sha256": "184b935509beb7f3ac358ef6db35007e94841b48c1feffda0fe91229b23b51e2",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417707+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-tuple-arity-repair-20260830.md",
+    "sha256": "3e0038ade0210df6d1553546833de771a6c6e74e82add398c49463bde955bbe7",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417743+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-associated-inference-repair-20260830.md",
+    "sha256": "78f1b31824cae8be4fce412f04c05da1fc5ee728dc501a600ece5bc767a608ae",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417781+00:00"
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-impl-bound-usefulness-repair-20260830.md",
+    "sha256": "1d49a5054eb98796e12306bc3d11599c6058d75914fd4cdf2efb80f9d8fa7077",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417816+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v19/repair-report.md",
+    "sha256": "5dfb13f2915bd03058c293bb7d931898221f4c2f7171aadbc5060c793f7fcbcf",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417858+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/repair-report.md",
+    "sha256": "f7f65e07a23c7fe14d0a0475bf4092d1a2e0bc2a8ba499141185461c44f04a47",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417895+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v21/repair-report.md",
+    "sha256": "287c505b085e8e02393e936aa2faf352101140d10c241b94a8cb7d1017e753b6",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417928+00:00"
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v22/repair-report.md",
+    "sha256": "b23431e0a1a5fa50b7b1399cb77188a8a6cf077dc0536a6c250c9395e410435d",
+    "extent": "full narrative",
+    "at": "2026-09-13T00:10:59.417962+00:00"
+  }
+]

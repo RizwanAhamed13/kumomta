@@ -1,0 +1,2325 @@
+diff --git a/crates/diagnostics/src/infer.rs b/crates/diagnostics/src/infer.rs
+index c9652a88..687af08c 100644
+--- a/crates/diagnostics/src/infer.rs
++++ b/crates/diagnostics/src/infer.rs
+@@ -316,6 +316,30 @@ pub fn const_disallows_composite(span: Span) -> LisetteDiagnostic {
+         )
+ }
+ 
++pub fn field_default_disallows_composite(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Composite value in field default")
++        .with_infer_code("field_default_disallows_composite")
++        .with_span_label(&span, "not allowed in a field default")
++        .with_help("Use a literal, constant, simple expression, or payload-less enum variant")
++}
++
++pub fn field_default_requires_simple_expression(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Field default requires a simple expression")
++        .with_infer_code("field_default_requires_simple_expression")
++        .with_span_label(&span, "expected a constant expression")
++        .with_help("Use a literal, constant, simple expression, or payload-less enum variant")
++}
++
++pub fn field_default_in_typedef(span: Span) -> LisetteDiagnostic {
++    LisetteDiagnostic::error("Field default in Go declaration")
++        .with_infer_code("field_default_in_typedef")
++        .with_span_label(&span, "field defaults are not allowed in `.d.lis` files")
++        .with_help(
++            "Remove the default value; Go declaration files describe existing Go types and do \
++             not define Lisette construction behavior",
++        )
++}
++
+ pub fn const_cycle(cycle: &[String], span: Span) -> LisetteDiagnostic {
+     let mut diagnostic = LisetteDiagnostic::error("`const` init cycle")
+         .with_infer_code("const_cycle")
+diff --git a/crates/emit/src/expressions/access/struct_call.rs b/crates/emit/src/expressions/access/struct_call.rs
+index ed5eb668..598c5a30 100644
+--- a/crates/emit/src/expressions/access/struct_call.rs
++++ b/crates/emit/src/expressions/access/struct_call.rs
+@@ -36,6 +36,12 @@ struct EnumCallContext {
+     pointer_fields: HashSet<String>,
+ }
+ 
++struct AutofillField {
++    name: ecow::EcoString,
++    ty: Type,
++    default: Option<Expression>,
++}
++
+ impl Planner<'_> {
+     /// Plan a struct/enum-variant construction. Value is the Go struct
+     /// literal or update.
+@@ -71,7 +77,7 @@ impl Planner<'_> {
+         }
+         let sequenced = self.sequence_values(stages, CaptureBoundary::SiblingSequence, "_field");
+         let mut effect = sequenced.effect;
+-        let fields_contain_deferred_evaluation = sequenced.contains_deferred_evaluation();
++        let mut fields_contain_deferred_evaluation = sequenced.contains_deferred_evaluation();
+         let (mut setup, emitted_values) = sequenced.into_rendered();
+ 
+         let mut field_names: Vec<String> = Vec::new();
+@@ -79,7 +85,7 @@ impl Planner<'_> {
+         for (slot, f) in field_assignments.iter().enumerate() {
+             let field_name = self.resolve_struct_call_field_name(&f.name, &ctx);
+             let mut value = emitted_values[slot].clone();
+-            value = self.wrap_recursive_enum_field(&mut setup, value, f, &ctx);
++            value = self.wrap_recursive_enum_field(&mut setup, value, &f.name, &ctx);
+             let value_ty = f.value.get_type();
+             let field_ty = self.lookup_struct_field_ty(ty, &f.name);
+             let field_layout =
+@@ -139,7 +145,16 @@ impl Planner<'_> {
+                 }
+             }
+             StructSpread::Autofill { .. } => {
+-                self.append_autofills(&mut field_pairs, field_assignments, &ctx, is_go_struct);
++                let (autofill_effect, autofill_contains_deferred_evaluation) = self
++                    .append_autofills(
++                        &mut setup,
++                        &mut field_pairs,
++                        field_assignments,
++                        &ctx,
++                        is_go_struct,
++                    );
++                effect = effect.combine(autofill_effect);
++                fields_contain_deferred_evaluation |= autofill_contains_deferred_evaluation;
+                 emit_struct_literal(&ctx.go_type, &field_pairs, expression_ctx)
+             }
+             StructSpread::None => emit_struct_literal(&ctx.go_type, &field_pairs, expression_ctx),
+@@ -182,22 +197,55 @@ impl Planner<'_> {
+         value
+     }
+ 
+-    /// Zero-fill unassigned fields. Slices keep Go's nil; on a Go struct only
+-    /// maps need one, their nil being the sole zero that panics on write.
++    /// Fill unassigned fields from their declared defaults before falling back
++    /// to zero. Slices keep Go's nil; on a Go struct only maps need a zero,
++    /// their nil being the sole zero that panics on write.
+     fn append_autofills(
+         &mut self,
++        statements: &mut Vec<LoweredStatement>,
+         field_pairs: &mut Vec<(String, String)>,
+         field_assignments: &[StructFieldAssignment],
+         ctx: &StructCallContext<'_>,
+         is_go_struct: bool,
+-    ) {
++    ) -> (EvaluationEffect, bool) {
++        let mut effect = EvaluationEffect::Pure;
++        let mut contains_deferred_evaluation = false;
+         let assigned: HashSet<&str> = field_assignments.iter().map(|f| f.name.as_str()).collect();
+         let Some(unspecified) =
+             self.lookup_unspecified_fields(ctx.ty, ctx.name, ctx.enum_ctx.as_ref(), &assigned)
+         else {
+-            return;
++            return (effect, contains_deferred_evaluation);
+         };
+-        for (field_name, field_ty) in unspecified {
++        for AutofillField {
++            name: field_name,
++            ty: field_ty,
++            default,
++        } in unspecified
++        {
++            if let Some(default) = default {
++                let staged = self.stage_composite(
++                    &default,
++                    ExpressionContext::value().with_expected_slot_type(Some(&field_ty)),
++                );
++                effect = effect.combine(staged.evaluation.effect);
++                contains_deferred_evaluation |= staged.expression.contains_deferred_evaluation();
++                let (default_setup, mut value) = staged.into_parts();
++                statements.extend(default_setup);
++                value = self.wrap_recursive_enum_field(statements, value, &field_name, ctx);
++                let field_layout = self.field_slot_layout(ctx.ty, &field_name, &field_ty);
++                // The declaration was checked at the generic field type. At a
++                // concrete call site, that source type is the substituted type.
++                value = self.coerce_struct_field(
++                    statements,
++                    value,
++                    &field_ty,
++                    Some(&field_ty),
++                    field_layout.as_ref(),
++                );
++                let go_field_name = self.resolve_struct_call_field_name(&field_name, ctx);
++                field_pairs.push((go_field_name, value));
++                continue;
++            }
+             let zero = if is_go_struct {
+                 match self.go_field_map_zero(ctx.ty, &field_name, &field_ty) {
+                     Some(zero) => zero,
+@@ -212,6 +260,7 @@ impl Planner<'_> {
+             let go_field_name = self.resolve_struct_call_field_name(&field_name, ctx);
+             field_pairs.push((go_field_name, zero));
+         }
++        (effect, contains_deferred_evaluation)
+     }
+ 
+     /// Empty-map literal in the field's Go type, sound as empty needs no coercion.
+@@ -229,7 +278,7 @@ impl Planner<'_> {
+         name: &str,
+         enum_ctx: Option<&EnumCallContext>,
+         assigned: &HashSet<&str>,
+-    ) -> Option<Vec<(ecow::EcoString, Type)>> {
++    ) -> Option<Vec<AutofillField>> {
+         let params = match ty.strip_refs() {
+             Type::Nominal { params, .. } => params,
+             _ => Vec::new(),
+@@ -250,7 +299,10 @@ impl Planner<'_> {
+             let variant = variants.iter().find(|v| v.name == variant_name)?;
+             let map = generics_substitution(generics.iter().map(|g| g.name.clone()), &params);
+             return Some(unspecified_pairs(
+-                variant.fields.iter().map(|f| (&f.name, &f.ty)),
++                variant
++                    .fields
++                    .iter()
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+                 assigned,
+                 &map,
+             ));
+@@ -269,7 +321,9 @@ impl Planner<'_> {
+         };
+         let map = forall_substitution(definition_ty, &params);
+         Some(unspecified_pairs(
+-            fields.iter().map(|f| (&f.name, &f.ty)),
++            fields
++                .iter()
++                .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+             assigned,
+             &map,
+         ))
+@@ -308,7 +362,10 @@ impl Planner<'_> {
+             && let Some(fields) = self.lookup_unspecified_fields(ty, "", None, &HashSet::default())
+         {
+             let mut pairs: Vec<(String, String)> = Vec::new();
+-            for (name, field_ty) in fields {
++            for AutofillField {
++                name, ty: field_ty, ..
++            } in fields
++            {
+                 let Some(zero) = self.go_field_map_zero(ty, &name, &field_ty) else {
+                     continue;
+                 };
+@@ -399,8 +456,13 @@ impl Planner<'_> {
+             let pairs: Vec<(String, String)> = fields
+                 .into_iter()
+                 .enumerate()
+-                .filter(|(_, (_, field_ty))| !field_ty.is_slice())
+-                .map(|(index, (name, field_ty))| {
++                .filter(|(_, field)| field.default.is_some() || !field.ty.is_slice())
++                .map(|(index, field)| {
++                    let AutofillField {
++                        name,
++                        ty: field_ty,
++                        default,
++                    } = field;
+                     let go_name = if is_tuple {
+                         format!("F{}", index)
+                     } else if self.struct_field_is_exported(ty, &name) {
+@@ -410,7 +472,13 @@ impl Planner<'_> {
+                     } else {
+                         go_name::unexported_method_go_name(&name)
+                     };
+-                    (go_name, self.lisette_zero(&field_ty))
++                    let value = match default {
++                        Some(default) => {
++                            self.inline_autofill_default(ty, &name, &field_ty, &default)
++                        }
++                        None => self.lisette_zero(&field_ty),
++                    };
++                    (go_name, value)
+                 })
+                 .collect();
+             return emit_struct_literal(&go_ty, &pairs, ExpressionContext::value());
+@@ -421,6 +489,32 @@ impl Planner<'_> {
+         format!("{}{{}}", self.go_type_string(ty))
+     }
+ 
++    /// Defaults are validated as constant expressions, so planning one for a
++    /// recursively-created nominal zero cannot require setup statements.
++    fn inline_autofill_default(
++        &mut self,
++        owner: &Type,
++        field_name: &str,
++        field_ty: &Type,
++        default: &Expression,
++    ) -> String {
++        let staged = self.stage_composite(
++            default,
++            ExpressionContext::value().with_expected_slot_type(Some(field_ty)),
++        );
++        let (mut setup, value) = staged.into_parts();
++        let field_layout = self.field_slot_layout(owner, field_name, field_ty);
++        let value = self.coerce_struct_field(
++            &mut setup,
++            value,
++            field_ty,
++            Some(field_ty),
++            field_layout.as_ref(),
++        );
++        assert!(setup.is_empty(), "validated field default required setup");
++        value
++    }
++
+     /// Array zero value, filling per index with `lisette_zero` when Go's own
+     /// `[N]E{}` zero differs from Lisette's (e.g. `Option<T>`).
+     pub(crate) fn array_zero(&mut self, len: u64, elem: &Type) -> String {
+@@ -457,13 +551,13 @@ impl Planner<'_> {
+         &mut self,
+         statements: &mut Vec<LoweredStatement>,
+         value: String,
+-        field: &StructFieldAssignment,
++        field_name: &str,
+         ctx: &StructCallContext<'_>,
+     ) -> String {
+         let needs_pointer = ctx
+             .enum_ctx
+             .as_ref()
+-            .is_some_and(|e| e.pointer_fields.contains(field.name.as_str()));
++            .is_some_and(|e| e.pointer_fields.contains(field_name));
+         if !needs_pointer {
+             return value;
+         }
+@@ -685,7 +779,10 @@ impl Planner<'_> {
+         } else {
+             base_value
+         };
+-        for (field_name, _) in carried {
++        for AutofillField {
++            name: field_name, ..
++        } in carried
++        {
+             let slot = self.resolve_struct_call_field_name(&field_name, ctx);
+             field_pairs.push((slot.clone(), format!("{}.{}", source, slot)));
+         }
+@@ -737,16 +834,56 @@ fn apply_substitution(ty: &Type, map: &syntax::types::SubstitutionMap) -> Type {
+ }
+ 
+ fn unspecified_pairs<'a>(
+-    fields: impl Iterator<Item = (&'a ecow::EcoString, &'a Type)>,
++    fields: impl Iterator<Item = (&'a ecow::EcoString, &'a Type, Option<&'a Expression>)>,
+     assigned: &HashSet<&str>,
+     map: &syntax::types::SubstitutionMap,
+-) -> Vec<(ecow::EcoString, Type)> {
++) -> Vec<AutofillField> {
+     fields
+-        .filter(|(name, _)| !assigned.contains(name.as_str()))
+-        .map(|(name, ty)| (name.clone(), apply_substitution(ty, map)))
++        .filter(|(name, _, _)| !assigned.contains(name.as_str()))
++        .map(|(name, ty, default)| {
++            let default = default.cloned().map(|mut default| {
++                substitute_default_expression_types(&mut default, map);
++                default
++            });
++            AutofillField {
++                name: name.clone(),
++                ty: apply_substitution(ty, map),
++                default,
++            }
++        })
+         .collect()
+ }
+ 
++fn substitute_default_expression_types(
++    expression: &mut Expression,
++    map: &syntax::types::SubstitutionMap,
++) {
++    match expression {
++        Expression::Literal { ty, .. } | Expression::Identifier { ty, .. } => {
++            *ty = apply_substitution(ty, map);
++        }
++        Expression::DotAccess { expression, ty, .. }
++        | Expression::Unary { expression, ty, .. }
++        | Expression::Paren { expression, ty, .. } => {
++            substitute_default_expression_types(expression, map);
++            *ty = apply_substitution(ty, map);
++        }
++        Expression::Binary {
++            left, right, ty, ..
++        } => {
++            substitute_default_expression_types(left, map);
++            substitute_default_expression_types(right, map);
++            *ty = apply_substitution(ty, map);
++        }
++        _ => {
++            debug_assert!(
++                map.is_empty(),
++                "unsupported generic expression in validated field default"
++            );
++        }
++    }
++}
++
+ pub(crate) fn emit_struct_literal(
+     ty: &str,
+     fields: &[(String, String)],
+diff --git a/crates/format/src/formatter/top_level_item.rs b/crates/format/src/formatter/top_level_item.rs
+index 05e97488..d8d94a95 100644
+--- a/crates/format/src/formatter/top_level_item.rs
++++ b/crates/format/src/formatter/top_level_item.rs
+@@ -205,6 +205,13 @@ impl<'a> Formatter<'a> {
+                     .append(Self::annotation(&field.annotation))
+             };
+ 
++            let field_definition = match &field.default {
++                Some(default) => field_definition
++                    .append(" = ")
++                    .append(self.expression(default)),
++                None => field_definition,
++            };
++
+             let attrs_with_field = match between_attrs_and_name {
+                 Some(c) => field_attrs
+                     .append(c.force_break())
+@@ -219,8 +226,11 @@ impl<'a> Formatter<'a> {
+                 has_blank_above: split.has_blank_before_leading,
+             });
+ 
+-            let ann_span = field.annotation.get_span();
+-            prev_anchor = Some(ann_span.byte_offset + ann_span.byte_length);
++            let trailing_span = field
++                .default
++                .as_deref()
++                .map_or_else(|| field.annotation.get_span(), Expression::get_span);
++            prev_anchor = Some(trailing_span.byte_offset + trailing_span.byte_length);
+         }
+ 
+         let split = match prev_anchor {
+@@ -325,10 +335,16 @@ impl<'a> Formatter<'a> {
+             VariantFields::Struct(fields) => {
+                 let field_docs: Vec<_> = fields
+                     .iter()
+-                    .map(|f| {
+-                        Document::string(f.name.to_string())
++                    .map(|field| {
++                        let definition = Document::string(field.name.to_string())
+                             .append(": ")
+-                            .append(Self::annotation(&f.annotation))
++                            .append(Self::annotation(&field.annotation));
++                        match &field.default {
++                            Some(default) => {
++                                definition.append(" = ").append(self.expression(default))
++                            }
++                            None => definition,
++                        }
+                     })
+                     .collect();
+                 name.append(" { ")
+diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+index e82f8022..a64db49f 100644
+--- a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
++++ b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+@@ -27,6 +27,9 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+         return;
+     }
+ 
++    if owner_has_declared_default(ctx.store, ty, name) {
++        return;
++    }
+     let zero_count = field_assignments
+         .iter()
+         .filter(|f| is_obvious_zero(&f.value))
+@@ -93,6 +96,25 @@ fn is_obvious_zero(value: &Expression) -> bool {
+     }
+ }
+ 
++fn owner_has_declared_default(store: &Store, ty: &Type, owner_name: &str) -> bool {
++    let Type::Nominal { id, .. } = ty.strip_refs() else {
++        return false;
++    };
++    let Some(definition) = store.get_definition(id.as_str()) else {
++        return false;
++    };
++    match &definition.body {
++        DefinitionBody::Struct { fields, .. } => fields.iter().any(|field| field.default.is_some()),
++        DefinitionBody::Enum { variants, .. } => {
++            let variant_name = unqualified_name(owner_name);
++            variants
++                .iter()
++                .find(|variant| variant.name == variant_name)
++                .is_some_and(|variant| variant.fields.iter().any(|field| field.default.is_some()))
++        }
++        _ => false,
++    }
++}
+ fn is_go_imported(ty: &Type) -> bool {
+     let Type::Nominal { id, .. } = ty.strip_refs() else {
+         return false;
+diff --git a/crates/passes/src/passes/lints/ref_graph/extract.rs b/crates/passes/src/passes/lints/ref_graph/extract.rs
+index 6cb6be8e..579e9339 100644
+--- a/crates/passes/src/passes/lints/ref_graph/extract.rs
++++ b/crates/passes/src/passes/lints/ref_graph/extract.rs
+@@ -133,6 +133,9 @@ pub(super) fn walk_expression(
+             for v in variants {
+                 for f in &v.fields {
+                     walk_annotation(package, &f.annotation, graph, alias_map, &enum_ctx);
++                    if let Some(default) = &f.default {
++                        walk_expression(package, default, graph, alias_map, Some(&enum_ctx));
++                    }
+                     if synthesizes_equality {
+                         mark_equals_roots(graph, &f.ty, package, alias_map);
+                     }
+@@ -157,6 +160,9 @@ pub(super) fn walk_expression(
+                 has_synthesized_equality(package, name, attributes, alias_map);
+             for f in fields {
+                 walk_annotation(package, &f.annotation, graph, alias_map, &struct_ctx);
++                if let Some(default) = &f.default {
++                    walk_expression(package, default, graph, alias_map, Some(&struct_ctx));
++                }
+                 if synthesizes_equality {
+                     mark_equals_roots(graph, &f.ty, package, alias_map);
+                 }
+diff --git a/crates/semantics/src/cache/mod.rs b/crates/semantics/src/cache/mod.rs
+index 75f5b8e1..a94b52c5 100644
+--- a/crates/semantics/src/cache/mod.rs
++++ b/crates/semantics/src/cache/mod.rs
+@@ -18,7 +18,7 @@ use crate::store::{ENTRY_PACKAGE_ID, Store};
+ use types::CachedDefinition;
+ 
+ /// Current cache format version. Bump this when making breaking changes to the cache format.
+-pub(super) const CACHE_FORMAT_VERSION: u32 = 1;
++pub(super) const CACHE_FORMAT_VERSION: u32 = 2;
+ 
+ /// Compiler version hash. Caches from different compiler versions are invalid.
+ pub(crate) const COMPILER_VERSION_HASH: u64 =
+diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs
+index c799bbc7..59c57008 100644
+--- a/crates/semantics/src/cache/types.rs
++++ b/crates/semantics/src/cache/types.rs
+@@ -3,12 +3,13 @@ use rustc_hash::FxHashMap as HashMap;
+ use ecow::EcoString;
+ use serde::{Deserialize, Serialize};
+ use syntax::ast::{
+-    Annotation, AttributeArg, FunctionAnnotationParameter, Generic, Span, StructFields,
++    Annotation, AttributeArg, BinaryOperator, Expression, FunctionAnnotationParameter, Generic,
++    IdentifierResolution, Literal, Span, StructFields, UnaryOperator,
+     Visibility as FieldVisibility,
+ };
+ use syntax::program::{
+-    AliasKind, Attributes, Definition, DefinitionBody, Interface, Methods, Package, ValueKind,
+-    Visibility,
++    AliasKind, Attributes, Definition, DefinitionBody, DotAccessResolution, Interface, Methods,
++    Package, ValueKind, Visibility,
+ };
+ use syntax::types::{Symbol, Type};
+ 
+@@ -264,6 +265,304 @@ impl CachedLiteral {
+     }
+ }
+ 
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultLiteral {
++    Integer { value: u64, text: Option<String> },
++    Float { value: f64, text: Option<String> },
++    Imaginary(f64),
++    Boolean(bool),
++    String { value: String, raw: bool },
++    Char(String),
++}
++
++impl CachedDefaultLiteral {
++    fn from_literal(literal: &Literal) -> Self {
++        match literal {
++            Literal::Integer { value, text } => Self::Integer {
++                value: *value,
++                text: text.clone(),
++            },
++            Literal::Float { value, text } => Self::Float {
++                value: *value,
++                text: text.clone(),
++            },
++            Literal::Imaginary(value) => Self::Imaginary(*value),
++            Literal::Boolean(value) => Self::Boolean(*value),
++            Literal::String { value, raw } => Self::String {
++                value: value.clone(),
++                raw: *raw,
++            },
++            Literal::Char(value) => Self::Char(value.clone()),
++            Literal::FormatString(_) | Literal::Slice(_) => {
++                unreachable!("unsupported literal reached field-default cache")
++            }
++        }
++    }
++
++    fn to_literal(&self) -> Literal {
++        match self {
++            Self::Integer { value, text } => Literal::Integer {
++                value: *value,
++                text: text.clone(),
++            },
++            Self::Float { value, text } => Literal::Float {
++                value: *value,
++                text: text.clone(),
++            },
++            Self::Imaginary(value) => Literal::Imaginary(*value),
++            Self::Boolean(value) => Literal::Boolean(*value),
++            Self::String { value, raw } => Literal::String {
++                value: value.clone(),
++                raw: *raw,
++            },
++            Self::Char(value) => Literal::Char(value.clone()),
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultIdentifierResolution {
++    Unresolved,
++    Definition(EcoString),
++}
++
++impl CachedDefaultIdentifierResolution {
++    fn from_resolution(resolution: &IdentifierResolution) -> Self {
++        match resolution {
++            IdentifierResolution::Unresolved => Self::Unresolved,
++            IdentifierResolution::Definition(definition) => Self::Definition(definition.clone()),
++            IdentifierResolution::Binding(_) => {
++                unreachable!("field defaults cannot capture local bindings")
++            }
++        }
++    }
++
++    fn to_resolution(&self) -> IdentifierResolution {
++        match self {
++            Self::Unresolved => IdentifierResolution::Unresolved,
++            Self::Definition(definition) => IdentifierResolution::Definition(definition.clone()),
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultDotResolution {
++    Unresolved,
++    PackageMember { definition: Option<Symbol> },
++    EnumVariant { definition: Symbol },
++}
++
++impl CachedDefaultDotResolution {
++    fn from_resolution(resolution: &DotAccessResolution) -> Self {
++        match resolution {
++            DotAccessResolution::Unresolved => Self::Unresolved,
++            DotAccessResolution::PackageMember { definition } => Self::PackageMember {
++                definition: definition.clone(),
++            },
++            DotAccessResolution::EnumVariant { definition } => Self::EnumVariant {
++                definition: definition.clone(),
++            },
++            DotAccessResolution::StructField { .. }
++            | DotAccessResolution::TupleStructField { .. }
++            | DotAccessResolution::TupleElement
++            | DotAccessResolution::InstanceMethod { .. }
++            | DotAccessResolution::InstanceMethodValue { .. }
++            | DotAccessResolution::StaticMethod { .. } => {
++                unreachable!("unsupported dot access reached field-default cache")
++            }
++        }
++    }
++
++    fn to_resolution(&self) -> DotAccessResolution {
++        match self {
++            Self::Unresolved => DotAccessResolution::Unresolved,
++            Self::PackageMember { definition } => DotAccessResolution::PackageMember {
++                definition: definition.clone(),
++            },
++            Self::EnumVariant { definition } => DotAccessResolution::EnumVariant {
++                definition: definition.clone(),
++            },
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultExpression {
++    Literal {
++        literal: CachedDefaultLiteral,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Identifier {
++        value: EcoString,
++        ty: Type,
++        span: CachedSpan,
++        resolution: CachedDefaultIdentifierResolution,
++    },
++    DotAccess {
++        expression: Box<Self>,
++        member: EcoString,
++        ty: Type,
++        span: CachedSpan,
++        resolution: CachedDefaultDotResolution,
++    },
++    Binary {
++        operator: BinaryOperator,
++        left: Box<Self>,
++        right: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Unary {
++        operator: UnaryOperator,
++        expression: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Paren {
++        expression: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++}
++
++impl CachedDefaultExpression {
++    fn from_expression(expression: &Expression, file_id_to_index: &HashMap<u32, u32>) -> Self {
++        match expression {
++            Expression::Literal { literal, ty, span } => Self::Literal {
++                literal: CachedDefaultLiteral::from_literal(literal),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Identifier {
++                value,
++                ty,
++                span,
++                resolution,
++            } => Self::Identifier {
++                value: value.clone(),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++                resolution: CachedDefaultIdentifierResolution::from_resolution(resolution),
++            },
++            Expression::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Self::DotAccess {
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                member: member.clone(),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++                resolution: CachedDefaultDotResolution::from_resolution(resolution),
++            },
++            Expression::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Self::Binary {
++                operator: *operator,
++                left: Box::new(Self::from_expression(left, file_id_to_index)),
++                right: Box::new(Self::from_expression(right, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Self::Unary {
++                operator: operator.clone(),
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Paren {
++                expression,
++                ty,
++                span,
++            } => Self::Paren {
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            _ => unreachable!("unsupported expression reached field-default cache"),
++        }
++    }
++
++    fn to_expression(&self, file_ids: &[u32]) -> Expression {
++        match self {
++            Self::Literal { literal, ty, span } => Expression::Literal {
++                literal: literal.to_literal(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Identifier {
++                value,
++                ty,
++                span,
++                resolution,
++            } => Expression::Identifier {
++                value: value.clone(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++                resolution: resolution.to_resolution(),
++            },
++            Self::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Expression::DotAccess {
++                expression: Box::new(expression.to_expression(file_ids)),
++                member: member.clone(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++                resolution: resolution.to_resolution(),
++            },
++            Self::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Expression::Binary {
++                operator: *operator,
++                left: Box::new(left.to_expression(file_ids)),
++                right: Box::new(right.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Expression::Unary {
++                operator: operator.clone(),
++                expression: Box::new(expression.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Paren {
++                expression,
++                ty,
++                span,
++            } => Expression::Paren {
++                expression: Box::new(expression.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++        }
++    }
++}
++
+ #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+ pub struct CachedAttribute {
+     name: String,
+@@ -294,6 +593,7 @@ pub struct CachedStructField {
+     ty: Type,
+     visibility: FieldVisibility,
+     doc: Option<String>,
++    default: Option<CachedDefaultExpression>,
+     kind: CachedStructFieldKind,
+ }
+ 
+@@ -329,6 +629,10 @@ impl CachedStructField {
+             ty: Clone::clone(&field.ty),
+             visibility: field.visibility,
+             doc: field.doc.clone(),
++            default: field
++                .default
++                .as_deref()
++                .map(|default| CachedDefaultExpression::from_expression(default, file_id_to_index)),
+             kind,
+         }
+     }
+@@ -349,6 +653,10 @@ impl CachedStructField {
+             name_span: self.name_span.to_span(file_ids),
+             ty: self.ty.clone(),
+             visibility: self.visibility,
++            default: self
++                .default
++                .as_ref()
++                .map(|default| Box::new(default.to_expression(file_ids))),
+             annotation: Annotation::Unknown,
+             kind,
+         }
+@@ -371,27 +679,42 @@ pub enum CachedVariantFields {
+ }
+ 
+ impl CachedVariantFields {
+-    fn from_variant_fields(fields: &syntax::ast::VariantFields) -> Self {
++    fn from_variant_fields(
++        fields: &syntax::ast::VariantFields,
++        file_id_to_index: &HashMap<u32, u32>,
++    ) -> Self {
+         match fields {
+             syntax::ast::VariantFields::Unit => CachedVariantFields::Unit,
+-            syntax::ast::VariantFields::Tuple(fs) => {
+-                CachedVariantFields::Tuple(fs.iter().map(CachedEnumField::from_field).collect())
+-            }
+-            syntax::ast::VariantFields::Struct(fs) => {
+-                CachedVariantFields::Struct(fs.iter().map(CachedEnumField::from_field).collect())
+-            }
++            syntax::ast::VariantFields::Tuple(fields) => CachedVariantFields::Tuple(
++                fields
++                    .iter()
++                    .map(|field| CachedEnumField::from_field(field, file_id_to_index))
++                    .collect(),
++            ),
++            syntax::ast::VariantFields::Struct(fields) => CachedVariantFields::Struct(
++                fields
++                    .iter()
++                    .map(|field| CachedEnumField::from_field(field, file_id_to_index))
++                    .collect(),
++            ),
+         }
+     }
+ 
+-    fn to_variant_fields(&self) -> syntax::ast::VariantFields {
++    fn to_variant_fields(&self, file_ids: &[u32]) -> syntax::ast::VariantFields {
+         match self {
+             CachedVariantFields::Unit => syntax::ast::VariantFields::Unit,
+-            CachedVariantFields::Tuple(fs) => {
+-                syntax::ast::VariantFields::Tuple(fs.iter().map(|f| f.to_field()).collect())
+-            }
+-            CachedVariantFields::Struct(fs) => {
+-                syntax::ast::VariantFields::Struct(fs.iter().map(|f| f.to_field()).collect())
+-            }
++            CachedVariantFields::Tuple(fields) => syntax::ast::VariantFields::Tuple(
++                fields
++                    .iter()
++                    .map(|field| field.to_field(file_ids))
++                    .collect(),
++            ),
++            CachedVariantFields::Struct(fields) => syntax::ast::VariantFields::Struct(
++                fields
++                    .iter()
++                    .map(|field| field.to_field(file_ids))
++                    .collect(),
++            ),
+         }
+     }
+ }
+@@ -404,7 +727,7 @@ impl CachedEnumVariant {
+         Self {
+             name: variant.name.clone(),
+             name_span: CachedSpan::from_span(&variant.name_span, file_id_to_index),
+-            fields: CachedVariantFields::from_variant_fields(&variant.fields),
++            fields: CachedVariantFields::from_variant_fields(&variant.fields, file_id_to_index),
+             doc: variant.doc.clone(),
+         }
+     }
+@@ -414,7 +737,7 @@ impl CachedEnumVariant {
+             doc: self.doc.clone(),
+             name: self.name.clone(),
+             name_span: self.name_span.to_span(file_ids),
+-            fields: self.fields.to_variant_fields(),
++            fields: self.fields.to_variant_fields(file_ids),
+         }
+     }
+ }
+@@ -422,23 +745,37 @@ impl CachedEnumVariant {
+ #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+ pub struct CachedEnumField {
+     name: EcoString,
++    name_span: CachedSpan,
+     ty: Type,
++    default: Option<CachedDefaultExpression>,
+ }
+ 
+ impl CachedEnumField {
+-    fn from_field(field: &syntax::ast::EnumFieldDefinition) -> Self {
++    fn from_field(
++        field: &syntax::ast::EnumFieldDefinition,
++        file_id_to_index: &HashMap<u32, u32>,
++    ) -> Self {
+         Self {
+             name: field.name.clone(),
++            name_span: CachedSpan::from_span(&field.name_span, file_id_to_index),
+             ty: Clone::clone(&field.ty),
++            default: field
++                .default
++                .as_deref()
++                .map(|default| CachedDefaultExpression::from_expression(default, file_id_to_index)),
+         }
+     }
+ 
+-    fn to_field(&self) -> syntax::ast::EnumFieldDefinition {
++    fn to_field(&self, file_ids: &[u32]) -> syntax::ast::EnumFieldDefinition {
+         syntax::ast::EnumFieldDefinition {
+             name: self.name.clone(),
+-            name_span: Span::dummy(),
++            name_span: self.name_span.to_span(file_ids),
+             ty: self.ty.clone(),
+             annotation: Annotation::Unknown,
++            default: self
++                .default
++                .as_ref()
++                .map(|default| Box::new(default.to_expression(file_ids))),
+         }
+     }
+ }
+diff --git a/crates/semantics/src/checker/freeze.rs b/crates/semantics/src/checker/freeze.rs
+index 97cfd491..fbc18e51 100644
+--- a/crates/semantics/src/checker/freeze.rs
++++ b/crates/semantics/src/checker/freeze.rs
+@@ -294,11 +294,31 @@ impl<'a> FreezeFolder<'a> {
+                 _ => {}
+             },
+ 
++            Expression::Struct { fields, .. } => {
++                for field in fields {
++                    if let Some(default) = &mut field.default {
++                        self.freeze_expr(default);
++                    }
++                }
++            }
++
++            Expression::Enum { variants, .. } => {
++                for variant in variants {
++                    let fields = match &mut variant.fields {
++                        VariantFields::Unit => continue,
++                        VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++                    };
++                    for field in fields {
++                        if let Some(default) = &mut field.default {
++                            self.freeze_expr(default);
++                        }
++                    }
++                }
++            }
++
+             Expression::Binary { .. }
+             | Expression::Interface { .. }
+             | Expression::Identifier { .. }
+-            | Expression::Enum { .. }
+-            | Expression::Struct { .. }
+             | Expression::TypeAlias { .. }
+             | Expression::VariableDeclaration { .. }
+             | Expression::PackageImport { .. }
+diff --git a/crates/semantics/src/checker/infer/context.rs b/crates/semantics/src/checker/infer/context.rs
+index 3db96745..ca59aba4 100644
+--- a/crates/semantics/src/checker/infer/context.rs
++++ b/crates/semantics/src/checker/infer/context.rs
+@@ -93,6 +93,7 @@ struct TraversalContext {
+     in_pattern: bool,
+     let_binding_rhs: bool,
+     expectation: Option<Expectation>,
++    in_field_default: bool,
+ }
+ 
+ #[derive(Debug, Clone)]
+@@ -269,6 +270,10 @@ impl<'a> InferCtx<'a> {
+         self.traversal.use_context == UseContext::Value
+     }
+ 
++    pub(super) fn is_in_field_default(&self) -> bool {
++        self.traversal.in_field_default
++    }
++
+     pub(super) fn is_callee_context(&self) -> bool {
+         self.traversal.use_context == UseContext::Callee
+     }
+@@ -315,6 +320,13 @@ impl<'a> InferCtx<'a> {
+         self.with_use_context(UseContext::Value, f)
+     }
+ 
++    pub(super) fn with_field_default_context<T>(&mut self, f: impl FnOnce(&mut Self) -> T) -> T {
++        let previous = std::mem::replace(&mut self.traversal.in_field_default, true);
++        let result = f(self);
++        self.traversal.in_field_default = previous;
++        result
++    }
++
+     pub(super) fn with_expectation<T>(
+         &mut self,
+         expectation: Expectation,
+diff --git a/crates/semantics/src/checker/infer/expressions/bindings.rs b/crates/semantics/src/checker/infer/expressions/bindings.rs
+index 218d5fa0..65467052 100644
+--- a/crates/semantics/src/checker/infer/expressions/bindings.rs
++++ b/crates/semantics/src/checker/infer/expressions/bindings.rs
+@@ -1,7 +1,7 @@
+ use crate::checker::EnvResolve;
+ use syntax::ast::BindingKind;
+ use syntax::ast::{Binding, Expression, Literal};
+-use syntax::program::DefinitionBody;
++use syntax::program::{DefinitionBody, DotAccessResolution};
+ use syntax::types::{Symbol, Type};
+ 
+ use crate::checker::infer::InferCtx;
+@@ -12,7 +12,11 @@ enum ConstInitReject {
+ }
+ 
+ impl InferCtx<'_> {
+-    fn classify_const_init(&self, expression: &Expression) -> Option<ConstInitReject> {
++    fn classify_const_init(
++        &self,
++        expression: &Expression,
++        allow_unit_enum_variant: bool,
++    ) -> Option<ConstInitReject> {
+         match expression.unwrap_parens() {
+             Expression::Literal { literal, .. } => match literal {
+                 Literal::Slice(_) => Some(ConstInitReject::Composite),
+@@ -21,12 +25,15 @@ impl InferCtx<'_> {
+             },
+             Expression::Identifier { .. } => None,
+             Expression::Binary { left, right, .. } => self
+-                .classify_const_init(left)
+-                .or_else(|| self.classify_const_init(right)),
+-            Expression::Unary { expression, .. } => self.classify_const_init(expression),
++                .classify_const_init(left, allow_unit_enum_variant)
++                .or_else(|| self.classify_const_init(right, allow_unit_enum_variant)),
++            Expression::Unary { expression, .. } => {
++                self.classify_const_init(expression, allow_unit_enum_variant)
++            }
+             Expression::StructCall { .. } => Some(ConstInitReject::Composite),
+             Expression::Tuple { .. } => Some(ConstInitReject::Composite),
+             dot if self.is_const_member_access(dot) => None,
++            dot if allow_unit_enum_variant && self.is_unit_enum_variant_access(dot) => None,
+             _ => Some(ConstInitReject::NotSimple),
+         }
+     }
+@@ -48,6 +55,22 @@ impl InferCtx<'_> {
+         self.store.is_const(qualified.as_str())
+     }
+ 
++    fn is_unit_enum_variant_access(&self, expression: &Expression) -> bool {
++        let Expression::DotAccess {
++            resolution: DotAccessResolution::EnumVariant { definition },
++            ..
++        } = expression
++        else {
++            return false;
++        };
++        let Some((enum_name, variant_name)) = definition.as_str().rsplit_once('.') else {
++            return false;
++        };
++        self.store
++            .variant_of(enum_name, variant_name)
++            .is_some_and(|variant| variant.fields.is_empty())
++    }
++
+     pub(super) fn infer_const_binding(&mut self, expression: Expression) -> Expression {
+         let Expression::Const {
+             doc,
+@@ -81,7 +104,7 @@ impl InferCtx<'_> {
+ 
+         let new_expression = expression.map_value(|expression| {
+             let expression = self.infer_expression(expression, &ty);
+-            match self.classify_const_init(&expression) {
++            match self.classify_const_init(&expression, false) {
+                 None => {}
+                 Some(ConstInitReject::NotSimple) => {
+                     self.sink
+@@ -111,6 +134,33 @@ impl InferCtx<'_> {
+         }
+     }
+ 
++    pub(crate) fn infer_field_default(
++        &mut self,
++        expression: Expression,
++        expected_ty: &Type,
++    ) -> Expression {
++        let expression = self.with_field_default_context(|this| {
++            this.with_value_context(|this| this.infer_expression(expression, expected_ty))
++        });
++        match self.classify_const_init(&expression, true) {
++            None => {}
++            Some(ConstInitReject::NotSimple) => {
++                self.sink.push(
++                    diagnostics::infer::field_default_requires_simple_expression(
++                        expression.get_span(),
++                    ),
++                );
++            }
++            Some(ConstInitReject::Composite) => {
++                self.sink
++                    .push(diagnostics::infer::field_default_disallows_composite(
++                        expression.get_span(),
++                    ));
++            }
++        }
++        expression
++    }
++
+     pub(super) fn infer_let_binding(
+         &mut self,
+         expression: Expression,
+diff --git a/crates/semantics/src/checker/infer/expressions/definitions.rs b/crates/semantics/src/checker/infer/expressions/definitions.rs
+index a2b47c3b..d7a4b05c 100644
+--- a/crates/semantics/src/checker/infer/expressions/definitions.rs
++++ b/crates/semantics/src/checker/infer/expressions/definitions.rs
+@@ -1,5 +1,9 @@
+-use syntax::ast::Expression;
++use syntax::ast::{
++    EnumFieldDefinition, EnumVariant, Expression, StructFieldDefinition, StructFields,
++    VariantFields,
++};
+ use syntax::program::{Definition, DefinitionBody};
++use syntax::types::Type;
+ 
+ use crate::checker::infer::InferCtx;
+ 
+@@ -36,6 +40,10 @@ impl InferCtx<'_> {
+                 definition_name_span.expect("struct definition has a name span");
+             let definition_generics = definition_generics.clone();
+             let definition_fields = definition_fields.clone();
++            let definition_fields = self.with_scope(|this| {
++                this.put_in_scope(&definition_generics);
++                this.hydrate_struct_source_defaults(fields, definition_fields)
++            });
+ 
+             Expression::Struct {
+                 doc,
+@@ -61,6 +69,143 @@ impl InferCtx<'_> {
+         }
+     }
+ 
++    pub(super) fn infer_enum_definition(&mut self, expression: Expression) -> Expression {
++        let store = self.store;
++        let Expression::Enum {
++            doc,
++            attributes,
++            name,
++            name_span,
++            generics,
++            variants,
++            visibility,
++            span,
++        } = expression
++        else {
++            unreachable!()
++        };
++
++        let qualified_name = self.qualify_name(&name);
++        if let Some(Definition {
++            name_span: definition_name_span,
++            body:
++                DefinitionBody::Enum {
++                    generics: definition_generics,
++                    variants: definition_variants,
++                    ..
++                },
++            ..
++        }) = store.get_definition(&qualified_name)
++        {
++            let definition_name_span =
++                definition_name_span.expect("enum definition has a name span");
++            let definition_generics = definition_generics.clone();
++            let definition_variants = definition_variants.clone();
++            let definition_variants = self.with_scope(|this| {
++                this.put_in_scope(&definition_generics);
++                this.hydrate_enum_source_defaults(variants, definition_variants)
++            });
++            Expression::Enum {
++                doc,
++                attributes,
++                name,
++                name_span: definition_name_span,
++                generics: definition_generics,
++                variants: definition_variants,
++                visibility,
++                span,
++            }
++        } else {
++            Expression::Enum {
++                doc,
++                attributes,
++                name,
++                name_span,
++                generics,
++                variants,
++                visibility,
++                span,
++            }
++        }
++    }
++
++    fn hydrate_struct_source_defaults(
++        &mut self,
++        source: StructFields,
++        registered: StructFields,
++    ) -> StructFields {
++        match (source, registered) {
++            (StructFields::Record(source), StructFields::Record(registered)) => {
++                StructFields::Record(self.hydrate_struct_field_defaults(source, registered))
++            }
++            (StructFields::Tuple(source), StructFields::Tuple(registered)) => {
++                StructFields::Tuple(self.hydrate_struct_field_defaults(source, registered))
++            }
++            (_, registered) => {
++                debug_assert!(false, "registered struct shape changed during inference");
++                registered
++            }
++        }
++    }
++
++    fn hydrate_struct_field_defaults(
++        &mut self,
++        source: Vec<StructFieldDefinition>,
++        registered: Vec<StructFieldDefinition>,
++    ) -> Vec<StructFieldDefinition> {
++        debug_assert_eq!(source.len(), registered.len());
++        registered
++            .into_iter()
++            .zip(source)
++            .map(|(mut registered, source)| {
++                registered.default = self.infer_source_default(source.default, &registered.ty);
++                registered
++            })
++            .collect()
++    }
++
++    fn hydrate_enum_source_defaults(
++        &mut self,
++        source: Vec<EnumVariant>,
++        mut registered: Vec<EnumVariant>,
++    ) -> Vec<EnumVariant> {
++        debug_assert_eq!(source.len(), registered.len());
++        for (registered_variant, source_variant) in registered.iter_mut().zip(source) {
++            match (&mut registered_variant.fields, source_variant.fields) {
++                (VariantFields::Struct(registered), VariantFields::Struct(source))
++                | (VariantFields::Tuple(registered), VariantFields::Tuple(source)) => {
++                    self.hydrate_enum_field_defaults(source, registered);
++                }
++                (VariantFields::Unit, VariantFields::Unit) => {}
++                _ => debug_assert!(false, "registered enum shape changed during inference"),
++            }
++        }
++        registered
++    }
++
++    fn hydrate_enum_field_defaults(
++        &mut self,
++        source: Vec<EnumFieldDefinition>,
++        registered: &mut [EnumFieldDefinition],
++    ) {
++        debug_assert_eq!(source.len(), registered.len());
++        for (registered, source) in registered.iter_mut().zip(source) {
++            registered.default = self.infer_source_default(source.default, &registered.ty);
++        }
++    }
++
++    fn infer_source_default(
++        &mut self,
++        default: Option<Box<Expression>>,
++        expected_ty: &Type,
++    ) -> Option<Box<Expression>> {
++        default.map(|default| {
++            Box::new(
++                self.without_diagnostics(|this| this.infer_field_default(*default, expected_ty)),
++            )
++        })
++    }
++
+     pub(super) fn infer_type_alias_definition(&mut self, expression: Expression) -> Expression {
+         let store = self.store;
+         let Expression::TypeAlias {
+diff --git a/crates/semantics/src/checker/infer/expressions/mod.rs b/crates/semantics/src/checker/infer/expressions/mod.rs
+index 74856a79..54f3c5da 100644
+--- a/crates/semantics/src/checker/infer/expressions/mod.rs
++++ b/crates/semantics/src/checker/infer/expressions/mod.rs
+@@ -22,7 +22,7 @@ pub mod select;
+ pub mod struct_call;
+ 
+ use syntax::ast::{BinaryOperator, CallTypeArguments, Expression, Span};
+-use syntax::program::CallKind;
++use syntax::program::{CallKind, DotAccessResolution};
+ use syntax::types::Type;
+ 
+ use crate::checker::infer::InferCtx;
+@@ -48,6 +48,9 @@ impl InferCtx<'_> {
+         expected_ty: &Type,
+         is_subexpression: bool,
+     ) -> Expression {
++        if self.is_in_field_default() && self.is_owner_aware_package_const(&expression) {
++            return self.infer_owner_aware_package_const(expression, expected_ty);
++        }
+         match expression {
+             Expression::Literal { literal, span, .. } => {
+                 self.infer_literal(literal, expected_ty, span)
+@@ -118,7 +121,7 @@ impl InferCtx<'_> {
+                 ..
+             } => self.infer_dot_access_or_qualified_path(expression, member, span, expected_ty),
+ 
+-            Expression::Enum { .. } => expression,
++            Expression::Enum { .. } => self.infer_enum_definition(expression),
+ 
+             Expression::Struct { .. } => self.infer_struct_definition(expression),
+ 
+@@ -428,6 +431,72 @@ impl InferCtx<'_> {
+         }
+     }
+ 
++    fn is_owner_aware_package_const(&self, expression: &Expression) -> bool {
++        let Expression::DotAccess {
++            expression,
++            member,
++            resolution:
++                DotAccessResolution::PackageMember {
++                    definition: Some(definition),
++                },
++            ..
++        } = expression
++        else {
++            return false;
++        };
++        let owner_type = expression.get_type();
++        let Some(package_id) = owner_type.as_import_namespace() else {
++            return false;
++        };
++        let Some(definition_package) = self.store.package_for_qualified_name(definition.as_str())
++        else {
++            return false;
++        };
++        let Some(definition_value) = self.store.get_definition(definition.as_str()) else {
++            return false;
++        };
++        definition_package == package_id
++            && definition_value.visibility.is_public()
++            && definition_value.is_const()
++            && definition
++                .as_str()
++                .strip_prefix(package_id)
++                .and_then(|suffix| suffix.strip_prefix('.'))
++                .is_some_and(|resolved_member| resolved_member == member.as_str())
++    }
++
++    fn infer_owner_aware_package_const(
++        &mut self,
++        expression: Expression,
++        expected_ty: &Type,
++    ) -> Expression {
++        let Expression::DotAccess {
++            expression,
++            member,
++            span,
++            resolution,
++            ..
++        } = expression
++        else {
++            unreachable!()
++        };
++        let definition_ty = resolution
++            .definition()
++            .and_then(|definition| self.store.get_definition(definition))
++            .expect("validated owner-aware constant must remain registered")
++            .ty
++            .clone();
++        let (ty, _) = self.instantiate(&definition_ty);
++        self.unify(expected_ty, &ty, &span);
++        Expression::DotAccess {
++            expression,
++            member,
++            ty,
++            span,
++            resolution,
++        }
++    }
++
+     /// Bans `task`/`defer` as a bare subexpression, skipped when the dedicated check already fires.
+     fn check_control_flow_in_expression(&mut self, kind: &str, span: Span, is_subexpression: bool) {
+         if is_subexpression && !self.is_value_context() {
+diff --git a/crates/semantics/src/checker/infer/expressions/struct_call.rs b/crates/semantics/src/checker/infer/expressions/struct_call.rs
+index 5213e32c..21ad99b0 100644
+--- a/crates/semantics/src/checker/infer/expressions/struct_call.rs
++++ b/crates/semantics/src/checker/infer/expressions/struct_call.rs
+@@ -366,7 +366,7 @@ impl InferCtx<'_> {
+                 struct_fields
+                     .iter()
+                     .filter(|f| !(is_go_imported && crate::zero::hidden_embed_field(f)))
+-                    .map(|f| (&f.name, &f.ty)),
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+                 &matched_fields,
+                 &map,
+                 *spread_span,
+@@ -469,7 +469,9 @@ impl InferCtx<'_> {
+         if let StructSpread::Autofill { span: spread_span } = &new_spread {
+             self.check_autofill_fields(
+                 &variant_name,
+-                variant_fields.iter().map(|f| (&f.name, &f.ty)),
++                variant_fields
++                    .iter()
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+                 &matched_fields,
+                 &map,
+                 *spread_span,
+@@ -671,16 +673,19 @@ impl InferCtx<'_> {
+     fn check_autofill_fields<'a>(
+         &mut self,
+         owner_name: &str,
+-        fields: impl Iterator<Item = (&'a EcoString, &'a Type)>,
++        fields: impl Iterator<Item = (&'a EcoString, &'a Type, Option<&'a Expression>)>,
+         matched_fields: &HashSet<EcoString>,
+         map: &SubstitutionMap,
+         spread_span: Span,
+     ) {
+         let from_package = self.cursor.package_id().to_string();
+-        for (name, ty) in fields {
++        for (name, ty, default) in fields {
+             if matched_fields.contains(name.as_str()) {
+                 continue;
+             }
++            if default.is_some() {
++                continue;
++            }
+             let resolved = substitute(ty, map).resolve_in(&self.env);
+             let Err(no_zero) = self.has_zero(&resolved, &from_package) else {
+                 continue;
+diff --git a/crates/semantics/src/checker/promotion.rs b/crates/semantics/src/checker/promotion.rs
+index 6228a89f..06ee2741 100644
+--- a/crates/semantics/src/checker/promotion.rs
++++ b/crates/semantics/src/checker/promotion.rs
+@@ -445,6 +445,7 @@ mod tests {
+             name_span: Span::dummy(),
+             annotation: Annotation::Unknown,
+             visibility: Visibility::Public,
++            default: None,
+             ty,
+             kind: if embedded {
+                 StructFieldKind::Embedded
+diff --git a/crates/semantics/src/checker/registration/declarations.rs b/crates/semantics/src/checker/registration/declarations.rs
+index 41f20c51..2d7d7fe3 100644
+--- a/crates/semantics/src/checker/registration/declarations.rs
++++ b/crates/semantics/src/checker/registration/declarations.rs
+@@ -57,6 +57,8 @@ impl TaskState {
+         self.check_type_generic_bounds(store, items);
+         self.register_impl_blocks(store, items);
+         self.register_values(store, items, visibility);
++        let const_initializers = self.collect_current_file_field_default_const_initializers(items);
++        self.infer_and_install_field_defaults(store, items, &const_initializers);
+         self.register_item_derived_attributes(store, items);
+         let package_id = self.cursor.package_id().to_string();
+         self.validate_package_embeds(store, &package_id);
+diff --git a/crates/semantics/src/checker/registration/mod.rs b/crates/semantics/src/checker/registration/mod.rs
+index a1120a48..af1f6b9f 100644
+--- a/crates/semantics/src/checker/registration/mod.rs
++++ b/crates/semantics/src/checker/registration/mod.rs
+@@ -161,6 +161,23 @@ impl TaskState {
+             );
+         }
+ 
++        // Field defaults are values, so infer them only after every value in the
++        // package is registered. This also makes sibling-file constants visible.
++        let const_initializers = self.collect_package_field_default_const_initializers(&id, &files);
++        for file in &files {
++            self.with_file_context_mut(
++                store,
++                FileContext::Standard {
++                    package_id: &id,
++                    file_id: file.id,
++                    imports: &file.imports,
++                },
++                |this, store| {
++                    this.infer_and_install_field_defaults(store, &file.items, &const_initializers)
++                },
++            );
++        }
++
+         self.register_package_derived_attributes(store, &id, &files);
+         self.validate_package_embeds(store, &id);
+         self.check_package_recursive_types(store, &id);
+diff --git a/crates/semantics/src/checker/registration/types.rs b/crates/semantics/src/checker/registration/types.rs
+index 9ca3348f..3ef80544 100644
+--- a/crates/semantics/src/checker/registration/types.rs
++++ b/crates/semantics/src/checker/registration/types.rs
+@@ -1,17 +1,40 @@
+ use crate::checker::EnvResolve;
+ use rustc_hash::{FxHashMap, FxHashSet};
+ use syntax::ast::{
+-    EnumFieldDefinition, EnumVariant, Expression, Generic, Span, StructFieldDefinition,
+-    StructFields, VariantFields,
++    ConstInitializer, EnumFieldDefinition, EnumVariant, Expression, Generic, IdentifierResolution,
++    Literal, Span, StructFieldDefinition, StructFields, VariantFields,
+ };
+ use syntax::containment::{EnumPayloads, definition_contains_by_value};
+-use syntax::program::{AliasKind, Definition, DefinitionBody, Methods, Visibility};
+-use syntax::types::Type;
++use syntax::program::{
++    AliasKind, Definition, DefinitionBody, DotAccessResolution, FileImport, Methods, ValueKind,
++    Visibility,
++};
++use syntax::types::{Symbol, Type};
+ 
+-use super::enum_variant_constructor_type;
++use super::{FileContext, RegistrationFile, enum_variant_constructor_type};
+ use crate::checker::TaskState;
++use crate::checker::freeze::FreezeFolder;
++use crate::checker::infer::InferCtx;
+ use crate::store::Store;
+ 
++#[derive(Default)]
++pub(super) struct FieldDefaultConstInitializers {
++    values: FxHashMap<Symbol, FieldDefaultConstInitializer>,
++}
++
++#[derive(Clone)]
++struct FieldDefaultConstInitializer {
++    expression: Box<Expression>,
++    origin: Option<FieldDefaultConstOrigin>,
++}
++
++#[derive(Clone)]
++struct FieldDefaultConstOrigin {
++    package_id: String,
++    file_id: u32,
++    imports: Vec<FileImport>,
++}
++
+ impl TaskState {
+     pub(super) fn populate_enum(&mut self, store: &mut Store, expression: &mut Expression) {
+         let Expression::Enum {
+@@ -342,6 +365,523 @@ impl TaskState {
+         );
+     }
+ 
++    pub(super) fn collect_package_field_default_const_initializers(
++        &self,
++        package_id: &str,
++        files: &[RegistrationFile],
++    ) -> FieldDefaultConstInitializers {
++        let mut initializers = FieldDefaultConstInitializers::default();
++        for file in files {
++            let origin = FieldDefaultConstOrigin {
++                package_id: package_id.to_string(),
++                file_id: file.id,
++                imports: file.imports.clone(),
++            };
++            Self::extend_field_default_const_initializers(
++                &mut initializers,
++                package_id,
++                Some(origin),
++                &file.items,
++            );
++        }
++        initializers
++    }
++
++    pub(super) fn collect_current_file_field_default_const_initializers(
++        &self,
++        items: &[Expression],
++    ) -> FieldDefaultConstInitializers {
++        let mut initializers = FieldDefaultConstInitializers::default();
++        Self::extend_field_default_const_initializers(
++            &mut initializers,
++            self.cursor.package_id(),
++            None,
++            items,
++        );
++        initializers
++    }
++
++    fn extend_field_default_const_initializers(
++        initializers: &mut FieldDefaultConstInitializers,
++        package_id: &str,
++        origin: Option<FieldDefaultConstOrigin>,
++        items: &[Expression],
++    ) {
++        for item in items {
++            let Expression::Const {
++                identifier,
++                expression: ConstInitializer::Value(expression),
++                ..
++            } = item
++            else {
++                continue;
++            };
++            initializers.values.insert(
++                Symbol::from_parts(package_id, identifier),
++                FieldDefaultConstInitializer {
++                    expression: expression.clone(),
++                    origin: origin.clone(),
++                },
++            );
++        }
++    }
++
++    pub(super) fn infer_and_install_field_defaults(
++        &mut self,
++        store: &mut Store,
++        items: &[Expression],
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        for item in items {
++            match item {
++                Expression::Struct { name, .. } => {
++                    self.infer_and_install_struct_defaults(store, name, const_initializers)
++                }
++                Expression::Enum { name, .. } => {
++                    self.infer_and_install_enum_defaults(store, name, const_initializers)
++                }
++                _ => {}
++            }
++        }
++    }
++
++    fn infer_and_install_struct_defaults(
++        &mut self,
++        store: &mut Store,
++        name: &str,
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        let qualified_name = self.qualify_name(name);
++        let Some(Definition {
++            body: DefinitionBody::Struct {
++                generics, fields, ..
++            },
++            ..
++        }) = store.get_definition(qualified_name.as_str())
++        else {
++            return;
++        };
++        let generics = generics.clone();
++        let fields = fields.clone();
++
++        if self.reject_typedef_defaults(&*store, &fields) {
++            self.clear_struct_defaults(store, &qualified_name);
++            return;
++        }
++
++        let mut resolving = FxHashSet::default();
++        let sites: Vec<_> = fields
++            .iter()
++            .enumerate()
++            .filter_map(|(index, field)| {
++                field.default.clone().map(|default| {
++                    let original = *default;
++                    let default = self.materialize_field_default_consts(
++                        store,
++                        original.clone(),
++                        const_initializers,
++                        &mut resolving,
++                    );
++                    let declaration_reference = (default != original).then(|| Box::new(original));
++                    (
++                        index,
++                        declaration_reference,
++                        Box::new(default),
++                        field.ty.clone(),
++                    )
++                })
++            })
++            .collect();
++        let inferred = self.infer_field_default_sites(&*store, &generics, sites);
++
++        let Some(Definition {
++            body: DefinitionBody::Struct { fields, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        else {
++            return;
++        };
++        for (index, default) in inferred {
++            fields[index].default = Some(default);
++        }
++    }
++
++    fn infer_and_install_enum_defaults(
++        &mut self,
++        store: &mut Store,
++        name: &str,
++        const_initializers: &FieldDefaultConstInitializers,
++    ) {
++        let qualified_name = self.qualify_name(name);
++        let Some(Definition {
++            body: DefinitionBody::Enum {
++                generics, variants, ..
++            },
++            ..
++        }) = store.get_definition(qualified_name.as_str())
++        else {
++            return;
++        };
++        let generics = generics.clone();
++        let variants = variants.clone();
++
++        if self.is_d_lis(&*store) {
++            let mut found = false;
++            for variant in &variants {
++                for field in &variant.fields {
++                    if let Some(default) = &field.default {
++                        found = true;
++                        self.sink.push(diagnostics::infer::field_default_in_typedef(
++                            default.get_span(),
++                        ));
++                    }
++                }
++            }
++            if found {
++                self.clear_enum_defaults(store, &qualified_name);
++            }
++            return;
++        }
++
++        let mut resolving = FxHashSet::default();
++        let mut sites = Vec::new();
++        for (variant_index, variant) in variants.iter().enumerate() {
++            for (field_index, field) in variant.fields.iter().enumerate() {
++                let Some(default) = field.default.clone() else {
++                    continue;
++                };
++                let original = *default;
++                let default = self.materialize_field_default_consts(
++                    store,
++                    original.clone(),
++                    const_initializers,
++                    &mut resolving,
++                );
++                let declaration_reference = (default != original).then(|| Box::new(original));
++                sites.push((
++                    (variant_index, field_index),
++                    declaration_reference,
++                    Box::new(default),
++                    field.ty.clone(),
++                ));
++            }
++        }
++        let inferred = self.infer_field_default_sites(&*store, &generics, sites);
++
++        let Some(Definition {
++            body: DefinitionBody::Enum { variants, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        else {
++            return;
++        };
++        for ((variant_index, field_index), default) in inferred {
++            let fields = match &mut variants[variant_index].fields {
++                VariantFields::Unit => continue,
++                VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++            };
++            fields[field_index].default = Some(default);
++        }
++    }
++
++    fn materialize_field_default_consts(
++        &mut self,
++        store: &mut Store,
++        expression: Expression,
++        const_initializers: &FieldDefaultConstInitializers,
++        resolving: &mut FxHashSet<Symbol>,
++    ) -> Expression {
++        if let Some(path) = Self::field_default_const_path(&expression)
++            && let Some(qualified_name) = self.lookup_qualified_name(&*store, &path)
++        {
++            let qualified_name = Symbol::from(qualified_name);
++            if let Some(initializer) = const_initializers
++                .values
++                .get(qualified_name.as_str())
++                .cloned()
++            {
++                if !resolving.insert(qualified_name.clone()) {
++                    return expression;
++                }
++                let materialized = match initializer.origin {
++                    Some(origin) => self.with_file_context_mut(
++                        store,
++                        FileContext::Standard {
++                            package_id: &origin.package_id,
++                            file_id: origin.file_id,
++                            imports: &origin.imports,
++                        },
++                        |this, store| {
++                            this.materialize_field_default_consts(
++                                store,
++                                *initializer.expression,
++                                const_initializers,
++                                resolving,
++                            )
++                        },
++                    ),
++                    None => self.materialize_field_default_consts(
++                        store,
++                        *initializer.expression,
++                        const_initializers,
++                        resolving,
++                    ),
++                };
++                resolving.remove(&qualified_name);
++                return materialized;
++            }
++
++            if let Some(literal) = Self::registered_const_literal(&*store, &qualified_name) {
++                return Expression::Literal {
++                    literal,
++                    ty: Type::uninferred(),
++                    span: expression.get_span(),
++                };
++            }
++
++            if let Some(reference) =
++                self.registered_owner_aware_const(&*store, &qualified_name, expression.get_span())
++            {
++                return reference;
++            }
++        }
++
++        match expression {
++            Expression::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Expression::Binary {
++                operator,
++                left: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *left,
++                    const_initializers,
++                    resolving,
++                )),
++                right: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *right,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Expression::Unary {
++                operator,
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::Paren {
++                expression,
++                ty,
++                span,
++            } => Expression::Paren {
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                ty,
++                span,
++            },
++            Expression::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Expression::DotAccess {
++                expression: Box::new(self.materialize_field_default_consts(
++                    store,
++                    *expression,
++                    const_initializers,
++                    resolving,
++                )),
++                member,
++                ty,
++                span,
++                resolution,
++            },
++            expression => expression,
++        }
++    }
++
++    fn field_default_const_path(expression: &Expression) -> Option<String> {
++        match expression {
++            Expression::Identifier { value, .. } => Some(value.to_string()),
++            Expression::DotAccess {
++                expression, member, ..
++            } => Some(format!(
++                "{}.{}",
++                Self::field_default_const_path(expression)?,
++                member
++            )),
++            _ => None,
++        }
++    }
++
++    fn registered_const_literal(store: &Store, qualified_name: &Symbol) -> Option<Literal> {
++        let Definition {
++            body:
++                DefinitionBody::Value {
++                    kind: ValueKind::Constant(literal),
++                    ..
++                },
++            ..
++        } = store.get_definition(qualified_name.as_str())?
++        else {
++            return None;
++        };
++        match literal {
++            // Negative integers are stored as their wrapping `u64` value, so
++            // they cannot be reconstructed as a positive literal safely here.
++            Literal::Integer { value, .. } if *value > i64::MAX as u64 => None,
++            literal => Some(literal.clone()),
++        }
++    }
++
++    fn registered_owner_aware_const(
++        &self,
++        store: &Store,
++        qualified_name: &Symbol,
++        span: Span,
++    ) -> Option<Expression> {
++        let package_id = store.package_for_qualified_name(qualified_name.as_str())?;
++        if package_id == self.cursor.package_id() {
++            return None;
++        }
++        let definition = store.get_definition(qualified_name.as_str())?;
++        if !definition.is_const() || !definition.visibility.is_public() {
++            return None;
++        }
++        let member = qualified_name
++            .as_str()
++            .strip_prefix(package_id)?
++            .strip_prefix('.')?;
++        if member.contains('.') {
++            return None;
++        }
++
++        Some(Expression::DotAccess {
++            expression: Box::new(Expression::Identifier {
++                value: package_id.into(),
++                ty: Type::ImportNamespace(package_id.into()),
++                span,
++                resolution: IdentifierResolution::Unresolved,
++            }),
++            member: member.into(),
++            ty: definition.ty.clone(),
++            span,
++            resolution: DotAccessResolution::PackageMember {
++                definition: Some(qualified_name.clone()),
++            },
++        })
++    }
++
++    fn infer_field_default_sites<K>(
++        &mut self,
++        store: &Store,
++        generics: &[Generic],
++        sites: Vec<(K, Option<Box<Expression>>, Box<Expression>, Type)>,
++    ) -> Vec<(K, Box<Expression>)> {
++        self.with_scope(|this| {
++            this.put_in_scope(generics);
++            let mut ctx = InferCtx::new(this, store);
++            sites
++                .into_iter()
++                .map(|(key, declaration_reference, default, expected_ty)| {
++                    if let Some(declaration_reference) = declaration_reference {
++                        // Preserve the referenced constant's declared type and
++                        // record its source-level use before storing the
++                        // ownership-independent materialized expression.
++                        let _ = ctx.infer_field_default(*declaration_reference, &expected_ty);
++                    }
++                    let inferred = ctx.infer_field_default(*default, &expected_ty);
++                    let mut folder = FreezeFolder::new(&ctx.env, store);
++                    let frozen = folder
++                        .freeze_items(vec![inferred])
++                        .pop()
++                        .expect("one field default was frozen");
++                    (key, Box::new(frozen))
++                })
++                .collect()
++        })
++    }
++
++    fn reject_typedef_defaults(&mut self, store: &Store, fields: &StructFields) -> bool {
++        if !self.is_d_lis(store) {
++            return false;
++        }
++        let mut found = false;
++        for field in fields {
++            if let Some(default) = &field.default {
++                found = true;
++                self.sink.push(diagnostics::infer::field_default_in_typedef(
++                    default.get_span(),
++                ));
++            }
++        }
++        found
++    }
++
++    fn clear_struct_defaults(&self, store: &mut Store, qualified_name: &Symbol) {
++        if let Some(Definition {
++            body: DefinitionBody::Struct { fields, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        {
++            for field in fields {
++                field.default = None;
++            }
++        }
++    }
++
++    fn clear_enum_defaults(&self, store: &mut Store, qualified_name: &Symbol) {
++        if let Some(Definition {
++            body: DefinitionBody::Enum { variants, .. },
++            ..
++        }) = self
++            .current_package_mut(store)
++            .definitions
++            .get_mut(qualified_name.as_str())
++        {
++            for variant in variants {
++                let fields = match &mut variant.fields {
++                    VariantFields::Unit => continue,
++                    VariantFields::Tuple(fields) | VariantFields::Struct(fields) => fields,
++                };
++                for field in fields {
++                    field.default = None;
++                }
++            }
++        }
++    }
++
+     pub(super) fn validate_package_embeds(&mut self, store: &Store, package_id: &str) {
+         let Some(package) = store.get_package(package_id) else {
+             return;
+diff --git a/crates/semantics/src/store.rs b/crates/semantics/src/store.rs
+index 90e08c8e..2849031f 100644
+--- a/crates/semantics/src/store.rs
++++ b/crates/semantics/src/store.rs
+@@ -700,6 +700,7 @@ mod closed_domain_tests {
+                     name_span: syntax::ast::Span::dummy(),
+                     annotation: syntax::ast::Annotation::Unknown,
+                     visibility: syntax::ast::Visibility::Private,
++                    default: None,
+                     ty: Type::Simple(SimpleKind::Int),
+                     kind: StructFieldKind::Named { attributes: vec![] },
+                 }]),
+diff --git a/crates/semantics/src/zero.rs b/crates/semantics/src/zero.rs
+index a9e2504a..dff7c759 100644
+--- a/crates/semantics/src/zero.rs
++++ b/crates/semantics/src/zero.rs
+@@ -238,6 +238,9 @@ fn has_zero_nominal_fields(
+                         leaf_ty: f.ty.clone(),
+                     });
+                 }
++                if f.default.is_some() {
++                    continue;
++                }
+                 let resolved = if map.is_empty() {
+                     f.ty.clone()
+                 } else {
+diff --git a/crates/syntax/src/ast.rs b/crates/syntax/src/ast.rs
+index 94722c50..ec38bfaf 100644
+--- a/crates/syntax/src/ast.rs
++++ b/crates/syntax/src/ast.rs
+@@ -565,6 +565,7 @@ pub struct EnumFieldDefinition {
+     pub name: EcoString,
+     pub name_span: Span,
+     pub annotation: Annotation,
++    pub default: Option<Box<Expression>>,
+     pub ty: Type,
+ }
+ 
+@@ -661,6 +662,7 @@ pub struct StructFieldDefinition {
+     pub name_span: Span,
+     pub annotation: Annotation,
+     pub visibility: Visibility,
++    pub default: Option<Box<Expression>>,
+     pub ty: Type,
+     pub kind: StructFieldKind,
+ }
+@@ -1981,10 +1983,17 @@ impl Expression {
+             Expression::Interface {
+                 method_signatures, ..
+             } => method_signatures.iter().collect(),
++            Expression::Enum { variants, .. } => variants
++                .iter()
++                .flat_map(|variant| variant.fields.iter())
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
++            Expression::Struct { fields, .. } => fields
++                .iter()
++                .filter_map(|field| field.default.as_deref())
++                .collect(),
+             Expression::Unit { .. }
+             | Expression::Continue { .. }
+-            | Expression::Enum { .. }
+-            | Expression::Struct { .. }
+             | Expression::TypeAlias { .. }
+             | Expression::VariableDeclaration { .. }
+             | Expression::PackageImport { .. }
+@@ -2297,6 +2306,7 @@ pub enum FormatStringPart {
+ }
+ 
+ #[derive(Debug, Clone, PartialEq)]
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+ pub enum UnaryOperator {
+     Negative,
+     Not,
+@@ -2305,6 +2315,7 @@ pub enum UnaryOperator {
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq)]
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+ pub enum BinaryOperator {
+     Addition,
+     Subtraction,
+diff --git a/crates/syntax/src/go_names.rs b/crates/syntax/src/go_names.rs
+index 08aaaeaf..c2811f42 100644
+--- a/crates/syntax/src/go_names.rs
++++ b/crates/syntax/src/go_names.rs
+@@ -236,6 +236,7 @@ mod shape_tests {
+             name: "field0".into(),
+             name_span: crate::ast::Span::dummy(),
+             annotation: crate::ast::Annotation::Unknown,
++            default: None,
+             ty: Type::uninferred(),
+         };
+ 
+diff --git a/crates/syntax/src/parse/definitions.rs b/crates/syntax/src/parse/definitions.rs
+index 68b352c4..e052e23e 100644
+--- a/crates/syntax/src/parse/definitions.rs
++++ b/crates/syntax/src/parse/definitions.rs
+@@ -20,6 +20,14 @@ struct DefinitionHeader<'source> {
+     start: Token<'source>,
+ }
+ 
++#[derive(Clone, Copy)]
++enum FieldDefaultPosition {
++    Named,
++    TupleStruct,
++    TupleVariant,
++    Embedded,
++}
++
+ impl<'source> Parser<'source> {
+     fn parse_definition_header(
+         &mut self,
+@@ -314,6 +322,43 @@ impl<'source> Parser<'source> {
+         VariantFields::Unit
+     }
+ 
++    fn parse_field_default(&mut self, position: FieldDefaultPosition) -> Option<Box<Expression>> {
++        if self.is_not(Equal) {
++            return None;
++        }
++
++        let equal = self.current_token();
++        let equal_span = Span::new(self.file_id, equal.byte_offset, equal.byte_length);
++        self.next();
++        let default = Box::new(self.parse_expression());
++
++        let (title, label, help) = match position {
++            FieldDefaultPosition::Named => return Some(default),
++            FieldDefaultPosition::TupleStruct => (
++                "Default on tuple struct field",
++                "tuple struct fields cannot declare defaults",
++                "Use a named struct field to declare a default value.",
++            ),
++            FieldDefaultPosition::TupleVariant => (
++                "Default on tuple variant field",
++                "tuple variant fields cannot declare defaults",
++                "Use a named variant field to declare a default value.",
++            ),
++            FieldDefaultPosition::Embedded => (
++                "Default on embedded field",
++                "embedded fields cannot declare defaults",
++                "Remove the default value from the embedded field.",
++            ),
++        };
++
++        self.errors.push(
++            ParseError::new(title, equal_span, label)
++                .with_parse_code("field_default_not_allowed")
++                .with_help(help),
++        );
++        None
++    }
++
+     fn at_tuple_fields_end(&self) -> bool {
+         if self.at_eof() {
+             return true;
+@@ -334,10 +379,13 @@ impl<'source> Parser<'source> {
+                 break;
+             }
+ 
++            let annotation = self.parse_annotation();
++            let _ = self.parse_field_default(FieldDefaultPosition::TupleVariant);
+             let field = EnumFieldDefinition {
+                 name: format!("field{}", fields.len()).into(),
+                 name_span: Span::dummy(),
+-                annotation: self.parse_annotation(),
++                annotation,
++                default: None,
+                 ty: Type::uninferred(),
+             };
+ 
+@@ -372,6 +420,7 @@ impl<'source> Parser<'source> {
+             } else {
+                 Annotation::Unknown
+             };
++            let default = self.parse_field_default(FieldDefaultPosition::Named);
+ 
+             if let Some((_, first_span)) = seen_fields.iter().find(|(n, _)| n == &name) {
+                 self.error_duplicate_struct_field(&name, *first_span, name_span);
+@@ -383,6 +432,7 @@ impl<'source> Parser<'source> {
+                 name,
+                 name_span,
+                 annotation,
++                default,
+                 ty: Type::uninferred(),
+             };
+ 
+@@ -473,6 +523,7 @@ impl<'source> Parser<'source> {
+             let field_start = self.current_token();
+             let annotation = self.parse_annotation();
+             let field_span = self.span_from_offset(field_start.byte_offset);
++            let _ = self.parse_field_default(FieldDefaultPosition::TupleStruct);
+ 
+             fields.push(StructFieldDefinition {
+                 doc: None,
+@@ -480,6 +531,7 @@ impl<'source> Parser<'source> {
+                 name_span: field_span,
+                 annotation,
+                 visibility: Visibility::Private,
++                default: None,
+                 ty: Type::uninferred(),
+                 kind: StructFieldKind::Named { attributes: vec![] },
+             });
+@@ -557,6 +609,7 @@ impl<'source> Parser<'source> {
+         } else {
+             Annotation::Unknown
+         };
++        let default = self.parse_field_default(FieldDefaultPosition::Named);
+ 
+         Some(StructFieldDefinition {
+             doc,
+@@ -564,6 +617,7 @@ impl<'source> Parser<'source> {
+             name,
+             name_span,
+             annotation,
++            default,
+             ty: Type::uninferred(),
+             kind: StructFieldKind::Named { attributes },
+         })
+@@ -579,6 +633,7 @@ impl<'source> Parser<'source> {
+ 
+         let annotation = self.parse_annotation();
+         let span = self.span_from_offset(start.byte_offset);
++        let _ = self.parse_field_default(FieldDefaultPosition::Embedded);
+ 
+         let Some(name) = Self::embedded_field_name(&annotation) else {
+             self.track_error_at(
+@@ -603,6 +658,7 @@ impl<'source> Parser<'source> {
+             name,
+             name_span: span,
+             annotation,
++            default: None,
+             ty: Type::uninferred(),
+             kind: StructFieldKind::Embedded,
+         })

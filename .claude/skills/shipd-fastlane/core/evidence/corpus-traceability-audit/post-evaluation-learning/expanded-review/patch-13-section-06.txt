@@ -1,0 +1,56 @@
+diff --git a/scylla/src/policies/load_balancing/default.rs b/scylla/src/policies/load_balancing/default.rs
+@@ -4,6 +4,7 @@ pub use self::latency_awareness::LatencyAwarenessBuilder;
++use crate::response::Coordinator;
+@@ -540,6 +541,58 @@ or refrain from preferring datacenters (which may ban all other datacenters, if
++    fn is_coordinator_preferred(
++        &self,
++        query: &RoutingInfo,
++        cluster: &ClusterState,
++        coordinator: &Coordinator,
++    ) -> bool {
++        let node = coordinator.node();
++
++        // Require the exact node instance currently present in topology.
++        let Some(current_node) = cluster.get_node_by_host_id(node.host_id) else {
++            return false;
++        };
++        if !Arc::ptr_eq(node, current_node) || !node.is_enabled() {
++            return false;
++        }
++
++        // Reuse the connectivity and latency predicate used by fresh picks.
++        if !(self.pick_predicate)(node, coordinator.shard()) {
++            return false;
++        }
++
++        let routing_info = self.routing_info(query, cluster);
++        if !self
++            .preferred_node_set(cluster, &routing_info)
++            .iter()
++            .any(|candidate| Arc::ptr_eq(candidate, node))
++        {
++            return false;
++        }
++
++        // Fall back when replica ownership cannot be established.
++        let (Some(token_with_strategy), Some(table_spec)) =
++            (routing_info.token_with_strategy.as_ref(), query.table)
++        else {
++            return false;
++        };
++
++        self.nonfiltered_replica_set(
++            token_with_strategy,
++            NodeLocationCriteria::Any,
++            cluster,
++            table_spec,
++        )
++        .into_iter()
++        .any(|(replica, shard)| {
++            Arc::ptr_eq(replica, node)
++                && coordinator
++                    .shard()
++                    .is_none_or(|coordinator_shard| coordinator_shard == shard)
++        })
++    }
++

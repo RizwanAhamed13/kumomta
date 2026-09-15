@@ -1,0 +1,34 @@
+diff --git a/src/execution/ddl/create_index.rs b/src/execution/ddl/create_index.rs
+@@ -17,14 +17,12 @@ use crate::execution::{
+-use crate::expression::ScalarExpression;
+-use crate::types::ColumnId;
+@@ -76,7 +74,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for CreateIndex {
+-            columns,
++            expressions,
+@@ -96,25 +94,27 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for CreateIndex {
+-        let (column_ids, column_exprs): (Vec<ColumnId>, Vec<ScalarExpression>) = columns
+-            .into_iter()
+-            .filter_map(|column| {
+-                plan_arena.column(column).id().and_then(|id| {
+-                    self.input_schema
+-                        .iter()
+-                        .position(|schema_column| schema_column == &column)
+-                        .map(|position| (id, ScalarExpression::column_expr(column, position)))
+-                })
+-            })
+-            .unzip();
++        let mut column_ids = Vec::new();
++        for expression in &expressions {
++            expression.visit_referenced_columns(plan_arena, &mut |arena, column| {
++                if let Some(id) = arena.column(*column).id() {
++                    if !column_ids.contains(&id) {
++                        column_ids.push(id);
++                    }
++                }
++                true
++            })?;
++        }
++        let column_exprs = expressions.clone();
+-            let (table, index_id) = transaction.add_index_meta(
++            let (table, index_id) = transaction.add_expression_index_meta(
++                expressions,

@@ -1,0 +1,929 @@
+diff --git a/crates/integration-tests/src/test/tsa_basic_automation.rs b/crates/integration-tests/src/test/tsa_basic_automation.rs
+index eec75b0..ba1565e 100644
+--- a/crates/integration-tests/src/test/tsa_basic_automation.rs
++++ b/crates/integration-tests/src/test/tsa_basic_automation.rs
+@@ -93,6 +93,40 @@ DeliverySummary {
+     assert_eq!(partial.get("max_message_rate").unwrap(), "3/m");
+     assert_eq!(partial.get("max_deliveries_per_connection").unwrap(), 1);
+ 
++    // Cancel the exact rule TSA reported and verify that the live Lua
++    // subscriber consumes the cancellation after processing a nonempty batch.
++    let rule_hash = reason
++        .split("rule_hash=")
++        .nth(1)
++        .and_then(|value| value.split(')').next())
++        .ok_or_else(|| anyhow::anyhow!("missing rule_hash in reason: {reason}"))?;
++    let response = reqwest::Client::new()
++        .delete(format!(
++            "http://{}/cancel_rule_v1",
++            daemon.tsa.listener("http")
++        ))
++        .json(&serde_json::json!({ "rule_hash": rule_hash }))
++        .send()
++        .await?;
++    anyhow::ensure!(
++        response.status().is_success(),
++        "cancel_rule_v1 failed: {} {}",
++        response.status(),
++        response.text().await?
++    );
++
++    let cancelled = tokio::time::timeout(Duration::from_secs(30), async {
++        loop {
++            if get_suspensions(&daemon).await?.is_empty() {
++                return Ok::<_, anyhow::Error>(());
++            }
++            tokio::time::sleep(Duration::from_millis(100)).await;
++        }
++    })
++    .await;
++    anyhow::ensure!(cancelled.is_ok(), "kumod did not consume rule cancellation");
++    cancelled??;
++
+     daemon.stop().await?;
+     Ok(())
+ }
+diff --git a/grader_tests/test_exposure.py b/grader_tests/test_exposure.py
+new file mode 100644
+index 0000000..a197436
+--- /dev/null
++++ b/grader_tests/test_exposure.py
+@@ -0,0 +1,11 @@
++import pathlib
++import tomllib
++
++config = tomllib.loads(pathlib.Path("assets/acls/default.toml").read_text())
++rules = config["acl"]["http_listener/*/cancel_rule_v1"]
++assert any(
++    rule.get("allow") is True
++    and "DELETE" in rule.get("privileges", [])
++    and rule.get("identity", {}).get("Group") == "kumomta:http-listener-trusted-ip"
++    for rule in rules
++)
+diff --git a/grader_tests/test_openapi.py b/grader_tests/test_openapi.py
+new file mode 100644
+index 0000000..b2a64e3
+--- /dev/null
++++ b/grader_tests/test_openapi.py
+@@ -0,0 +1,50 @@
++import json
++import os
++import pathlib
++import subprocess
++
++daemon = pathlib.Path(os.environ["CARGO_TARGET_DIR"]) / "debug" / "tsa-daemon"
++generated = subprocess.run(
++    [str(daemon), "--dump-openapi-spec"],
++    check=True,
++    stdout=subprocess.PIPE,
++    text=True,
++).stdout
++spec = json.loads(generated)
++operation = spec["paths"]["/cancel_rule_v1"]["delete"]
++assert "requestBody" in operation
++assert {"200", "400", "404"}.issubset(operation["responses"])
++schemas = spec["components"]["schemas"]
++
++
++def resolve(schema):
++    while "$ref" in schema:
++        prefix = "#/components/schemas/"
++        assert schema["$ref"].startswith(prefix), schema
++        schema = schemas[schema["$ref"][len(prefix):]]
++    return schema
++
++
++responses = operation["responses"]
++for status in ("400", "404"):
++    assert responses[status].get("description", "").strip(), status
++request = resolve(operation["requestBody"]["content"]["application/json"]["schema"])
++response = resolve(responses["200"]["content"]["application/json"]["schema"])
++assert set(request["required"]) == {"rule_hash"}
++assert request["properties"]["rule_hash"]["type"] == "string"
++
++required_response = {
++    "rule_hash",
++    "config_overrides",
++    "ready_q_suspensions",
++    "scheduled_q_suspensions",
++    "scheduled_q_bounces",
++    "suppress_until",
++}
++assert required_response.issubset(response["required"])
++properties = response["properties"]
++assert properties["rule_hash"]["type"] == "string"
++for name in required_response - {"rule_hash", "suppress_until"}:
++    assert properties[name]["type"] == "integer"
++assert properties["suppress_until"]["type"] == "string"
++assert properties["suppress_until"]["format"] == "date-time"
+diff --git a/grader_tests/test_public_daemon.py b/grader_tests/test_public_daemon.py
+new file mode 100644
+index 0000000..a1ad8e2
+--- /dev/null
++++ b/grader_tests/test_public_daemon.py
+@@ -0,0 +1,555 @@
++import base64
++import calendar
++import json
++import os
++import pathlib
++import queue
++import re
++import sqlite3
++import signal
++import socket
++import struct
++import subprocess
++import tempfile
++import threading
++import time
++import uuid
++
++import urllib.error
++import urllib.request
++
++ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
++TARGET = pathlib.Path(os.environ["CARGO_TARGET_DIR"])
++DAEMON = TARGET / "debug" / "tsa-daemon"
++POLICY = pathlib.Path("tests/tsa_cancel_init.lua").resolve()
++SHAPING = pathlib.Path("tests/tsa_cancel_shaping.toml").resolve()
++
++
++class RunningTsa:
++    def __init__(self, db_path):
++        env = os.environ.copy()
++        env.update(
++            KUMO_TSA_CANCEL_DB_PATH=str(db_path),
++            KUMO_TSA_CANCEL_SHAPING=str(SHAPING),
++            KUMO_TSA_LOG="tsa_daemon=debug,kumo_server_common=info",
++        )
++        self.proc = subprocess.Popen(
++            [str(DAEMON), "--policy", str(POLICY)],
++            env=env,
++            stdout=subprocess.PIPE,
++            stderr=subprocess.STDOUT,
++            text=True,
++            bufsize=1,
++        )
++        self.lines = []
++        self.events = queue.Queue()
++
++        def pump():
++            for raw in self.proc.stdout:
++                line = ANSI.sub("", raw.rstrip())
++                self.lines.append(line)
++                self.events.put(line)
++
++        self.reader = threading.Thread(target=pump, daemon=True)
++        self.reader.start()
++        self.port = None
++        deadline = time.monotonic() + 30
++        while time.monotonic() < deadline:
++            try:
++                line = self.events.get(timeout=max(0.1, deadline - time.monotonic()))
++            except queue.Empty:
++                break
++            match = re.search(r"http listener on 127\.0\.0\.1:(\d+)", line)
++            if match:
++                self.port = int(match.group(1))
++            if "initialization complete" in line and self.port is not None:
++                self.base = f"http://127.0.0.1:{self.port}"
++                return
++        self.stop(force=True)
++        raise AssertionError("TSA did not initialize:\n" + "\n".join(self.lines))
++
++    def stop(self, force=False):
++        if self.proc.poll() is not None:
++            return
++        self.proc.send_signal(signal.SIGKILL if force else signal.SIGINT)
++        try:
++            self.proc.wait(timeout=30)
++        except subprocess.TimeoutExpired:
++            self.proc.kill()
++            self.proc.wait(timeout=10)
++        self.reader.join(timeout=2)
++        if not force and self.proc.returncode != 0:
++            raise AssertionError("TSA shutdown failed:\n" + "\n".join(self.lines))
++
++
++class WebSocket:
++    def __init__(self, port):
++        self.sock = socket.create_connection(("127.0.0.1", port), timeout=15)
++        key = base64.b64encode(os.urandom(16)).decode()
++        request = (
++            "GET /subscribe_event_v1 HTTP/1.1\r\n"
++            f"Host: 127.0.0.1:{port}\r\n"
++            "Upgrade: websocket\r\n"
++            "Connection: Upgrade\r\n"
++            f"Sec-WebSocket-Key: {key}\r\n"
++            "Sec-WebSocket-Version: 13\r\n\r\n"
++        )
++        self.sock.sendall(request.encode())
++        response = self._until(b"\r\n\r\n")
++        assert response.startswith(b"HTTP/1.1 101"), response
++
++    def _exact(self, length):
++        data = b""
++        while len(data) < length:
++            chunk = self.sock.recv(length - len(data))
++            if not chunk:
++                raise AssertionError("websocket closed before a complete frame")
++            data += chunk
++        return data
++
++    def _until(self, marker):
++        data = b""
++        while marker not in data:
++            data += self._exact(1)
++        return data
++
++    def event(self):
++        self.sock.settimeout(15)
++        while True:
++            first, second = self._exact(2)
++            opcode = first & 0x0F
++            length = second & 0x7F
++            if length == 126:
++                length = struct.unpack("!H", self._exact(2))[0]
++            elif length == 127:
++                length = struct.unpack("!Q", self._exact(8))[0]
++            masked = second & 0x80
++            mask = self._exact(4) if masked else None
++            payload = self._exact(length)
++            if mask:
++                payload = bytes(value ^ mask[index % 4] for index, value in enumerate(payload))
++            if opcode == 1:
++                return json.loads(payload)
++            if opcode == 8:
++                raise AssertionError("websocket closed")
++
++    def close(self):
++        self.sock.close()
++
++
++def connect_events(daemon, expected_snapshot_hash=None):
++    stream = WebSocket(daemon.port)
++    assert "SnapshotStart" in stream.event()
++    snapshot = []
++    while True:
++        event = stream.event()
++        if "SnapshotEnd" in event:
++            break
++        snapshot.append(event)
++    if expected_snapshot_hash is not None:
++        expected = {"ReadyQSuspension", "SchedQSuspension", "SchedQBounce"}
++        observed = {
++            kind
++            for event in snapshot
++            for kind, value in event.items()
++            if kind in expected and value.get("rule_hash") == expected_snapshot_hash
++        }
++        assert observed == expected, (observed, snapshot)
++    return stream
++
++
++def log_record(content, site, queue_name="example.com", timestamp=None):
++    now = int(time.time()) if timestamp is None else timestamp
++    return {
++        "type": "TransientFailure",
++        "id": uuid.uuid4().hex,
++        "sender": "sender@example.net",
++        "recipient": "recipient@example.com",
++        "queue": queue_name,
++        "site": site,
++        "size": 100,
++        "response": {
++            "code": 450,
++            "enhanced_code": None,
++            "content": content,
++            "command": ".",
++        },
++        "timestamp": now,
++        "created": now,
++        "num_attempts": 1,
++        "bounce_classification": "Uncategorized",
++        "meta": {},
++        "headers": {},
++        "nodeid": str(uuid.uuid4()),
++    }
++
++
++class HttpResponse:
++    def __init__(self, status_code, body):
++        self.status_code = status_code
++        self.text = body.decode("utf-8", errors="replace")
++
++    def raise_for_status(self):
++        if not 200 <= self.status_code < 300:
++            raise AssertionError(f"HTTP {self.status_code}: {self.text}")
++
++    def json(self):
++        return json.loads(self.text)
++
++
++def request_json(method, url, payload=None):
++    data = json.dumps(payload).encode() if payload is not None else None
++    request = urllib.request.Request(
++        url, data=data, method=method, headers={"Content-Type": "application/json"}
++    )
++    try:
++        with urllib.request.urlopen(request, timeout=15) as response:
++            return HttpResponse(response.status, response.read())
++    except urllib.error.HTTPError as error:
++        return HttpResponse(error.code, error.read())
++
++
++def request_raw_json(method, url, data):
++    request = urllib.request.Request(
++        url, data=data, method=method, headers={"Content-Type": "application/json"}
++    )
++    try:
++        with urllib.request.urlopen(request, timeout=15) as response:
++            return HttpResponse(response.status, response.read())
++    except urllib.error.HTTPError as error:
++        return HttpResponse(error.code, error.read())
++
++
++def publish(base, record):
++    response = request_json("POST", f"{base}/publish_log_v1", record)
++    response.raise_for_status()
++
++
++def cancel(base, rule_hash):
++    return request_json("DELETE", f"{base}/cancel_rule_v1", {"rule_hash": rule_hash})
++
++
++def suspension_state(base):
++    response = request_json("GET", f"{base}/get_suspension_v1/suspended.json")
++    response.raise_for_status()
++    return response.json()
++
++
++def bounce_state(base):
++    response = request_json("GET", f"{base}/get_bounce_v1/bounced.json")
++    response.raise_for_status()
++    return response.json()
++
++
++def config_state(base):
++    response = request_json("GET", f"{base}/get_config_v1/shaping.toml")
++    response.raise_for_status()
++    return response.text
++
++
++def seed_legacy_actions(db_path, site, rule_hash):
++    full_hash = f"{site}-{rule_hash}"
++    with sqlite3.connect(db_path) as connection:
++        connection.execute(
++            """CREATE TABLE config (
++                rule_hash text, site_name text, reason text, domain text,
++                mx_rollup bool, source text, name text, value text,
++                expires DATETIME, PRIMARY KEY (rule_hash, site_name)
++            )"""
++        )
++        connection.execute(
++            """INSERT INTO config VALUES (
++                ?, ?, ?, ?, ?, ?, ?, ?,
++                strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+10 minutes')
++            )""",
++            (rule_hash, site, "seeded cancellation fixture", "example.com", 1,
++             "unspecified", "connection_limit", "2"),
++        )
++        connection.execute(
++            """CREATE TABLE ready_q_suspensions (
++                rule_hash text, site_name text, reason text, source text,
++                expires DATETIME
++            )"""
++        )
++        connection.execute(
++            """INSERT INTO ready_q_suspensions VALUES (
++                ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+10 minutes')
++            )""",
++            (full_hash, site, "seeded cancellation fixture", "unspecified"),
++        )
++        connection.execute(
++            """CREATE TABLE sched_q_suspensions (
++                rule_hash text, tenant text, domain text, campaign text,
++                reason text, expires DATETIME
++            )"""
++        )
++        connection.execute(
++            """INSERT INTO sched_q_suspensions VALUES (
++                ?, ?, ?, ?, ?,
++                strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+10 minutes')
++            )""",
++            (full_hash, "tenant", "example.com", None, "seeded cancellation fixture"),
++        )
++        connection.execute(
++            """CREATE TABLE sched_q_bounces (
++                rule_hash text, tenant text, domain text, campaign text,
++                reason text, expires DATETIME
++            )"""
++        )
++        connection.execute(
++            """INSERT INTO sched_q_bounces VALUES (
++                ?, ?, ?, ?, ?,
++                strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+10 minutes')
++            )""",
++            (full_hash, "tenant", "example.com", None, "seeded cancellation fixture"),
++        )
++
++
++def config_rule_hash(base, site):
++    pattern = re.compile(r"^# rule_hash: (.+-[0-9a-f]{64})$", re.MULTILINE)
++    hashes = pattern.findall(config_state(base))
++    assert len(hashes) == 1, hashes
++    assert hashes[0].startswith(f"{site}-"), hashes[0]
++    return hashes[0]
++
++
++def assert_empty(base):
++    value = suspension_state(base)
++    assert value["ready_q"] == [], value
++    assert value["sched_q"] == [], value
++    assert bounce_state(base) == [], bounce_state(base)
++
++
++def wait_until(predicate, description, timeout=15):
++    deadline = time.monotonic() + timeout
++    while time.monotonic() < deadline:
++        if predicate():
++            return
++        time.sleep(0.05)
++    raise AssertionError(f"timed out waiting for {description}")
++
++
++def wait_for_event(stream, event_name, timeout=15):
++    deadline = time.monotonic() + timeout
++    while time.monotonic() < deadline:
++        stream.sock.settimeout(max(0.1, deadline - time.monotonic()))
++        event = stream.event()
++        if event_name in event:
++            return event[event_name]
++    raise AssertionError(f"timed out waiting for {event_name}")
++
++
++def main():
++    with tempfile.TemporaryDirectory(prefix="tsa-cancel-public-") as directory:
++        db_path = pathlib.Path(directory) / "tsa.db"
++        config_site = "config-site"
++        config_digest = "cd" * 32
++        config_hash = f"{config_site}-{config_digest}"
++        seed_legacy_actions(db_path, config_site, config_digest)
++        daemon = RunningTsa(db_path)
++        try:
++            malformed_requests = {
++                "malformed-json": b'{"rule_hash":',
++                "missing-rule-hash": b'{}',
++                "non-string-rule-hash": b'{"rule_hash": 7}',
++                "missing-separator": b'{"rule_hash": "missingseparator"}',
++                "non-hex-suffix": b'{"rule_hash": "site-' + b'z' * 64 + b'"}',
++                "wrong-length": b'{"rule_hash": "site-' + b'a' * 62 + b'"}',
++            }
++            shape_errors = {"missing-rule-hash", "non-string-rule-hash"}
++            for label, payload in malformed_requests.items():
++                response = request_raw_json(
++                    "DELETE", f"{daemon.base}/cancel_rule_v1", payload
++                )
++                if label in shape_errors:
++                    assert 400 <= response.status_code < 500, (label, response.status_code)
++                else:
++                    assert response.status_code == 400, (label, response.status_code, response.text)
++
++            unknown = "provider-with-hyphen-" + "ab" * 32
++            assert cancel(daemon.base, unknown).status_code == 404
++
++            stream = connect_events(daemon, config_hash)
++            config_before = config_state(daemon.base)
++            assert "connection_limit = 2" in config_before, config_before
++            config_response = cancel(daemon.base, config_hash)
++            assert config_response.status_code == 200, config_response.text
++            config_body = config_response.json()
++            assert config_body["config_overrides"] == 1, config_body
++            assert config_body["ready_q_suspensions"] == 1, config_body
++            assert config_body["scheduled_q_suspensions"] == 1, config_body
++            assert config_body["scheduled_q_bounces"] == 1, config_body
++            wait_until(
++                lambda: "connection_limit = 2" not in config_state(daemon.base),
++                "public config override removal",
++            )
++            assert wait_for_event(stream, "RuleCancellation")["rule_hash"] == config_hash
++            assert_empty(daemon.base)
++
++            original = log_record("cancel-ready", "provider-with-hyphen")
++            publish(daemon.base, original)
++            event = wait_for_event(stream, "ReadyQSuspension")
++            rule_hash = event["rule_hash"]
++            assert re.fullmatch(r"provider-with-hyphen-[0-9a-f]{64}", rule_hash)
++
++            response = cancel(daemon.base, rule_hash)
++            assert response.status_code == 200, response.text
++            body = response.json()
++            assert body["rule_hash"] == rule_hash
++            assert body["config_overrides"] == 0
++            assert body["ready_q_suspensions"] == 1
++            assert body["scheduled_q_suspensions"] == 0
++            assert body["scheduled_q_bounces"] == 0
++            assert body["suppress_until"] == event["expires"]
++            cancellation = stream.event()["RuleCancellation"]
++            assert cancellation["rule_hash"] == rule_hash
++            assert cancellation["suppress_until"] == body["suppress_until"]
++            assert_empty(daemon.base)
++
++            repeated = cancel(daemon.base, rule_hash)
++            assert repeated.status_code == 404, repeated.text
++            assert_empty(daemon.base)
++
++            base_time = int(time.time())
++            sched_records = [
++                log_record("cancel-sched", "sched-site", "first:tenant@example.com", base_time),
++                log_record("cancel-sched", "sched-site", "second:tenant@example.com", base_time + 30),
++            ]
++            for record in sched_records:
++                publish(daemon.base, record)
++            sched_events = [wait_for_event(stream, "SchedQSuspension") for _ in sched_records]
++            sched_hash = sched_events[0]["rule_hash"]
++            assert {item["rule_hash"] for item in sched_events} == {sched_hash}
++            sched_export = suspension_state(daemon.base)["sched_q"]
++            assert len(sched_export) == 2, sched_export
++            sched_response = cancel(daemon.base, sched_hash)
++            assert sched_response.status_code == 200, sched_response.text
++            sched_body = sched_response.json()
++            assert sched_body["scheduled_q_suspensions"] == 2, sched_body
++            assert sched_body["config_overrides"] == 0, sched_body
++            assert sched_body["ready_q_suspensions"] == 0, sched_body
++            assert sched_body["scheduled_q_bounces"] == 0, sched_body
++            assert sched_body["suppress_until"] == max(item["expires"] for item in sched_events)
++            assert wait_for_event(stream, "RuleCancellation")["rule_hash"] == sched_hash
++            assert suspension_state(daemon.base)["sched_q"] == []
++
++            bounce_records = [
++                log_record("cancel-bounce", "bounce-site", "first:tenant@example.com", base_time),
++                log_record("cancel-bounce", "bounce-site", "second:tenant@example.com", base_time + 30),
++            ]
++            for record in bounce_records:
++                publish(daemon.base, record)
++            bounce_events = [wait_for_event(stream, "SchedQBounce") for _ in bounce_records]
++            bounce_hash = bounce_events[0]["rule_hash"]
++            assert {item["rule_hash"] for item in bounce_events} == {bounce_hash}
++            assert len(bounce_state(daemon.base)) == 2, bounce_state(daemon.base)
++            bounce_response = cancel(daemon.base, bounce_hash)
++            assert bounce_response.status_code == 200, bounce_response.text
++            bounce_body = bounce_response.json()
++            assert bounce_body["scheduled_q_bounces"] == 2, bounce_body
++            assert bounce_body["config_overrides"] == 0, bounce_body
++            assert bounce_body["ready_q_suspensions"] == 0, bounce_body
++            assert bounce_body["scheduled_q_suspensions"] == 0, bounce_body
++            assert bounce_body["suppress_until"] == max(item["expires"] for item in bounce_events)
++            assert wait_for_event(stream, "RuleCancellation")["rule_hash"] == bounce_hash
++            assert bounce_state(daemon.base) == []
++
++            live_config = log_record("cancel-config", "live-config-site")
++            publish(daemon.base, live_config)
++            wait_until(
++                lambda: "connection_limit = 2" in config_state(daemon.base),
++                "real-log config override creation",
++            )
++            live_config_hash = config_rule_hash(daemon.base, "live-config-site")
++
++            stream.close()
++            stream = connect_events(daemon)
++            publish(daemon.base, original)
++            barrier = log_record("cancel-ready", "replay-barrier")
++            publish(daemon.base, barrier)
++            barrier_hash = stream.event()["ReadyQSuspension"]["rule_hash"]
++            assert barrier_hash != rule_hash
++            barrier_response = cancel(daemon.base, barrier_hash)
++            assert barrier_response.status_code == 200
++            assert stream.event()["RuleCancellation"]["rule_hash"] == barrier_hash
++            assert_empty(daemon.base)
++            stream.close()
++        finally:
++            daemon.stop()
++
++        restarted = RunningTsa(db_path)
++        try:
++            restarted_stream = connect_events(restarted)
++            wait_until(
++                lambda: "connection_limit = 2" in config_state(restarted.base),
++                "persisted real-log config override after restart",
++            )
++            live_config_response = cancel(restarted.base, live_config_hash)
++            assert live_config_response.status_code == 200, live_config_response.text
++            assert live_config_response.json()["config_overrides"] == 1
++            assert wait_for_event(restarted_stream, "RuleCancellation")["rule_hash"] == live_config_hash
++            wait_until(
++                lambda: "connection_limit = 2" not in config_state(restarted.base),
++                "real-log config override cancellation",
++            )
++            publish(restarted.base, live_config)
++            assert "connection_limit = 2" not in config_state(restarted.base)
++
++            publish(restarted.base, original)
++            for record in sched_records + bounce_records:
++                publish(restarted.base, record)
++            assert "connection_limit = 2" not in config_state(restarted.base)
++            assert suspension_state(restarted.base)["sched_q"] == []
++            assert bounce_state(restarted.base) == []
++            changed = log_record("changed-ready", "provider-with-hyphen")
++            publish(restarted.base, changed)
++            changed_events = [
++                wait_for_event(restarted_stream, "ReadyQSuspension") for _ in range(2)
++            ]
++            changed_hashes = {event["rule_hash"] for event in changed_events}
++            assert len(changed_hashes) == 2, changed_events
++            assert rule_hash not in changed_hashes
++            for changed_hash in changed_hashes:
++                changed_response = cancel(restarted.base, changed_hash)
++                assert changed_response.status_code == 200
++                assert wait_for_event(restarted_stream, "RuleCancellation")["rule_hash"] == changed_hash
++            assert_empty(restarted.base)
++
++            expiring = log_record("expired-ready", "expiry-site")
++            publish(restarted.base, expiring)
++            expired_hash = restarted_stream.event()["ReadyQSuspension"]["rule_hash"]
++            expiry_cancel = cancel(restarted.base, expired_hash)
++            assert expiry_cancel.status_code == 200, expiry_cancel.text
++            suppress_until = expiry_cancel.json()["suppress_until"]
++            assert wait_for_event(restarted_stream, "RuleCancellation")["rule_hash"] == expired_hash
++            publish(restarted.base, log_record("expired-ready", "expiry-site"))
++            assert suspension_state(restarted.base)["ready_q"] == []
++
++            deadline = time.strptime(suppress_until[:19], "%Y-%m-%dT%H:%M:%S")
++            deadline_epoch = calendar.timegm(deadline)
++            wait_until(
++                lambda: time.time() > deadline_epoch + 1,
++                "cancellation suppression deadline",
++                timeout=8,
++            )
++            publish(restarted.base, log_record("expired-ready", "expiry-site"))
++            replayed = wait_for_event(restarted_stream, "ReadyQSuspension")
++            assert replayed["rule_hash"] == expired_hash
++            assert cancel(restarted.base, expired_hash).status_code == 200
++            cancellation = wait_for_event(restarted_stream, "RuleCancellation")
++            assert cancellation["rule_hash"] == expired_hash
++            restarted_stream.close()
++        finally:
++            restarted.stop()
++
++        replayed_daemon = RunningTsa(db_path)
++        try:
++            publish(replayed_daemon.base, live_config)
++            assert "connection_limit = 2" not in config_state(replayed_daemon.base)
++        finally:
++            replayed_daemon.stop()
++
++
++if __name__ == "__main__":
++    main()
++    print("PUBLIC_TSA_CANCELLATION_PROOF_OK")
+diff --git a/grader_tests/tsa_cancel_init.lua b/grader_tests/tsa_cancel_init.lua
+new file mode 100644
+index 0000000..50f7c50
+--- /dev/null
++++ b/grader_tests/tsa_cancel_init.lua
+@@ -0,0 +1,21 @@
++local tsa = require 'tsa'
++local kumo = require 'kumo'
++
++kumo.on('tsa_init', function()
++  tsa.start_http_listener {
++    listen = '127.0.0.1:0',
++  }
++  tsa.configure_tsa_db_path(os.getenv 'KUMO_TSA_CANCEL_DB_PATH')
++end)
++
++local cached_load_shaping_data = kumo.memoize(kumo.shaping.load, {
++  name = 'tsa_cancel_contract_load_shaping_data',
++  ttl = '1 second',
++  capacity = 2,
++})
++
++kumo.on('tsa_load_shaping_data', function()
++  return cached_load_shaping_data {
++    os.getenv 'KUMO_TSA_CANCEL_SHAPING',
++  }
++end)
+diff --git a/grader_tests/tsa_cancel_shaping.toml b/grader_tests/tsa_cancel_shaping.toml
+new file mode 100644
+index 0000000..d4ddb3e
+--- /dev/null
++++ b/grader_tests/tsa_cancel_shaping.toml
+@@ -0,0 +1,37 @@
++["default"]
++enable_tls = "OpportunisticInsecure"
++
++[["default".automation]]
++regex = "cancel-ready"
++action = "Suspend"
++duration = "10 minutes"
++
++[["default".automation]]
++regex = "changed-ready"
++action = "Suspend"
++duration = "10 minutes"
++
++[["default".automation]]
++regex = "changed-ready"
++action = "Suspend"
++duration = "11 minutes"
++
++[["default".automation]]
++regex = "expired-ready"
++action = "Suspend"
++duration = "3 seconds"
++
++[["default".automation]]
++regex = "cancel-config"
++action = {SetConfig = {name = "connection_limit", value = 2}}
++duration = "10 minutes"
++
++[["default".automation]]
++regex = "cancel-sched"
++action = "SuspendCampaign"
++duration = "10 minutes"
++
++[["default".automation]]
++regex = "cancel-bounce"
++action = "BounceCampaign"
++duration = "10 minutes"
+diff --git a/test.sh b/test.sh
+new file mode 100755
+index 0000000..6547039
+--- /dev/null
++++ b/test.sh
+@@ -0,0 +1,174 @@
++#!/usr/bin/env bash
++set -uo pipefail
++
++mode=""
++output_path=""
++while [[ $# -gt 0 ]]; do
++  case "$1" in
++    base|new)
++      mode="$1"
++      shift
++      ;;
++    --output_path)
++      output_path="${2:-}"
++      shift 2
++      ;;
++    *)
++      echo "unknown argument: $1" >&2
++      exit 2
++      ;;
++  esac
++done
++
++if [[ -z "$mode" || -z "$output_path" ]]; then
++  echo "usage: ./test.sh --output_path <junit.xml> <base|new>" >&2
++  exit 2
++fi
++
++repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++case "$output_path" in
++  /*) ;;
++  *) output_path="$repo_root/$output_path" ;;
++esac
++work_root="$(mktemp -d "${TMPDIR:-/tmp}/kumomta-validation.XXXXXX")"
++trap 'rm -rf -- "$work_root"' EXIT
++tar --exclude=.git --exclude=target -C "$repo_root" -cf - . | tar -C "$work_root" -xf -
++chmod -R u+w "$work_root"
++repo_root="$work_root"
++cd "$repo_root"
++
++# Ensure the UID running this script resolves to a user; kumod-spawning
++# integration tests look themselves up via NSS and fail with
++# "couldn't resolve myself" otherwise (see crates/integration-tests/src/kumod.rs).
++# Use a UID-derived name rather than reusing "model": kumod's own
++# --user drop-privs check resolves that name back to a uid via getpwnam,
++# which returns the *first* matching /etc/passwd entry. Reusing "model"
++# would collide with the image's build-time model:x:1000:... entry and
++# resolve to uid 1000 instead of the uid actually running this script.
++if ! whoami >/dev/null 2>&1; then
++  echo "u$(id -u):x:$(id -u):$(id -g):dynamic user:${HOME:-/home/model}:/bin/bash" >> /etc/passwd
++fi
++
++mv grader_tests tests
++export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-/app/target}"
++export CARGO_NET_OFFLINE=true
++export CARGO_INCREMENTAL=0
++export RUST_BACKTRACE=1
++export CARGO_PROFILE_DEV_DEBUG=0
++export CARGO_PROFILE_TEST_DEBUG=0
++export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-5}"
++mkdir -p "$CARGO_TARGET_DIR"
++export cargo_lock="${TMPDIR:-/tmp}/kumomta-tsa-cancel-validation.lock"
++( umask 000; : > "$cargo_lock" ) 2>/dev/null || true
++mkdir -p "$(dirname "$output_path")"
++
++python3 - "$output_path" "$mode" <<'PY'
++import pathlib
++import os
++import re
++import subprocess
++import sys
++import time
++import xml.etree.ElementTree as ET
++
++output_path = pathlib.Path(sys.argv[1])
++mode = sys.argv[2]
++cargo_lock = os.environ["cargo_lock"]
++if mode == "base":
++    commands = [
++        (
++            "affected_packages_regression",
++            [
++                "bash", "-c",
++                "flock \"$cargo_lock\" bash -c '"
++                "rm -rf \"$CARGO_TARGET_DIR/debug/.fingerprint\"/{tsa-daemon,kumo-api-types,kumo-api-client,kumo-server-common}-*; "
++                "rm -f \"$CARGO_TARGET_DIR/debug/deps\"/{libkumo_api_types-*,libkumo_api_client-*,libkumo_server_common-*,tsa_daemon-*} \"$CARGO_TARGET_DIR/debug/tsa-daemon\"; "
++                "cargo build --offline --locked -p tsa-daemon'",
++            ],
++        ),
++    ]
++else:
++    commands = [
++        (
++            "public_daemon_lifecycle",
++            [
++                "bash",
++                "-c",
++                "flock \"$cargo_lock\" bash -c '"
++                "rm -rf \"$CARGO_TARGET_DIR/debug/.fingerprint\"/{tsa-daemon,kumo-api-types,kumo-api-client,kumo-server-common}-*; "
++                "rm -f \"$CARGO_TARGET_DIR/debug/deps\"/{libkumo_api_types-*,libkumo_api_client-*,libkumo_server_common-*,tsa_daemon-*} \"$CARGO_TARGET_DIR/debug/tsa-daemon\"; "
++                "cargo build --offline --locked -p tsa-daemon && "
++                "python3 tests/test_public_daemon.py'",
++            ],
++        ),
++        (
++            "lua_subscriber_cancellation",
++            [
++                "bash",
++                "-c",
++                "flock \"$cargo_lock\" bash -c '"
++                "cargo build --offline --locked -p kumod -p tsa-daemon -p kcli && "
++                "cargo test --offline --locked -p integration-tests "
++                "test::tsa_basic_automation::tsa_basic_automation -- --exact --nocapture'",
++            ],
++        ),
++        (
++            "trusted_listener_acl",
++            ["python3", "tests/test_exposure.py"],
++        ),
++        (
++            "openapi_snapshot",
++            ["python3", "tests/test_openapi.py"],
++        ),
++    ]
++
++
++def xml_safe(text):
++    text = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", text)
++    return "".join(ch for ch in text if ch in "\t\n\r" or ord(ch) >= 0x20)
++
++
++suite = ET.Element("testsuite", name=f"kumomta_tsa_cancel_{mode}")
++failures = 0
++total_time = 0.0
++for name, command in commands:
++    started = time.monotonic()
++    result = subprocess.run(
++        command,
++        text=True,
++        stdout=subprocess.PIPE,
++        stderr=subprocess.STDOUT,
++    )
++    elapsed = time.monotonic() - started
++    total_time += elapsed
++    log = xml_safe(result.stdout)
++    print(f"$ {' '.join(command)}")
++    print(log, end="")
++
++    case = ET.SubElement(
++        suite,
++        "testcase",
++        classname=f"kumomta.tsa_cancel.{mode}",
++        name=name,
++        time=f"{elapsed:.3f}",
++    )
++    ET.SubElement(case, "system-out").text = log
++    if result.returncode != 0:
++        failures += 1
++        failure = ET.SubElement(
++            case,
++            "failure",
++            message=f"command exited with status {result.returncode}",
++        )
++        failure.text = log
++
++suite.set("tests", str(len(commands)))
++suite.set("failures", str(failures))
++suite.set("errors", "0")
++suite.set("skipped", "0")
++suite.set("time", f"{total_time:.3f}")
++output_path.write_bytes(
++    ET.tostring(suite, encoding="utf-8", xml_declaration=True)
++)
++sys.exit(1 if failures else 0)
++PY

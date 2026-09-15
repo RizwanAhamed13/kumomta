@@ -1,0 +1,4 @@
+diff --git a/dora-frontend/src/sema/matching.rs b/dora-frontend/src/sema/matching.rs
+@@ -155,7 +155,7 @@ pub(super) fn match_arrays_with_context(
+-fn match_types(
++pub(super) fn match_types(

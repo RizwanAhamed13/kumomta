@@ -1,0 +1,34 @@
+{
+  "checked_at": "2026-08-29T10:29:36Z",
+  "rows": {
+    "category_fit": {
+      "status": "PASS",
+      "evidence": "Feature is the correct category: the brief introduces concrete and literal pattern matching through trait-object erasure rather than correcting behavior already promised by Dora."
+    },
+    "plagiarism_screen": {
+      "status": "PASS",
+      "evidence": "Bounded local comparison covered prior problem.md files. The highest token-cosine score was 0.183 (lisette-trailing-slice-rest-patterns), far below the 0.90 failure threshold; no candidate required the conditional LLM comparison."
+    },
+    "problem_test_quality": {
+      "status": "PASS",
+      "evidence": "The brief exposes no hidden paths or test internals. Randomized hidden scenarios assert public compile/runtime behavior across compatible class, struct, enum, literal, nested, alternative, guard, exhaustive, generic, non-generic typed, no-implementation, associated-type, retained-GC, Cannon, and Boots cases; focused base cases preserve casts, direct patterns, diagnostics, and dispatch."
+    },
+    "description_necessity": {
+      "status": "PASS",
+      "evidence": "All 175 words define compatibility, runtime mismatch safety, supported pattern contexts, open-world exhaustiveness, representation safety, backend parity, or adjacent regressions. No HIGH, MEDIUM, or LOW removal candidate was found."
+    },
+    "problem_test_alignment": {
+      "status": "PASS",
+      "evidence": "Two independent clause maps and adversarial/fairness reviews found every added assertion stated by the brief or repository-discoverable. Each material requirement has an observable oracle, rejection requires the repository's normal status 1 without pinning text, and no hidden structural implementation choice is required."
+    },
+    "test_filename_collision": {
+      "status": "PASS",
+      "evidence": "Blind defaults predicted trait-object-concrete-runtime.dora, trait-object-concrete-incompatible.dora, trait-object-concrete-ambiguous.dora, and trait-object-concrete-open.dora. Every actual hidden Dora path has an unpredictable six-hex suffix, including the new 804400 and d70ed8 paths, and contains no banned marker."
+    },
+    "docker_guidelines": {
+      "status": "WARN",
+      "evidence": "The allowed Rust :latest image, WORKDIR /app, source copy, build-time dependency hydration, no build-time tests, and interactive Bash command pass. The Dockerfile does not declare the evaluator runtime USER.",
+      "disposition": "Accepted only for this user-requested precheck-only pass because Docker execution and environment hardening are explicitly deferred until after Scope Gate; it remains a pre-Docker-stage item."
+    }
+  }
+}

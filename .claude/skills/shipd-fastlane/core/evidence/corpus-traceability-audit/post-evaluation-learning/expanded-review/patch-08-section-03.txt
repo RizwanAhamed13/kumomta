@@ -1,0 +1,106 @@
+diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs
+@@ -194,18 +194,33 @@ pub fn completions(
+-    let (ctx, analysis) = &CompletionContext::new(db, position, config, trigger_character)?;
++    let contexts = if trigger_character.is_some() {
++        vec![CompletionContext::new(db, position, config, trigger_character)?]
++    } else {
++        CompletionContext::new_all(db, position, config, trigger_character)?
++    };
++    let aggregate = contexts.len() > 1
++        && contexts.first().is_some_and(|(ctx, _)| {
++            trigger_character.is_none()
++                && ctx.original_token.kind() == syntax::SyntaxKind::IDENT
++                && position.offset > ctx.original_token.text_range().start()
++        });
+-        if let CompletionAnalysis::NameRef(NameRefContext {
+-            kind:
+-                NameRefKind::Path(
+-                    path_ctx @ PathCompletionCtx { kind: PathKind::Vis { has_in_token }, .. },
+-                ),
+-            ..
+-        }) = analysis
++        if let Some((
++            ctx,
++            CompletionAnalysis::NameRef(NameRefContext {
++                kind:
++                    NameRefKind::Path(
++                        path_ctx @ PathCompletionCtx {
++                            kind: PathKind::Vis { has_in_token }, ..
++                        },
++                    ),
++                ..
++            }),
++        )) = contexts.first()
+@@ -216,7 +231,10 @@ pub fn completions(
+-        && ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE
++        && contexts
++            .first()
++            .is_some_and(|(ctx, _)| ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE)
++        && let Some((_, analysis)) = contexts.first()
+@@ -232,23 +250,38 @@ pub fn completions(
+-    {
+-        let acc = &mut completions;
+-
++    for (ctx, analysis) in &contexts {
+-            CompletionAnalysis::Name(name_ctx) => completions::complete_name(acc, ctx, name_ctx),
++            CompletionAnalysis::Name(name_ctx) => {
++                completions::complete_name(&mut completions, ctx, name_ctx)
++            }
+-                completions::complete_name_ref(acc, ctx, name_ref_ctx)
++                completions::complete_name_ref(&mut completions, ctx, name_ref_ctx)
+-                completions::lifetime::complete_label(acc, ctx, lifetime_ctx);
+-                completions::lifetime::complete_lifetime(acc, ctx, lifetime_ctx);
++                completions::lifetime::complete_label(&mut completions, ctx, lifetime_ctx);
++                completions::lifetime::complete_lifetime(&mut completions, ctx, lifetime_ctx);
+-                completions::extern_abi::complete_extern_abi(acc, ctx, expanded);
+-                completions::format_string::format_string(acc, ctx, original, expanded);
+-                completions::env_vars::complete_cargo_env_vars(acc, ctx, original, expanded);
+-                completions::ra_fixture::complete_ra_fixture(acc, ctx, original, expanded);
++                completions::extern_abi::complete_extern_abi(&mut completions, ctx, expanded);
++                completions::format_string::format_string(
++                    &mut completions,
++                    ctx,
++                    original,
++                    expanded,
++                );
++                completions::env_vars::complete_cargo_env_vars(
++                    &mut completions,
++                    ctx,
++                    original,
++                    expanded,
++                );
++                completions::ra_fixture::complete_ra_fixture(
++                    &mut completions,
++                    ctx,
++                    original,
++                    expanded,
++                );
+@@ -256,22 +289,42 @@ pub fn completions(
+-                    acc,
++                    &mut completions,
+-            CompletionAnalysis::CfgPredicate => completions::attribute::complete_cfg(acc, ctx),
++            CompletionAnalysis::CfgPredicate => {
++                completions::attribute::complete_cfg(&mut completions, ctx)
++            }
+-                completions::macro_def::complete_macro_segment(acc, ctx);
++                completions::macro_def::complete_macro_segment(&mut completions, ctx);
+-    Some(completions.into())
++    let completions = completions.into();
++    Some(if aggregate { deduplicate_aggregated_completions(completions) } else { completions })
++}
++
++fn deduplicate_aggregated_completions(completions: Vec<CompletionItem>) -> Vec<CompletionItem> {
++    let mut deduplicated = Vec::with_capacity(completions.len());
++    for completion in completions {
++        if !deduplicated.iter().any(|previous: &CompletionItem| {
++            previous.label == completion.label
++                && previous.kind == completion.kind
++                && previous.ref_match.map(|(mode, _)| mode)
++                    == completion.ref_match.map(|(mode, _)| mode)
++                && previous.documentation == completion.documentation
++                && previous.deprecated == completion.deprecated
++        }) {
++            deduplicated.push(completion);
++        }
++    }
++    deduplicated

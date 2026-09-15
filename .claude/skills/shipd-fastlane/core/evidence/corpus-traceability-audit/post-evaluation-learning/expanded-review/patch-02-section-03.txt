@@ -1,0 +1,77 @@
+diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+@@ -4,7 +4,7 @@ use syntax::ast::{Expression, Literal, Span, StructFieldAssignment, StructSpread
+-use super::helpers::replacement_drops_comment;
++use super::helpers::{expressions_equivalent, replacement_drops_comment};
+@@ -29,7 +29,7 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+-        .filter(|f| is_obvious_zero(&f.value))
++        .filter(|field| assignment_matches_autofill(ctx.store, ty, name, field))
+@@ -45,7 +45,7 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+-    let kept = render_kept_fields(ctx.source(), field_assignments);
++    let kept = render_kept_fields(ctx.source(), ctx.store, ty, name, field_assignments);
+@@ -62,10 +62,16 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
+-fn render_kept_fields(source: &str, fields: &[StructFieldAssignment]) -> String {
++fn render_kept_fields(
++    source: &str,
++    store: &Store,
++    ty: &Type,
++    owner_name: &str,
++    fields: &[StructFieldAssignment],
++) -> String {
+-        .filter(|f| !is_obvious_zero(&f.value))
++        .filter(|field| !assignment_matches_autofill(store, ty, owner_name, field))
+@@ -93,6 +99,45 @@ fn is_obvious_zero(value: &Expression) -> bool {
++fn assignment_matches_autofill(
++    store: &Store,
++    ty: &Type,
++    owner_name: &str,
++    assignment: &StructFieldAssignment,
++) -> bool {
++    match declared_field_default(store, ty, owner_name, assignment.name.as_str()) {
++        Some(Some(default)) => expressions_equivalent(&assignment.value, default),
++        Some(None) => is_obvious_zero(&assignment.value),
++        None => false,
++    }
++}
++
++fn declared_field_default<'a>(
++    store: &'a Store,
++    ty: &Type,
++    owner_name: &str,
++    field_name: &str,
++) -> Option<Option<&'a Expression>> {
++    let Type::Nominal { id, .. } = ty.strip_refs() else {
++        return None;
++    };
++    let definition = store.get_definition(id.as_str())?;
++    match &definition.body {
++        DefinitionBody::Struct { fields, .. } => fields
++            .iter()
++            .find(|field| field.name == field_name)
++            .map(|field| field.default.as_deref()),
++        DefinitionBody::Enum { variants, .. } => {
++            let variant_name = unqualified_name(owner_name);
++            variants
++                .iter()
++                .find(|variant| variant.name == variant_name)
++                .and_then(|variant| variant.fields.iter().find(|field| field.name == field_name))
++                .map(|field| field.default.as_deref())
++        }
++        _ => None,
++    }
++}
+@@ -121,14 +166,16 @@ fn rewrite_would_typecheck(
+-    omitted
+-        .iter()
+-        .all(|f| (!is_cross_package || f.is_public) && has_zero(store, &f.ty, from_package).is_ok())
++    omitted.iter().all(|f| {
++        (!is_cross_package || f.is_public)
++            && (f.has_default || has_zero(store, &f.ty, from_package).is_ok())
++    })
++    has_default: bool,
+@@ -149,7 +196,7 @@ fn post_rewrite_unspecified_fields(
+-        .filter(|f| !is_obvious_zero(&f.value))
++        .filter(|field| !assignment_matches_autofill(store, ty, name, field))
+@@ -177,6 +224,7 @@ fn fields_filtered(
++                        has_default: f.default.is_some(),
+@@ -200,6 +248,7 @@ fn fields_filtered(
++                        has_default: f.default.is_some(),

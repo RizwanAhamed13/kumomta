@@ -1,0 +1,44 @@
+diff --git a/crates/ide-completion/src/completions.rs b/crates/ide-completion/src/completions.rs
+@@ -27,7 +27,9 @@ pub(crate) mod vis;
+-use ide_db::{RootDatabase, SymbolKind, imports::import_assets::LocatedImport};
++use ide_db::{
++    FxHashSet, RootDatabase, SymbolKind, imports::import_assets::LocatedImport, text_edit::Indel,
++};
+@@ -37,7 +39,7 @@ use crate::{
+-    item::Builder,
++    item::{Builder, CompletionItemLabel},
+@@ -58,9 +60,41 @@ pub struct Completions {
++#[derive(Hash, PartialEq, Eq)]
++struct CompletionIdentity {
++    label: CompletionItemLabel,
++    source_range: syntax::TextRange,
++    text_edit: Vec<Indel>,
++    is_snippet: bool,
++    kind: CompletionItemKind,
++    lookup: SmolStr,
++    imports: Vec<(String, bool)>,
++    ref_match: Option<(String, Indel)>,
++}
++
++impl From<&CompletionItem> for CompletionIdentity {
++    fn from(item: &CompletionItem) -> Self {
++        Self {
++            label: item.label.clone(),
++            source_range: item.source_range,
++            text_edit: item.text_edit.iter().cloned().collect(),
++            is_snippet: item.is_snippet,
++            kind: item.kind,
++            lookup: item.lookup.clone(),
++            imports: item
++                .import_to_add
++                .iter()
++                .map(|import| (import.path.clone(), import.as_underscore))
++                .collect(),
++            ref_match: item.ref_match().map(|(label, indel, _)| (label, indel)),
++        }
++    }
++}
++
+-        val.buf
++        let mut seen = FxHashSet::default();
++        val.buf.into_iter().filter(|item| seen.insert(CompletionIdentity::from(item))).collect()

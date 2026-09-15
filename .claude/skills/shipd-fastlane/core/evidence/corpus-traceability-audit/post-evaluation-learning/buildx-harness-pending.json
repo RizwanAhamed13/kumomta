@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-09-13T00:31:03.669929+00:00",
+  "status": "AWAITING_PROVEN_REPAIR_RECEIPT",
+  "source": "Parent report from current Parquet Buildx launcher diagnostics",
+  "iteration_type": "harness_prebuild",
+  "count": 3,
+  "failures": [
+    "NanoCpus-only check rejected valid CpuQuota=25000/CpuPeriod=100000 enforcement",
+    "Child cpu.max=max parsed as integer; effective owned ancestor may enforce quota, with guard readiness also required",
+    "Required /usr/bin/time absent before launch"
+  ],
+  "proposed_evidence": [
+    "Fresh guard-ready handshake",
+    "Exact owned cgroup hierarchy with quota and effective cpuset readback",
+    "Independently supervised monitor liveness",
+    "Timing tool availability before build starts"
+  ],
+  "implemented_or_validated_by_this_audit": false,
+  "thermal_helper_modified": false,
+  "must_not_count_as": "solution implementation attempts or behavioral test failures"
+}

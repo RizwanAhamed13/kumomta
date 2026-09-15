@@ -1,0 +1,484 @@
+{
+  "artifact_dir": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/artifacts",
+  "artifact_set_id": "a6f7c5a72f391d424010574df88b5d9008e6b48911fdedaa485f9ce749a6864f",
+  "artifacts": {
+    "Dockerfile": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/artifacts/Dockerfile",
+      "sha256": "a3785c4e9ca467422e24ec28add06b617abf4477b7455f786a442ddd8c449063",
+      "size": 1522
+    },
+    "problem.md": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/artifacts/problem.md",
+      "sha256": "26d9c364c2afd044a405946ca6a7144dfd1dd72b27321921c6b635b8bdeb16c6",
+      "size": 1329
+    },
+    "solution.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/artifacts/solution.patch",
+      "sha256": "c2e553bdef19a6b23994d7f54b37418c384f3cea8b29942e8375f8cdf013c2a0",
+      "size": 68353
+    },
+    "test.patch": {
+      "path": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/artifacts/test.patch",
+      "sha256": "18859d6263a6b3ce6987c08b5b6f59ed37acbaaffbd0ad2a53a8ed7735cd324e",
+      "size": 48348
+    }
+  },
+  "budget": {
+    "authorized": null,
+    "entries": [],
+    "spent": 0.0
+  },
+  "case_id": "dora-trait-object-concrete-patterns",
+  "created_at": "2026-08-29T10:21:18+00:00",
+  "last_blocker": "Auto Review REVISION REQUESTED: The description and tests are clean, and the implementation is substantial and mostly cohesive. Revision is required because nested trait-object tuple arms with distinct concrete arities can trigger a compiler panic in exhaustiveness checking.",
+  "live_panel_snapshot": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/scope-gate-20260829.md",
+  "mode": "REVIEW",
+  "next_legal_stage": "rerun current hosted Verify Solution, Solution Quality, and Auto Review on v15 bytes",
+  "proofs": {
+    "current": {
+      "local-validation": {
+        "artifact_set_id": "a6f7c5a72f391d424010574df88b5d9008e6b48911fdedaa485f9ce749a6864f",
+        "command": "Aswin exact v15 four-state test.sh base/new",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 LXC dora-autoreview-mutants-20260830",
+        "evidence": "evidence/v15-testonly-base.xml; evidence/v15-testonly-new.xml; evidence/v15-solved-base.xml; evidence/v15-solved-new.xml",
+        "exit_code": 0,
+        "name": "local-validation",
+        "recorded_at": "2026-08-30T15:42:30+00:00"
+      },
+      "mutation-inventory": {
+        "artifact_set_id": "a6f7c5a72f391d424010574df88b5d9008e6b48911fdedaa485f9ce749a6864f",
+        "command": "exact v14 reference M26 tuple-arity panic replay plus repaired Cannon/Boots discriminator",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Aswin podspub27 LXC dora-autoreview-mutants-20260830",
+        "evidence": "evidence/auto-review-tuple-arity-repair-20260830.md",
+        "exit_code": 0,
+        "name": "mutation-inventory",
+        "recorded_at": "2026-08-30T15:42:30+00:00"
+      },
+      "requirement-map": {
+        "artifact_set_id": "a6f7c5a72f391d424010574df88b5d9008e6b48911fdedaa485f9ce749a6864f",
+        "command": "alignment_graph.py analyze v15 same-family tuple arity specialization",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local deterministic graph self-test 22/22",
+        "evidence": "evidence/alignment-graph-v15-tuple-arity.json; evidence/alignment-graph-v15-tuple-arity.dot",
+        "exit_code": 0,
+        "name": "requirement-map",
+        "recorded_at": "2026-08-30T15:42:30+00:00"
+      },
+      "structural-validation": {
+        "artifact_set_id": "a6f7c5a72f391d424010574df88b5d9008e6b48911fdedaa485f9ce749a6864f",
+        "command": "validate_submission.py current four artifacts",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS structural mirror",
+        "evidence": "evidence/prechecks-tuple-arity-repair-20260830.json",
+        "exit_code": 0,
+        "name": "structural-validation",
+        "recorded_at": "2026-08-30T15:42:30+00:00"
+      }
+    },
+    "stale": {
+      "auto-review-structural-repair": {
+        "artifact_set_id": "3da1a098dbd85625366680d3375a180c14d65b8ef0f0721cb4b048f0ef8c5580",
+        "command": "validate_submission.py clean apply and structural checks",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-auto-review-repair-20260830.json",
+        "exit_code": 0,
+        "name": "auto-review-structural-repair",
+        "recorded_at": "2026-08-30T11:41:29+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "decision-parity-analysis-graph": {
+        "artifact_set_id": "62b184e364547bf2617e89b6d639aaf2b6df7e6deabda132262c251429425a9d",
+        "command": "alignment_graph.py v11 canonical decision parity, analysis interactions, and exact transition proof",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local deterministic analyzer with Aswin JUnit",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/alignment-graph-v11-decision-parity-analysis-interactions.json",
+        "exit_code": 0,
+        "name": "decision-parity-analysis-graph",
+        "recorded_at": "2026-08-30T09:48:34+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "expanded-local-prechecks": {
+        "artifact_set_id": "061ed58cc363e1219ea42055ecdea92a7b50febd56e7a34a271391475eabcbfe",
+        "command": "validate_submission.py structural and clean-application validation",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-expanded-20260829.json",
+        "exit_code": 0,
+        "name": "expanded-local-prechecks",
+        "recorded_at": "2026-08-29T14:55:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "expanded-offline-matrix": {
+        "artifact_set_id": "061ed58cc363e1219ea42055ecdea92a7b50febd56e7a34a271391475eabcbfe",
+        "command": "Aswin exact-tree four-state, UID 1000 offline six-run matrix and mutation probes",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 Docker, network disabled",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/expanded-final-validation-20260829.md",
+        "exit_code": 0,
+        "name": "expanded-offline-matrix",
+        "recorded_at": "2026-08-29T14:55:23+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "final-local-validation": {
+        "artifact_set_id": "1abc97f4b63d3289e17477f3dc46ee78cdabc8243ead28b6a8c292cf1690f3db",
+        "command": "Aswin clean/reference base+new, six repeats, clean patch application",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 disposable Docker plus local structural checks",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/fp-hardening-20260829.md",
+        "exit_code": 0,
+        "name": "final-local-validation",
+        "recorded_at": "2026-08-29T17:36:28+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "final-mutation-inventory": {
+        "artifact_set_id": "1abc97f4b63d3289e17477f3dc46ee78cdabc8243ead28b6a8c292cf1690f3db",
+        "command": "Executed M12-M17 exact mutants against final 31-group suite",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Aswin podspub27 disposable Docker",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/fp-hardening-20260829.md",
+        "exit_code": 0,
+        "name": "final-mutation-inventory",
+        "recorded_at": "2026-08-29T17:36:28+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "final-requirement-map": {
+        "artifact_set_id": "1abc97f4b63d3289e17477f3dc46ee78cdabc8243ead28b6a8c292cf1690f3db",
+        "command": "Two-pass independent clause, fairness, and false-positive alignment review",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "Local read-only review plus Aswin execution evidence",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/description-test-map-final-20260829.md",
+        "exit_code": 0,
+        "name": "final-requirement-map",
+        "recorded_at": "2026-08-29T17:36:28+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "full-coverage-four-state": {
+        "artifact_set_id": "9ece1c5518c317c0ac9ed81448887e9a9f8cd8191ef6d580925525b79748d61a",
+        "command": "test.sh base/new in isolated test-only and solved containers; parsed per-test JUnit",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 exact commit isolated Docker containers",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/full-coverage-transition-alignment-20260830.md",
+        "exit_code": 0,
+        "name": "full-coverage-four-state",
+        "recorded_at": "2026-08-30T08:36:41+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "full-coverage-structural": {
+        "artifact_set_id": "9ece1c5518c317c0ac9ed81448887e9a9f8cd8191ef6d580925525b79748d61a",
+        "command": "validate_submission.py structural and clean patch application",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 exact commit",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-full-coverage-alignment-20260830.json",
+        "exit_code": 0,
+        "name": "full-coverage-structural",
+        "recorded_at": "2026-08-30T08:36:41+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "full-coverage-transition-alignment": {
+        "artifact_set_id": "9ece1c5518c317c0ac9ed81448887e9a9f8cd8191ef6d580925525b79748d61a",
+        "command": "alignment_graph.py v9 with exact parsed transition JUnit",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local deterministic graph analyzer plus Aswin JUnit evidence",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/alignment-graph-v9-transition-full-coverage.json",
+        "exit_code": 0,
+        "name": "full-coverage-transition-alignment",
+        "recorded_at": "2026-08-30T08:36:41+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "gate-classification-alignment": {
+        "artifact_set_id": "a848204f76ac6618b571d4d168b1a42e3cbd2598c88bc6b1c7b850caa1f7a074",
+        "command": "alignment_graph.py exact-byte independent inventory and semantic map",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local deterministic graph analyzer",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/alignment-graph-v8-gate-classification-repair.json",
+        "exit_code": 0,
+        "name": "gate-classification-alignment",
+        "recorded_at": "2026-08-30T07:57:57+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "gate-classification-hosted-partition": {
+        "artifact_set_id": "a848204f76ac6618b571d4d168b1a42e3cbd2598c88bc6b1c7b850caa1f7a074",
+        "command": "Hosted exact testcase partition plus Aswin 33-test base replay",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Shipd hosted report and Aswin podspub27 disposable container",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-gate-classification-repair-20260830.md",
+        "exit_code": 0,
+        "name": "gate-classification-hosted-partition",
+        "recorded_at": "2026-08-30T07:57:57+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "gate-classification-structural": {
+        "artifact_set_id": "a848204f76ac6618b571d4d168b1a42e3cbd2598c88bc6b1c7b850caa1f7a074",
+        "command": "validate_submission.py structural and clean application",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-gate-classification-repair-20260830.json",
+        "exit_code": 0,
+        "name": "gate-classification-structural",
+        "recorded_at": "2026-08-30T07:57:57+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "listed-local-prechecks": {
+        "artifact_set_id": "8b845a59adb35feeadd8819a9fd434edec882e7c67acd68887bed1455ef629e6",
+        "command": "validate_submission.py structural plus eligibility/style/similarity/local-review mirrors",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-structural.json",
+        "exit_code": 0,
+        "name": "listed-local-prechecks",
+        "recorded_at": "2026-08-29T10:31:40+00:00",
+        "stale_reason": "artifact changed: Dockerfile"
+      },
+      "materialization-structural-repair": {
+        "artifact_set_id": "8843bc2ced0dd26eed5ebee3bf1a632ab6e6f83506e2e6f0bc563e099cf83fba",
+        "command": "validate_submission.py structural and clean application alone/together",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-materialization-repair-20260830.json",
+        "exit_code": 0,
+        "name": "materialization-structural-repair",
+        "recorded_at": "2026-08-30T06:30:37+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "offline-direct-pytester-probe": {
+        "artifact_set_id": "c9fdf6408ae847d054c8df1bd7feeaad0e21af3f77a3763248084e696b035706",
+        "command": "Aswin Docker --network none direct preinstalled pytester reference fixture Cannon",
+        "depends_on": [
+          "test.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 Docker network disabled",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-offline-runner-repair-20260830.md",
+        "exit_code": 0,
+        "name": "offline-direct-pytester-probe",
+        "recorded_at": "2026-08-30T04:28:50+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "offline-runner-alignment-graph": {
+        "artifact_set_id": "c9fdf6408ae847d054c8df1bd7feeaad0e21af3f77a3763248084e696b035706",
+        "command": "alignment_graph.py v2 semantic-role and architecture-invariant audit",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local deterministic graph analyzer",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/alignment-graph-v4-role-invariant-audit.json",
+        "exit_code": 1,
+        "name": "offline-runner-alignment-graph",
+        "recorded_at": "2026-08-30T04:58:34+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "offline-runner-structural-repair": {
+        "artifact_set_id": "c9fdf6408ae847d054c8df1bd7feeaad0e21af3f77a3763248084e696b035706",
+        "command": "validate_submission.py structural and clean patch application; bash -n test.sh",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-offline-runner-repair-20260830.json",
+        "exit_code": 0,
+        "name": "offline-runner-structural-repair",
+        "recorded_at": "2026-08-30T04:28:50+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "role-invariant-alignment-graph": {
+        "artifact_set_id": "8843bc2ced0dd26eed5ebee3bf1a632ab6e6f83506e2e6f0bc563e099cf83fba",
+        "command": "alignment_graph.py independent inventory, FP proof, and post-patch materialization audit",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch"
+        ],
+        "environment": "local deterministic graph analyzer",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/alignment-graph-v7-materialization-repair.json",
+        "exit_code": 0,
+        "name": "role-invariant-alignment-graph",
+        "recorded_at": "2026-08-30T06:30:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "runner-materialization-four-state": {
+        "artifact_set_id": "8843bc2ced0dd26eed5ebee3bf1a632ab6e6f83506e2e6f0bc563e099cf83fba",
+        "command": "Aswin podspub27 evaluator-order source-keyed bootstrap and four-state JUnit matrix",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 disposable Docker container",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-materialization-repair-20260830.md",
+        "exit_code": 0,
+        "name": "runner-materialization-four-state",
+        "recorded_at": "2026-08-30T06:30:36+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "scope-gate": {
+        "artifact_set_id": "b80d19abf761ad40a9a00f5032487fa83490b9112a9431d82821fc5b19f22b40",
+        "command": "Live Shipd Scope Gate on challenge kh73ecnce9vvjrga3f14dk0wcx8db92b",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Shipd live panel, Chrome, 2026-08-29",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/scope-gate-20260829.md",
+        "exit_code": 0,
+        "name": "scope-gate",
+        "recorded_at": "2026-08-29T11:21:36+00:00",
+        "stale_reason": "artifact changed: Dockerfile, solution.patch, test.patch"
+      },
+      "solution-quality-four-state-repair": {
+        "artifact_set_id": "62b184e364547bf2617e89b6d639aaf2b6df7e6deabda132262c251429425a9d",
+        "command": "exact prior-reference discriminators plus isolated test-only/solved base/new JUnit matrix",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 exact pinned commit and frozen evaluator state",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-impl-bound-usefulness-repair-20260830.md",
+        "exit_code": 0,
+        "name": "solution-quality-four-state-repair",
+        "recorded_at": "2026-08-30T09:48:34+00:00",
+        "stale_reason": "artifact changed: solution.patch, test.patch"
+      },
+      "solution-quality-structural-repair": {
+        "artifact_set_id": "9900d15177f6c3c45956a3aad52adc0068fa7d743d755f879cad4a0c295b3657",
+        "command": "validate_submission.py structural and clean application alone/together",
+        "depends_on": [
+          "problem.md",
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "local macOS REVIEW",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/prechecks-solution-quality-repair-20260830.json",
+        "exit_code": 0,
+        "name": "solution-quality-structural-repair",
+        "recorded_at": "2026-08-30T05:23:45+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      },
+      "solution-quality-targeted-repair": {
+        "artifact_set_id": "9900d15177f6c3c45956a3aad52adc0068fa7d743d755f879cad4a0c295b3657",
+        "command": "Aswin offline previous-reference discriminator, repaired Cannon/Boots, bytecode 20 tests, solved base/new JUnit",
+        "depends_on": [
+          "test.patch",
+          "solution.patch",
+          "Dockerfile"
+        ],
+        "environment": "Aswin podspub27 Docker network disabled",
+        "evidence": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-associated-inference-repair-20260830.md",
+        "exit_code": 0,
+        "name": "solution-quality-targeted-repair",
+        "recorded_at": "2026-08-30T05:23:45+00:00",
+        "stale_reason": "artifact changed: test.patch"
+      }
+    }
+  },
+  "repository": {
+    "clean": false,
+    "commit": "5dd7d4dc79e26f9d9e039681d6bb42f385378c7b",
+    "commit_matches": true,
+    "head": "5dd7d4dc79e26f9d9e039681d6bb42f385378c7b",
+    "root": "/Users/rizwanahamed/Documents/Shipd/.olympus/tmp/fresh-scout-dora",
+    "root_matches": true,
+    "url": "https://github.com/dinfuehr/dora"
+  },
+  "requirement_map": "/Users/rizwanahamed/Documents/Shipd/.olympus/cases/dora-trait-object-concrete-patterns/requirements.json",
+  "schema_version": 2,
+  "stage": "5b",
+  "updated_at": "2026-08-30T15:42:56+00:00",
+  "verdict": "IN_PROGRESS"
+}

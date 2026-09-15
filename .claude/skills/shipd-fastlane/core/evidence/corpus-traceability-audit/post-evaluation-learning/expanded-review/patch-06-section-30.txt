@@ -1,0 +1,4 @@
+diff --git a/tools/bytecode.toml b/tools/bytecode.toml
+@@ -75,6 +75,8 @@ variants = [
++    "TestTraitObjectType",
++    "LoadTraitObjectValue",

@@ -1,0 +1,377 @@
+[
+  {
+    "id": "calyx",
+    "title": "Preserve invoke combinational scopes during component inlining",
+    "repository": "calyxir/calyx",
+    "historical_agent_pass_percent": 10,
+    "historical_panel_id": "kh763xwhkq11gc38ata5g1rn358cgw9m",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/calyx-inline-invoke-comb-second/artifacts/solution.patch",
+        "bytes": 46197,
+        "mtime_ns": 1786984512700632887,
+        "kind": "artifact",
+        "sha256": "a9353a143db9163d5c418cc224513d36fa5570fa5d7506265e56b4994430ce43"
+      }
+    ],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "ladybug",
+    "title": "Support Composite Primary Keys for Native Node Tables",
+    "repository": "LadybugDB/ladybug",
+    "historical_agent_pass_percent": 15,
+    "historical_panel_id": "kh7037hnydbvan6167ssq2cwrx8c7425",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/ladybug-composite-node-identity/artifacts/solution.patch",
+        "bytes": 540296,
+        "mtime_ns": 1786477670723915212,
+        "kind": "artifact",
+        "sha256": "4a85072e8c69f13ae6c0540086a6f25c191b550df58e576638963580ac670293"
+      },
+      {
+        "path": "deliverables/ladybug-composite-node-identity-final/solution.patch",
+        "bytes": 531799,
+        "mtime_ns": 1786436189962352829,
+        "kind": "artifact",
+        "sha256": "196d6dde4eb02f44eca7aaf2763b0cd405140f44b4fbd78155e8d6f8c13a501d"
+      },
+      {
+        "path": "deliverables/ladybug-composite-node-identity-hardened-960a3942/solution.patch",
+        "bytes": 531799,
+        "mtime_ns": 1786438997374009453,
+        "kind": "artifact",
+        "sha256": "196d6dde4eb02f44eca7aaf2763b0cd405140f44b4fbd78155e8d6f8c13a501d"
+      }
+    ],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "lisette",
+    "title": "Add ownership-safe defaults to record fields",
+    "repository": "ivov/lisette",
+    "historical_agent_pass_percent": 30,
+    "historical_panel_id": "kh7ctmnq19q2qn7sn2sf5nektx8c63ks",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/lisette-configurable-lint-levels/artifacts/solution.patch",
+        "bytes": 15559,
+        "mtime_ns": 1787466307334874586,
+        "kind": "artifact",
+        "sha256": "d4f8a3aea432e989e44d49c28e6d176f60d823a7446fabd55c43aa881d4331cb"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+        "bytes": 98757,
+        "mtime_ns": 1786849259302731028,
+        "kind": "artifact",
+        "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/3f3ce128a1e555c6e171c6a7f9de42e97615ad912824d27f8ec002ae71d58ba3/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786469895801612994,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/4b3c8711b7d0bf7ba463911b285177cefc7eb2f558e12dd13bd2e9e4cbe8b344/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786470056677360258,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/5232930076645c0b78dd1cbfd9b03a3ca2786eb18669ca27e9bac5743f1b082a/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786469727587285018,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/7543d0e044f17db411ebea02363cf278d6e5f0158b187b3c988a5c7e12c76768/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786470398972303026,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/803a4f5613de3961660b3381bca56ff32b35da18f6659ed5eeb343c97b07b04d/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786472017851537380,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/88ad550ca93534362b8c1ba9cd09d125bdc5bfcad37ea8487ef37d426f1f6afd/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786477090576277944,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/8cee9e1c3f903dfaadc5e89247075937fd772afad8bd9dce668c5b60a2d9d101/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786475769661608026,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/9b87f850ccfd3db27bdf82128d97ae30710e0aefbbb8e5c61716444804124045/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786472383406171757,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/a12e7ec7f00e42716ee4b46a43245ce4bb96286c9b41f2c0df2a8e407e0a3d99/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786469092885446915,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch",
+        "bytes": 92787,
+        "mtime_ns": 1786506817214730391,
+        "kind": "artifact",
+        "sha256": "f9a3845b6d13d179fcd4feb918da7beab105e5d5cdec47e68ca2205e6cafbb90"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/c785287258d03684f2e6419be9e523b971ce82fb273ef5185cb28a3a066defb0/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786479531233354734,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/artifacts/solution.patch",
+        "bytes": 98757,
+        "mtime_ns": 1786848740790007659,
+        "kind": "artifact",
+        "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/df832e414dfc2d868727b3999cc005983df6699926fa94943ad5bef3876dba4a/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786508224430505117,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/fbf1579ae7dbb2fd1b1b473c6ad1e0cfdca77636c0ff8bbe4bc830a46f9c3a07/artifacts/solution.patch",
+        "bytes": 88977,
+        "mtime_ns": 1786478099938585239,
+        "kind": "artifact",
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9"
+      },
+      {
+        "path": ".olympus/cases/lisette-trailing-slice-rest-patterns/artifacts/solution.patch",
+        "bytes": 38643,
+        "mtime_ns": 1787576276707185924,
+        "kind": "artifact",
+        "sha256": "25633b958c0ac592b5312fb18bad39e68c346f0f9d876d0bf96ff535218b3e8b"
+      }
+    ],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "kitesql",
+    "title": "Support expressions in CREATE INDEX",
+    "repository": "KipData/KiteSQL",
+    "historical_agent_pass_percent": 30,
+    "historical_panel_id": "kh76cw7dz3e4cm5wg4nwzdfjyh8bkwj7",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": "kitesql-expression-index-core/solution.patch",
+        "bytes": 75756,
+        "mtime_ns": 1786179741005023726,
+        "kind": "artifact",
+        "sha256": "a1f979a1b9a12ed568391b7697b2be210638e81109e05c8579824d6fbb91321c"
+      },
+      {
+        "path": "kitesql-expression-index-scoped/solution.patch",
+        "bytes": 76309,
+        "mtime_ns": 1786132805123070359,
+        "kind": "artifact",
+        "sha256": "436a55fb0c0e8a0e8b535aeaf1966bbd64b80899697abb8b65e1043a6489bbaa"
+      },
+      {
+        "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+        "bytes": 76293,
+        "mtime_ns": 1786191932650068683,
+        "kind": "artifact",
+        "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be"
+      }
+    ],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "datafusion-parquet",
+    "title": "Use Parquet Map Leaf Metadata for Row-Group Pruning",
+    "repository": "apache/datafusion",
+    "historical_agent_pass_percent": 40,
+    "historical_panel_id": "kh7b3bb3afj470xz4vyyt1q2kn8b3zeq",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "datafusion-aggregate",
+    "title": "Preserve Aggregate UDF Overrides Across FFI Boundaries",
+    "repository": "apache/datafusion",
+    "historical_agent_pass_percent": 20,
+    "historical_panel_id": "kh7dzpzqdxx7wyg8zz12e9673s8atwq5",
+    "recorded_acceptance_evidence": "reference records live verification 2026-08-26",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "dora",
+    "title": "Support Concrete Patterns Over Trait Objects",
+    "repository": "dinfuehr/dora",
+    "historical_agent_pass_percent": null,
+    "historical_panel_id": null,
+    "recorded_acceptance_evidence": "user confirmation 2026-08-31",
+    "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/dora-trait-object-concrete-patterns/artifacts/solution.patch",
+        "bytes": 68353,
+        "mtime_ns": 1788103583595515407,
+        "kind": "artifact",
+        "sha256": "c2e553bdef19a6b23994d7f54b37418c384f3cea8b29942e8375f8cdf013c2a0"
+      }
+    ],
+    "caution": "Related local revisions are not bound to historical acceptance. The Calyx second case reports an already-accepted occupied concept; its patch identity remains unverified. DataFusion physical-expr is not either accepted DataFusion task."
+  },
+  {
+    "id": "rust-analyzer",
+    "title": "Aggregate macro-argument completions across mapped expansion positions",
+    "repository": "rust-lang/rust-analyzer",
+    "case_id": "rust-analyzer-multi-macro-completion",
+    "recorded_repository_commit": "d2e55da49132fa70a13dfbdc99122432b02cf464",
+    "historical_agent_pass_percent": null,
+    "historical_panel_id": null,
+    "recorded_acceptance_evidence": "user confirmation 2026-09-12 in Shipd Fastlane task",
+    "source": "knowledge/user-acceptance-confirmation-20260912.md",
+    "case_source": ".olympus/cases/rust-analyzer-multi-macro-completion/case.json",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+        "bytes": 57807,
+        "mtime_ns": 1788454094660726529,
+        "kind": "artifact",
+        "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch",
+        "bytes": 59216,
+        "mtime_ns": 1788459369568730701,
+        "kind": "artifact",
+        "sha256": "95c60a6ff4e42dcaeef858c48ce603eaea3abff779366515a4b981316dcb6ad4"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch",
+        "bytes": 59413,
+        "mtime_ns": 1788543650480715349,
+        "kind": "artifact",
+        "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-onepass-candidate/solution.patch",
+        "bytes": 59413,
+        "mtime_ns": 1788544205853539978,
+        "kind": "artifact",
+        "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-replay-compatible-risk/solution.patch",
+        "bytes": 59413,
+        "mtime_ns": 1788546102554514378,
+        "kind": "artifact",
+        "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/proposed-output/solution.patch",
+        "bytes": 59413,
+        "mtime_ns": 1788527484477256435,
+        "kind": "artifact",
+        "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a"
+      },
+      {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/solution.patch",
+        "bytes": 51156,
+        "mtime_ns": 1787487671543385167,
+        "kind": "artifact",
+        "sha256": "3369ded437806aae7135bb3d172eb2e19e7998cbe9027017ac87dd8ae93e3be8"
+      }
+    ],
+    "caution": "Acceptance is user-confirmed. The local case verdict is an older in-progress snapshot. Related saved revisions are not bound to final acceptance; final pass rate and accepted artifact identity remain unverified."
+  },
+  {
+    "id": "scylla",
+    "title": "Preserve policy-aware coordinator affinity across paging",
+    "repository": "scylladb/scylla-rust-driver",
+    "case_id": "scylla-policy-aware-paging-affinity",
+    "recorded_repository_commit": "611d43b595fb0ad7010f2bdbd887acae3d962d65",
+    "historical_agent_pass_percent": null,
+    "historical_panel_id": null,
+    "recorded_acceptance_evidence": "user confirmation 2026-09-12 in Shipd Fastlane task",
+    "source": "knowledge/user-acceptance-confirmation-20260912.md",
+    "case_source": ".olympus/cases/scylla-policy-aware-paging-affinity/case.json",
+    "live_status_verified_this_audit": false,
+    "accepted_artifact_hashes": null,
+    "related_local_solution_revisions": [
+      {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+        "bytes": 25443,
+        "mtime_ns": 1788412046119934788,
+        "kind": "artifact",
+        "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44"
+      },
+      {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch",
+        "bytes": 24104,
+        "mtime_ns": 1788192406308035051,
+        "kind": "artifact",
+        "sha256": "c2bf2ce0176aadc6c214453029409cf44ac71462a30852e04a68d724585523c3"
+      },
+      {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-gap-pre-v16/solution.patch",
+        "bytes": 58594,
+        "mtime_ns": 1788225182960267080,
+        "kind": "artifact",
+        "sha256": "c5a83c205851ef0c5c1084a84a4805d1cc4a12b534e8691558c5229557b1c9ac"
+      }
+    ],
+    "caution": "Acceptance is user-confirmed. The local case verdict is an older in-progress snapshot. Related saved revisions are not bound to final acceptance; final pass rate and accepted artifact identity remain unverified."
+  }
+]

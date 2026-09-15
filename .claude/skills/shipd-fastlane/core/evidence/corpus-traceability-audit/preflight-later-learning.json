@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-09-13T00:04:59.285865+00:00",
+  "phase": "metadata live-acceptance update and authorized historical source audit preparation",
+  "hostname": "arch",
+  "user": "admin",
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "disk": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  256G  522G  33% /home\n",
+  "mount": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home\n",
+  "docker": "29.7.2",
+  "ip": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n2: eno1    inet 10.1.25.20/24 brd 10.1.25.255 scope global noprefixroute eno1\\       valid_lft forever preferred_lft forever\n3: tailscale0    inet 100.105.254.33/32 scope global tailscale0\\       valid_lft forever preferred_lft forever\n5: docker0    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0\\       valid_lft forever preferred_lft forever\n"
+}

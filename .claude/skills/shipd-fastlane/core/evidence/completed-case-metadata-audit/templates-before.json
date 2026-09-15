@@ -1,0 +1,123 @@
+{
+  "contract.example.json": {
+    "json_parse": "valid",
+    "type": "dict",
+    "top_level_keys": [
+      "requirements",
+      "tests",
+      "note",
+      "schema",
+      "inventory_sources",
+      "scenarios",
+      "risk_review"
+    ],
+    "ids": {
+      "requirements": [
+        "R1",
+        "R2",
+        "R3"
+      ],
+      "tests": [
+        "new.reopen.scalar",
+        "new.reopen.composite",
+        "new.invalid_key.preserve",
+        "base.legacy.reopen"
+      ],
+      "scenarios": [
+        "S.boundary",
+        "S.interaction",
+        "S.error",
+        "S.compatibility"
+      ]
+    },
+    "duplicate_ids": {
+      "requirements": false,
+      "tests": false,
+      "scenarios": false
+    },
+    "unknown_requirement_refs": [],
+    "unknown_scenario_test_refs": []
+  },
+  "environment.example.json": {
+    "json_parse": "valid",
+    "type": "dict",
+    "top_level_keys": [
+      "host",
+      "workdir",
+      "image_identity",
+      "toolchain",
+      "uid",
+      "build_flags",
+      "cache_policy",
+      "preflight",
+      "preflight_note"
+    ]
+  },
+  "metrics.example.json": {
+    "json_parse": "valid",
+    "type": "dict",
+    "top_level_keys": [
+      "schema",
+      "case_id",
+      "repository_commit",
+      "started_at",
+      "stage_completed_at",
+      "stage",
+      "artifact_set_id",
+      "artifact_revisions",
+      "wall_seconds",
+      "remote_build_seconds",
+      "remote_test_seconds",
+      "platform_equivalent_seconds_before",
+      "platform_equivalent_seconds_after",
+      "cache_conditions_before",
+      "cache_conditions_after",
+      "first_attempt_four_state_pass",
+      "paid_gate_attempts",
+      "platform_tokens_spent",
+      "codex_usage_checkpoints",
+      "repeated_failure_families",
+      "rollout",
+      "auto_review_approved",
+      "manager_accepted",
+      "acceptance_receipt",
+      "note",
+      "test_adequacy",
+      "workflow_mode",
+      "completion_states",
+      "exposure",
+      "usage_policy",
+      "first_outcomes",
+      "iteration_counts",
+      "freeze_milestones",
+      "phase_seconds",
+      "execution_integrity",
+      "first_outcomes_note",
+      "freeze_milestones_note"
+    ]
+  },
+  "panel-contract.example.json": {
+    "json_parse": "valid",
+    "type": "dict",
+    "top_level_keys": [
+      "url",
+      "captured_at",
+      "complete",
+      "capture",
+      "contract",
+      "instructions"
+    ]
+  },
+  "quality-checks.json": {
+    "json_parse": "valid",
+    "type": "dict",
+    "top_level_keys": [
+      "schema",
+      "version",
+      "authority",
+      "checks"
+    ],
+    "check_count": 20,
+    "duplicate_ids": false
+  }
+}

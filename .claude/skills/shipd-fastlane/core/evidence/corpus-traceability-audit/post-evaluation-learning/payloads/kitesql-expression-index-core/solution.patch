@@ -1,0 +1,1926 @@
+diff --git a/src/binder/create_index.rs b/src/binder/create_index.rs
+index 44187ae..501242d 100644
+--- a/src/binder/create_index.rs
++++ b/src/binder/create_index.rs
+@@ -13,8 +13,9 @@
+ // limitations under the License.
+ 
+ use crate::binder::{Binder, Source};
+-use crate::catalog::{ColumnRef, TableName};
++use crate::catalog::TableName;
+ use crate::errors::DatabaseError;
++use crate::expression::ScalarExpression;
+ use crate::planner::operator::create_index::CreateIndexOperator;
+ use crate::planner::operator::table_scan::TableScanOperator;
+ use crate::planner::operator::Operator;
+@@ -48,14 +49,14 @@ impl<T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<'_, '_, T, A>
+         &mut self,
+         table_name: TableName,
+         index_name: String,
+-        columns: Vec<ColumnRef>,
++        expressions: Vec<ScalarExpression>,
+         if_not_exists: bool,
+         is_unique: bool,
+         input: LogicalPlan,
+     ) -> Result<LogicalPlan, DatabaseError> {
+         let ty = if is_unique {
+             IndexType::Unique
+-        } else if columns.len() == 1 {
++        } else if expressions.len() == 1 {
+             IndexType::Normal
+         } else {
+             IndexType::Composite
+@@ -64,7 +65,7 @@ impl<T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<'_, '_, T, A>
+         Ok(LogicalPlan::new(
+             Operator::CreateIndex(CreateIndexOperator {
+                 table_name,
+-                columns,
++                expressions,
+                 index_name,
+                 if_not_exists,
+                 ty,
+diff --git a/src/binder/parser.rs b/src/binder/parser.rs
+index 91129eb..4feb01c 100644
+--- a/src/binder/parser.rs
++++ b/src/binder/parser.rs
+@@ -841,35 +841,122 @@ where
+             .name
+             .ok_or(DatabaseError::InvalidIndex)
+             .and_then(sql_object_name)?;
+-        let input = self
++        let mut input = self
+             .binder
+             .bind_create_index_source(table_name.clone(), self.arena)?;
+-        let mut columns = Vec::with_capacity(create.columns.len());
++        let input_schema = input.output_schema(self.arena).clone();
++        let key_count = create.columns.len();
++        let unique = create.unique;
++        let mut expressions = Vec::with_capacity(create.columns.len());
+ 
+-        for index_column in create.columns {
+-            match self
++        for (key_position, index_column) in create.columns.into_iter().enumerate() {
++            let expression = self
+                 .binder
+-                .bind_expr(&index_column.column.expr, self.arena)?
+-            {
+-                ScalarExpression::ColumnRef { column, .. } => columns.push(column),
+-                expr => {
+-                    return Err(DatabaseError::UnsupportedStmt(format!(
+-                        "'CREATE INDEX' by {expr}"
+-                    )))
++                .bind_expr(&index_column.column.expr, self.arena)?;
++            match &expression {
++                ScalarExpression::ColumnRef { .. } => {}
++                _ if !unique && (key_count == 1 || (key_count == 2 && key_position == 1)) => {
++                    if !Self::validate_index_expression(&expression, &input_schema, self.arena)? {
++                        return Err(DatabaseError::UnsupportedStmt(
++                            "CREATE INDEX expressions must reference an indexed-table column"
++                                .to_string(),
++                        ));
++                    }
++                }
++                _ if unique => {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "unique expression indexes are not supported".to_string(),
++                    ));
++                }
++                _ => {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "an expression key must be the sole key or the second key of a two-key index"
++                            .to_string(),
++                    ));
+                 }
+             }
++            expressions.push(expression);
++        }
++
++        if key_count == 2 && !matches!(&expressions[1], ScalarExpression::ColumnRef { .. }) {
++            let ScalarExpression::ColumnRef { column, .. } = &expressions[0] else {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "a composite expression index requires an ordinary leading key".to_string(),
++                ));
++            };
++            if *self.arena.column(*column).datatype() != LogicalType::Integer {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "a composite expression index requires an INTEGER leading key".to_string(),
++                ));
++            }
+         }
+ 
+         self.binder.bind_create_index(
+             table_name,
+             index_name,
+-            columns,
++            expressions,
+             create.if_not_exists,
+-            create.unique,
++            unique,
+             input,
+         )
+     }
+ 
++    fn validate_index_expression(
++        expression: &ScalarExpression,
++        input_schema: &[ColumnRef],
++        arena: &PlanArena,
++    ) -> Result<bool, DatabaseError> {
++        fn validate_column(
++            column: ColumnRef,
++            input_schema: &[ColumnRef],
++            arena: &PlanArena,
++        ) -> Result<(), DatabaseError> {
++            if !input_schema
++                .iter()
++                .any(|candidate| arena.same_column(*candidate, column))
++            {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "CREATE INDEX expressions must use columns from the indexed table".to_string(),
++                ));
++            }
++            if *arena.column(column).datatype() != LogicalType::Integer {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "CREATE INDEX arithmetic requires INTEGER columns".to_string(),
++                ));
++            }
++            Ok(())
++        }
++
++        match expression {
++            ScalarExpression::Binary {
++                op: expression::BinaryOperator::Plus | expression::BinaryOperator::Minus,
++                left_expr,
++                right_expr,
++                ..
++            } => {
++                let ScalarExpression::ColumnRef { column, .. } = left_expr.as_ref() else {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "CREATE INDEX arithmetic requires an INTEGER column as its left operand"
++                            .to_string(),
++                    ));
++                };
++                validate_column(*column, input_schema, arena)?;
++                let ScalarExpression::ColumnRef { column, .. } = right_expr.as_ref() else {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "CREATE INDEX arithmetic requires an INTEGER column as its right operand"
++                            .to_string(),
++                    ));
++                };
++                validate_column(*column, input_schema, arena)?;
++                Ok(true)
++            }
++            _ => Err(DatabaseError::UnsupportedStmt(
++                "CREATE INDEX supports only addition or subtraction of two INTEGER columns"
++                    .to_string(),
++            )),
++        }
++    }
++
+     fn create_view(self, create: CreateView) -> Result<LogicalPlan, DatabaseError> {
+         let CreateView {
+             or_replace,
+@@ -2153,7 +2240,7 @@ impl<'a, 'parent, T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<
+             }
+             Expr::Cast {
+                 expr, data_type, ..
+-            } => ScalarExpression::type_cast(
++            } => ScalarExpression::explicit_type_cast(
+                 self.bind_expr(expr, arena)?,
+                 Cow::Owned(LogicalType::try_from(data_type.clone())?),
+                 arena,
+diff --git a/src/catalog/table.rs b/src/catalog/table.rs
+index 27ce3cb..1ffc16d 100644
+--- a/src/catalog/table.rs
++++ b/src/catalog/table.rs
+@@ -14,6 +14,7 @@
+ 
+ use crate::catalog::{ColumnCatalog, ColumnRef, ColumnRelation};
+ use crate::errors::DatabaseError;
++use crate::expression::visitor_mut::ExprVisitorMut;
+ use crate::expression::ScalarExpression;
+ use crate::iter_ext::Itertools;
+ use crate::planner::{MetaArena, PlanArena};
+@@ -48,6 +49,62 @@ pub(crate) struct DmlTableSnapshot<'a> {
+     pub(crate) index_metas: Vec<(IndexMetaRef, Vec<ScalarExpression>)>,
+ }
+ 
++struct IndexExpressionRebinder<'a, A> {
++    columns: &'a [ColumnRef],
++    arena: &'a A,
++}
++
++struct IndexExpressionTransplanter<'a> {
++    source_columns: &'a [ColumnRef],
++    target_columns: &'a [ColumnRef],
++}
++
++impl ExprVisitorMut<'_> for IndexExpressionTransplanter<'_> {
++    fn visit_column_ref(
++        &mut self,
++        column: &mut ColumnRef,
++        position: &mut usize,
++    ) -> Result<(), DatabaseError> {
++        let Some(new_position) = self
++            .source_columns
++            .iter()
++            .position(|source| source == column)
++        else {
++            return Err(DatabaseError::column_not_found(column.to_string()));
++        };
++        *column = self.target_columns[new_position];
++        *position = new_position;
++        Ok(())
++    }
++}
++
++impl<A: MetaArena> ExprVisitorMut<'_> for IndexExpressionRebinder<'_, A> {
++    fn visit_column_ref(
++        &mut self,
++        column: &mut ColumnRef,
++        position: &mut usize,
++    ) -> Result<(), DatabaseError> {
++        let source = self.arena.column(*column);
++        let source_id = source.id();
++        let source_table = source.table_name();
++        let Some((new_position, new_column)) =
++            self.columns
++                .iter()
++                .copied()
++                .enumerate()
++                .find(|(_, candidate)| {
++                    let candidate = self.arena.column(*candidate);
++                    candidate.id() == source_id && candidate.table_name() == source_table
++                })
++        else {
++            return Err(DatabaseError::column_not_found(source.name().to_string()));
++        };
++        *column = new_column;
++        *position = new_position;
++        Ok(())
++    }
++}
++
+ //TODO: can add some like Table description and other information as attributes
+ #[derive(Debug, Clone, PartialEq, ReferenceSerialization)]
+ pub struct TableMeta {
+@@ -55,6 +112,21 @@ pub struct TableMeta {
+ }
+ 
+ impl TableCatalog {
++    pub(crate) fn rebind_index_expressions(
++        &self,
++        expressions: &mut [ScalarExpression],
++        arena: &impl MetaArena,
++    ) -> Result<(), DatabaseError> {
++        for expression in expressions {
++            IndexExpressionRebinder {
++                columns: &self.column_refs,
++                arena,
++            }
++            .visit(expression)?;
++        }
++        Ok(())
++    }
++
+     pub(crate) fn name(&self) -> &TableName {
+         &self.name
+     }
+@@ -125,12 +197,7 @@ impl TableCatalog {
+     ) -> Result<DmlTableSnapshot<'_>, DatabaseError> {
+         let index_metas = self
+             .indexes()
+-            .map(|index_meta| {
+-                Ok((
+-                    *index_meta,
+-                    arena.index(*index_meta).column_exprs(self, arena)?,
+-                ))
+-            })
++            .map(|index_meta| Ok((*index_meta, arena.index(*index_meta).column_exprs()?)))
+             .collect::<Result<Vec<_>, DatabaseError>>()?;
+ 
+         Ok(DmlTableSnapshot {
+@@ -192,14 +259,19 @@ impl TableCatalog {
+         let pk_ty = self.primary_key_type.clone();
+ 
+         let mut val_tys = Vec::with_capacity(column_ids.len());
++        let mut expressions = Vec::with_capacity(column_ids.len());
+         for column_id in column_ids.iter() {
+-            let val_ty = self
++            let column_ref = self
+                 .get_column_by_id(column_id)
+-                .map(|column| arena.column(column))
+-                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?
+-                .datatype()
+-                .clone();
+-            val_tys.push(val_ty)
++                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?;
++            let position = self
++                .column_refs
++                .iter()
++                .position(|candidate| candidate == &column_ref)
++                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?;
++            let val_ty = arena.column(column_ref).datatype().clone();
++            val_tys.push(val_ty);
++            expressions.push(ScalarExpression::column_expr(column_ref, position));
+         }
+         let value_ty = if val_tys.len() == 1 {
+             val_tys.pop().unwrap()
+@@ -210,6 +282,7 @@ impl TableCatalog {
+         let index = IndexMeta {
+             id: index_id,
+             column_ids,
++            expressions,
+             table_name: self.name.clone(),
+             pk_ty,
+             value_ty,
+@@ -221,6 +294,51 @@ impl TableCatalog {
+         Ok(index_ref)
+     }
+ 
++    pub(crate) fn add_expression_index_meta(
++        &mut self,
++        name: String,
++        column_ids: Vec<ColumnId>,
++        expressions: Vec<ScalarExpression>,
++        ty: IndexType,
++        arena: &mut PlanArena,
++    ) -> Result<IndexMetaRef, DatabaseError> {
++        if self
++            .indexes
++            .iter()
++            .any(|index| arena.index(*index).name == name)
++        {
++            return Err(DatabaseError::DuplicateIndex(name));
++        }
++
++        let index_id = self
++            .indexes
++            .last()
++            .map(|index| arena.index(*index).id + 1)
++            .unwrap_or(0);
++        let mut value_types = expressions
++            .iter()
++            .map(|expression| expression.return_type(arena).into_owned())
++            .collect_vec();
++        let value_ty = if value_types.len() == 1 {
++            value_types.pop().unwrap()
++        } else {
++            LogicalType::Tuple(value_types)
++        };
++        let index = IndexMeta {
++            id: index_id,
++            column_ids,
++            expressions,
++            table_name: self.name.clone(),
++            pk_ty: self.primary_key_type.clone(),
++            value_ty,
++            name,
++            ty,
++        };
++        let index_ref = arena.alloc_index(index);
++        self.indexes.push(index_ref);
++        Ok(index_ref)
++    }
++
+     pub fn new(
+         name: TableName,
+         columns: Vec<ColumnCatalog>,
+@@ -292,7 +410,33 @@ impl TableCatalog {
+             columns.insert(column_id, i);
+             column_refs.push(arena.alloc_column(column_catalog));
+         }
+-        let indexes = indexes.map(|index| arena.alloc_index(index)).collect();
++        let mut index_refs = Vec::new();
++        for mut index in indexes {
++            if index.expressions.is_empty() {
++                index.expressions = index
++                    .column_ids
++                    .iter()
++                    .map(|column_id| {
++                        let position = columns.get(column_id).copied().ok_or_else(|| {
++                            DatabaseError::column_not_found(column_id.to_string())
++                        })?;
++                        Ok(ScalarExpression::column_expr(
++                            column_refs[position],
++                            position,
++                        ))
++                    })
++                    .collect::<Result<_, DatabaseError>>()?;
++            } else {
++                for expression in &mut index.expressions {
++                    IndexExpressionRebinder {
++                        columns: &column_refs,
++                        arena: &*arena,
++                    }
++                    .visit(expression)?;
++                }
++            }
++            index_refs.push(arena.alloc_index(index));
++        }
+         let (primary_keys, primary_key_indices) = Self::build_primary_keys(&column_refs, arena);
+         let primary_key_type = Self::build_primary_key_type(&primary_keys, arena);
+ 
+@@ -301,7 +445,7 @@ impl TableCatalog {
+             column_idxs,
+             columns,
+             column_refs,
+-            indexes,
++            indexes: index_refs,
+             primary_keys,
+             primary_key_indices,
+             primary_key_type,
+@@ -320,13 +464,24 @@ impl TableCatalog {
+             .indexes()
+             .map(|index| source_arena.index(*index).clone())
+             .collect_vec();
+-
+-        Self::reload(
++        let target_arena = source_arena.table_arena_cell().borrow_mut();
++        let mut table = Self::reload(
+             self.name.clone(),
+             column_catalogs.into_iter(),
+-            index_metas.into_iter(),
+-            source_arena.table_arena_cell().borrow_mut(),
+-        )
++            std::iter::empty(),
++            &mut *target_arena,
++        )?;
++        for mut index_meta in index_metas {
++            for expression in &mut index_meta.expressions {
++                IndexExpressionTransplanter {
++                    source_columns: &self.column_refs,
++                    target_columns: &table.column_refs,
++                }
++                .visit(expression)?;
++            }
++            table.indexes.push(target_arena.alloc_index(index_meta));
++        }
++        Ok(table)
+     }
+ 
+     fn build_primary_keys(
+diff --git a/src/db.rs b/src/db.rs
+index ec9e2ba..0c8bc4e 100644
+--- a/src/db.rs
++++ b/src/db.rs
+@@ -791,6 +791,7 @@ impl<S: Storage> Database<S> {
+             CatalogKind::Table(name) => {
+                 let transaction = self.storage.transaction()?;
+                 let mut table_codec = TableCodec::default();
++                table_codec.set_functions(&self.state.scala_functions, &self.state.table_functions);
+                 let table = transaction
+                     .load_table(
+                         &mut table_codec,
+diff --git a/src/execution/ddl/create_index.rs b/src/execution/ddl/create_index.rs
+index 6e8f34e..50ca3a4 100644
+--- a/src/execution/ddl/create_index.rs
++++ b/src/execution/ddl/create_index.rs
+@@ -17,14 +17,12 @@ use crate::execution::{
+     build_read, with_projection_tmp_value, DDLApply, ExecArena, ExecId, ExecNode, ExecutionContext,
+     ExecutorNode, WriteExecutor,
+ };
+-use crate::expression::ScalarExpression;
+ use crate::planner::operator::create_index::CreateIndexOperator;
+ use crate::planner::LogicalPlan;
+ use crate::storage::Transaction;
+ use crate::types::index::Index;
+ use crate::types::tuple::Schema;
+ use crate::types::tuple_builder::TupleBuilder;
+-use crate::types::ColumnId;
+ 
+ pub struct CreateIndex {
+     op: Option<CreateIndexOperator>,
+@@ -76,7 +74,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for CreateIndex {
+         let Some(CreateIndexOperator {
+             table_name,
+             index_name,
+-            columns,
++            expressions,
+             if_not_exists,
+             ty,
+         }) = self.op.take()
+@@ -96,25 +94,27 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for CreateIndex {
+             return Ok(());
+         }
+ 
+-        let (column_ids, column_exprs): (Vec<ColumnId>, Vec<ScalarExpression>) = columns
+-            .into_iter()
+-            .filter_map(|column| {
+-                plan_arena.column(column).id().and_then(|id| {
+-                    self.input_schema
+-                        .iter()
+-                        .position(|schema_column| schema_column == &column)
+-                        .map(|position| (id, ScalarExpression::column_expr(column, position)))
+-                })
+-            })
+-            .unzip();
++        let mut column_ids = Vec::new();
++        for expression in &expressions {
++            expression.visit_referenced_columns(plan_arena, &mut |arena, column| {
++                if let Some(id) = arena.column(*column).id() {
++                    if !column_ids.contains(&id) {
++                        column_ids.push(id);
++                    }
++                }
++                true
++            })?;
++        }
++        let column_exprs = expressions.clone();
+         let index_id_result = {
+             let (transaction, table_codec) = arena.transaction_codec_mut();
+-            let (table, index_id) = transaction.add_index_meta(
++            let (table, index_id) = transaction.add_expression_index_meta(
+                 table_codec,
+                 plan_arena,
+                 &table_name,
+                 index_name,
+                 column_ids,
++                expressions,
+                 ty,
+             )?;
+             arena.push_ddl_apply(DDLApply::upsert_table(table, false));
+diff --git a/src/execution/dml/analyze.rs b/src/execution/dml/analyze.rs
+index 99d33fb..e5465b9 100644
+--- a/src/execution/dml/analyze.rs
++++ b/src/execution/dml/analyze.rs
+@@ -104,7 +104,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for Analyze {
+                     let index = plan_arena.index(*index);
+                     Ok(State {
+                         index_id: index.id,
+-                        exprs: index.column_exprs(table, plan_arena)?,
++                        exprs: index.column_exprs()?,
+                         builder: HistogramBuilder::new(index, ANALYZE_STATISTICS_RELATIVE_ERROR)?,
+                         histogram_buckets: self.histogram_buckets,
+                     })
+diff --git a/src/execution/dml/delete.rs b/src/execution/dml/delete.rs
+index 10005b6..af32a93 100644
+--- a/src/execution/dml/delete.rs
++++ b/src/execution/dml/delete.rs
+@@ -82,11 +82,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for Delete {
+                 .indexes()
+                 .map(|index_meta| {
+                     let index_meta = plan_arena.index(*index_meta);
+-                    Ok((
+-                        index_meta.id,
+-                        index_meta.ty,
+-                        index_meta.column_exprs(table, plan_arena)?,
+-                    ))
++                    Ok((index_meta.id, index_meta.ty, index_meta.column_exprs()?))
+                 })
+                 .collect::<Result<Vec<_>, DatabaseError>>()?
+         };
+diff --git a/src/execution/mod.rs b/src/execution/mod.rs
+index 1e04661..cf90f86 100644
+--- a/src/execution/mod.rs
++++ b/src/execution/mod.rs
+@@ -465,6 +465,8 @@ impl<'a, T: Transaction + 'a> ExecArena<'a, T> {
+             debug_assert!(current.is_same_context(context));
+             debug_assert_eq!(self.transaction, transaction as *const T as *mut T);
+         } else {
++            self.table_codec
++                .set_functions(context.scala_functions(), context.table_functions());
+             self.context = Some(context);
+             self.transaction = transaction as *const T as *mut T;
+         }
+diff --git a/src/expression/mod.rs b/src/expression/mod.rs
+index eec778c..09b4f5c 100644
+--- a/src/expression/mod.rs
++++ b/src/expression/mod.rs
+@@ -426,6 +426,25 @@ impl ScalarExpression {
+         })
+     }
+ 
++    pub(crate) fn explicit_type_cast(
++        expr: ScalarExpression,
++        ty: Cow<'_, LogicalType>,
++        arena: &PlanArena,
++    ) -> Result<ScalarExpression, DatabaseError> {
++        let from = expr.return_type(arena);
++        let evaluator = if from.as_ref() == ty.as_ref() {
++            None
++        } else {
++            Some(cast_create(from, ty.clone())?)
++        };
++
++        Ok(ScalarExpression::TypeCast {
++            expr: Box::new(expr),
++            ty: ty.into_owned(),
++            evaluator,
++        })
++    }
++
+     pub(crate) fn eq_ignore_colref_pos(&self, other: &ScalarExpression, arena: &PlanArena) -> bool {
+         match (self.unpack_alias_ref(), other.unpack_alias_ref()) {
+             (
+@@ -436,6 +455,57 @@ impl ScalarExpression {
+                     column: rhs_column, ..
+                 },
+             ) => arena.same_column(*lhs_column, *rhs_column),
++            (
++                ScalarExpression::TypeCast {
++                    expr: lhs_expr,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::TypeCast {
++                    expr: rhs_expr,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => lhs_ty == rhs_ty && lhs_expr.eq_ignore_colref_pos(rhs_expr, arena),
++            (
++                ScalarExpression::Unary {
++                    op: lhs_op,
++                    expr: lhs_expr,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::Unary {
++                    op: rhs_op,
++                    expr: rhs_expr,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => {
++                lhs_op == rhs_op
++                    && lhs_ty == rhs_ty
++                    && lhs_expr.eq_ignore_colref_pos(rhs_expr, arena)
++            }
++            (
++                ScalarExpression::Binary {
++                    op: lhs_op,
++                    left_expr: lhs_left,
++                    right_expr: lhs_right,
++                    ty: lhs_ty,
++                    ..
++                },
++                ScalarExpression::Binary {
++                    op: rhs_op,
++                    left_expr: rhs_left,
++                    right_expr: rhs_right,
++                    ty: rhs_ty,
++                    ..
++                },
++            ) => {
++                lhs_op == rhs_op
++                    && lhs_ty == rhs_ty
++                    && lhs_left.eq_ignore_colref_pos(rhs_left, arena)
++                    && lhs_right.eq_ignore_colref_pos(rhs_right, arena)
++            }
+             (lhs, rhs) => lhs == rhs,
+         }
+     }
+@@ -1165,6 +1235,16 @@ mod test {
+ 
+         assert!(left.eq_ignore_colref_pos(&right, &arena));
+         assert!(!left.eq_ignore_colref_pos(&different, &arena));
++
++        let add = |column| ScalarExpression::Binary {
++            op: BinaryOperator::Plus,
++            left_expr: Box::new(column),
++            right_expr: Box::new(ScalarExpression::Constant(DataValue::Int32(1))),
++            evaluator: None,
++            ty: LogicalType::Integer,
++        };
++        assert!(add(left.clone()).eq_ignore_colref_pos(&add(right), &arena));
++        assert!(!add(left).eq_ignore_colref_pos(&add(different), &arena));
+         Ok(())
+     }
+ 
+diff --git a/src/expression/range_detacher.rs b/src/expression/range_detacher.rs
+index 8dc26b0..4179497 100644
+--- a/src/expression/range_detacher.rs
++++ b/src/expression/range_detacher.rs
+@@ -12,7 +12,6 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-use crate::catalog::ColumnRef;
+ use crate::errors::DatabaseError;
+ use crate::expression::{BinaryOperator, ScalarExpression};
+ use crate::iter_ext::Itertools;
+@@ -212,9 +211,20 @@ impl Range {
+     }
+ }
+ 
++enum RangeTarget<'a> {
++    Column {
++        table_name: &'a str,
++        column_id: &'a ColumnId,
++    },
++    Expression {
++        expression: &'a ScalarExpression,
++        ty: LogicalType,
++        nullable: bool,
++    },
++}
++
+ pub struct RangeDetacher<'a, 'p> {
+-    table_name: &'a str,
+-    column_id: &'a ColumnId,
++    target: RangeTarget<'a>,
+     arena: &'a PlanArena<'p>,
+ }
+ 
+@@ -225,8 +235,29 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+         arena: &'a PlanArena<'p>,
+     ) -> Self {
+         Self {
+-            table_name,
+-            column_id,
++            target: RangeTarget::Column {
++                table_name,
++                column_id,
++            },
++            arena,
++        }
++    }
++
++    pub(crate) fn new_expression(
++        expression: &'a ScalarExpression,
++        ty: LogicalType,
++        arena: &'a PlanArena<'p>,
++    ) -> Self {
++        let nullable = match expression.unpack_alias_ref() {
++            ScalarExpression::ColumnRef { column, .. } => arena.column(*column).nullable(),
++            _ => true,
++        };
++        Self {
++            target: RangeTarget::Expression {
++                expression,
++                ty,
++                nullable,
++            },
+             arena,
+         }
+     }
+@@ -242,19 +273,13 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+                 op,
+                 ..
+             } => {
+-                if let (Some(col), Some(val)) = (
+-                    left_expr.unpack_bound_col(false).map(|(column, _)| column),
+-                    right_expr.unpack_val(),
+-                ) {
++                if let Some(val) = right_expr.unpack_val() {
+                     return self
+-                        .new_range(*op, col, val, false)
++                        .new_range(*op, left_expr, val, false)
+                         .map(|range| range.map(DetachedPredicate::consumed));
+-                } else if let (Some(val), Some(col)) = (
+-                    left_expr.unpack_val(),
+-                    right_expr.unpack_bound_col(false).map(|(column, _)| column),
+-                ) {
++                } else if let Some(val) = left_expr.unpack_val() {
+                     return self
+-                        .new_range(*op, col, val, true)
++                        .new_range(*op, right_expr, val, true)
+                         .map(|range| range.map(DetachedPredicate::consumed));
+                 }
+ 
+@@ -313,47 +338,20 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+             ScalarExpression::Alias { expr, .. } | ScalarExpression::TypeCast { expr, .. } => {
+                 self.detach(expr)?
+             }
+-            ScalarExpression::IsNull { expr, negated, .. } => match expr.as_ref() {
+-                ScalarExpression::ColumnRef { column, .. } => {
+-                    let column = self.arena.column(*column);
+-                    if let (Some(col_id), Some(col_table)) = (column.id(), column.table_name()) {
+-                        if &col_id == self.column_id && col_table.as_ref() == self.table_name {
+-                            return Ok(if *negated {
+-                                Some(DetachedPredicate::consumed(Range::Scope {
+-                                    min: Bound::Unbounded,
+-                                    max: Bound::Excluded(DataValue::Null),
+-                                }))
+-                            } else {
+-                                Some(DetachedPredicate::consumed(Range::Eq(DataValue::Null)))
+-                            });
++            ScalarExpression::IsNull { expr, negated, .. } => {
++                if self.matches_target(expr) {
++                    Some(DetachedPredicate::consumed(if *negated {
++                        Range::Scope {
++                            min: Bound::Unbounded,
++                            max: Bound::Excluded(DataValue::Null),
+                         }
+-                    }
+-
++                    } else {
++                        Range::Eq(DataValue::Null)
++                    }))
++                } else {
+                     None
+                 }
+-                ScalarExpression::Constant(_)
+-                | ScalarExpression::Alias { .. }
+-                | ScalarExpression::TypeCast { .. }
+-                | ScalarExpression::IsNull { .. }
+-                | ScalarExpression::Unary { .. }
+-                | ScalarExpression::Binary { .. }
+-                | ScalarExpression::AggCall { .. }
+-                | ScalarExpression::In { .. }
+-                | ScalarExpression::Between { .. }
+-                | ScalarExpression::SubString { .. }
+-                | ScalarExpression::Position { .. }
+-                | ScalarExpression::Trim { .. }
+-                | ScalarExpression::ScalaFunction(_)
+-                | ScalarExpression::If { .. }
+-                | ScalarExpression::IfNull { .. }
+-                | ScalarExpression::NullIf { .. }
+-                | ScalarExpression::Coalesce { .. }
+-                | ScalarExpression::CaseWhen { .. }
+-                | ScalarExpression::WindowCall(_) => None,
+-                ScalarExpression::Tuple(_)
+-                | ScalarExpression::TableFunction(_)
+-                | ScalarExpression::Empty => unreachable!(),
+-            },
++            }
+             ScalarExpression::Constant(_) | ScalarExpression::ColumnRef { .. } => None,
+             // FIXME: support [RangeDetacher::_detach]
+             ScalarExpression::Unary { .. }
+@@ -776,13 +774,35 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+         }
+     }
+ 
+-    fn _is_belong(&self, col: ColumnRef) -> bool {
+-        let col = self.arena.column(col);
+-        matches!(
+-            col.table_name()
+-                .map(|name| self.table_name == name.as_ref()),
+-            Some(true)
+-        )
++    fn matches_target(&self, expression: &ScalarExpression) -> bool {
++        match &self.target {
++            RangeTarget::Column {
++                table_name,
++                column_id,
++            } => expression
++                .unpack_bound_col(false)
++                .map(|(column_ref, _)| self.arena.column(column_ref))
++                .is_some_and(|column| {
++                    column.id() == Some(**column_id)
++                        && column
++                            .table_name()
++                            .is_some_and(|name| name.as_ref() == *table_name)
++                }),
++            RangeTarget::Expression {
++                expression: target, ..
++            } => expression.eq_ignore_colref_pos(target, self.arena),
++        }
++    }
++
++    fn target_type_and_nullable(&self, expression: &ScalarExpression) -> (LogicalType, bool) {
++        match &self.target {
++            RangeTarget::Column { .. } => expression
++                .unpack_bound_col(false)
++                .map(|(column_ref, _)| self.arena.column(column_ref))
++                .map(|column| (column.datatype().clone(), column.nullable()))
++                .unwrap_or((LogicalType::SqlNull, true)),
++            RangeTarget::Expression { ty, nullable, .. } => (ty.clone(), *nullable),
++        }
+     }
+ 
+     fn bound_compared(
+@@ -821,14 +841,14 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+     fn new_range(
+         &mut self,
+         mut op: BinaryOperator,
+-        col: ColumnRef,
++        expression: &ScalarExpression,
+         mut val: DataValue,
+         is_flip: bool,
+     ) -> Result<Option<Range>, DatabaseError> {
+-        let column = self.arena.column(col);
+-        if !self._is_belong(col) || column.id() != Some(*self.column_id) {
++        if !self.matches_target(expression) {
+             return Ok(None);
+         }
++        let (target_type, nullable) = self.target_type_and_nullable(expression);
+         if val.is_null() {
+             return Ok(match op {
+                 BinaryOperator::Spaceship => Some(Range::Eq(DataValue::Null)),
+@@ -841,7 +861,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+                 _ => None,
+             });
+         }
+-        val = val.cast(column.datatype())?;
++        val = val.cast(&target_type)?;
+         if is_flip {
+             op = match op {
+                 BinaryOperator::Gt => BinaryOperator::Lt,
+@@ -854,7 +874,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+         Ok(match op {
+             BinaryOperator::Gt => Some(Range::Scope {
+                 min: Bound::Excluded(val.clone()),
+-                max: if column.nullable() {
++                max: if nullable {
+                     Bound::Excluded(DataValue::Null)
+                 } else {
+                     Bound::Unbounded
+@@ -866,7 +886,7 @@ impl<'a, 'p> RangeDetacher<'a, 'p> {
+             }),
+             BinaryOperator::GtEq => Some(Range::Scope {
+                 min: Bound::Included(val.clone()),
+-                max: if column.nullable() {
++                max: if nullable {
+                     Bound::Excluded(DataValue::Null)
+                 } else {
+                     Bound::Unbounded
+diff --git a/src/optimizer/core/histogram.rs b/src/optimizer/core/histogram.rs
+index 343f423..8b9d51f 100644
+--- a/src/optimizer/core/histogram.rs
++++ b/src/optimizer/core/histogram.rs
+@@ -700,8 +700,10 @@ impl HistogramMeta {
+ 
+ #[cfg(all(test, not(target_arch = "wasm32")))]
+ mod tests {
++    use crate::catalog::ColumnRef;
+     use crate::errors::DatabaseError;
+     use crate::expression::range_detacher::Range;
++    use crate::expression::ScalarExpression;
+     use crate::optimizer::core::cm_sketch::CountMinSketch;
+     use crate::optimizer::core::histogram::{
+         Bucket, HistogramBuilder, ANALYZE_STATISTICS_RELATIVE_ERROR,
+@@ -716,6 +718,7 @@ mod tests {
+         IndexMeta {
+             id: 0,
+             column_ids: vec![1],
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+             table_name: "t1".to_string().into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+diff --git a/src/optimizer/core/statistics_meta.rs b/src/optimizer/core/statistics_meta.rs
+index c3ff717..f1c9b6d 100644
+--- a/src/optimizer/core/statistics_meta.rs
++++ b/src/optimizer/core/statistics_meta.rs
+@@ -156,7 +156,9 @@ impl StatisticsMeta {
+ 
+ #[cfg(all(test, not(target_arch = "wasm32")))]
+ mod tests {
++    use crate::catalog::ColumnRef;
+     use crate::errors::DatabaseError;
++    use crate::expression::ScalarExpression;
+     use crate::optimizer::core::histogram::{HistogramBuilder, ANALYZE_STATISTICS_RELATIVE_ERROR};
+     use crate::optimizer::core::statistics_meta::StatisticsMeta;
+     use crate::types::index::{IndexMeta, IndexType};
+@@ -168,6 +170,7 @@ mod tests {
+         let index = IndexMeta {
+             id: 0,
+             column_ids: vec![1],
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+             table_name: "t1".to_string().into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+diff --git a/src/optimizer/rule/normalization/elimination.rs b/src/optimizer/rule/normalization/elimination.rs
+index f1bde9a..33e85d3 100644
+--- a/src/optimizer/rule/normalization/elimination.rs
++++ b/src/optimizer/rule/normalization/elimination.rs
+@@ -515,6 +515,10 @@ mod tests {
+         ignore_prefix_len: usize,
+     ) -> (IndexInfo, SortOption) {
+         let len = index_fields.len();
++        let expressions = index_fields
++            .iter()
++            .map(|field| field.expr.clone())
++            .collect();
+         let sort_option = SortOption::OrderBy {
+             fields: index_fields,
+             ignore_prefix_len,
+@@ -523,6 +527,7 @@ mod tests {
+         let meta = arena.alloc_index(IndexMeta {
+             id: 1,
+             column_ids: (1..=len as ColumnId).collect(),
++            expressions,
+             table_name,
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+@@ -606,6 +611,7 @@ mod tests {
+             meta: arena.alloc_index(IndexMeta {
+                 id: 1,
+                 column_ids: vec![c1_id],
++                expressions: vec![ScalarExpression::column_expr(c1, 0)],
+                 table_name: table_name.clone(),
+                 pk_ty: LogicalType::Integer,
+                 value_ty: LogicalType::Integer,
+diff --git a/src/optimizer/rule/normalization/parameterized_index.rs b/src/optimizer/rule/normalization/parameterized_index.rs
+index cffb639..f0857e3 100644
+--- a/src/optimizer/rule/normalization/parameterized_index.rs
++++ b/src/optimizer/rule/normalization/parameterized_index.rs
+@@ -210,7 +210,11 @@ fn pick_parameterized_index_position(
+         .filter(|(_, index_info)| {
+             let index_meta = arena.index(index_info.meta);
+             index_meta.table_name == *table_name
+-                && index_meta.column_ids.first().copied() == Some(column_id)
++                && matches!(
++                    index_meta.expressions.first(),
++                    Some(ScalarExpression::ColumnRef { column, .. })
++                        if arena.column(*column).id() == Some(column_id)
++                )
+         })
+         .min_by_key(|(_, index_info)| index_priority(arena.index(index_info.meta).ty))
+         .map(|(position, _)| position)
+diff --git a/src/optimizer/rule/normalization/pushdown_predicates.rs b/src/optimizer/rule/normalization/pushdown_predicates.rs
+index 5494cc5..9149a75 100644
+--- a/src/optimizer/rule/normalization/pushdown_predicates.rs
++++ b/src/optimizer/rule/normalization/pushdown_predicates.rs
+@@ -267,6 +267,7 @@ impl NormalizationRule for PushPredicateIntoScan {
+         };
+ 
+         let mut changed = false;
++        let table_name = scan_op.table_name.clone();
+         for IndexInfo {
+             meta,
+             lookup,
+@@ -288,15 +289,25 @@ impl NormalizationRule for PushPredicateIntoScan {
+                 return Err(DatabaseError::InvalidIndex);
+             };
+             let index_meta = arena.index(*meta);
++            let index_expressions = index_meta.expressions.clone();
+             let detached = match index_meta.ty {
+                 IndexType::PrimaryKey { is_multiple: false }
+                 | IndexType::Unique
+-                | IndexType::Normal => RangeDetacher::new(
+-                    index_meta.table_name.as_ref(),
+-                    &index_meta.column_ids[0],
+-                    arena,
+-                )
+-                .detach(&filter_op.predicate)?,
++                | IndexType::Normal => {
++                    let mut detacher = if matches!(
++                        index_expressions[0].unpack_alias_ref(),
++                        ScalarExpression::ColumnRef { .. }
++                    ) {
++                        RangeDetacher::new(table_name.as_ref(), &index_meta.column_ids[0], arena)
++                    } else {
++                        RangeDetacher::new_expression(
++                            &index_expressions[0],
++                            index_meta.value_ty.clone(),
++                            arena,
++                        )
++                    };
++                    detacher.detach(&filter_op.predicate)?
++                }
+                 IndexType::PrimaryKey { is_multiple: true } | IndexType::Composite => {
+                     Self::composite_range(filter_op, *meta, ignore_prefix_len, arena)?
+                 }
+@@ -341,7 +352,9 @@ impl NormalizationRule for PushPredicateIntoScan {
+                 }
+             }
+ 
+-            if mapping_slots.iter().all(|slot| *slot != usize::MAX) {
++            if !index_meta.is_expression_index()
++                && mapping_slots.iter().all(|slot| *slot != usize::MAX)
++            {
+                 *covered_deserializers = Some(deserializers);
+                 if needs_mapping {
+                     *cover_mapping = Some(mapping_slots);
+@@ -362,16 +375,21 @@ impl PushPredicateIntoScan {
+     ) -> Result<Option<DetachedPredicate>, DatabaseError> {
+         let meta = arena.index(meta);
+         let mut res = None;
+-        let mut eq_ranges = Vec::with_capacity(meta.column_ids.len());
++        let expressions = meta.expressions.clone();
++        let mut eq_ranges = Vec::with_capacity(expressions.len());
+         let mut apply_column_count = 0;
+         let mut residual = Some(Cow::Borrowed(&op.predicate));
+ 
+-        for column_id in meta.column_ids.iter() {
++        for expression in expressions.iter() {
+             let Some(predicate) = residual.take() else {
+                 break;
+             };
+-            let Some(detached) = RangeDetacher::new(meta.table_name.as_ref(), column_id, arena)
+-                .detach(predicate.as_ref())?
++            let Some(detached) = RangeDetacher::new_expression(
++                expression,
++                expression.return_type(arena).into_owned(),
++                arena,
++            )
++            .detach(predicate.as_ref())?
+             else {
+                 residual = Some(predicate);
+                 break;
+@@ -396,7 +414,7 @@ impl PushPredicateIntoScan {
+             }
+         }
+         let range = res.map(|range| {
+-            if range.only_eq() && apply_column_count != meta.column_ids.len() {
++            if range.only_eq() && apply_column_count != expressions.len() {
+                 fn eq_to_scope(range: Range) -> Range {
+                     match range {
+                         Range::Eq(DataValue::Tuple(values, _)) => {
+@@ -651,6 +669,11 @@ mod tests {
+         let index_meta = arena.alloc_index(IndexMeta {
+             id: 0,
+             column_ids: vec![1, 2, 3],
++            expressions: vec![
++                ScalarExpression::column_expr(c1, 0),
++                ScalarExpression::column_expr(c2, 1),
++                ScalarExpression::column_expr(c3, 2),
++            ],
+             table_name: table_name.clone(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Tuple(vec![
+@@ -720,6 +743,11 @@ mod tests {
+         let index_meta = arena.alloc_index(IndexMeta {
+             id: 0,
+             column_ids: vec![1, 2, 3],
++            expressions: vec![
++                ScalarExpression::column_expr(c1, 0),
++                ScalarExpression::column_expr(c2, 1),
++                ScalarExpression::column_expr(c3, 2),
++            ],
+             table_name: table_name.clone(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Tuple(vec![
+@@ -804,12 +832,18 @@ mod tests {
+             ColumnDesc::new(LogicalType::Integer, None, false, None)?,
+         );
+         c3.set_ref_table(table_name.clone(), c3_id, false);
++        let c3_ref = arena.alloc_column(c3);
+ 
+         let columns = vec![c1_ref, c2_ref];
+ 
+         let index_meta_reordered = arena.alloc_index(IndexMeta {
+             id: 0,
+             column_ids: vec![c2_id, c3_id, c1_id],
++            expressions: vec![
++                ScalarExpression::column_expr(c2_ref, 1),
++                ScalarExpression::column_expr(c3_ref, 2),
++                ScalarExpression::column_expr(c1_ref, 0),
++            ],
+             table_name: table_name.clone(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Tuple(vec![
+@@ -823,6 +857,10 @@ mod tests {
+         let index_meta_aligned = arena.alloc_index(IndexMeta {
+             id: 1,
+             column_ids: vec![c1_id, c2_id],
++            expressions: vec![
++                ScalarExpression::column_expr(c1_ref, 0),
++                ScalarExpression::column_expr(c2_ref, 1),
++            ],
+             table_name: table_name.clone(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Tuple(vec![LogicalType::Integer, LogicalType::Integer]),
+@@ -928,7 +966,7 @@ mod tests {
+             );
+             assert_eq!(
+                 deserializers[1],
+-                c3.datatype().skip_serializable(),
++                arena.column(c3_ref).datatype().skip_serializable(),
+                 "non-projected index column should be skipped"
+             );
+             assert_eq!(
+diff --git a/src/optimizer/rule/normalization/simplification.rs b/src/optimizer/rule/normalization/simplification.rs
+index 308b140..2dd7b9b 100644
+--- a/src/optimizer/rule/normalization/simplification.rs
++++ b/src/optimizer/rule/normalization/simplification.rs
+@@ -14,7 +14,9 @@
+ 
+ use crate::errors::DatabaseError;
+ use crate::expression::simplify::{ConstantCalculator, Simplify};
++use crate::expression::visitor::{walk_expr, ExprVisitor};
+ use crate::expression::visitor_mut::ExprVisitorMut;
++use crate::expression::ScalarExpression;
+ use crate::optimizer::core::rule::NormalizationRule;
+ use crate::planner::operator::visitor_mut::{OperatorExprVisitorMut, OperatorVisitorMut};
+ use crate::planner::operator::Operator;
+@@ -78,6 +80,51 @@ fn has_aggregate_descendant(plan: &LogicalPlan) -> bool {
+     }
+ }
+ 
++struct IndexedExpressionFinder<'target, 'arena, 'table> {
++    target: &'target ScalarExpression,
++    arena: &'arena crate::planner::PlanArena<'table>,
++    found: bool,
++}
++
++impl<'expr> ExprVisitor<'expr> for IndexedExpressionFinder<'_, '_, '_> {
++    fn visit(&mut self, expr: &'expr ScalarExpression) -> Result<(), DatabaseError> {
++        if expr.eq_ignore_colref_pos(self.target, self.arena) {
++            self.found = true;
++            Ok(())
++        } else {
++            walk_expr(self, expr)
++        }
++    }
++}
++
++fn contains_stored_expression(
++    predicate: &ScalarExpression,
++    child: &LogicalPlan,
++    arena: &crate::planner::PlanArena,
++) -> Result<bool, DatabaseError> {
++    let Operator::TableScan(scan) = &child.operator else {
++        return Ok(false);
++    };
++    for index_info in &scan.index_infos {
++        let index = arena.index(index_info.meta);
++        if !index.is_expression_index() {
++            continue;
++        }
++        for target in &index.expressions {
++            let mut finder = IndexedExpressionFinder {
++                target,
++                arena,
++                found: false,
++            };
++            finder.visit(predicate)?;
++            if finder.found {
++                return Ok(true);
++            }
++        }
++    }
++    Ok(false)
++}
++
+ impl NormalizationRule for SimplifyFilter {
+     fn apply(
+         &self,
+@@ -92,6 +139,11 @@ impl NormalizationRule for SimplifyFilter {
+                 if has_aggregate_descendant(child) {
+                     return Ok(false);
+                 }
++                if contains_stored_expression(&filter_op.predicate, child, arena)? {
++                    ConstantCalculator::new(arena).visit(&mut filter_op.predicate)?;
++                    filter_op.is_optimized = true;
++                    return Ok(true);
++                }
+             }
+             ConstantCalculator::new(arena).visit(&mut filter_op.predicate)?;
+             Simplify::default().visit(&mut filter_op.predicate)?;
+diff --git a/src/orm/ddl.rs b/src/orm/ddl.rs
+index 5cafff4..a46af48 100644
+--- a/src/orm/ddl.rs
++++ b/src/orm/ddl.rs
+@@ -427,19 +427,19 @@ fn execute_create_index<S: Storage>(
+     database.execute_mut("ORM CREATE INDEX", &[], move |binder, arena| {
+         let mut input = binder.bind_create_index_source(table_name.into(), arena)?;
+         let schema = input.output_schema(arena).clone();
+-        let mut columns = Vec::with_capacity(column_names.len());
++        let mut expressions = Vec::with_capacity(column_names.len());
+         for column_name in column_names {
+             let column = schema
+                 .iter()
+                 .copied()
+                 .find(|column| arena.column(*column).name() == column_name)
+                 .ok_or_else(|| DatabaseError::column_not_found(column_name.to_string()))?;
+-            columns.push(column);
++            expressions.push(ScalarExpression::column_expr(column, expressions.len()));
+         }
+         binder.bind_create_index(
+             table_name.into(),
+             index_name,
+-            columns,
++            expressions,
+             if_not_exists,
+             unique,
+             input,
+diff --git a/src/planner/arena.rs b/src/planner/arena.rs
+index 5a1749d..6ffb662 100644
+--- a/src/planner/arena.rs
++++ b/src/planner/arena.rs
+@@ -528,7 +528,8 @@ impl MetaArena for PlanArena<'_> {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+-    use crate::catalog::{ColumnCatalog, ColumnDesc};
++    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRef};
++    use crate::expression::ScalarExpression;
+     use crate::types::index::{IndexMeta, IndexType};
+     use crate::types::LogicalType;
+     use std::panic::{catch_unwind, AssertUnwindSafe};
+@@ -551,6 +552,7 @@ mod tests {
+         IndexMeta {
+             id: 1,
+             column_ids: vec![1],
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+             table_name: "t".into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+diff --git a/src/planner/operator/create_index.rs b/src/planner/operator/create_index.rs
+index 9262266..36bdf96 100644
+--- a/src/planner/operator/create_index.rs
++++ b/src/planner/operator/create_index.rs
+@@ -12,7 +12,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-use crate::catalog::{ColumnRef, TableName};
++use crate::catalog::TableName;
++use crate::expression::ScalarExpression;
+ use crate::iter_ext::Itertools;
+ use crate::types::index::IndexType;
+ use kite_sql_serde_macros::ReferenceSerialization;
+@@ -22,8 +23,8 @@ use std::fmt::Formatter;
+ #[derive(Debug, PartialEq, Eq, Clone, Hash, ReferenceSerialization)]
+ pub struct CreateIndexOperator {
+     pub table_name: TableName,
+-    /// List of columns of the index
+-    pub columns: Vec<ColumnRef>,
++    /// Expressions that form the index key.
++    pub expressions: Vec<ScalarExpression>,
+     pub index_name: String,
+     pub if_not_exists: bool,
+     pub ty: IndexType,
+@@ -31,11 +32,11 @@ pub struct CreateIndexOperator {
+ 
+ impl fmt::Display for CreateIndexOperator {
+     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+-        let columns = self.columns.iter().join(", ");
++        let expressions = self.expressions.iter().join(", ");
+         write!(
+             f,
+             "Create Index On {} -> [{}], If Not Exists: {}",
+-            self.table_name, columns, self.if_not_exists
++            self.table_name, expressions, self.if_not_exists
+         )?;
+ 
+         Ok(())
+diff --git a/src/planner/operator/mod.rs b/src/planner/operator/mod.rs
+index 13e9473..27d03ee 100644
+--- a/src/planner/operator/mod.rs
++++ b/src/planner/operator/mod.rs
+@@ -958,7 +958,10 @@ mod tests {
+             (
+                 Operator::CreateIndex(CreateIndexOperator {
+                     table_name: "users".into(),
+-                    columns: vec![id, name],
++                    expressions: vec![
++                        ScalarExpression::column_expr(id, 0),
++                        ScalarExpression::column_expr(name, 1),
++                    ],
+                     index_name: "idx_users_name".to_string(),
+                     if_not_exists: false,
+                     ty: IndexType::Normal,
+diff --git a/src/planner/operator/table_scan.rs b/src/planner/operator/table_scan.rs
+index 5ad7e55..fd861ca 100644
+--- a/src/planner/operator/table_scan.rs
++++ b/src/planner/operator/table_scan.rs
+@@ -15,7 +15,6 @@
+ use super::{Operator, SortOption};
+ use crate::catalog::{ColumnRef, TableCatalog, TableName};
+ use crate::errors::DatabaseError;
+-use crate::expression::ScalarExpression;
+ use crate::iter_ext::Itertools;
+ use crate::planner::operator::sort::SortField;
+ use crate::planner::{Childrens, LogicalPlan, PlanArena};
+@@ -51,13 +50,11 @@ impl TableScanOperator {
+ 
+         for index_ref in table_catalog.indexes.iter().copied() {
+             let index_meta = arena.index(index_ref);
+-            let mut sort_fields = Vec::with_capacity(index_meta.column_ids.len());
+-            for col_id in &index_meta.column_ids {
+-                let column_ref = table_catalog.get_column_by_id(col_id).ok_or_else(|| {
+-                    DatabaseError::column_not_found(format!("index column id: {col_id} not found"))
+-                })?;
++            let expressions = index_meta.expressions.clone();
++            let mut sort_fields = Vec::with_capacity(expressions.len());
++            for expression in expressions {
+                 sort_fields.push(SortField {
+-                    expr: ScalarExpression::column_expr(column_ref, sort_fields.len()),
++                    expr: expression,
+                     asc: true,
+                     nulls_first: false,
+                 })
+diff --git a/src/planner/operator/visitor.rs b/src/planner/operator/visitor.rs
+index 09b1cab..b3567d0 100644
+--- a/src/planner/operator/visitor.rs
++++ b/src/planner/operator/visitor.rs
+@@ -307,6 +307,13 @@ impl<'a, V: ExprVisitor<'a>> OperatorVisitor<'a> for OperatorExprVisitor<'_, V>
+         }
+         Ok(())
+     }
++
++    fn visit_create_index(&mut self, op: &'a CreateIndexOperator) -> Result<(), DatabaseError> {
++        for expression in &op.expressions {
++            ExprVisitor::visit(self.visitor, expression)?;
++        }
++        Ok(())
++    }
+ }
+ 
+ pub fn walk_operator<'a, V: OperatorVisitor<'a>>(
+@@ -533,7 +540,7 @@ pub(crate) mod tests {
+             }),
+             Operator::CreateIndex(CreateIndexOperator {
+                 table_name: "t1".into(),
+-                columns: vec![column_ref],
++                expressions: vec![ScalarExpression::column_expr(column_ref, 0)],
+                 index_name: "idx".to_string(),
+                 if_not_exists: false,
+                 ty: IndexType::Normal,
+@@ -611,7 +618,7 @@ pub(crate) mod tests {
+         for operator in &operators {
+             visitor.visit_operator(operator)?;
+         }
+-        assert_eq!(counter.0, 20);
++        assert_eq!(counter.0, 21);
+ 
+         Ok(())
+     }
+diff --git a/src/planner/operator/visitor_mut.rs b/src/planner/operator/visitor_mut.rs
+index b3e3d96..500bd23 100644
+--- a/src/planner/operator/visitor_mut.rs
++++ b/src/planner/operator/visitor_mut.rs
+@@ -335,6 +335,13 @@ impl<'a, V: ExprVisitorMut<'a>> OperatorVisitorMut<'a> for OperatorExprVisitorMu
+         }
+         Ok(())
+     }
++
++    fn visit_create_index(&mut self, op: &'a mut CreateIndexOperator) -> Result<(), DatabaseError> {
++        for expression in &mut op.expressions {
++            ExprVisitorMut::visit(self.visitor, expression)?;
++        }
++        Ok(())
++    }
+ }
+ 
+ pub fn walk_mut_operator<'a, V: OperatorVisitorMut<'a>>(
+diff --git a/src/storage/mod.rs b/src/storage/mod.rs
+index 9c5d48e..1f3ccb7 100644
+--- a/src/storage/mod.rs
++++ b/src/storage/mod.rs
+@@ -342,6 +342,34 @@ pub trait Transaction: Sized {
+         Ok((table, index_id))
+     }
+ 
++    fn add_expression_index_meta(
++        &mut self,
++        table_codec: &mut TableCodec,
++        plan_arena: &mut PlanArena,
++        table_name: &TableName,
++        index_name: String,
++        column_ids: Vec<ColumnId>,
++        expressions: Vec<ScalarExpression>,
++        ty: IndexType,
++    ) -> Result<(TableCatalog, IndexId), DatabaseError> {
++        let mut table = self
++            .load_table(table_codec, plan_arena, table_name.clone())?
++            .ok_or(DatabaseError::TableNotFound)?;
++        let index_meta =
++            table.add_expression_index_meta(index_name, column_ids, expressions, ty, plan_arena)?;
++        let index_meta = plan_arena.index(index_meta);
++        let index_id = index_meta.id;
++        table_codec.with_index_meta(
++            table_name,
++            index_id,
++            Some(index_meta),
++            plan_arena,
++            |key, value| self.set(key, value),
++        )?;
++
++        Ok((table, index_id))
++    }
++
+     fn add_index(
+         &mut self,
+         table_codec: &mut TableCodec,
+@@ -522,12 +550,28 @@ pub trait Transaction: Sized {
+             .indexes()
+             .map(|index_meta| {
+                 let index_meta = plan_arena.index(*index_meta);
++                let mut expressions = index_meta.expressions.clone();
++                temp_table.rebind_index_expressions(&mut expressions, plan_arena)?;
++                let value_ty = if expressions.is_empty() {
++                    index_value_type(&temp_table, plan_arena, &index_meta.column_ids)?
++                } else {
++                    let mut value_types = expressions
++                        .iter()
++                        .map(|expression| expression.return_type(plan_arena).into_owned())
++                        .collect_vec();
++                    if value_types.len() == 1 {
++                        value_types.pop().unwrap()
++                    } else {
++                        LogicalType::Tuple(value_types)
++                    }
++                };
+                 Ok(IndexMeta {
+                     id: index_meta.id,
+                     column_ids: index_meta.column_ids.clone(),
++                    expressions,
+                     table_name: table_name.clone(),
+                     pk_ty: temp_table.primary_keys_type().clone(),
+-                    value_ty: index_value_type(&temp_table, plan_arena, &index_meta.column_ids)?,
++                    value_ty,
+                     name: index_meta.name.clone(),
+                     ty: index_meta.ty,
+                 })
+@@ -1064,6 +1108,7 @@ pub trait Transaction: Sized {
+         table_name: &TableName,
+         arena: &mut impl MetaArena,
+     ) -> Result<Option<(Vec<ColumnCatalog>, Vec<IndexMeta>)>, DatabaseError> {
++        let (scala_functions, table_functions) = table_codec.functions();
+         table_codec.with_table_bound(table_name, |table_min, table_max| {
+             let mut column_iter =
+                 self.range(Bound::Included(table_min), Bound::Included(table_max))?;
+@@ -1083,7 +1128,12 @@ pub trait Transaction: Sized {
+                         arena,
+                     )?);
+                 } else {
+-                    index_metas.push(TableCodec::decode_index_meta::<Self>(value, arena)?);
++                    index_metas.push(TableCodec::decode_index_meta::<Self>(
++                        value,
++                        arena,
++                        &scala_functions,
++                        &table_functions,
++                    )?);
+                 }
+             }
+ 
+diff --git a/src/storage/table_codec.rs b/src/storage/table_codec.rs
+index 6921506..a75c7fb 100644
+--- a/src/storage/table_codec.rs
++++ b/src/storage/table_codec.rs
+@@ -13,7 +13,7 @@
+ // limitations under the License.
+ 
+ use crate::catalog::view::View;
+-use crate::catalog::{ColumnCatalog, ColumnRelation, TableMeta};
++use crate::catalog::{ColumnCatalog, ColumnRelation, TableMeta, TableName};
+ use crate::db::{ScalaFunctions, TableFunctions};
+ use crate::errors::DatabaseError;
+ use crate::optimizer::core::cm_sketch::{CountMinSketchMeta, CountMinSketchPage};
+@@ -28,7 +28,8 @@ use crate::types::index::{Index, IndexId, IndexMeta, IndexType, INDEX_ID_LEN};
+ use crate::types::serialize::TupleValueSerializableImpl;
+ use crate::types::tuple::{Tuple, TupleId};
+ use crate::types::value::{DataValue, TupleMappingRef};
+-use crate::types::LogicalType;
++use crate::types::{ColumnId, LogicalType};
++use kite_sql_serde_macros::ReferenceSerialization;
+ use std::borrow::Borrow;
+ use std::hash::{Hash, Hasher};
+ use std::io::{Cursor, Read, Seek, SeekFrom};
+@@ -44,6 +45,8 @@ const KEY_TYPE_TAG_LEN: usize = 1;
+ const KEY_BOUND_LEN: usize = 1;
+ const TUPLE_KEY_PREFIX_LEN: usize = TABLE_NAME_HASH_LEN + KEY_TYPE_TAG_LEN + KEY_BOUND_LEN;
+ const STATISTICS_BUCKET_ORD_LEN: usize = 4;
++const INDEX_META_MAGIC: &[u8; 4] = b"KIDX";
++const INDEX_META_VERSION: u8 = 1;
+ 
+ static ROOT_BYTES: LazyLock<Vec<u8>> = LazyLock::new(|| b"Root".to_vec());
+ static VIEW_BYTES: LazyLock<Vec<u8>> = LazyLock::new(|| b"View".to_vec());
+@@ -54,10 +57,38 @@ pub type Bytes = Vec<u8>;
+ pub type BumpBytes<'bump> = bumpalo::collections::Vec<'bump, u8>;
+ type TupleValueWriter<'a> = &'a mut dyn FnMut(&Tuple, &mut Bytes) -> Result<(), DatabaseError>;
+ 
++#[derive(Debug, Clone, Eq, PartialEq, Hash, ReferenceSerialization)]
++struct LegacyIndexMeta {
++    id: IndexId,
++    column_ids: Vec<ColumnId>,
++    table_name: TableName,
++    pk_ty: LogicalType,
++    value_ty: LogicalType,
++    name: String,
++    ty: IndexType,
++}
++
++impl From<LegacyIndexMeta> for IndexMeta {
++    fn from(legacy: LegacyIndexMeta) -> Self {
++        Self {
++            id: legacy.id,
++            column_ids: legacy.column_ids,
++            expressions: Vec::new(),
++            table_name: legacy.table_name,
++            pk_ty: legacy.pk_ty,
++            value_ty: legacy.value_ty,
++            name: legacy.name,
++            ty: legacy.ty,
++        }
++    }
++}
++
+ #[derive(Default)]
+ pub struct TableCodec {
+     buffers: [Bytes; 2],
+     reference_tables: ReferenceTables,
++    scala_functions: ScalaFunctions,
++    table_functions: TableFunctions,
+ }
+ 
+ #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+@@ -123,6 +154,19 @@ impl StatisticsCodecType {
+ }
+ 
+ impl TableCodec {
++    pub(crate) fn set_functions(
++        &mut self,
++        scala_functions: &ScalaFunctions,
++        table_functions: &TableFunctions,
++    ) {
++        self.scala_functions.clone_from(scala_functions);
++        self.table_functions.clone_from(table_functions);
++    }
++
++    pub(crate) fn functions(&self) -> (ScalaFunctions, TableFunctions) {
++        (self.scala_functions.clone(), self.table_functions.clone())
++    }
++
+     #[inline]
+     fn clear_buffers(&mut self) {
+         self.buffers[CodecSlot::S0.index()].clear();
+@@ -768,19 +812,47 @@ impl TableCodec {
+         value: &mut Bytes,
+         arena: &impl MetaArena,
+     ) -> Result<(), DatabaseError> {
+-        index_meta.encode(value, true, reference_tables, arena)
++        let mut encoded = Vec::new();
++        index_meta.encode(&mut encoded, true, reference_tables, arena)?;
++        value.extend_from_slice(INDEX_META_MAGIC);
++        value.push(INDEX_META_VERSION);
++        reference_tables.to_raw(&mut *value)?;
++        value.extend_from_slice(&encoded);
++        Ok(())
+     }
+ 
+     pub fn decode_index_meta<T: Transaction>(
+         bytes: &[u8],
+         arena: &mut impl MetaArena,
++        scala_functions: &ScalaFunctions,
++        table_functions: &TableFunctions,
+     ) -> Result<IndexMeta, DatabaseError> {
+-        IndexMeta::decode::<T, _, _>(
+-            &mut Cursor::new(bytes),
+-            None,
+-            &EMPTY_REFERENCE_TABLES,
+-            arena,
+-        )
++        if bytes.starts_with(INDEX_META_MAGIC) {
++            let Some(version) = bytes.get(INDEX_META_MAGIC.len()) else {
++                return Err(DatabaseError::InvalidValue(
++                    "truncated index metadata header".to_string(),
++                ));
++            };
++            if *version != INDEX_META_VERSION {
++                return Err(DatabaseError::InvalidValue(format!(
++                    "unsupported index metadata version: {version}"
++                )));
++            }
++
++            let mut cursor = Cursor::new(&bytes[INDEX_META_MAGIC.len() + 1..]);
++            let reference_tables = ReferenceTables::from_raw(&mut cursor)?;
++            let context =
++                ReferenceDecodeContext::with_functions(None, scala_functions, table_functions);
++            IndexMeta::decode::<T, _, _>(&mut cursor, Some(&context), &reference_tables, arena)
++        } else {
++            LegacyIndexMeta::decode::<T, _, _>(
++                &mut Cursor::new(bytes),
++                None,
++                &EMPTY_REFERENCE_TABLES,
++                arena,
++            )
++            .map(Into::into)
++        }
+     }
+ 
+     pub fn decode_index_key(
+@@ -1009,15 +1081,18 @@ impl TableCodec {
+ mod tests {
+     use crate::binder::test::build_t1_table;
+     use crate::catalog::view::View;
+-    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRelation, TableCatalog, TableMeta};
++    use crate::catalog::{
++        ColumnCatalog, ColumnDesc, ColumnRef, ColumnRelation, TableCatalog, TableMeta,
++    };
+     use crate::errors::DatabaseError;
++    use crate::expression::ScalarExpression;
+     use crate::iter_ext::Itertools;
+     use crate::optimizer::core::histogram::{HistogramBuilder, ANALYZE_STATISTICS_RELATIVE_ERROR};
+     use crate::optimizer::core::statistics_meta::StatisticsMeta;
+     use crate::planner::{PlanArena, TableArenaCell};
+-    use crate::serdes::ReferenceTables;
++    use crate::serdes::{ReferenceSerialization, ReferenceTables};
+     use crate::storage::rocksdb::RocksTransaction;
+-    use crate::storage::table_codec::{Bytes, TableCodec};
++    use crate::storage::table_codec::{Bytes, LegacyIndexMeta, TableCodec};
+     use crate::storage::Storage;
+     use crate::types::index::{Index, IndexMeta, IndexType};
+     use crate::types::tuple::Tuple;
+@@ -1114,6 +1189,7 @@ mod tests {
+         let index_meta = IndexMeta {
+             id: 0,
+             column_ids: vec![1],
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+             table_name: "t1".to_string().into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+@@ -1237,9 +1313,15 @@ mod tests {
+         let mut table_codec = TableCodec::default();
+         let table_arena = TableArenaCell::default();
+         let mut plan_arena = PlanArena::new(&table_arena);
++        let column = plan_arena.alloc_column(ColumnCatalog::new(
++            "c1".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(1), false, None)?,
++        ));
+         let index_meta = IndexMeta {
+             id: 0,
+             column_ids: vec![1],
++            expressions: vec![ScalarExpression::column_expr(column, 0)],
+             table_name: "t1".to_string().into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+@@ -1252,13 +1334,73 @@ mod tests {
+             })?;
+ 
+         assert_eq!(
+-            TableCodec::decode_index_meta::<RocksTransaction>(&bytes, &mut plan_arena)?,
++            TableCodec::decode_index_meta::<RocksTransaction>(
++                &bytes,
++                &mut plan_arena,
++                &Default::default(),
++                &Default::default(),
++            )?,
+             index_meta
+         );
+ 
+         Ok(())
+     }
+ 
++    #[test]
++    fn test_table_codec_decodes_legacy_index_meta() -> Result<(), DatabaseError> {
++        let table_arena = TableArenaCell::default();
++        let mut plan_arena = PlanArena::new(&table_arena);
++        let legacy = LegacyIndexMeta {
++            id: 7,
++            column_ids: vec![3],
++            table_name: "legacy_table".to_string().into(),
++            pk_ty: LogicalType::Integer,
++            value_ty: LogicalType::Integer,
++            name: "legacy_index".to_string(),
++            ty: IndexType::Unique,
++        };
++        let mut bytes = Vec::new();
++        legacy.encode(&mut bytes, true, &mut ReferenceTables::new(), &plan_arena)?;
++
++        let decoded = TableCodec::decode_index_meta::<RocksTransaction>(
++            &bytes,
++            &mut plan_arena,
++            &Default::default(),
++            &Default::default(),
++        )?;
++        assert_eq!(decoded.id, legacy.id);
++        assert_eq!(decoded.column_ids, legacy.column_ids);
++        assert!(decoded.expressions.is_empty());
++        assert_eq!(decoded.table_name, legacy.table_name);
++        assert_eq!(decoded.name, legacy.name);
++        assert_eq!(decoded.ty, legacy.ty);
++
++        let mut column = ColumnCatalog::new(
++            "legacy_column".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(3), false, None)?,
++        );
++        column.summary_mut().relation = ColumnRelation::Table {
++            column_id: 3,
++            table_name: "legacy_table".to_string().into(),
++            is_temp: false,
++        };
++        let table = TableCatalog::reload(
++            "legacy_table".to_string().into(),
++            vec![column].into_iter(),
++            vec![decoded].into_iter(),
++            &mut plan_arena,
++        )?;
++        let reloaded = plan_arena.index(*table.indexes().next().unwrap());
++        assert_eq!(reloaded.expressions.len(), 1);
++        assert!(matches!(
++            &reloaded.expressions[0],
++            ScalarExpression::ColumnRef { column, position }
++                if plan_arena.column(*column).id() == Some(3) && *position == 0
++        ));
++        Ok(())
++    }
++
+     #[test]
+     fn test_table_codec_index() -> Result<(), DatabaseError> {
+         let tuple_id = DataValue::Int32(0);
+@@ -1512,6 +1654,7 @@ mod tests {
+             let index_meta = IndexMeta {
+                 id: index_id as u32,
+                 column_ids: vec![],
++                expressions: vec![],
+                 table_name: table_name.to_string().into(),
+                 pk_ty: LogicalType::Integer,
+                 value_ty: LogicalType::Integer,
+diff --git a/src/types/index.rs b/src/types/index.rs
+index 27eb143..aa0c0e1 100644
+--- a/src/types/index.rs
++++ b/src/types/index.rs
+@@ -12,12 +12,11 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-use crate::catalog::{TableCatalog, TableName};
++use crate::catalog::TableName;
+ use crate::errors::DatabaseError;
+ use crate::expression::range_detacher::Range;
+ use crate::expression::ScalarExpression;
+ use crate::planner::operator::SortOption;
+-use crate::planner::PlanArena;
+ use crate::types::serialize::TupleValueSerializableImpl;
+ use crate::types::value::DataValue;
+ use crate::types::{ColumnId, LogicalType};
+@@ -103,6 +102,7 @@ impl IndexOrderHint {
+ pub struct IndexMeta {
+     pub id: IndexId,
+     pub column_ids: Vec<ColumnId>,
++    pub expressions: Vec<ScalarExpression>,
+     pub table_name: TableName,
+     pub pk_ty: LogicalType,
+     pub value_ty: LogicalType,
+@@ -111,26 +111,14 @@ pub struct IndexMeta {
+ }
+ 
+ impl IndexMeta {
+-    pub(crate) fn column_exprs(
+-        &self,
+-        table: &TableCatalog,
+-        arena: &PlanArena,
+-    ) -> Result<Vec<ScalarExpression>, DatabaseError> {
+-        let mut exprs = Vec::with_capacity(self.column_ids.len());
+-
+-        for column_id in self.column_ids.iter() {
+-            if let Some((position, column_ref)) = table
+-                .columns()
+-                .copied()
+-                .enumerate()
+-                .find(|(_, column)| arena.column(*column).id() == Some(*column_id))
+-            {
+-                exprs.push(ScalarExpression::column_expr(column_ref, position));
+-            } else {
+-                return Err(DatabaseError::column_not_found(column_id.to_string()));
+-            }
+-        }
+-        Ok(exprs)
++    pub(crate) fn column_exprs(&self) -> Result<Vec<ScalarExpression>, DatabaseError> {
++        Ok(self.expressions.clone())
++    }
++
++    pub(crate) fn is_expression_index(&self) -> bool {
++        self.expressions
++            .iter()
++            .any(|expression| !matches!(expression, ScalarExpression::ColumnRef { .. }))
+     }
+ }
+ 
+@@ -184,7 +172,7 @@ impl fmt::Display for IndexMetaRef {
+ #[cfg(all(test, not(target_arch = "wasm32")))]
+ mod tests {
+     use super::*;
+-    use crate::catalog::{ColumnCatalog, ColumnDesc, TableCatalog};
++    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRef, TableCatalog};
+     use crate::planner::{PlanArena, TableArena, TableArenaCell};
+     use crate::serdes::{ReferenceSerialization, ReferenceTables};
+     use crate::storage::rocksdb::RocksTransaction;
+@@ -208,6 +196,7 @@ mod tests {
+         IndexMeta {
+             id: 1,
+             column_ids: vec![10],
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+             table_name: "t".into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+@@ -309,6 +298,12 @@ mod tests {
+         let mut encode_arena = TableArena::default();
+         let mut decode_arena = TableArena::default();
+ 
++        encode_arena.alloc_column(ColumnCatalog::new(
++            "c1".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(10), false, None)?,
++        ));
++
+         for ty in [
+             IndexType::PrimaryKey { is_multiple: false },
+             IndexType::PrimaryKey { is_multiple: true },
+@@ -398,6 +393,10 @@ mod tests {
+         let meta = IndexMeta {
+             id: 1,
+             column_ids: vec![id_column],
++            expressions: vec![ScalarExpression::column_expr(
++                *table.columns().next().unwrap(),
++                0,
++            )],
+             table_name: "t".into(),
+             pk_ty: LogicalType::Integer,
+             value_ty: LogicalType::Integer,
+@@ -405,16 +404,9 @@ mod tests {
+             ty: IndexType::Normal,
+         };
+ 
+-        assert_eq!(meta.column_exprs(&table, &arena)?.len(), 1);
++        assert_eq!(meta.column_exprs()?.len(), 1);
+ 
+-        let missing = IndexMeta {
+-            column_ids: vec![u64::MAX],
+-            ..meta
+-        };
+-        assert!(matches!(
+-            missing.column_exprs(&table, &arena),
+-            Err(DatabaseError::ColumnNotFound { .. })
+-        ));
++        assert!(!meta.is_expression_index());
+ 
+         Ok(())
+     }

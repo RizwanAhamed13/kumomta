@@ -1,0 +1,1227 @@
+diff --git a/crates/ide-completion/src/completions.rs b/crates/ide-completion/src/completions.rs
+index f1a34f15d..9fc3b88c8 100644
+--- a/crates/ide-completion/src/completions.rs
++++ b/crates/ide-completion/src/completions.rs
+@@ -27,7 +27,9 @@ pub(crate) mod vis;
+ use std::iter;
+ 
+ use hir::{EnumVariant, HasAttrs, Name, ScopeDef, sym};
+-use ide_db::{RootDatabase, SymbolKind, imports::import_assets::LocatedImport};
++use ide_db::{
++    FxHashSet, RootDatabase, SymbolKind, imports::import_assets::LocatedImport, text_edit::Indel,
++};
+ use syntax::{SmolStr, ToSmolStr, ast};
+ 
+ use crate::{
+@@ -37,7 +39,7 @@ use crate::{
+         PathCompletionCtx, PathKind, PatternContext, Qualified, TypeAscriptionTarget, TypeLocation,
+         Visible,
+     },
+-    item::Builder,
++    item::{Builder, CompletionItemLabel},
+     render::{
+         RenderContext,
+         const_::render_const,
+@@ -58,9 +60,41 @@ pub struct Completions {
+     buf: Vec<CompletionItem>,
+ }
+ 
++#[derive(Hash, PartialEq, Eq)]
++struct CompletionIdentity {
++    label: CompletionItemLabel,
++    source_range: syntax::TextRange,
++    text_edit: Vec<Indel>,
++    is_snippet: bool,
++    kind: CompletionItemKind,
++    lookup: SmolStr,
++    imports: Vec<(String, bool)>,
++    ref_match: Option<(String, Indel)>,
++}
++
++impl From<&CompletionItem> for CompletionIdentity {
++    fn from(item: &CompletionItem) -> Self {
++        Self {
++            label: item.label.clone(),
++            source_range: item.source_range,
++            text_edit: item.text_edit.iter().cloned().collect(),
++            is_snippet: item.is_snippet,
++            kind: item.kind,
++            lookup: item.lookup.clone(),
++            imports: item
++                .import_to_add
++                .iter()
++                .map(|import| (import.path.clone(), import.as_underscore))
++                .collect(),
++            ref_match: item.ref_match().map(|(label, indel, _)| (label, indel)),
++        }
++    }
++}
++
+ impl From<Completions> for Vec<CompletionItem> {
+     fn from(val: Completions) -> Self {
+-        val.buf
++        let mut seen = FxHashSet::default();
++        val.buf.into_iter().filter(|item| seen.insert(CompletionIdentity::from(item))).collect()
+     }
+ }
+ 
+diff --git a/crates/ide-completion/src/context.rs b/crates/ide-completion/src/context.rs
+index 705305f55..6b6dbd645 100644
+--- a/crates/ide-completion/src/context.rs
++++ b/crates/ide-completion/src/context.rs
+@@ -4,7 +4,7 @@ mod analysis;
+ #[cfg(test)]
+ mod tests;
+ 
+-use std::{iter, sync::LazyLock};
++use std::{iter, rc::Rc, sync::LazyLock};
+ 
+ use base_db::toolchain_channel;
+ use hir::{
+@@ -459,7 +459,7 @@ pub(crate) enum ParamKind {
+ /// exactly is the cursor, syntax-wise.
+ #[derive(Debug)]
+ pub(crate) struct CompletionContext<'a, 'db> {
+-    pub(crate) sema: Semantics<'db, RootDatabase>,
++    pub(crate) sema: Rc<Semantics<'db, RootDatabase>>,
+     pub(crate) scope: SemanticsScope<'db>,
+     pub(crate) db: &'db RootDatabase,
+     pub(crate) config: &'a CompletionConfig<'a>,
+@@ -740,14 +740,24 @@ impl<'db> CompletionContext<'_, 'db> {
+ 
+ // CompletionContext construction
+ impl<'a, 'db> CompletionContext<'a, 'db> {
++    #[cfg(test)]
+     pub(crate) fn new(
+         db: &'db RootDatabase,
+-        position @ FilePosition { file_id, offset }: FilePosition,
++        position: FilePosition,
+         config: &'a CompletionConfig<'a>,
+         trigger_character: Option<char>,
+     ) -> Option<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)> {
+-        let _p = tracing::info_span!("CompletionContext::new").entered();
+-        let sema = Semantics::new(db);
++        Self::new_all(db, position, config, trigger_character).into_iter().next()
++    }
++
++    pub(crate) fn new_all(
++        db: &'db RootDatabase,
++        position @ FilePosition { file_id, offset }: FilePosition,
++        config: &'a CompletionConfig<'a>,
++        trigger_character: Option<char>,
++    ) -> Vec<(CompletionContext<'a, 'db>, CompletionAnalysis<'db>)> {
++        let _p = tracing::info_span!("CompletionContext::new_all").entered();
++        let sema = Rc::new(Semantics::new(db));
+ 
+         let editioned_file_id = sema.attach_first_edition(file_id);
+         let original_file = sema.parse(editioned_file_id);
+@@ -763,17 +773,22 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
+ 
+         // always pick the token to the immediate left of the cursor, as that is what we are actually
+         // completing on
+-        let original_token = original_file.syntax().token_at_offset(offset).left_biased()?;
++        let Some(original_token) = original_file.syntax().token_at_offset(offset).left_biased()
++        else {
++            return Vec::new();
++        };
+ 
+         // try to skip completions on path with invalid colons
+         // this approach works in normal path and inside token tree
+         if original_token.kind() == T![:] {
+             // return if no prev token before colon
+-            let prev_token = original_token.prev_token()?;
++            let Some(prev_token) = original_token.prev_token() else {
++                return Vec::new();
++            };
+ 
+             // only has a single colon
+             if prev_token.kind() != T![:] && !is_in_macro_matcher(&original_token) {
+-                return None;
++                return Vec::new();
+             }
+ 
+             // has 3 colon or 2 coloncolon in a row
+@@ -784,162 +799,183 @@ impl<'a, 'db> CompletionContext<'a, 'db> {
+                 .map(|t| t.kind() == T![:] || t.kind() == T![::])
+                 .unwrap_or(false)
+             {
+-                return None;
++                return Vec::new();
+             }
+         }
+ 
+-        let AnalysisResult {
+-            analysis,
+-            expected: (expected_type, expected_name),
+-            qualifier_ctx,
+-            token,
+-            original_offset,
+-        } = expand_and_analyze(
++        let analyses = expand_and_analyze(
+             &sema,
+             InFile::new(editioned_file_id.into(), original_file.syntax().clone()),
+             file_with_fake_ident.syntax().clone(),
+             offset,
+             &original_token,
+-        )?;
+-
+-        // adjust for macro input, this still fails if there is no token written yet
+-        let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
+-
+-        let krate = scope.krate();
+-        let module = scope.module();
+-        let containing_function = scope.containing_function();
+-        let edition = krate.edition(db);
+-
+-        let toolchain = toolchain_channel(db, krate.into());
+-        // `toolchain == None` means we're in some detached files. Since we have no information on
+-        // the toolchain being used, let's just allow unstable items to be listed.
+-        let is_nightly = matches!(toolchain, Some(base_db::ReleaseChannel::Nightly) | None);
+-
+-        let mut locals = FxHashMap::default();
+-        scope.process_all_names(&mut |name, scope| {
+-            if let ScopeDef::Local(local) = scope {
+-                // synthetic names currently leak out as we lack synthetic hygiene, so filter them
+-                // out here
+-                if name.as_str().starts_with('<') {
+-                    return;
+-                }
+-                locals.insert(name, local);
+-            }
+-        });
+-
+-        let depth_from_crate_root = iter::successors(Some(module), |m| m.parent(db))
+-            // `BlockExpr` modules do not count towards module depth
+-            .filter(|m| !matches!(m.definition_source(db).value, ModuleSource::BlockExpr(_)))
+-            .count()
+-            // exclude `m` itself
+-            .saturating_sub(1);
+-
+-        let exclude_traits: FxHashSet<_> = config
+-            .exclude_traits
+-            .iter()
+-            .filter_map(|path| {
+-                hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern)).find_map(
+-                    |it| match it {
+-                        hir::ItemInNs::Types(ModuleDef::Trait(t)) => Some(t),
+-                        _ => None,
+-                    },
+-                )
+-            })
+-            .collect();
+-
+-        let mut exclude_flyimport: FxHashMap<_, _> = config
+-            .exclude_flyimport
+-            .iter()
+-            .flat_map(|(path, kind)| {
+-                hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
+-                    .map(|it| (it.into_module_def(), *kind))
+-            })
+-            .collect();
+-        let exclude_subitems = exclude_flyimport
+-            .iter()
+-            .flat_map(|it| match it {
+-                (ModuleDef::Module(module), AutoImportExclusionType::SubItems) => {
+-                    module.scope(db, None)
+-                }
+-                _ => vec![],
+-            })
+-            .filter_map(|(_, def)| match def {
+-                ScopeDef::ModuleDef(module_def) => Some(module_def),
+-                _ => None,
+-            })
+-            .collect::<Vec<_>>();
+-        let exclude_variants = exclude_flyimport
+-            .iter()
+-            .flat_map(|it| match it {
+-                (ModuleDef::Adt(hir::Adt::Enum(enum_)), AutoImportExclusionType::Variants) => {
+-                    enum_.variants(db)
+-                }
+-                _ => vec![],
+-            })
+-            .collect::<Vec<_>>();
+-        exclude_flyimport
+-            .extend(exclude_traits.iter().map(|&t| (t.into(), AutoImportExclusionType::Always)));
+-        exclude_flyimport
+-            .extend(exclude_subitems.into_iter().map(|it| (it, AutoImportExclusionType::Always)));
+-        exclude_flyimport.extend(
+-            exclude_variants.into_iter().map(|it| (it.into(), AutoImportExclusionType::Always)),
+         );
+ 
+-        // FIXME: This should be part of `CompletionAnalysis` / `expand_and_analyze`
+-        let complete_semicolon = if !config.add_semicolon_to_unit {
+-            CompleteSemicolon::DoNotComplete
+-        } else if let Some(term_node) =
+-            sema.token_ancestors_with_macros(token.clone()).find(|node| {
+-                matches!(
+-                    node.kind(),
+-                    BLOCK_EXPR
+-                        | MATCH_ARM
+-                        | CLOSURE_EXPR
+-                        | ARG_LIST
+-                        | PAREN_EXPR
+-                        | ARRAY_EXPR
+-                        | MATCH_EXPR
+-                )
+-            })
+-        {
+-            let next_token = iter::successors(token.next_token(), |it| it.next_token())
+-                .map(|it| it.kind())
+-                .find(|kind| !kind.is_trivia());
+-            match term_node.kind() {
+-                MATCH_ARM if next_token != Some(T![,]) => CompleteSemicolon::CompleteComma,
+-                BLOCK_EXPR if next_token != Some(T![;]) => CompleteSemicolon::CompleteSemi,
+-                _ => CompleteSemicolon::DoNotComplete,
+-            }
+-        } else {
+-            CompleteSemicolon::DoNotComplete
+-        };
+-
+-        let display_target = krate.to_display_target(db);
+-        let ctx = CompletionContext {
+-            sema,
+-            scope,
+-            db,
+-            config,
+-            position,
+-            trigger_character,
+-            original_token,
+-            token,
+-            krate,
+-            module,
+-            containing_function,
+-            is_nightly,
+-            edition,
+-            expected_name,
+-            expected_type,
+-            qualifier_ctx,
+-            locals,
+-            depth_from_crate_root,
+-            exclude_flyimport,
+-            exclude_traits,
+-            complete_semicolon,
+-            display_target,
+-        };
+-        Some((ctx, analysis))
++        analyses
++            .into_iter()
++            .filter_map(
++                |AnalysisResult {
++                     analysis,
++                     expected: (expected_type, expected_name),
++                     qualifier_ctx,
++                     token,
++                     original_offset,
++                 }| {
++                    let sema = sema.clone();
++                    // Adjust for macro input; this still fails if there is no token written yet.
++                    let scope = sema.scope_at_offset(&token.parent()?, original_offset)?;
++
++                    let krate = scope.krate();
++                    let module = scope.module();
++                    let containing_function = scope.containing_function();
++                    let edition = krate.edition(db);
++
++                    let toolchain = toolchain_channel(db, krate.into());
++                    // `toolchain == None` means we're in some detached files. Since we have no information on
++                    // the toolchain being used, let's just allow unstable items to be listed.
++                    let is_nightly =
++                        matches!(toolchain, Some(base_db::ReleaseChannel::Nightly) | None);
++
++                    let mut locals = FxHashMap::default();
++                    scope.process_all_names(&mut |name, scope| {
++                        if let ScopeDef::Local(local) = scope {
++                            // synthetic names currently leak out as we lack synthetic hygiene, so filter them
++                            // out here
++                            if name.as_str().starts_with('<') {
++                                return;
++                            }
++                            locals.insert(name, local);
++                        }
++                    });
++
++                    let depth_from_crate_root = iter::successors(Some(module), |m| m.parent(db))
++                        // `BlockExpr` modules do not count towards module depth
++                        .filter(|m| {
++                            !matches!(m.definition_source(db).value, ModuleSource::BlockExpr(_))
++                        })
++                        .count()
++                        // exclude `m` itself
++                        .saturating_sub(1);
++
++                    let exclude_traits: FxHashSet<_> = config
++                        .exclude_traits
++                        .iter()
++                        .filter_map(|path| {
++                            hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
++                                .find_map(|it| match it {
++                                    hir::ItemInNs::Types(ModuleDef::Trait(t)) => Some(t),
++                                    _ => None,
++                                })
++                        })
++                        .collect();
++
++                    let mut exclude_flyimport: FxHashMap<_, _> = config
++                        .exclude_flyimport
++                        .iter()
++                        .flat_map(|(path, kind)| {
++                            hir::resolve_absolute_path(db, path.split("::").map(Symbol::intern))
++                                .map(|it| (it.into_module_def(), *kind))
++                        })
++                        .collect();
++                    let exclude_subitems = exclude_flyimport
++                        .iter()
++                        .flat_map(|it| match it {
++                            (ModuleDef::Module(module), AutoImportExclusionType::SubItems) => {
++                                module.scope(db, None)
++                            }
++                            _ => vec![],
++                        })
++                        .filter_map(|(_, def)| match def {
++                            ScopeDef::ModuleDef(module_def) => Some(module_def),
++                            _ => None,
++                        })
++                        .collect::<Vec<_>>();
++                    let exclude_variants = exclude_flyimport
++                        .iter()
++                        .flat_map(|it| match it {
++                            (
++                                ModuleDef::Adt(hir::Adt::Enum(enum_)),
++                                AutoImportExclusionType::Variants,
++                            ) => enum_.variants(db),
++                            _ => vec![],
++                        })
++                        .collect::<Vec<_>>();
++                    exclude_flyimport.extend(
++                        exclude_traits.iter().map(|&t| (t.into(), AutoImportExclusionType::Always)),
++                    );
++                    exclude_flyimport.extend(
++                        exclude_subitems
++                            .into_iter()
++                            .map(|it| (it, AutoImportExclusionType::Always)),
++                    );
++                    exclude_flyimport.extend(
++                        exclude_variants
++                            .into_iter()
++                            .map(|it| (it.into(), AutoImportExclusionType::Always)),
++                    );
++
++                    // FIXME: This should be part of `CompletionAnalysis` / `expand_and_analyze`
++                    let complete_semicolon = if !config.add_semicolon_to_unit {
++                        CompleteSemicolon::DoNotComplete
++                    } else if let Some(term_node) =
++                        sema.token_ancestors_with_macros(token.clone()).find(|node| {
++                            matches!(
++                                node.kind(),
++                                BLOCK_EXPR
++                                    | MATCH_ARM
++                                    | CLOSURE_EXPR
++                                    | ARG_LIST
++                                    | PAREN_EXPR
++                                    | ARRAY_EXPR
++                                    | MATCH_EXPR
++                            )
++                        })
++                    {
++                        let next_token = iter::successors(token.next_token(), |it| it.next_token())
++                            .map(|it| it.kind())
++                            .find(|kind| !kind.is_trivia());
++                        match term_node.kind() {
++                            MATCH_ARM if next_token != Some(T![,]) => {
++                                CompleteSemicolon::CompleteComma
++                            }
++                            BLOCK_EXPR if next_token != Some(T![;]) => {
++                                CompleteSemicolon::CompleteSemi
++                            }
++                            _ => CompleteSemicolon::DoNotComplete,
++                        }
++                    } else {
++                        CompleteSemicolon::DoNotComplete
++                    };
++
++                    let display_target = krate.to_display_target(db);
++                    let ctx = CompletionContext {
++                        sema,
++                        scope,
++                        db,
++                        config,
++                        position,
++                        trigger_character,
++                        original_token: original_token.clone(),
++                        token,
++                        krate,
++                        module,
++                        containing_function,
++                        is_nightly,
++                        edition,
++                        expected_name,
++                        expected_type,
++                        qualifier_ctx,
++                        locals,
++                        depth_from_crate_root,
++                        exclude_flyimport,
++                        exclude_traits,
++                        complete_semicolon,
++                        display_target,
++                    };
++                    Some((ctx, analysis))
++                },
++            )
++            .collect()
+     }
+ }
+ 
+diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs
+index 7280fd1ad..159859a4f 100644
+--- a/crates/ide-completion/src/context/analysis.rs
++++ b/crates/ide-completion/src/context/analysis.rs
+@@ -19,6 +19,7 @@ use syntax::{
+         NameOrNameRef,
+     },
+     match_ast,
++    syntax_editor::SyntaxEditor,
+ };
+ 
+ use crate::{
+@@ -54,45 +55,75 @@ pub(super) struct AnalysisResult<'db> {
+     pub(super) original_offset: TextSize,
+ }
+ 
++const MAX_EXPANSION_BRANCHES: usize = 64;
++
++struct ExpansionBudget {
++    remaining: usize,
++}
++
++impl ExpansionBudget {
++    fn take_site(&mut self) -> bool {
++        let Some(remaining) = self.remaining.checked_sub(1) else { return false };
++        self.remaining = remaining;
++        true
++    }
++}
++
+ pub(super) fn expand_and_analyze<'db>(
+     sema: &Semantics<'db, RootDatabase>,
+     original_file: InFile<SyntaxNode>,
+     speculative_file: SyntaxNode,
+     offset: TextSize,
+     original_token: &SyntaxToken,
+-) -> Option<AnalysisResult<'db>> {
++) -> Vec<AnalysisResult<'db>> {
+     // as we insert after the offset, right biased will *always* pick the identifier no matter
+     // if there is an ident already typed or not
+-    let fake_ident_token = speculative_file.token_at_offset(offset).right_biased()?;
++    let Some(fake_ident_token) = speculative_file.token_at_offset(offset).right_biased() else {
++        return Vec::new();
++    };
+     // the relative offset between the cursor and the *identifier* token we are completing on
+     let relative_offset = offset - fake_ident_token.text_range().start();
+     // make the offset point to the start of the original token, as that is what the
+     // intermediate offsets calculated in expansion always points to
+     let offset = offset - relative_offset;
+-    let expansion = expand_maybe_stop(
++    let mut budget = ExpansionBudget { remaining: MAX_EXPANSION_BRANCHES };
++    let mut expansions = expand_maybe_stop(
+         sema,
+         original_file.clone(),
+         speculative_file.clone(),
+         offset,
+         fake_ident_token.clone(),
+         relative_offset,
+-    )
+-    .unwrap_or(ExpansionResult {
+-        original_file: original_file.value,
+-        speculative_file,
+-        original_offset: offset,
+-        speculative_offset: fake_ident_token.text_range().start(),
+-        fake_ident_token,
+-        derive_ctx: None,
+-    });
+-
+-    // add the relative offset back, so that left_biased finds the proper token
+-    let original_offset = expansion.original_offset + relative_offset;
+-    let token = expansion.original_file.token_at_offset(original_offset).left_biased()?;
++        &mut budget,
++    );
++    if expansions.is_empty() {
++        expansions.push(ExpansionResult {
++            original_file: original_file.value,
++            speculative_file,
++            original_offset: offset,
++            speculative_offset: fake_ident_token.text_range().start(),
++            fake_ident_token,
++            derive_ctx: None,
++        });
++    }
+ 
+-    analyze(sema, expansion, original_token, &token).map(|(analysis, expected, qualifier_ctx)| {
+-        AnalysisResult { analysis, expected, qualifier_ctx, token, original_offset }
+-    })
++    expansions
++        .into_iter()
++        .filter_map(|expansion| {
++            // Add the relative offset back, so that left_biased finds the proper token.
++            let original_offset = expansion.original_offset + relative_offset;
++            let token = expansion.original_file.token_at_offset(original_offset).left_biased()?;
++            analyze(sema, expansion, original_token, &token).map(
++                |(analysis, expected, qualifier_ctx)| AnalysisResult {
++                    analysis,
++                    expected,
++                    qualifier_ctx,
++                    token,
++                    original_offset,
++                },
++            )
++        })
++        .collect()
+ }
+ 
+ fn token_at_offset_ignore_whitespace(file: &SyntaxNode, offset: TextSize) -> Option<SyntaxToken> {
+@@ -100,6 +131,133 @@ fn token_at_offset_ignore_whitespace(file: &SyntaxNode, offset: TextSize) -> Opt
+     algo::skip_whitespace_token(token, Direction::Prev)
+ }
+ 
++fn mapped_completion_tokens(
++    speculative_file: &SyntaxNode,
++    mut mapped_tokens: Vec<(SyntaxToken, u8)>,
++    actual_range: TextSize,
++    relative_offset: TextSize,
++) -> Vec<(SyntaxNode, SyntaxToken, TextSize)> {
++    let emission_order =
++        mapped_tokens.iter().map(|(token, _)| token.text_range()).collect::<Vec<_>>();
++
++    mapped_tokens.sort_by_key(|(token, rank)| {
++        (token.text_range().start(), !token.text().contains(COMPLETION_MARKER), *rank)
++    });
++    mapped_tokens.dedup_by(|(right_token, _), (left_token, _)| {
++        right_token.text_range() == left_token.text_range()
++    });
++
++    let mut accumulated_offset = 0;
++    let mut candidates = Vec::new();
++    for (index, (mapped_token, rank)) in mapped_tokens.iter().enumerate() {
++        let marker_count = mapped_token.text().matches(COMPLETION_MARKER).count();
++        if marker_count == 0 {
++            // Proc macros can make the same span with different text. Such tokens are not
++            // completion sites because the macro author probably did not intend them to be.
++            continue;
++        }
++
++        let marker_offset = accumulated_offset;
++        accumulated_offset += marker_count * COMPLETION_MARKER.len();
++        let original_offset =
++            mapped_token.text_range().start() - TextSize::new(marker_offset as u32);
++        if actual_range < original_offset + relative_offset {
++            // Speculative insertion can move later mapped tokens. Discard impossible offsets.
++            continue;
++        }
++
++        let emission_index = emission_order
++            .iter()
++            .position(|range| *range == mapped_token.text_range())
++            .unwrap_or(index);
++        candidates.push((*rank, emission_index, index, original_offset));
++    }
++
++    candidates.sort_by_key(|(rank, emission_index, _, _)| (*rank, *emission_index));
++    if candidates.first().is_some_and(|(_, _, target_index, _)| {
++        !SyntaxKind::is_any_identifier(mapped_tokens[*target_index].0.kind())
++    }) {
++        // Multi-site completion is identifier-only. Preserve the previous single best-ranked
++        // mapping for strings and every other non-identifier token.
++        candidates.truncate(1);
++    }
++
++    candidates
++        .into_iter()
++        .filter_map(|(_, _, target_index, original_offset)| {
++            let token = &mapped_tokens.get(target_index)?.0;
++            let (speculative_file, token) = if SyntaxKind::is_any_identifier(token.kind()) {
++                isolate_completion_site(speculative_file, &mapped_tokens, target_index)?
++            } else {
++                // String and other non-identifier completions predate multi-ident aggregation.
++                // Preserve their speculative tree exactly as it was produced by the macro.
++                (speculative_file.clone(), token.clone())
++            };
++            Some((speculative_file, token, original_offset))
++        })
++        .collect()
++}
++
++/// Keep the marker at one downmapped occurrence and strip it from the others. The completion
++/// classifier compensates for exactly one inserted marker, so giving each branch its own tree
++/// preserves the positional correspondence with the real expansion.
++fn isolate_completion_site(
++    speculative_file: &SyntaxNode,
++    mapped_tokens: &[(SyntaxToken, u8)],
++    target_index: usize,
++) -> Option<(SyntaxNode, SyntaxToken)> {
++    let target = &mapped_tokens.get(target_index)?.0;
++    let old_root_start = speculative_file.text_range().start();
++    let target_relative_start = target.text_range().start() - old_root_start;
++    let (editor, editor_root) = SyntaxEditor::new(speculative_file.clone());
++    let new_root_start = editor_root.text_range().start();
++    let mut removed_before_target = 0;
++
++    for (index, (token, _)) in mapped_tokens.iter().enumerate() {
++        if !token.text().contains(COMPLETION_MARKER) {
++            continue;
++        }
++
++        let token_relative_start = token.text_range().start() - old_root_start;
++        let editor_offset = new_root_start + token_relative_start;
++        let editor_token = editor_root
++            .token_at_offset(editor_offset)
++            .right_biased()
++            .filter(|it| it.kind() == token.kind() && it.text() == token.text())?;
++        let marker_count = token.text().matches(COMPLETION_MARKER).count();
++        let stripped = token.text().replace(COMPLETION_MARKER, "");
++        if index == target_index {
++            if marker_count > 1 {
++                editor.replace(
++                    editor_token,
++                    ast::make::tokens::ident(&format!("{stripped}{COMPLETION_MARKER}")),
++                );
++            }
++            continue;
++        }
++        if token.text_range().start() < target.text_range().start() {
++            removed_before_target += marker_count * COMPLETION_MARKER.len();
++        }
++
++        // `_` is a token of its own, not a valid identifier for `ast::make::tokens::ident`.
++        if stripped.is_empty() || stripped == "_" {
++            editor.delete(editor_token);
++        } else {
++            editor.replace(editor_token, ast::make::tokens::ident(&stripped));
++        }
++    }
++
++    let edit = editor.finish();
++    let speculative_file = edit.new_root().clone();
++    let target_offset = speculative_file.text_range().start() + target_relative_start
++        - TextSize::new(removed_before_target as u32);
++    let token = speculative_file
++        .token_at_offset(target_offset)
++        .right_biased()
++        .filter(|it| it.text().contains(COMPLETION_MARKER))?;
++    Some((speculative_file, token))
++}
++
+ /// Expand attributes and macro calls at the current cursor position for both the original file
+ /// and fake file repeatedly. As soon as one of the two expansions fail we stop so the original
+ /// and speculative states stay in sync.
+@@ -136,16 +294,19 @@ fn expand_maybe_stop(
+     original_offset: TextSize,
+     fake_ident_token: SyntaxToken,
+     relative_offset: TextSize,
+-) -> Option<ExpansionResult> {
+-    if let result @ Some(_) = expand(
++    budget: &mut ExpansionBudget,
++) -> Vec<ExpansionResult> {
++    let results = expand(
+         sema,
+         original_file.clone(),
+         speculative_file.clone(),
+         original_offset,
+         fake_ident_token.clone(),
+         relative_offset,
+-    ) {
+-        return result;
++        budget,
++    );
++    if !results.is_empty() {
++        return results;
+     }
+ 
+     // We can't check whether the fake expansion is inside macro call, because that requires semantic info.
+@@ -154,18 +315,20 @@ fn expand_maybe_stop(
+         .is_some_and(|original_token| {
+             !sema.is_inside_macro_call(original_file.with_value(&original_token))
+         })
++        && budget.take_site()
+     {
+-        // Recursion base case.
+-        Some(ExpansionResult {
++        // Recursion base case. The request-wide budget counts viable completion sites, not
++        // intermediate macro hops, so nested and direct expansion paths share the same limit.
++        vec![ExpansionResult {
+             original_file: original_file.value,
+             speculative_file,
+             original_offset,
+             speculative_offset: fake_ident_token.text_range().start(),
+             fake_ident_token,
+             derive_ctx: None,
+-        })
++        }]
+     } else {
+-        None
++        Vec::new()
+     }
+ }
+ 
+@@ -176,7 +339,8 @@ fn expand(
+     original_offset: TextSize,
+     fake_ident_token: SyntaxToken,
+     relative_offset: TextSize,
+-) -> Option<ExpansionResult> {
++    budget: &mut ExpansionBudget,
++) -> Vec<ExpansionResult> {
+     let _p = tracing::info_span!("CompletionContext::expand").entered();
+ 
+     let parent_item =
+@@ -211,41 +375,26 @@ fn expand(
+                 Some(ExpandResult { value: actual_expansion, err: _ }),
+                 Some((fake_expansion, fake_mapped_tokens)),
+             ) => {
+-                let mut accumulated_offset_from_fake_tokens = 0;
+                 let actual_range = actual_expansion.text_range().end();
+-                let result = fake_mapped_tokens
+-                    .into_iter()
+-                    .filter_map(|(fake_mapped_token, rank)| {
+-                        let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                        if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                            // Proc macros can make the same span with different text, we don't
+-                            // want them to participate in completion because the macro author probably
+-                            // didn't intend them to.
+-                            return None;
+-                        }
+-                        accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                        let new_offset = fake_mapped_token.text_range().start()
+-                            - TextSize::new(accumulated_offset as u32);
+-                        if new_offset + relative_offset > actual_range {
+-                            // offset outside of bounds from the original expansion,
+-                            // stop here to prevent problems from happening
+-                            return None;
+-                        }
+-                        let result = expand_maybe_stop(
+-                            sema,
+-                            actual_expansion.clone(),
+-                            fake_expansion.clone(),
+-                            new_offset,
+-                            fake_mapped_token,
+-                            relative_offset,
+-                        )?;
+-                        Some((result, rank))
+-                    })
+-                    .min_by_key(|(_, rank)| *rank)
+-                    .map(|(result, _)| result);
+-                if result.is_some() {
+-                    return result;
++                let mut results = Vec::new();
++                for (branch_expansion, mapped_token, mapped_offset) in mapped_completion_tokens(
++                    &fake_expansion,
++                    fake_mapped_tokens,
++                    actual_range,
++                    relative_offset,
++                ) {
++                    results.extend(expand_maybe_stop(
++                        sema,
++                        actual_expansion.clone(),
++                        branch_expansion,
++                        mapped_offset,
++                        mapped_token,
++                        relative_offset,
++                        budget,
++                    ));
++                }
++                if !results.is_empty() {
++                    return results;
+                 }
+             }
+             // exactly one expansion failed, inconsistent state so stop expanding completely
+@@ -254,12 +403,19 @@ fn expand(
+     }
+ 
+     // No attributes have been expanded, so look for macro_call! token trees or derive token trees
+-    let orig_tt = ancestors_at_offset(&original_file.value, original_offset)
+-        .map_while(Either::<ast::TokenTree, ast::Meta>::cast)
+-        .last()?;
+-    let spec_tt = ancestors_at_offset(&speculative_file, fake_ident_token.text_range().start())
++    let Some(orig_tt) = ancestors_at_offset(&original_file.value, original_offset)
+         .map_while(Either::<ast::TokenTree, ast::Meta>::cast)
+-        .last()?;
++        .last()
++    else {
++        return Vec::new();
++    };
++    let Some(spec_tt) =
++        ancestors_at_offset(&speculative_file, fake_ident_token.text_range().start())
++            .map_while(Either::<ast::TokenTree, ast::Meta>::cast)
++            .last()
++    else {
++        return Vec::new();
++    };
+ 
+     let (tts, attrs) = match (orig_tt, spec_tt) {
+         (Either::Left(orig_tt), Either::Left(spec_tt)) => {
+@@ -280,7 +436,7 @@ fn expand(
+         (Either::Right(orig_path), Either::Right(spec_path)) => {
+             (None, orig_path.parent_attr().zip(spec_path.parent_attr()))
+         }
+-        _ => return None,
++        _ => return Vec::new(),
+     };
+ 
+     // Expand pseudo-derive expansion aka `derive(Debug$0)`
+@@ -295,22 +451,35 @@ fn expand(
+                 &spec_attr,
+                 fake_ident_token.clone(),
+             ),
+-        ) && let Some((fake_mapped_token, _)) =
+-            fake_mapped_tokens.into_iter().min_by_key(|(_, rank)| *rank)
+-        {
+-            return Some(ExpansionResult {
+-                original_file: original_file.value,
+-                speculative_file,
+-                original_offset,
+-                speculative_offset: fake_ident_token.text_range().start(),
+-                fake_ident_token,
+-                derive_ctx: Some((
+-                    actual_expansion,
+-                    fake_expansion,
+-                    fake_mapped_token.text_range().start(),
+-                    orig_attr,
+-                )),
+-            });
++        ) {
++            let actual_range = actual_expansion.text_range().end();
++            let mut results = Vec::new();
++            for (branch_expansion, mapped_token, _) in mapped_completion_tokens(
++                &fake_expansion,
++                fake_mapped_tokens,
++                actual_range,
++                relative_offset,
++            ) {
++                if !budget.take_site() {
++                    break;
++                }
++                results.push(ExpansionResult {
++                    original_file: original_file.value.clone(),
++                    speculative_file: speculative_file.clone(),
++                    original_offset,
++                    speculative_offset: fake_ident_token.text_range().start(),
++                    fake_ident_token: fake_ident_token.clone(),
++                    derive_ctx: Some((
++                        actual_expansion.clone(),
++                        branch_expansion,
++                        mapped_token.text_range().start(),
++                        orig_attr.clone(),
++                    )),
++                });
++            }
++            if !results.is_empty() {
++                return results;
++            }
+         }
+ 
+         if let Some(spec_adt) =
+@@ -323,73 +492,64 @@ fn expand(
+         {
+             // might be the path of derive helper or a token tree inside of one
+             if let Some(helpers) = sema.derive_helper(&orig_attr) {
++                let mut results = Vec::new();
+                 for (_mac, file) in helpers {
+                     if let Some((fake_expansion, fake_mapped_tokens)) = sema.speculative_expand_raw(
+                         file,
+                         spec_adt.syntax(),
+                         fake_ident_token.clone(),
+                     ) {
+-                        // we are inside a derive helper token tree, treat this as being inside
+-                        // the derive expansion
++                        // We are inside a derive helper token tree, so treat it as an expansion.
+                         let actual_expansion = sema.parse_or_expand(file.into());
+-                        let mut accumulated_offset_from_fake_tokens = 0;
+                         let actual_range = actual_expansion.text_range().end();
+-                        let result = fake_mapped_tokens
+-                            .into_iter()
+-                            .filter_map(|(fake_mapped_token, rank)| {
+-                                let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                                if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                                    // Proc macros can make the same span with different text, we don't
+-                                    // want them to participate in completion because the macro author probably
+-                                    // didn't intend them to.
+-                                    return None;
+-                                }
+-                                accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                                let new_offset = fake_mapped_token.text_range().start()
+-                                    - TextSize::new(accumulated_offset as u32);
+-                                if new_offset + relative_offset > actual_range {
+-                                    // offset outside of bounds from the original expansion,
+-                                    // stop here to prevent problems from happening
+-                                    return None;
+-                                }
+-                                let result = expand_maybe_stop(
+-                                    sema,
+-                                    InFile::new(file.into(), actual_expansion.clone()),
+-                                    fake_expansion.clone(),
+-                                    new_offset,
+-                                    fake_mapped_token,
+-                                    relative_offset,
+-                                )?;
+-                                Some((result, rank))
+-                            })
+-                            .min_by_key(|(_, rank)| *rank)
+-                            .map(|(result, _)| result);
+-                        if result.is_some() {
+-                            return result;
++                        for (branch_expansion, mapped_token, mapped_offset) in
++                            mapped_completion_tokens(
++                                &fake_expansion,
++                                fake_mapped_tokens,
++                                actual_range,
++                                relative_offset,
++                            )
++                        {
++                            results.extend(expand_maybe_stop(
++                                sema,
++                                InFile::new(file.into(), actual_expansion.clone()),
++                                branch_expansion,
++                                mapped_offset,
++                                mapped_token,
++                                relative_offset,
++                                budget,
++                            ));
+                         }
+                     }
+                 }
++                if !results.is_empty() {
++                    return results;
++                }
+             }
+         }
+-        // at this point we won't have any more successful expansions, so stop
+-        return None;
++        // At this point we will not have any more successful expansions, so stop.
++        return Vec::new();
+     }
+ 
+     // Expand fn-like macro calls
+-    let (orig_tt, spec_tt) = tts?;
+-    let (actual_macro_call, macro_call_with_fake_ident) = (
+-        orig_tt.syntax().parent().and_then(ast::MacroCall::cast)?,
+-        spec_tt.syntax().parent().and_then(ast::MacroCall::cast)?,
+-    );
++    let Some((orig_tt, spec_tt)) = tts else { return Vec::new() };
++    let Some(actual_macro_call) = orig_tt.syntax().parent().and_then(ast::MacroCall::cast) else {
++        return Vec::new();
++    };
++    let Some(macro_call_with_fake_ident) = spec_tt.syntax().parent().and_then(ast::MacroCall::cast)
++    else {
++        return Vec::new();
++    };
+     let mac_call_path0 = actual_macro_call.path().as_ref().map(|s| s.syntax().text());
+     let mac_call_path1 = macro_call_with_fake_ident.path().as_ref().map(|s| s.syntax().text());
+ 
+     // inconsistent state, stop expanding
+     if mac_call_path0 != mac_call_path1 {
+-        return None;
++        return Vec::new();
+     }
+-    let speculative_args = macro_call_with_fake_ident.token_tree()?;
++    let Some(speculative_args) = macro_call_with_fake_ident.token_tree() else {
++        return Vec::new();
++    };
+ 
+     match (
+         sema.expand_macro_call(&actual_macro_call),
+@@ -397,43 +557,29 @@ fn expand(
+     ) {
+         // successful expansions
+         (Some(actual_expansion), Some((fake_expansion, fake_mapped_tokens))) => {
+-            let mut accumulated_offset_from_fake_tokens = 0;
+             let actual_range = actual_expansion.text_range().end();
+-            fake_mapped_tokens
+-                .into_iter()
+-                .filter_map(|(fake_mapped_token, rank)| {
+-                    let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                    if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                        // Proc macros can make the same span with different text, we don't
+-                        // want them to participate in completion because the macro author probably
+-                        // didn't intend them to.
+-                        return None;
+-                    }
+-                    accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                    let new_offset = fake_mapped_token.text_range().start()
+-                        - TextSize::new(accumulated_offset as u32);
+-                    if new_offset + relative_offset > actual_range {
+-                        // offset outside of bounds from the original expansion,
+-                        // stop here to prevent problems from happening
+-                        return None;
+-                    }
+-                    let result = expand_maybe_stop(
+-                        sema,
+-                        actual_expansion.clone(),
+-                        fake_expansion.clone(),
+-                        new_offset,
+-                        fake_mapped_token,
+-                        relative_offset,
+-                    )?;
+-                    Some((result, rank))
+-                })
+-                .min_by_key(|(_, rank)| *rank)
+-                .map(|(result, _)| result)
++            let mut results = Vec::new();
++            for (branch_expansion, mapped_token, mapped_offset) in mapped_completion_tokens(
++                &fake_expansion,
++                fake_mapped_tokens,
++                actual_range,
++                relative_offset,
++            ) {
++                results.extend(expand_maybe_stop(
++                    sema,
++                    actual_expansion.clone(),
++                    branch_expansion,
++                    mapped_offset,
++                    mapped_token,
++                    relative_offset,
++                    budget,
++                ));
++            }
++            results
+         }
+         // at least one expansion failed, we won't have anything to expand from this point
+         // onwards so break out
+-        _ => None,
++        _ => Vec::new(),
+     }
+ }
+ 
+diff --git a/crates/ide-completion/src/item.rs b/crates/ide-completion/src/item.rs
+index 675ffac04..cece5e16a 100644
+--- a/crates/ide-completion/src/item.rs
++++ b/crates/ide-completion/src/item.rs
+@@ -98,7 +98,7 @@ pub struct CompletionItemImport {
+     pub as_underscore: bool,
+ }
+ 
+-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
++#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+ pub struct CompletionItemLabel {
+     /// The primary label for the completion item.
+     pub primary: SmolStr,
+@@ -405,7 +405,7 @@ impl CompletionRelevance {
+ }
+ 
+ /// The type of the completion item.
+-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
++#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+ pub enum CompletionItemKind {
+     SymbolKind(SymbolKind),
+     Binding,
+diff --git a/crates/ide-completion/src/lib.rs b/crates/ide-completion/src/lib.rs
+index 4ca3257c5..dfb958ac4 100644
+--- a/crates/ide-completion/src/lib.rs
++++ b/crates/ide-completion/src/lib.rs
+@@ -194,47 +194,54 @@ pub fn completions(
+     position: FilePosition,
+     trigger_character: Option<char>,
+ ) -> Option<Vec<CompletionItem>> {
+-    let (ctx, analysis) = &CompletionContext::new(db, position, config, trigger_character)?;
++    let contexts = CompletionContext::new_all(db, position, config, trigger_character);
++    if contexts.is_empty() {
++        return None;
++    }
+     let mut completions = Completions::default();
+ 
+     // prevent `(` from triggering unwanted completion noise
+     if trigger_character == Some('(') {
+-        if let CompletionAnalysis::NameRef(NameRefContext {
+-            kind:
+-                NameRefKind::Path(
+-                    path_ctx @ PathCompletionCtx { kind: PathKind::Vis { has_in_token }, .. },
+-                ),
+-            ..
+-        }) = analysis
+-        {
+-            completions::vis::complete_vis_path(&mut completions, ctx, path_ctx, has_in_token);
++        for (ctx, analysis) in &contexts {
++            if let CompletionAnalysis::NameRef(NameRefContext {
++                kind:
++                    NameRefKind::Path(
++                        path_ctx @ PathCompletionCtx {
++                            kind: PathKind::Vis { has_in_token }, ..
++                        },
++                    ),
++                ..
++            }) = analysis
++            {
++                completions::vis::complete_vis_path(&mut completions, ctx, path_ctx, has_in_token);
++            }
+         }
+         return Some(completions.into());
+     }
+ 
+-    // when the user types a bare `_` (that is it does not belong to an identifier)
+-    // the user might just wanted to type a `_` for type inference or pattern discarding
+-    // so try to suppress completions in those cases
+-    if trigger_character == Some('_')
+-        && ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE
+-        && let CompletionAnalysis::NameRef(NameRefContext {
+-            kind:
+-                NameRefKind::Path(
+-                    path_ctx @ PathCompletionCtx {
+-                        kind: PathKind::Type { .. } | PathKind::Pat { .. },
+-                        ..
+-                    },
+-                ),
+-            ..
+-        }) = analysis
+-        && path_ctx.is_trivial_path()
+-    {
+-        return None;
+-    }
++    let mut unsuppressed_context = false;
++    for (ctx, analysis) in &contexts {
++        // When the user types a bare `_` (that is, it does not belong to an identifier),
++        // they may intend type inference or pattern discarding. Suppress only that branch.
++        if trigger_character == Some('_')
++            && ctx.original_token.kind() == syntax::SyntaxKind::UNDERSCORE
++            && let CompletionAnalysis::NameRef(NameRefContext {
++                kind:
++                    NameRefKind::Path(
++                        path_ctx @ PathCompletionCtx {
++                            kind: PathKind::Type { .. } | PathKind::Pat { .. },
++                            ..
++                        },
++                    ),
++                ..
++            }) = analysis
++            && path_ctx.is_trivial_path()
++        {
++            continue;
++        }
++        unsuppressed_context = true;
+ 
+-    {
+         let acc = &mut completions;
+-
+         match analysis {
+             CompletionAnalysis::Name(name_ctx) => completions::complete_name(acc, ctx, name_ctx),
+             CompletionAnalysis::NameRef(name_ref_ctx) => {
+@@ -271,6 +278,9 @@ pub fn completions(
+         }
+     }
+ 
++    if !unsuppressed_context {
++        return None;
++    }
+     Some(completions.into())
+ }
+ 
+diff --git a/crates/ide-completion/src/tests/expression.rs b/crates/ide-completion/src/tests/expression.rs
+index 0e558cf6a..b1ac0e6d4 100644
+--- a/crates/ide-completion/src/tests/expression.rs
++++ b/crates/ide-completion/src/tests/expression.rs
+@@ -2691,6 +2691,7 @@ fn main() {
+             kw loop
+             kw match
+             kw mod
++            kw return
+             kw self::
+             kw static
+             kw struct

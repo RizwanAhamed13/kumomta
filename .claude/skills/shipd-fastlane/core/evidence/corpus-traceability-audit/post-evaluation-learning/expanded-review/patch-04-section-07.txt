@@ -1,0 +1,4 @@
+diff --git a/src/execution/mod.rs b/src/execution/mod.rs
+@@ -465,6 +465,8 @@ impl<'a, T: Transaction + 'a> ExecArena<'a, T> {
++            self.table_codec
++                .set_functions(context.scala_functions(), context.table_functions());

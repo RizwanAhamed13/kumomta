@@ -1,0 +1,204 @@
+diff --git a/src/catalog/table.rs b/src/catalog/table.rs
+@@ -14,6 +14,7 @@
++use crate::expression::visitor_mut::ExprVisitorMut;
+@@ -48,6 +49,62 @@ pub(crate) struct DmlTableSnapshot<'a> {
++struct IndexExpressionRebinder<'a, A> {
++    columns: &'a [ColumnRef],
++    arena: &'a A,
++}
++
++struct IndexExpressionTransplanter<'a> {
++    source_columns: &'a [ColumnRef],
++    target_columns: &'a [ColumnRef],
++}
++
++impl ExprVisitorMut<'_> for IndexExpressionTransplanter<'_> {
++    fn visit_column_ref(
++        &mut self,
++        column: &mut ColumnRef,
++        position: &mut usize,
++    ) -> Result<(), DatabaseError> {
++        let Some(new_position) = self
++            .source_columns
++            .iter()
++            .position(|source| source == column)
++        else {
++            return Err(DatabaseError::column_not_found(column.to_string()));
++        };
++        *column = self.target_columns[new_position];
++        *position = new_position;
++        Ok(())
++    }
++}
++
++impl<A: MetaArena> ExprVisitorMut<'_> for IndexExpressionRebinder<'_, A> {
++    fn visit_column_ref(
++        &mut self,
++        column: &mut ColumnRef,
++        position: &mut usize,
++    ) -> Result<(), DatabaseError> {
++        let source = self.arena.column(*column);
++        let source_id = source.id();
++        let source_table = source.table_name();
++        let Some((new_position, new_column)) =
++            self.columns
++                .iter()
++                .copied()
++                .enumerate()
++                .find(|(_, candidate)| {
++                    let candidate = self.arena.column(*candidate);
++                    candidate.id() == source_id && candidate.table_name() == source_table
++                })
++        else {
++            return Err(DatabaseError::column_not_found(source.name().to_string()));
++        };
++        *column = new_column;
++        *position = new_position;
++        Ok(())
++    }
++}
++
+@@ -55,6 +112,21 @@ pub struct TableMeta {
++    pub(crate) fn rebind_index_expressions(
++        &self,
++        expressions: &mut [ScalarExpression],
++        arena: &impl MetaArena,
++    ) -> Result<(), DatabaseError> {
++        for expression in expressions {
++            IndexExpressionRebinder {
++                columns: &self.column_refs,
++                arena,
++            }
++            .visit(expression)?;
++        }
++        Ok(())
++    }
++
+@@ -125,12 +197,7 @@ impl TableCatalog {
+-            .map(|index_meta| {
+-                Ok((
+-                    *index_meta,
+-                    arena.index(*index_meta).column_exprs(self, arena)?,
+-                ))
+-            })
++            .map(|index_meta| Ok((*index_meta, arena.index(*index_meta).column_exprs()?)))
+@@ -192,14 +259,19 @@ impl TableCatalog {
++        let mut expressions = Vec::with_capacity(column_ids.len());
+-            let val_ty = self
++            let column_ref = self
+-                .map(|column| arena.column(column))
+-                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?
+-                .datatype()
+-                .clone();
+-            val_tys.push(val_ty)
++                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?;
++            let position = self
++                .column_refs
++                .iter()
++                .position(|candidate| candidate == &column_ref)
++                .ok_or_else(|| DatabaseError::column_not_found(column_id.to_string()))?;
++            let val_ty = arena.column(column_ref).datatype().clone();
++            val_tys.push(val_ty);
++            expressions.push(ScalarExpression::column_expr(column_ref, position));
+@@ -210,6 +282,7 @@ impl TableCatalog {
++            expressions,
+@@ -221,6 +294,51 @@ impl TableCatalog {
++    pub(crate) fn add_expression_index_meta(
++        &mut self,
++        name: String,
++        column_ids: Vec<ColumnId>,
++        expressions: Vec<ScalarExpression>,
++        ty: IndexType,
++        arena: &mut PlanArena,
++    ) -> Result<IndexMetaRef, DatabaseError> {
++        if self
++            .indexes
++            .iter()
++            .any(|index| arena.index(*index).name == name)
++        {
++            return Err(DatabaseError::DuplicateIndex(name));
++        }
++
++        let index_id = self
++            .indexes
++            .last()
++            .map(|index| arena.index(*index).id + 1)
++            .unwrap_or(0);
++        let mut value_types = expressions
++            .iter()
++            .map(|expression| expression.return_type(arena).into_owned())
++            .collect_vec();
++        let value_ty = if value_types.len() == 1 {
++            value_types.pop().unwrap()
++        } else {
++            LogicalType::Tuple(value_types)
++        };
++        let index = IndexMeta {
++            id: index_id,
++            column_ids,
++            expressions,
++            table_name: self.name.clone(),
++            pk_ty: self.primary_key_type.clone(),
++            value_ty,
++            name,
++            ty,
++        };
++        let index_ref = arena.alloc_index(index);
++        self.indexes.push(index_ref);
++        Ok(index_ref)
++    }
++
+@@ -292,7 +410,33 @@ impl TableCatalog {
+-        let indexes = indexes.map(|index| arena.alloc_index(index)).collect();
++        let mut index_refs = Vec::new();
++        for mut index in indexes {
++            if index.expressions.is_empty() {
++                index.expressions = index
++                    .column_ids
++                    .iter()
++                    .map(|column_id| {
++                        let position = columns.get(column_id).copied().ok_or_else(|| {
++                            DatabaseError::column_not_found(column_id.to_string())
++                        })?;
++                        Ok(ScalarExpression::column_expr(
++                            column_refs[position],
++                            position,
++                        ))
++                    })
++                    .collect::<Result<_, DatabaseError>>()?;
++            } else {
++                for expression in &mut index.expressions {
++                    IndexExpressionRebinder {
++                        columns: &column_refs,
++                        arena: &*arena,
++                    }
++                    .visit(expression)?;
++                }
++            }
++            index_refs.push(arena.alloc_index(index));
++        }
+@@ -301,7 +445,7 @@ impl TableCatalog {
+-            indexes,
++            indexes: index_refs,
+@@ -320,13 +464,24 @@ impl TableCatalog {
+-
+-        Self::reload(
++        let target_arena = source_arena.table_arena_cell().borrow_mut();
++        let mut table = Self::reload(
+-            index_metas.into_iter(),
+-            source_arena.table_arena_cell().borrow_mut(),
+-        )
++            std::iter::empty(),
++            &mut *target_arena,
++        )?;
++        for mut index_meta in index_metas {
++            for expression in &mut index_meta.expressions {
++                IndexExpressionTransplanter {
++                    source_columns: &self.column_refs,
++                    target_columns: &table.column_refs,
++                }
++                .visit(expression)?;
++            }
++            table.indexes.push(target_arena.alloc_index(index_meta));
++        }
++        Ok(table)

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Rollout Auditor"
+  short_description: "Run gates and audit Olympus rollouts"
+  default_prompt: "Use $olympus-rollout-auditor to run the remaining authorized gates adaptively and analyze every saved Olympus rollout."

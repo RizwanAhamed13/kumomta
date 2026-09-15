@@ -1,0 +1,12 @@
+{
+  "time": "2026-09-12T23:20:24.235349+00:00",
+  "hashes": {
+    "README.md": "e2b3cf02a106277d05c4c9a602b2d26d18149b78621baaa6ce8629c0379b21e4",
+    "skills/shipd-fastlane/SKILL.md": "c71a52d346eaa58413cc5e5327efe309477103f750cef2d46a9c6b4e495d6043",
+    "skills/shipd-fastlane/references/execution-integrity.md": "9e622992e0762bf087c8ed1647aeb896d3be8bfbb7a2b481df6d3d4c2ce24410",
+    "skills/shipd-fastlane/references/local-quality-gate.md": "a6e73594b83a4d66e60bb10d01f981e6b15f22fe38a337bc20c264fc2980bcb8",
+    "skills/shipd-fastlane/references/execution.md": "968954327af5b2289b45ff2296eec593dfd49b88ea7ea2faadf13e56b4425a39",
+    "assets/metrics.example.json": "8cec9cab4a553a817eeef2d44feeaf833764dd28c9bf0af1e4f7eeeedf4b4344",
+    "assets/handoff.md": "51d0364ca8412838aceaf9cd245af4c7a96dd57af271e7496af43e1e3496d50a"
+  }
+}

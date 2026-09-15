@@ -1,0 +1,60 @@
+{
+  "at": "2026-09-13T00:40:19.978628+00:00",
+  "phase": "source-only live-contract and semantic-coverage clarification",
+  "tests_run": false,
+  "scripts_changed": false,
+  "candidate_bytes_changed": false,
+  "manifest_changed": false,
+  "files": [
+    {
+      "path": "skills/shipd-fastlane/SKILL.md",
+      "bytes": 12276,
+      "sha256": "cd95882861be3717480716c83bc7a1f5c35a4bc44656ede3ff63fd19a58e970c"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/current-general-contract.md",
+      "bytes": 5151,
+      "sha256": "6659d272e9cd18f9857012c428d093d84e2c93700848f866d454f73f57909d13"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "bytes": 14276,
+      "sha256": "8225f7c0e19da8749819ae79fb205821c1db809298663eb8382073f225c44e2e"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/execution-integrity.md",
+      "bytes": 8246,
+      "sha256": "1ba50abcaaefccde3e8d5e86f1a7742b52f31e4492b5d2ac832620d992972375"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/execution.md",
+      "bytes": 10312,
+      "sha256": "e10cbd668e9265675f2f73f18ea34f849821100564123065746cc7c0388b2ce5"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/provenance.md",
+      "bytes": 4544,
+      "sha256": "83f95f35a3aa821029d085fe035390d05eac14a9c9cdaf822be8b64498aa73c2"
+    },
+    {
+      "path": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "bytes": 3074,
+      "sha256": "0ff42e05e49cc302906ff1603286f31e9a7fca0a9ba69568ef2fcf48eb78de4c"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/AUDIT.md",
+      "bytes": 11120,
+      "sha256": "c09380d8477ea4a0a2bc3a0db5856f088840108edddb06095c1d336b148b3912"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/post-evaluation-learning/per-case-inspection-coverage.json",
+      "bytes": 51675,
+      "sha256": "7220ab0ca220281614efd26f767fffd8bd983d61af33041c0ffe2fce1134842b"
+    },
+    {
+      "path": "evidence/corpus-traceability-audit/live-docs-requirements-20260913.json",
+      "bytes": 6487,
+      "sha256": "26533b0754d5d7950dd1b83e6b30c8c2bae523c76a65595c99a7ef3e48c11654"
+    }
+  ]
+}

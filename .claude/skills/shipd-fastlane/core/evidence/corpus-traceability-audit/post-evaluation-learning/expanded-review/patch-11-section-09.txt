@@ -1,0 +1,11 @@
+diff --git a/scylla/tests/integration/session/pager.rs b/scylla/tests/integration/session/pager.rs
+@@ -1033,6 +1033,15 @@ impl LoadBalancingPolicy for RotatingLBP {
++    fn is_coordinator_preferred(
++        &self,
++        _routing: &RoutingInfo<'_>,
++        _cluster: &ClusterState,
++        _coordinator: &scylla::response::Coordinator,
++    ) -> bool {
++        true
++    }
++

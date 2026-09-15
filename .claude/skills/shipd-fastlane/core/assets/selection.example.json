@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "note": "PENDING illustrative selection only. Replace command IDs, commands, stages and partitions with this case actual inventory before freezing. Every executable/mixed check needs its complete commands.",
+  "commands": [
+    {
+      "id": "verify-tests.baseline-new",
+      "check_id": "verify_tests",
+      "stages": [
+        "full",
+        "final"
+      ],
+      "command": "bash test.sh new --output_path /tmp/baseline-new.xml",
+      "expected_exit_code": 1
+    },
+    {
+      "id": "verify-tests.solution-new",
+      "check_id": "verify_tests",
+      "stages": [
+        "full",
+        "final"
+      ],
+      "command": "bash test.sh new --output_path /tmp/solution-new.xml",
+      "expected_exit_code": 0
+    }
+  ],
+  "partitions": {
+    "base": {
+      "inventory_evidence": "PENDING",
+      "selection": "PENDING compatibility and existing affected tests"
+    },
+    "new": {
+      "inventory_evidence": "PENDING",
+      "selection": "PENDING feature-new baseline-failing tests"
+    }
+  },
+  "patch_application_order": "PENDING exact four-state workdirs and commands",
+  "cache_policy": "PENDING image build and patch-time rebuild policy",
+  "runtime_flags": "PENDING network, UID, quota, timeout, seeds, feature flags"
+}

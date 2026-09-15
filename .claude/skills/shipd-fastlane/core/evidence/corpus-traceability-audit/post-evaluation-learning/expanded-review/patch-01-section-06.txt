@@ -1,0 +1,391 @@
+diff --git a/crates/semantics/src/cache/types.rs b/crates/semantics/src/cache/types.rs
+@@ -3,12 +3,13 @@ use rustc_hash::FxHashMap as HashMap;
+-    Annotation, AttributeArg, FunctionAnnotationParameter, Generic, Span, StructFields,
++    Annotation, AttributeArg, BinaryOperator, Expression, FunctionAnnotationParameter, Generic,
++    IdentifierResolution, Literal, Span, StructFields, UnaryOperator,
+-    AliasKind, Attributes, Definition, DefinitionBody, Interface, Methods, Package, ValueKind,
+-    Visibility,
++    AliasKind, Attributes, Definition, DefinitionBody, DotAccessResolution, Interface, Methods,
++    Package, ValueKind, Visibility,
+@@ -264,6 +265,304 @@ impl CachedLiteral {
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultLiteral {
++    Integer { value: u64, text: Option<String> },
++    Float { value: f64, text: Option<String> },
++    Imaginary(f64),
++    Boolean(bool),
++    String { value: String, raw: bool },
++    Char(String),
++}
++
++impl CachedDefaultLiteral {
++    fn from_literal(literal: &Literal) -> Self {
++        match literal {
++            Literal::Integer { value, text } => Self::Integer {
++                value: *value,
++                text: text.clone(),
++            },
++            Literal::Float { value, text } => Self::Float {
++                value: *value,
++                text: text.clone(),
++            },
++            Literal::Imaginary(value) => Self::Imaginary(*value),
++            Literal::Boolean(value) => Self::Boolean(*value),
++            Literal::String { value, raw } => Self::String {
++                value: value.clone(),
++                raw: *raw,
++            },
++            Literal::Char(value) => Self::Char(value.clone()),
++            Literal::FormatString(_) | Literal::Slice(_) => {
++                unreachable!("unsupported literal reached field-default cache")
++            }
++        }
++    }
++
++    fn to_literal(&self) -> Literal {
++        match self {
++            Self::Integer { value, text } => Literal::Integer {
++                value: *value,
++                text: text.clone(),
++            },
++            Self::Float { value, text } => Literal::Float {
++                value: *value,
++                text: text.clone(),
++            },
++            Self::Imaginary(value) => Literal::Imaginary(*value),
++            Self::Boolean(value) => Literal::Boolean(*value),
++            Self::String { value, raw } => Literal::String {
++                value: value.clone(),
++                raw: *raw,
++            },
++            Self::Char(value) => Literal::Char(value.clone()),
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultIdentifierResolution {
++    Unresolved,
++    Definition(EcoString),
++}
++
++impl CachedDefaultIdentifierResolution {
++    fn from_resolution(resolution: &IdentifierResolution) -> Self {
++        match resolution {
++            IdentifierResolution::Unresolved => Self::Unresolved,
++            IdentifierResolution::Definition(definition) => Self::Definition(definition.clone()),
++            IdentifierResolution::Binding(_) => {
++                unreachable!("field defaults cannot capture local bindings")
++            }
++        }
++    }
++
++    fn to_resolution(&self) -> IdentifierResolution {
++        match self {
++            Self::Unresolved => IdentifierResolution::Unresolved,
++            Self::Definition(definition) => IdentifierResolution::Definition(definition.clone()),
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultDotResolution {
++    Unresolved,
++    PackageMember { definition: Option<Symbol> },
++    EnumVariant { definition: Symbol },
++}
++
++impl CachedDefaultDotResolution {
++    fn from_resolution(resolution: &DotAccessResolution) -> Self {
++        match resolution {
++            DotAccessResolution::Unresolved => Self::Unresolved,
++            DotAccessResolution::PackageMember { definition } => Self::PackageMember {
++                definition: definition.clone(),
++            },
++            DotAccessResolution::EnumVariant { definition } => Self::EnumVariant {
++                definition: definition.clone(),
++            },
++            DotAccessResolution::StructField { .. }
++            | DotAccessResolution::TupleStructField { .. }
++            | DotAccessResolution::TupleElement
++            | DotAccessResolution::InstanceMethod { .. }
++            | DotAccessResolution::InstanceMethodValue { .. }
++            | DotAccessResolution::StaticMethod { .. } => {
++                unreachable!("unsupported dot access reached field-default cache")
++            }
++        }
++    }
++
++    fn to_resolution(&self) -> DotAccessResolution {
++        match self {
++            Self::Unresolved => DotAccessResolution::Unresolved,
++            Self::PackageMember { definition } => DotAccessResolution::PackageMember {
++                definition: definition.clone(),
++            },
++            Self::EnumVariant { definition } => DotAccessResolution::EnumVariant {
++                definition: definition.clone(),
++            },
++        }
++    }
++}
++
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++enum CachedDefaultExpression {
++    Literal {
++        literal: CachedDefaultLiteral,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Identifier {
++        value: EcoString,
++        ty: Type,
++        span: CachedSpan,
++        resolution: CachedDefaultIdentifierResolution,
++    },
++    DotAccess {
++        expression: Box<Self>,
++        member: EcoString,
++        ty: Type,
++        span: CachedSpan,
++        resolution: CachedDefaultDotResolution,
++    },
++    Binary {
++        operator: BinaryOperator,
++        left: Box<Self>,
++        right: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Unary {
++        operator: UnaryOperator,
++        expression: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++    Paren {
++        expression: Box<Self>,
++        ty: Type,
++        span: CachedSpan,
++    },
++}
++
++impl CachedDefaultExpression {
++    fn from_expression(expression: &Expression, file_id_to_index: &HashMap<u32, u32>) -> Self {
++        match expression {
++            Expression::Literal { literal, ty, span } => Self::Literal {
++                literal: CachedDefaultLiteral::from_literal(literal),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Identifier {
++                value,
++                ty,
++                span,
++                resolution,
++            } => Self::Identifier {
++                value: value.clone(),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++                resolution: CachedDefaultIdentifierResolution::from_resolution(resolution),
++            },
++            Expression::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Self::DotAccess {
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                member: member.clone(),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++                resolution: CachedDefaultDotResolution::from_resolution(resolution),
++            },
++            Expression::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Self::Binary {
++                operator: *operator,
++                left: Box::new(Self::from_expression(left, file_id_to_index)),
++                right: Box::new(Self::from_expression(right, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Self::Unary {
++                operator: operator.clone(),
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            Expression::Paren {
++                expression,
++                ty,
++                span,
++            } => Self::Paren {
++                expression: Box::new(Self::from_expression(expression, file_id_to_index)),
++                ty: ty.clone(),
++                span: CachedSpan::from_span(span, file_id_to_index),
++            },
++            _ => unreachable!("unsupported expression reached field-default cache"),
++        }
++    }
++
++    fn to_expression(&self, file_ids: &[u32]) -> Expression {
++        match self {
++            Self::Literal { literal, ty, span } => Expression::Literal {
++                literal: literal.to_literal(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Identifier {
++                value,
++                ty,
++                span,
++                resolution,
++            } => Expression::Identifier {
++                value: value.clone(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++                resolution: resolution.to_resolution(),
++            },
++            Self::DotAccess {
++                expression,
++                member,
++                ty,
++                span,
++                resolution,
++            } => Expression::DotAccess {
++                expression: Box::new(expression.to_expression(file_ids)),
++                member: member.clone(),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++                resolution: resolution.to_resolution(),
++            },
++            Self::Binary {
++                operator,
++                left,
++                right,
++                ty,
++                span,
++            } => Expression::Binary {
++                operator: *operator,
++                left: Box::new(left.to_expression(file_ids)),
++                right: Box::new(right.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Unary {
++                operator,
++                expression,
++                ty,
++                span,
++            } => Expression::Unary {
++                operator: operator.clone(),
++                expression: Box::new(expression.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++            Self::Paren {
++                expression,
++                ty,
++                span,
++            } => Expression::Paren {
++                expression: Box::new(expression.to_expression(file_ids)),
++                ty: ty.clone(),
++                span: span.to_span(file_ids),
++            },
++        }
++    }
++}
++
+@@ -294,6 +593,7 @@ pub struct CachedStructField {
++    default: Option<CachedDefaultExpression>,
+@@ -329,6 +629,10 @@ impl CachedStructField {
++            default: field
++                .default
++                .as_deref()
++                .map(|default| CachedDefaultExpression::from_expression(default, file_id_to_index)),
+@@ -349,6 +653,10 @@ impl CachedStructField {
++            default: self
++                .default
++                .as_ref()
++                .map(|default| Box::new(default.to_expression(file_ids))),
+@@ -371,27 +679,42 @@ pub enum CachedVariantFields {
+-    fn from_variant_fields(fields: &syntax::ast::VariantFields) -> Self {
++    fn from_variant_fields(
++        fields: &syntax::ast::VariantFields,
++        file_id_to_index: &HashMap<u32, u32>,
++    ) -> Self {
+-            syntax::ast::VariantFields::Tuple(fs) => {
+-                CachedVariantFields::Tuple(fs.iter().map(CachedEnumField::from_field).collect())
+-            }
+-            syntax::ast::VariantFields::Struct(fs) => {
+-                CachedVariantFields::Struct(fs.iter().map(CachedEnumField::from_field).collect())
+-            }
++            syntax::ast::VariantFields::Tuple(fields) => CachedVariantFields::Tuple(
++                fields
++                    .iter()
++                    .map(|field| CachedEnumField::from_field(field, file_id_to_index))
++                    .collect(),
++            ),
++            syntax::ast::VariantFields::Struct(fields) => CachedVariantFields::Struct(
++                fields
++                    .iter()
++                    .map(|field| CachedEnumField::from_field(field, file_id_to_index))
++                    .collect(),
++            ),
+-    fn to_variant_fields(&self) -> syntax::ast::VariantFields {
++    fn to_variant_fields(&self, file_ids: &[u32]) -> syntax::ast::VariantFields {
+-            CachedVariantFields::Tuple(fs) => {
+-                syntax::ast::VariantFields::Tuple(fs.iter().map(|f| f.to_field()).collect())
+-            }
+-            CachedVariantFields::Struct(fs) => {
+-                syntax::ast::VariantFields::Struct(fs.iter().map(|f| f.to_field()).collect())
+-            }
++            CachedVariantFields::Tuple(fields) => syntax::ast::VariantFields::Tuple(
++                fields
++                    .iter()
++                    .map(|field| field.to_field(file_ids))
++                    .collect(),
++            ),
++            CachedVariantFields::Struct(fields) => syntax::ast::VariantFields::Struct(
++                fields
++                    .iter()
++                    .map(|field| field.to_field(file_ids))
++                    .collect(),
++            ),
+@@ -404,7 +727,7 @@ impl CachedEnumVariant {
+-            fields: CachedVariantFields::from_variant_fields(&variant.fields),
++            fields: CachedVariantFields::from_variant_fields(&variant.fields, file_id_to_index),
+@@ -414,7 +737,7 @@ impl CachedEnumVariant {
+-            fields: self.fields.to_variant_fields(),
++            fields: self.fields.to_variant_fields(file_ids),
+@@ -422,23 +745,37 @@ impl CachedEnumVariant {
++    name_span: CachedSpan,
++    default: Option<CachedDefaultExpression>,
+-    fn from_field(field: &syntax::ast::EnumFieldDefinition) -> Self {
++    fn from_field(
++        field: &syntax::ast::EnumFieldDefinition,
++        file_id_to_index: &HashMap<u32, u32>,
++    ) -> Self {
++            name_span: CachedSpan::from_span(&field.name_span, file_id_to_index),
++            default: field
++                .default
++                .as_deref()
++                .map(|default| CachedDefaultExpression::from_expression(default, file_id_to_index)),
+-    fn to_field(&self) -> syntax::ast::EnumFieldDefinition {
++    fn to_field(&self, file_ids: &[u32]) -> syntax::ast::EnumFieldDefinition {
+-            name_span: Span::dummy(),
++            name_span: self.name_span.to_span(file_ids),
++            default: self
++                .default
++                .as_ref()
++                .map(|default| Box::new(default.to_expression(file_ids))),

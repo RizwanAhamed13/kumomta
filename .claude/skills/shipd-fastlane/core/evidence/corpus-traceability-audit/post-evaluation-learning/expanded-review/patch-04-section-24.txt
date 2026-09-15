@@ -1,0 +1,181 @@
+diff --git a/src/storage/table_codec.rs b/src/storage/table_codec.rs
+@@ -13,7 +13,7 @@
+-use crate::catalog::{ColumnCatalog, ColumnRelation, TableMeta};
++use crate::catalog::{ColumnCatalog, ColumnRelation, TableMeta, TableName};
+@@ -28,7 +28,8 @@ use crate::types::index::{Index, IndexId, IndexMeta, IndexType, INDEX_ID_LEN};
+-use crate::types::LogicalType;
++use crate::types::{ColumnId, LogicalType};
++use kite_sql_serde_macros::ReferenceSerialization;
+@@ -44,6 +45,8 @@ const KEY_TYPE_TAG_LEN: usize = 1;
++const INDEX_META_MAGIC: &[u8; 4] = b"KIDX";
++const INDEX_META_VERSION: u8 = 1;
+@@ -54,10 +57,38 @@ pub type Bytes = Vec<u8>;
++#[derive(Debug, Clone, Eq, PartialEq, Hash, ReferenceSerialization)]
++struct LegacyIndexMeta {
++    id: IndexId,
++    column_ids: Vec<ColumnId>,
++    table_name: TableName,
++    pk_ty: LogicalType,
++    value_ty: LogicalType,
++    name: String,
++    ty: IndexType,
++}
++
++impl From<LegacyIndexMeta> for IndexMeta {
++    fn from(legacy: LegacyIndexMeta) -> Self {
++        Self {
++            id: legacy.id,
++            column_ids: legacy.column_ids,
++            expressions: Vec::new(),
++            table_name: legacy.table_name,
++            pk_ty: legacy.pk_ty,
++            value_ty: legacy.value_ty,
++            name: legacy.name,
++            ty: legacy.ty,
++        }
++    }
++}
++
++    scala_functions: ScalaFunctions,
++    table_functions: TableFunctions,
+@@ -123,6 +154,19 @@ impl StatisticsCodecType {
++    pub(crate) fn set_functions(
++        &mut self,
++        scala_functions: &ScalaFunctions,
++        table_functions: &TableFunctions,
++    ) {
++        self.scala_functions.clone_from(scala_functions);
++        self.table_functions.clone_from(table_functions);
++    }
++
++    pub(crate) fn functions(&self) -> (ScalaFunctions, TableFunctions) {
++        (self.scala_functions.clone(), self.table_functions.clone())
++    }
++
+@@ -768,19 +812,47 @@ impl TableCodec {
+-        index_meta.encode(value, true, reference_tables, arena)
++        let mut encoded = Vec::new();
++        index_meta.encode(&mut encoded, true, reference_tables, arena)?;
++        value.extend_from_slice(INDEX_META_MAGIC);
++        value.push(INDEX_META_VERSION);
++        reference_tables.to_raw(&mut *value)?;
++        value.extend_from_slice(&encoded);
++        Ok(())
++        scala_functions: &ScalaFunctions,
++        table_functions: &TableFunctions,
+-        IndexMeta::decode::<T, _, _>(
+-            &mut Cursor::new(bytes),
+-            None,
+-            &EMPTY_REFERENCE_TABLES,
+-            arena,
+-        )
++        if bytes.starts_with(INDEX_META_MAGIC) {
++            let Some(version) = bytes.get(INDEX_META_MAGIC.len()) else {
++                return Err(DatabaseError::InvalidValue(
++                    "truncated index metadata header".to_string(),
++                ));
++            };
++            if *version != INDEX_META_VERSION {
++                return Err(DatabaseError::InvalidValue(format!(
++                    "unsupported index metadata version: {version}"
++                )));
++            }
++
++            let mut cursor = Cursor::new(&bytes[INDEX_META_MAGIC.len() + 1..]);
++            let reference_tables = ReferenceTables::from_raw(&mut cursor)?;
++            let context =
++                ReferenceDecodeContext::with_functions(None, scala_functions, table_functions);
++            IndexMeta::decode::<T, _, _>(&mut cursor, Some(&context), &reference_tables, arena)
++        } else {
++            LegacyIndexMeta::decode::<T, _, _>(
++                &mut Cursor::new(bytes),
++                None,
++                &EMPTY_REFERENCE_TABLES,
++                arena,
++            )
++            .map(Into::into)
++        }
+@@ -1009,15 +1081,18 @@ impl TableCodec {
+-    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRelation, TableCatalog, TableMeta};
++    use crate::catalog::{
++        ColumnCatalog, ColumnDesc, ColumnRef, ColumnRelation, TableCatalog, TableMeta,
++    };
++    use crate::expression::ScalarExpression;
+-    use crate::serdes::ReferenceTables;
++    use crate::serdes::{ReferenceSerialization, ReferenceTables};
+-    use crate::storage::table_codec::{Bytes, TableCodec};
++    use crate::storage::table_codec::{Bytes, LegacyIndexMeta, TableCodec};
+@@ -1114,6 +1189,7 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+@@ -1237,9 +1313,15 @@ mod tests {
++        let column = plan_arena.alloc_column(ColumnCatalog::new(
++            "c1".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(1), false, None)?,
++        ));
++            expressions: vec![ScalarExpression::column_expr(column, 0)],
+@@ -1252,13 +1334,73 @@ mod tests {
+-            TableCodec::decode_index_meta::<RocksTransaction>(&bytes, &mut plan_arena)?,
++            TableCodec::decode_index_meta::<RocksTransaction>(
++                &bytes,
++                &mut plan_arena,
++                &Default::default(),
++                &Default::default(),
++            )?,
++    #[test]
++    fn test_table_codec_decodes_legacy_index_meta() -> Result<(), DatabaseError> {
++        let table_arena = TableArenaCell::default();
++        let mut plan_arena = PlanArena::new(&table_arena);
++        let legacy = LegacyIndexMeta {
++            id: 7,
++            column_ids: vec![3],
++            table_name: "legacy_table".to_string().into(),
++            pk_ty: LogicalType::Integer,
++            value_ty: LogicalType::Integer,
++            name: "legacy_index".to_string(),
++            ty: IndexType::Unique,
++        };
++        let mut bytes = Vec::new();
++        legacy.encode(&mut bytes, true, &mut ReferenceTables::new(), &plan_arena)?;
++
++        let decoded = TableCodec::decode_index_meta::<RocksTransaction>(
++            &bytes,
++            &mut plan_arena,
++            &Default::default(),
++            &Default::default(),
++        )?;
++        assert_eq!(decoded.id, legacy.id);
++        assert_eq!(decoded.column_ids, legacy.column_ids);
++        assert!(decoded.expressions.is_empty());
++        assert_eq!(decoded.table_name, legacy.table_name);
++        assert_eq!(decoded.name, legacy.name);
++        assert_eq!(decoded.ty, legacy.ty);
++
++        let mut column = ColumnCatalog::new(
++            "legacy_column".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(3), false, None)?,
++        );
++        column.summary_mut().relation = ColumnRelation::Table {
++            column_id: 3,
++            table_name: "legacy_table".to_string().into(),
++            is_temp: false,
++        };
++        let table = TableCatalog::reload(
++            "legacy_table".to_string().into(),
++            vec![column].into_iter(),
++            vec![decoded].into_iter(),
++            &mut plan_arena,
++        )?;
++        let reloaded = plan_arena.index(*table.indexes().next().unwrap());
++        assert_eq!(reloaded.expressions.len(), 1);
++        assert!(matches!(
++            &reloaded.expressions[0],
++            ScalarExpression::ColumnRef { column, position }
++                if plan_arena.column(*column).id() == Some(3) && *position == 0
++        ));
++        Ok(())
++    }
++
+@@ -1512,6 +1654,7 @@ mod tests {
++                expressions: vec![],

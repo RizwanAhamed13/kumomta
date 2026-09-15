@@ -1,0 +1,34 @@
+{
+  "recorded_at": "2026-09-13T01:35:57.967909+00:00",
+  "phase": "source-only-runner-controls-and-history",
+  "execution": "NO_TESTS_THERMAL_HOLD",
+  "host": {
+    "exit_code": 0,
+    "stdout": "arch",
+    "stderr": ""
+  },
+  "arch": {
+    "exit_code": 0,
+    "stdout": "x86_64",
+    "stderr": ""
+  },
+  "disk": {
+    "exit_code": 0,
+    "stdout": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  268G  512G  35% /home",
+    "stderr": ""
+  },
+  "mount": {
+    "exit_code": 0,
+    "stdout": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+    "stderr": ""
+  },
+  "docker": {
+    "exit_code": 0,
+    "stdout": "29.7.2",
+    "stderr": ""
+  },
+  "input_sha256": {
+    "runner-template.py": "58d17e98c954e59173d73a77c1988edc20e92ede8238bac9948563aefe0ab51b",
+    "test_readiness_runner.py": "cc91a1c695b336633117b3f470eb241e97255f794cdc3bf369656e179dc84402"
+  }
+}

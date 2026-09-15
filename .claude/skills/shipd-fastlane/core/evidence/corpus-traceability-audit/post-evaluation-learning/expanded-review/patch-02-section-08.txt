@@ -1,0 +1,16 @@
+diff --git a/crates/semantics/src/checker/infer/context.rs b/crates/semantics/src/checker/infer/context.rs
+@@ -93,6 +93,7 @@ struct TraversalContext {
++    in_field_default: bool,
+@@ -269,6 +270,10 @@ impl<'a> InferCtx<'a> {
++    pub(super) fn is_in_field_default(&self) -> bool {
++        self.traversal.in_field_default
++    }
++
+@@ -315,6 +320,13 @@ impl<'a> InferCtx<'a> {
++    pub(super) fn with_field_default_context<T>(&mut self, f: impl FnOnce(&mut Self) -> T) -> T {
++        let previous = std::mem::replace(&mut self.traversal.in_field_default, true);
++        let result = f(self);
++        self.traversal.in_field_default = previous;
++        result
++    }
++

@@ -1,0 +1,115 @@
+{
+  "updated_at": "2026-09-12T23:21:21.067054+00:00",
+  "purpose": "Fresh source-only audit and execution-integrity fixtures; consistency tooling, not actual production provenance.",
+  "first_run": {
+    "executed": 127,
+    "passed": 125,
+    "failed": 2,
+    "errors": 0,
+    "total_seconds": 0.6155216693878174,
+    "receipt": "evidence/partition-gate-first/receipt.json",
+    "receipt_sha256": "6ecd78635badc52df0d1874ad72550058ef50ffaf921b07282561237b611e52f"
+  },
+  "r1": {
+    "executed": 127,
+    "passed": 127,
+    "failed": 0,
+    "total_seconds": 0.3145112991333008,
+    "receipt": "evidence/partition-gate-r1/receipt.json",
+    "receipt_sha256": "36cbc87bf64d37031532fb8a17a183014918477f3a22cca47e6a3f7b8dde3ce0"
+  },
+  "r2": {
+    "status": "PASS",
+    "new_regressions": 6,
+    "gate_source_hashes": {
+      "scripts/partition_result_gate.py": "7a400bacbb03dc39dc5cb60c5be780f69e05238da84f42a98ed1176ab052413a",
+      "scripts/test_result_gate.py": "3ef72439e59d1f3f1faccc96f16da3eae4ede1b6f74609ecb2386cf33dd97c27",
+      "tests/test_partition_result_gate.py": "d4dbab63a04d1a6a3cfa9146a96708b30398ee83733c24595bfce4e74567c20d",
+      "tests/test_execution_receipts.py": "f82dd4094132790f71a50cd285d7db86e7ed775edb79e1a5f77d38fe8719cd53"
+    },
+    "staleness": "Current gate/test bytes passed 133 tests; earlier first/R1 outcomes remain separate.",
+    "executed": 133,
+    "passed": 133,
+    "failed": 0,
+    "errors": 0,
+    "total_seconds": 0.36461424827575684,
+    "receipt": "evidence/partition-gate-r2/receipt.json",
+    "receipt_sha256": "a22fa4346af430ff4ff7b1fc836c75d7a223c3144ca623ff24321bd230f38d2b"
+  },
+  "lessons": [
+    {
+      "observation": "Two new raw-stream fixtures accidentally used literal backslash-n separators; first run 125/127 failed at malformed JSON instead of the intended start/terminal check.",
+      "prevention": "Construct streams using json.dumps per native event plus an actual newline; assert the intended rejection reason and preserve first fixture bytes.",
+      "implementation_revisions": 0,
+      "fixture_batches": 1
+    },
+    {
+      "observation": "An extra raw test start absent from JUnit had no missing-terminal check.",
+      "prevention": "Require every raw started test to reach a terminal, including tests outside the XML, while keeping ignored terminal semantics explicit.",
+      "validation": "R2 full suite passed 133/133, including all six source-audit regressions."
+    },
+    {
+      "observation": "Source audit found disjoint passing partitions could combine different revisions if they declared no exclusions.",
+      "prevention": "Require one exact common source-manifest hash across the entire suite; retained executable identities may differ only for disjoint native targets.",
+      "validation": "R2 full suite passed 133/133, including all six source-audit regressions."
+    },
+    {
+      "observation": "A negative process return code could qualify as expected assertion failure after some raw failure events.",
+      "prevention": "Classify signal termination as a harness error. Require exact failed-ID/raw-event-bound behavioral triage, and manually verify the actual assertion cause.",
+      "validation": "R2 full suite passed 133/133, including all six source-audit regressions."
+    },
+    {
+      "observation": "Raw reports and hashes establish internal consistency, not authenticity of discovery, process exits, or the truth of behavioral triage.",
+      "prevention": "Keep production provenance explicitly unverified and retain trusted native-runner command, binary identity and raw outputs separately."
+    },
+    {
+      "observation": "A live thermal watcher does not by itself prove successful attachment, quota application or sensor sampling.",
+      "prevention": "Before workload, verify attachment/quota/safe sample and inspect actual owned-container quota; supervise watcher liveness independently during work, fail closed on early exit and persist first outcomes before cleanup.",
+      "validation": "Kite first native holdout passed 5/5 with readiness evidence and independently supervised .25 CPU/1s guard. No injected fault probe was performed."
+    },
+    {
+      "observation": "The source snapshot does not by itself invalidate timestamp-based Cargo caches after restoring mutants.",
+      "prevention": "Refresh affected source mtimes, record rebuild evidence and executable hashes, and set RUSTC_BOOTSTRAP only on the native libtest process."
+    },
+    {
+      "observation": "Kite native first run passed 5/5, but a root-owned nested report directory rejected the host gate output, and the launcher did not propagate that failed gate.",
+      "prevention": "Precreate nested host evidence directories, write host reports to a known writable path, and propagate nonzero gate status after preserving native results. Recover reporting from unchanged raw bytes without rerunning passing tests.",
+      "native_seconds": 60.4714298248291,
+      "report_recovery": "EXECUTION_RECONCILED",
+      "first_outcome_preserved": true
+    },
+    {
+      "observation": "Parent reported Parquet coverage at verified 0.25 CPU / 1s had 15 brief pauses and a peak of 84\u00b0C with no competing compiler seen; the same worker changed to 0.1 CPU at 2026-09-12T23:15:01Z, and the following two minutes peaked at 74\u00b0C with no pauses.",
+      "prevention": "Treat quota as tunable, not a thermal guarantee. Preserve first overshoot and raw samples, quota-change timestamp, independent guard supervision and separate timings by quota.",
+      "provenance": "Parent-supplied current workload observation; not independently rerun or a controlled performance comparison."
+    }
+  ],
+  "thermal_validation": "No thermal unit module existed in the discovered Python suite. Prior isolated Docker guard probes belong to their original evidence; none were repeated here.",
+  "scope": "No paid checks, no production provenance claim, no change to current task budget override or normal default restoration.",
+  "ra_r2_reconciliation": {
+    "exit_code": 0,
+    "output": "/home/admin/olympus-work/fastlane-dogfood-20260912/rust-analyzer/evidence/final-matrix-final-r3/combined-reconciliation-r2-audit.json"
+  },
+  "ra_final_lesson": {
+    "source": "Parent supplied R3 final metrics; independent current-gate combined reconciliation performed here. Source implementation and archived solutions were not inspected for this integration.",
+    "archive_native_passed": 25,
+    "archive_native_executed": 26,
+    "remaining_failure": "Keyword-token fixture outside stated non-keyword identifier scope; native failure remains explicit.",
+    "fresh_fail_to_pass": 23,
+    "combined_passed": 772,
+    "fresh_mapped_changed_covered": 285,
+    "combined_mapped_changed_covered": 295,
+    "mapped_changed_lines": 304,
+    "fresh_percent": 93.75,
+    "combined_percent": 97.03947368421052,
+    "assertion_mutants_killed": 10,
+    "pristine_fresh_passed": 23,
+    "history": [
+      "First archived run 22/26.",
+      "R1 repair introduced an existing legacy completion regression.",
+      "R2 left two empty shorthand completion failures.",
+      "R3 corrected fallback guard."
+    ],
+    "prevention": "After each holdout-driven production repair, rerun original existing regressions and fresh tests, not only failed holdouts. Preserve native out-of-contract failures separately and prove token scope instead of extending production behavior to force green."
+  }
+}

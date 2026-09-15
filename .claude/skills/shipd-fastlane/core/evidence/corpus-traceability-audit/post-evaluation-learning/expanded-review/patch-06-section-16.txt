@@ -1,0 +1,138 @@
+diff --git a/dora-frontend/src/typeck/pattern.rs b/dora-frontend/src/typeck/pattern.rs
+@@ -20,14 +20,15 @@ use crate::error::diagnostics::{
+-    StructDefinitionId, TuplePattern, TypeParamDefinition, VarId,
++    StructDefinitionId, TuplePattern, TypeParamDefinition, VarId, find_trait_pattern_type,
++    find_trait_tuple_pattern_type, implements_trait,
+-use crate::{Name, SourceTypeArray, SymbolKind, TypeArgs, specialize_type, ty};
++use crate::{Name, SourceTypeArray, SymbolKind, TraitType, TypeArgs, specialize_type, ty};
+@@ -61,6 +62,7 @@ fn check_pattern_inner(
++    ck.body.set_pattern_input_ty(pattern_id, ty.clone());
+@@ -95,6 +97,7 @@ fn check_pattern_inner(
++            ck.body.set_ty(pattern_id, SourceType::Bool);
+@@ -102,6 +105,7 @@ fn check_pattern_inner(
++            ck.body.set_ty(pattern_id, SourceType::Char);
+@@ -127,6 +131,7 @@ fn check_pattern_inner(
++            ck.body.set_ty(pattern_id, str_ty.clone());
+@@ -328,7 +333,18 @@ fn check_pattern_ctor(
+-    if !expected_ty.allows(ck.sa, ty.clone()) && !ty.is_error() {
++    let compatible = if expected_ty.is_trait_object() {
++        implements_trait(
++            ck.sa,
++            ty.clone(),
++            ck.element,
++            TraitType::new_ty(ck.sa, expected_ty.clone()),
++        )
++    } else {
++        expected_ty.allows(ck.sa, ty.clone())
++    };
++
++    if !compatible && !ty.is_error() {
+@@ -354,8 +370,27 @@ fn check_pattern_enum(
+-    if Some(enum_id) == ty.enum_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(enum_id) == ty.enum_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Enum(enum_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };
+@@ -422,6 +457,7 @@ fn check_pattern_const(
++    ck.body.set_ty(pattern_id, const_ty.clone());
+@@ -432,7 +468,30 @@ fn check_pattern_tuple(
+-    if !ty.is_tuple_or_unit() {
++    let direct_match = ty.is_tuple_or_unit();
++    let trait_object_match = ty.is_trait_object().then(|| {
++        let pattern_count = tuple_pattern
++            .patterns
++            .iter()
++            .filter(|&&pattern_id| !matches!(ck.body.pattern(pattern_id), Pattern::Rest))
++            .count();
++        let has_rest = tuple_pattern
++            .patterns
++            .iter()
++            .any(|&pattern_id| matches!(ck.body.pattern(pattern_id), Pattern::Rest));
++        find_trait_tuple_pattern_type(
++            ck.sa,
++            ck.element,
++            TraitType::new_ty(ck.sa, ty.clone()),
++            pattern_count,
++            (!has_rest).then_some(pattern_count),
++        )
++    });
++
++    let Some(tuple_ty) = direct_match
++        .then_some(ty.clone())
++        .or(trait_object_match.flatten())
++    else {
+@@ -449,12 +508,14 @@ fn check_pattern_tuple(
+-    }
++    };
++
++    ck.body.set_ty(pattern_id, tuple_ty.clone());
+-    let subtypes = if ty.is_unit() {
++    let subtypes = if tuple_ty.is_unit() {
+-        ty.tuple_subtypes().expect("tuple expected")
++        tuple_ty.tuple_subtypes().expect("tuple expected")
+@@ -529,8 +590,27 @@ fn check_pattern_class(
+-    if Some(cls_id) == ty.cls_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(cls_id) == ty.cls_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Class(cls_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };
+@@ -594,8 +674,27 @@ fn check_pattern_struct(
+-    if Some(struct_id) == ty.struct_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(struct_id) == ty.struct_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Struct(struct_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };

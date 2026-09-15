@@ -1,0 +1,198 @@
+diff --git a/crates/emit/src/expressions/access/struct_call.rs b/crates/emit/src/expressions/access/struct_call.rs
+@@ -36,6 +36,12 @@ struct EnumCallContext {
++struct AutofillField {
++    name: ecow::EcoString,
++    ty: Type,
++    default: Option<Expression>,
++}
++
+@@ -71,7 +77,7 @@ impl Planner<'_> {
+-        let fields_contain_deferred_evaluation = sequenced.contains_deferred_evaluation();
++        let mut fields_contain_deferred_evaluation = sequenced.contains_deferred_evaluation();
+@@ -79,7 +85,7 @@ impl Planner<'_> {
+-            value = self.wrap_recursive_enum_field(&mut setup, value, f, &ctx);
++            value = self.wrap_recursive_enum_field(&mut setup, value, &f.name, &ctx);
+@@ -139,7 +145,16 @@ impl Planner<'_> {
+-                self.append_autofills(&mut field_pairs, field_assignments, &ctx, is_go_struct);
++                let (autofill_effect, autofill_contains_deferred_evaluation) = self
++                    .append_autofills(
++                        &mut setup,
++                        &mut field_pairs,
++                        field_assignments,
++                        &ctx,
++                        is_go_struct,
++                    );
++                effect = effect.combine(autofill_effect);
++                fields_contain_deferred_evaluation |= autofill_contains_deferred_evaluation;
+@@ -182,22 +197,55 @@ impl Planner<'_> {
+-    /// Zero-fill unassigned fields. Slices keep Go's nil; on a Go struct only
+-    /// maps need one, their nil being the sole zero that panics on write.
++    /// Fill unassigned fields from their declared defaults before falling back
++    /// to zero. Slices keep Go's nil; on a Go struct only maps need a zero,
++    /// their nil being the sole zero that panics on write.
++        statements: &mut Vec<LoweredStatement>,
+-    ) {
++    ) -> (EvaluationEffect, bool) {
++        let mut effect = EvaluationEffect::Pure;
++        let mut contains_deferred_evaluation = false;
+-            return;
++            return (effect, contains_deferred_evaluation);
+-        for (field_name, field_ty) in unspecified {
++        for AutofillField {
++            name: field_name,
++            ty: field_ty,
++            default,
++        } in unspecified
++        {
++            if let Some(default) = default {
++                let staged = self.stage_composite(
++                    &default,
++                    ExpressionContext::value().with_expected_slot_type(Some(&field_ty)),
++                );
++                effect = effect.combine(staged.evaluation.effect);
++                contains_deferred_evaluation |= staged.expression.contains_deferred_evaluation();
++                let (default_setup, mut value) = staged.into_parts();
++                statements.extend(default_setup);
++                value = self.wrap_recursive_enum_field(statements, value, &field_name, ctx);
++                let field_layout = self.field_slot_layout(ctx.ty, &field_name, &field_ty);
++                // The declaration was checked at the generic field type. At a
++                // concrete call site, that source type is the substituted type.
++                value = self.coerce_struct_field(
++                    statements,
++                    value,
++                    &field_ty,
++                    Some(&field_ty),
++                    field_layout.as_ref(),
++                );
++                let go_field_name = self.resolve_struct_call_field_name(&field_name, ctx);
++                field_pairs.push((go_field_name, value));
++                continue;
++            }
+@@ -212,6 +260,7 @@ impl Planner<'_> {
++        (effect, contains_deferred_evaluation)
+@@ -229,7 +278,7 @@ impl Planner<'_> {
+-    ) -> Option<Vec<(ecow::EcoString, Type)>> {
++    ) -> Option<Vec<AutofillField>> {
+@@ -250,7 +299,10 @@ impl Planner<'_> {
+-                variant.fields.iter().map(|f| (&f.name, &f.ty)),
++                variant
++                    .fields
++                    .iter()
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+@@ -269,7 +321,9 @@ impl Planner<'_> {
+-            fields.iter().map(|f| (&f.name, &f.ty)),
++            fields
++                .iter()
++                .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+@@ -308,7 +362,10 @@ impl Planner<'_> {
+-            for (name, field_ty) in fields {
++            for AutofillField {
++                name, ty: field_ty, ..
++            } in fields
++            {
+@@ -399,8 +456,13 @@ impl Planner<'_> {
+-                .filter(|(_, (_, field_ty))| !field_ty.is_slice())
+-                .map(|(index, (name, field_ty))| {
++                .filter(|(_, field)| field.default.is_some() || !field.ty.is_slice())
++                .map(|(index, field)| {
++                    let AutofillField {
++                        name,
++                        ty: field_ty,
++                        default,
++                    } = field;
+@@ -410,7 +472,13 @@ impl Planner<'_> {
+-                    (go_name, self.lisette_zero(&field_ty))
++                    let value = match default {
++                        Some(default) => {
++                            self.inline_autofill_default(ty, &name, &field_ty, &default)
++                        }
++                        None => self.lisette_zero(&field_ty),
++                    };
++                    (go_name, value)
+@@ -421,6 +489,32 @@ impl Planner<'_> {
++    /// Defaults are validated as constant expressions, so planning one for a
++    /// recursively-created nominal zero cannot require setup statements.
++    fn inline_autofill_default(
++        &mut self,
++        owner: &Type,
++        field_name: &str,
++        field_ty: &Type,
++        default: &Expression,
++    ) -> String {
++        let staged = self.stage_composite(
++            default,
++            ExpressionContext::value().with_expected_slot_type(Some(field_ty)),
++        );
++        let (mut setup, value) = staged.into_parts();
++        let field_layout = self.field_slot_layout(owner, field_name, field_ty);
++        let value = self.coerce_struct_field(
++            &mut setup,
++            value,
++            field_ty,
++            Some(field_ty),
++            field_layout.as_ref(),
++        );
++        assert!(setup.is_empty(), "validated field default required setup");
++        value
++    }
++
+@@ -457,13 +551,13 @@ impl Planner<'_> {
+-        field: &StructFieldAssignment,
++        field_name: &str,
+-            .is_some_and(|e| e.pointer_fields.contains(field.name.as_str()));
++            .is_some_and(|e| e.pointer_fields.contains(field_name));
+@@ -685,7 +779,10 @@ impl Planner<'_> {
+-        for (field_name, _) in carried {
++        for AutofillField {
++            name: field_name, ..
++        } in carried
++        {
+@@ -737,16 +834,56 @@ fn apply_substitution(ty: &Type, map: &syntax::types::SubstitutionMap) -> Type {
+-    fields: impl Iterator<Item = (&'a ecow::EcoString, &'a Type)>,
++    fields: impl Iterator<Item = (&'a ecow::EcoString, &'a Type, Option<&'a Expression>)>,
+-) -> Vec<(ecow::EcoString, Type)> {
++) -> Vec<AutofillField> {
+-        .filter(|(name, _)| !assigned.contains(name.as_str()))
+-        .map(|(name, ty)| (name.clone(), apply_substitution(ty, map)))
++        .filter(|(name, _, _)| !assigned.contains(name.as_str()))
++        .map(|(name, ty, default)| {
++            let default = default.cloned().map(|mut default| {
++                substitute_default_expression_types(&mut default, map);
++                default
++            });
++            AutofillField {
++                name: name.clone(),
++                ty: apply_substitution(ty, map),
++                default,
++            }
++        })
++fn substitute_default_expression_types(
++    expression: &mut Expression,
++    map: &syntax::types::SubstitutionMap,
++) {
++    match expression {
++        Expression::Literal { ty, .. } | Expression::Identifier { ty, .. } => {
++            *ty = apply_substitution(ty, map);
++        }
++        Expression::DotAccess { expression, ty, .. }
++        | Expression::Unary { expression, ty, .. }
++        | Expression::Paren { expression, ty, .. } => {
++            substitute_default_expression_types(expression, map);
++            *ty = apply_substitution(ty, map);
++        }
++        Expression::Binary {
++            left, right, ty, ..
++        } => {
++            substitute_default_expression_types(left, map);
++            substitute_default_expression_types(right, map);
++            *ty = apply_substitution(ty, map);
++        }
++        _ => {
++            debug_assert!(
++                map.is_empty(),
++                "unsupported generic expression in validated field default"
++            );
++        }
++    }
++}
++

@@ -1,0 +1,291 @@
+{
+  "requirements": [
+    {
+      "id": "R1",
+      "statement": "Example only: committed values survive reopening the store.",
+      "public_boundary": "Store public write/commit/open/read API",
+      "grounding": {
+        "kind": "prompt",
+        "source": "problem.md, Persistence paragraph (replace with actual source)"
+      },
+      "input_classes": [
+        "scalar",
+        "composite"
+      ],
+      "roles": [
+        "write",
+        "commit",
+        "reopen",
+        "read"
+      ]
+    },
+    {
+      "id": "R2",
+      "statement": "Example only: invalid keys are rejected without modifying already committed values.",
+      "public_boundary": "New keyed store public write/commit/open/read API",
+      "grounding": {
+        "kind": "prompt",
+        "source": "Fictional problem.md persistence and invalid-key paragraphs; replace with actual source."
+      },
+      "input_classes": [
+        "invalid-key"
+      ],
+      "roles": [
+        "reject",
+        "preserve",
+        "reopen"
+      ]
+    },
+    {
+      "id": "R3",
+      "statement": "Example only: existing legacy stores retain their write/commit/reopen/read behavior.",
+      "public_boundary": "Existing store public write/commit/open/read API",
+      "grounding": {
+        "kind": "pinned-repository",
+        "source": "Fictional pinned commit public legacy-store API tests; replace with actual path and commit."
+      },
+      "input_classes": [
+        "legacy-store"
+      ],
+      "roles": [
+        "write",
+        "commit",
+        "reopen",
+        "read"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "id": "new.reopen.scalar",
+      "mode": "new",
+      "baseline_valid": false,
+      "solution_dependent_prerequisite": "Create the newly supported keyed store through the public API.",
+      "observable": "A scalar value of zero survives commit and reopen with exact equality.",
+      "assertion_location": "tests/persistence_example.py::test_scalar_reopen",
+      "oracle": "behavior",
+      "covers": [
+        {
+          "requirement": "R1",
+          "input_classes": [
+            "scalar"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new.reopen.composite",
+      "mode": "new",
+      "baseline_valid": false,
+      "solution_dependent_prerequisite": "Create the newly supported keyed store through the public API.",
+      "observable": "Two distinct ordered composite keys with a shared prefix retain their own values after commit and reopen.",
+      "assertion_location": "tests/persistence_example.py::test_composite_reopen",
+      "oracle": "behavior",
+      "covers": [
+        {
+          "requirement": "R1",
+          "input_classes": [
+            "composite"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new.invalid_key.preserve",
+      "mode": "new",
+      "baseline_valid": false,
+      "observable": "An invalid-key write raises the specified public error; previously committed data remains exact after reopen.",
+      "assertion_location": "tests/persistence_example.py::test_new_invalid_key_preserve",
+      "oracle": "behavior",
+      "covers": [
+        {
+          "requirement": "R2",
+          "input_classes": [
+            "invalid-key"
+          ],
+          "roles": [
+            "reject",
+            "preserve",
+            "reopen"
+          ]
+        }
+      ],
+      "solution_dependent_prerequisite": "Create the new keyed store and successfully commit a valid key/value before attempting the invalid key."
+    },
+    {
+      "id": "base.legacy.reopen",
+      "mode": "base",
+      "baseline_valid": true,
+      "observable": "A legacy store retains the exact committed value after reopen.",
+      "assertion_location": "tests/persistence_example.py::test_base_legacy_reopen",
+      "oracle": "behavior",
+      "covers": [
+        {
+          "requirement": "R3",
+          "input_classes": [
+            "legacy-store"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "Fictional schema example only, not real code or proof. Replace all inventories, requirements, scenarios and assertion locations from the actual public contract. Do not import example requirements into a candidate.",
+  "schema": 2,
+  "inventory_sources": [
+    "Fictional problem.md: persistence, invalid-key and legacy-API paragraphs; replace with actual prompt references.",
+    "Fictional pinned public API: scalar/composite keys, commit/open/read and legacy store; replace with exact commit/path."
+  ],
+  "scenarios": [
+    {
+      "id": "S.boundary",
+      "steps": [
+        "Write a valid key with scalar value zero.",
+        "Commit and close the store.",
+        "Reopen through the public API and assert exact zero."
+      ],
+      "observable": "A scalar value of zero survives commit and reopen with exact equality.",
+      "grounding": {
+        "kind": "prompt",
+        "source": "problem.md, Persistence paragraph (replace with actual source)"
+      },
+      "covers": [
+        {
+          "requirement": "R1",
+          "input_classes": [
+            "scalar"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ],
+      "test_id": "new.reopen.scalar"
+    },
+    {
+      "id": "S.interaction",
+      "steps": [
+        "Write two distinct composite keys sharing a prefix, with different values.",
+        "Commit and close.",
+        "Reopen, read both keys, and assert each exact value and key identity."
+      ],
+      "observable": "Two distinct ordered composite keys with a shared prefix retain their own values after commit and reopen.",
+      "grounding": {
+        "kind": "prompt",
+        "source": "problem.md, Persistence paragraph (replace with actual source)"
+      },
+      "covers": [
+        {
+          "requirement": "R1",
+          "input_classes": [
+            "composite"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ],
+      "test_id": "new.reopen.composite"
+    },
+    {
+      "id": "S.error",
+      "steps": [
+        "Create the new keyed store and commit a valid key/value.",
+        "Attempt an invalid key and assert the public rejection.",
+        "Reopen and assert the previously committed value is unchanged."
+      ],
+      "observable": "An invalid-key write raises the specified public error; previously committed data remains exact after reopen.",
+      "grounding": {
+        "kind": "prompt",
+        "source": "Fictional problem.md persistence and invalid-key paragraphs; replace with actual source."
+      },
+      "covers": [
+        {
+          "requirement": "R2",
+          "input_classes": [
+            "invalid-key"
+          ],
+          "roles": [
+            "reject",
+            "preserve",
+            "reopen"
+          ]
+        }
+      ],
+      "test_id": "new.invalid_key.preserve"
+    },
+    {
+      "id": "S.compatibility",
+      "steps": [
+        "Create an existing legacy store and write a value.",
+        "Commit and close.",
+        "Reopen and assert the exact value."
+      ],
+      "observable": "A legacy store retains the exact committed value after reopen.",
+      "grounding": {
+        "kind": "pinned-repository",
+        "source": "Fictional pinned commit public legacy-store API tests; replace with actual path and commit."
+      },
+      "covers": [
+        {
+          "requirement": "R3",
+          "input_classes": [
+            "legacy-store"
+          ],
+          "roles": [
+            "write",
+            "commit",
+            "reopen",
+            "read"
+          ]
+        }
+      ],
+      "test_id": "base.legacy.reopen"
+    }
+  ],
+  "risk_review": {
+    "boundary": {
+      "scenario_ids": [
+        "S.boundary"
+      ]
+    },
+    "error": {
+      "scenario_ids": [
+        "S.error"
+      ]
+    },
+    "compatibility": {
+      "scenario_ids": [
+        "S.compatibility"
+      ]
+    },
+    "interaction": {
+      "scenario_ids": [
+        "S.interaction"
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+diff --git a/src/execution/dml/analyze.rs b/src/execution/dml/analyze.rs
+@@ -104,7 +104,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for Analyze {
+-                        exprs: index.column_exprs(table, plan_arena)?,
++                        exprs: index.column_exprs()?,

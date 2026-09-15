@@ -1,0 +1,67 @@
+diff --git a/pkgs/boots/bytecode_graph_builder.dora b/pkgs/boots/bytecode_graph_builder.dora
+@@ -884,6 +884,14 @@ impl BytecodeGraphBuilder {
++            BytecodeInstruction::TestTraitObjectType(dest, obj, idx) => {
++                self.emit_test_trait_object_type(dest, obj, idx);
++                false
++            }
++            BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx) => {
++                self.emit_load_trait_object_value(dest, obj, idx);
++                false
++            }
+@@ -2427,6 +2435,62 @@ impl BytecodeGraphBuilder {
++    fn trait_object_pattern_info(idx: ConstPoolId): TraitObjectInfo {
++        let ConstPoolEntry::TraitObject(
++            trait_ty,
++            actual_object_ty,
++        ) = self.bc().const_pool_entry(idx);
++        TraitObjectInfo(
++            trait_ty = self.specialize_ty(trait_ty),
++            actual_object_ty = self.specialize_ty(actual_object_ty),
++        )
++    }
++
++    fn emit_test_trait_object_type(
++        dest: BytecodeRegister,
++        obj: BytecodeRegister,
++        idx: ConstPoolId,
++    ) {
++        let obj_inst = self.emit_local_get(obj);
++        let actual_shape = graph::create_load_inst(
++            obj_inst,
++            iface::OBJECT_SHAPE_OFFSET,
++            InstExtraData::None,
++            Type::Int32,
++            true,
++        );
++        self.current().append_inst(actual_shape);
++
++        let expected_shape = graph::create_shape_const_inst(
++            self.trait_object_pattern_info(idx),
++        );
++        self.current().append_inst(expected_shape);
++        let result = graph::create_binary_inst(
++            Op::Equal,
++            Type::Int32,
++            actual_shape,
++            expected_shape,
++        );
++        self.current().append_inst(result);
++        self.emit_local_set(dest, result);
++    }
++
++    fn emit_load_trait_object_value(
++        dest: BytecodeRegister,
++        obj: BytecodeRegister,
++        _idx: ConstPoolId,
++    ) {
++        if self.is_non_zero_type(self.reg(dest)) {
++            let obj_inst = self.emit_local_get(obj);
++            self.load_field_into(
++                dest,
++                obj_inst,
++                InstExtraData::None,
++                iface::OBJECT_HEADER_LENGTH,
++            );
++        }
++    }
++

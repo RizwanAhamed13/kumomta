@@ -1,0 +1,215 @@
+--- .olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch
++++ .olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch
+@@ -46,7 +46,7 @@
+  
+  pub mod caching_session;
+ diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs
+-index 09fed463..1ad5b0df 100644
++index 09fed463..f9d68449 100644
+ --- a/scylla/src/client/pager.rs
+ +++ b/scylla/src/client/pager.rs
+ @@ -9,6 +9,7 @@ use std::sync::Arc;
+@@ -75,7 +75,19 @@
+              load_balancing_policy: Arc::clone(
+                  statement
+                      .load_balancing_policy
+-@@ -334,35 +335,14 @@ impl PagingExecutor {
++@@ -298,8 +299,9 @@ impl PagingExecutor {
++     /// Fetches exactly one page by delegating to [`run_request_no_side_effects`].
++     ///
++     /// `self.paging_state` is injected into each attempt.
++-    /// If `self.stable_coordinator` is set, it is tried first (and filtered out
++-    /// of the fresh load balancing plan so it is not attempted twice).
+++    /// If `self.stable_coordinator` is set and the active policy still accepts it,
+++    /// it is tried first and filtered out of the fresh plan to avoid a duplicate attempt.
+++    /// Otherwise, the fresh load balancing plan is used unchanged.
++     async fn fetch_one_page<PageQuery, QueryFut>(
++         &self,
++         routing_info: &RoutingInfo<'_>,
++@@ -334,35 +336,14 @@ impl PagingExecutor {
+                  .and_then(QueryResponse::into_non_error_query_response)
+          };
+  
+@@ -119,7 +131,7 @@
+  
+          exec_params
+              .run_request_no_side_effects(routing_info, plan, run_request_once, page_span)
+-@@ -990,6 +970,7 @@ If you are using this API, you are probably doing something wrong."
++@@ -990,6 +971,7 @@ If you are using this API, you are probably doing something wrong."
+              Option::zip(routing_info.table, routing_info.token).map(|(table_spec, token)| {
+                  executor
+                      .cluster_state
+@@ -127,8 +139,44 @@
+                      .get_token_endpoints_iter(table_spec, token)
+                      .map(|(node, shard)| (node.clone(), shard))
+                      .collect()
++diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs
++new file mode 100644
++index 00000000..043ab584
++--- /dev/null
+++++ b/scylla/src/client/paging_continuation.rs
++@@ -0,0 +1,30 @@
+++//! Coordinator-aware state for manually paged requests.
+++
+++use crate::response::{Coordinator, PagingState, PagingStateResponse};
+++
+++/// Opaque state used to resume a manually paged request.
+++///
+++/// Besides the server-provided paging state, this value remembers the coordinator
+++/// which completed the preceding page. The coordinator is only a preference: the
+++/// active load-balancing policy revalidates it before every resumed request.
+++#[derive(Debug, Clone)]
+++pub struct PagingContinuation {
+++    state: PagingState,
+++    coordinator: Coordinator,
+++}
+++
+++impl PagingContinuation {
+++    pub(crate) fn from_response(
+++        response: PagingStateResponse,
+++        coordinator: Coordinator,
+++    ) -> Option<Self> {
+++        match response {
+++            PagingStateResponse::HasMorePages { state } => Some(Self { state, coordinator }),
+++            PagingStateResponse::NoMorePages => None,
+++        }
+++    }
+++
+++    pub(crate) fn into_parts(self) -> (PagingState, Coordinator) {
+++        (self.state, self.coordinator)
+++    }
+++}
+ diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs
+-index 31923e5b..2c2faf5a 100644
++index 31923e5b..5c138fe1 100644
+ --- a/scylla/src/client/session.rs
+ +++ b/scylla/src/client/session.rs
+ @@ -4,6 +4,7 @@
+@@ -139,14 +187,14 @@
+  use super::{Compression, PoolSize, SelfIdentity, WriteCoalescingDelay};
+  use crate::authentication::AuthenticatorProvider;
+  use crate::client::client_routes::ClientRoutesConfig;
+-@@ -42,6 +43,7 @@ use crate::response::query_result::{MaybeFirstRowError, QueryResult, RowsError};
+- use crate::response::{
+-     Coordinator, NonErrorQueryResponse, PagingState, PagingStateResponse, QueryResponse,
+- };
++@@ -52,6 +53,7 @@ use crate::statement::batch::{Batch, BatchStatement};
++ use crate::statement::prepared::{PartitionKeyError, PreparedStatement};
++ use crate::statement::unprepared::Statement;
++ use crate::statement::{Consistency, PageSize};
+ +use arc_swap::ArcSwap;
+- use crate::routing::NodeLocationPreference;
+- use crate::routing::ShardAwarePortRange;
+- use crate::routing::partitioner::PartitionerName;
++ use arc_swap::ArcSwapOption;
++ use futures::future::join_all;
++ use futures::future::try_join_all;
+ @@ -752,6 +754,41 @@ impl Session {
+              .await
+      }
+@@ -457,7 +505,7 @@
+      fn on_request_success(&self, _request: &RoutingInfo, _latency: Duration, _node: NodeRef<'_>) {}
+  
+ diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs
+-index 51a4e632..198904e0 100644
++index 51a4e632..af377e64 100644
+ --- a/scylla/src/policies/load_balancing/plan.rs
+ +++ b/scylla/src/policies/load_balancing/plan.rs
+ @@ -1,8 +1,10 @@
+@@ -522,7 +570,7 @@
+              state: PlanState::Created,
+          }
+      }
+-@@ -105,18 +144,20 @@ impl<'a> Plan<'a> {
++@@ -105,18 +144,19 @@ impl<'a> Plan<'a> {
+              }),
+          )
+      }
+@@ -532,8 +580,7 @@
+ -    type Item = (NodeRef<'a>, Shard);
+ +    fn is_preferred_target(&self, target: (NodeRef<'_>, Shard)) -> bool {
+ +        self.preferred.is_some_and(|preferred| {
+-+            Arc::ptr_eq(preferred.0, target.0)
+-+                && preferred.1.is_none_or(|shard| target.1 == shard)
+++            Arc::ptr_eq(preferred.0, target.0) && preferred.1.is_none_or(|shard| target.1 == shard)
+ +        })
+ +    }
+  
+@@ -549,7 +596,7 @@
+                  } else {
+                      // `pick()` returned None, which semantically means that a first node cannot be computed _cheaply_.
+                      // This, however, does not imply that fallback would return an empty plan, too.
+-@@ -130,7 +171,7 @@ impl<'a> Iterator for Plan<'a> {
++@@ -130,7 +170,7 @@ impl<'a> Iterator for Plan<'a> {
+                              iter,
+                              target_to_filter_out: node,
+                          };
+@@ -558,7 +605,7 @@
+                      } else {
+                          error!(
+                              "Load balancing policy returned an empty plan! The query cannot be executed. Routing info: {:?}",
+-@@ -147,23 +188,33 @@ impl<'a> Iterator for Plan<'a> {
++@@ -147,23 +187,33 @@ impl<'a> Iterator for Plan<'a> {
+                      target_to_filter_out: *node,
+                  };
+  
+@@ -603,39 +650,23 @@
+          }
+      }
+  }
+-diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs
+-new file mode 100644
+-index 00000000..043ab584
+---- /dev/null
+-+++ b/scylla/src/client/paging_continuation.rs
+-@@ -0,0 +1,30 @@
+-+//! Coordinator-aware state for manually paged requests.
+-+
+-+use crate::response::{Coordinator, PagingState, PagingStateResponse};
+-+
+-+/// Opaque state used to resume a manually paged request.
+-+///
+-+/// Besides the server-provided paging state, this value remembers the coordinator
+-+/// which completed the preceding page. The coordinator is only a preference: the
+-+/// active load-balancing policy revalidates it before every resumed request.
+-+#[derive(Debug, Clone)]
+-+pub struct PagingContinuation {
+-+    state: PagingState,
+-+    coordinator: Coordinator,
+-+}
+-+
+-+impl PagingContinuation {
+-+    pub(crate) fn from_response(
+-+        response: PagingStateResponse,
+-+        coordinator: Coordinator,
+-+    ) -> Option<Self> {
+-+        match response {
+-+            PagingStateResponse::HasMorePages { state } => Some(Self { state, coordinator }),
+-+            PagingStateResponse::NoMorePages => None,
+-+        }
+-+    }
+-+
+-+    pub(crate) fn into_parts(self) -> (PagingState, Coordinator) {
+-+        (self.state, self.coordinator)
+-+    }
+-+}
++diff --git a/scylla/tests/integration/session/pager.rs b/scylla/tests/integration/session/pager.rs
++index 2de4c0e6..5883ee90 100644
++--- a/scylla/tests/integration/session/pager.rs
+++++ b/scylla/tests/integration/session/pager.rs
++@@ -1033,6 +1033,15 @@ impl LoadBalancingPolicy for RotatingLBP {
++         Box::new(cluster.get_nodes_info().iter().map(|node| (node, Some(0))))
++     }
++ 
+++    fn is_coordinator_preferred(
+++        &self,
+++        _routing: &RoutingInfo<'_>,
+++        _cluster: &ClusterState,
+++        _coordinator: &scylla::response::Coordinator,
+++    ) -> bool {
+++        true
+++    }
+++
++     fn name(&self) -> String {
++         "RotatingLBP".to_owned()
++     }

@@ -1,0 +1,6 @@
+diff --git a/src/optimizer/core/histogram.rs b/src/optimizer/core/histogram.rs
+@@ -700,8 +700,10 @@ impl HistogramMeta {
++    use crate::catalog::ColumnRef;
++    use crate::expression::ScalarExpression;
+@@ -716,6 +718,7 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],

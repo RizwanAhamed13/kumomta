@@ -1,0 +1,1850 @@
+diff --git a/dora-bytecode/src/data.rs b/dora-bytecode/src/data.rs
+index d6d83cf..292e19c 100644
+--- a/dora-bytecode/src/data.rs
++++ b/dora-bytecode/src/data.rs
+@@ -92,6 +92,8 @@ pub enum BytecodeOpcode {
+     GetRegisterRef,
+     GetGlobalRef,
+     Ret,
++    TestTraitObjectType,
++    LoadTraitObjectValue,
+ }
+ 
+ impl From<BytecodeOpcode> for u8 {
+@@ -167,6 +169,8 @@ impl From<BytecodeOpcode> for u8 {
+             BytecodeOpcode::GetRegisterRef => opc::BYTECODE_OPCODE_GET_REGISTER_REF,
+             BytecodeOpcode::GetGlobalRef => opc::BYTECODE_OPCODE_GET_GLOBAL_REF,
+             BytecodeOpcode::Ret => opc::BYTECODE_OPCODE_RET,
++            BytecodeOpcode::TestTraitObjectType => opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE,
++            BytecodeOpcode::LoadTraitObjectValue => opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE,
+         }
+     }
+ }
+@@ -246,6 +250,10 @@ impl TryFrom<u8> for BytecodeOpcode {
+             opc::BYTECODE_OPCODE_GET_REGISTER_REF => Ok(BytecodeOpcode::GetRegisterRef),
+             opc::BYTECODE_OPCODE_GET_GLOBAL_REF => Ok(BytecodeOpcode::GetGlobalRef),
+             opc::BYTECODE_OPCODE_RET => Ok(BytecodeOpcode::Ret),
++            opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE => Ok(BytecodeOpcode::TestTraitObjectType),
++            opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE => {
++                Ok(BytecodeOpcode::LoadTraitObjectValue)
++            }
+             _ => Err(()),
+         }
+     }
+@@ -638,6 +646,16 @@ pub enum BytecodeInstruction {
+         src: Register,
+         idx: ConstPoolIdx,
+     },
++    TestTraitObjectType {
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    },
++    LoadTraitObjectValue {
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    },
+     ArrayLength {
+         dest: Register,
+         arr: Register,
+diff --git a/dora-bytecode/src/dumper.rs b/dora-bytecode/src/dumper.rs
+index 0d24101..1976c92 100644
+--- a/dora-bytecode/src/dumper.rs
++++ b/dora-bytecode/src/dumper.rs
+@@ -917,6 +917,24 @@ impl<'a> BytecodeVisitor for BytecodeDumper<'a> {
+     fn visit_new_trait_object(&mut self, dest: Register, src: Register, idx: ConstPoolIdx) {
+         self.emit_new_trait_object("NewTraitObject", dest, src, idx);
+     }
++
++    fn visit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_new_trait_object("TestTraitObjectType", dest, object, idx);
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_new_trait_object("LoadTraitObjectValue", dest, object, idx);
++    }
+     fn visit_new_array(&mut self, dest: Register, length: Register, idx: ConstPoolIdx) {
+         self.emit_new_array("NewArray", dest, length, idx);
+     }
+diff --git a/dora-bytecode/src/opcode.rs b/dora-bytecode/src/opcode.rs
+index a071a14..cefd630 100644
+--- a/dora-bytecode/src/opcode.rs
++++ b/dora-bytecode/src/opcode.rs
+@@ -73,6 +73,8 @@ pub const BYTECODE_OPCODE_GET_REGISTER_REF: u8 = 66;
+ pub const BYTECODE_OPCODE_GET_GLOBAL_REF: u8 = 67;
+ pub const BYTECODE_OPCODE_RET: u8 = 68;
+ pub const BYTECODE_OPCODE_GET_ARRAY_REF: u8 = 69;
++pub const BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE: u8 = 70;
++pub const BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE: u8 = 71;
+ 
+ pub const BYTECODE_TYPE_UNIT: u8 = 0;
+ pub const BYTECODE_TYPE_BOOL: u8 = 1;
+diff --git a/dora-bytecode/src/reader.rs b/dora-bytecode/src/reader.rs
+index c439a9d..8bbcbf2 100644
+--- a/dora-bytecode/src/reader.rs
++++ b/dora-bytecode/src/reader.rs
+@@ -436,6 +436,18 @@ impl<'a> BytecodeReader<'a> {
+                 let idx = self.read_const_pool_idx();
+                 BytecodeInstruction::NewTraitObject { dest, idx, src }
+             }
++            BytecodeOpcode::TestTraitObjectType => {
++                let dest = self.read_register();
++                let object = self.read_register();
++                let idx = self.read_const_pool_idx();
++                BytecodeInstruction::TestTraitObjectType { dest, object, idx }
++            }
++            BytecodeOpcode::LoadTraitObjectValue => {
++                let dest = self.read_register();
++                let object = self.read_register();
++                let idx = self.read_const_pool_idx();
++                BytecodeInstruction::LoadTraitObjectValue { dest, object, idx }
++            }
+             BytecodeOpcode::ArrayLength => {
+                 let dest = self.read_register();
+                 let arr = self.read_register();
+@@ -857,6 +869,13 @@ where
+             BytecodeInstruction::NewTraitObject { dest, idx, src } => {
+                 self.visitor.visit_new_trait_object(dest, src, idx);
+             }
++            BytecodeInstruction::TestTraitObjectType { dest, object, idx } => {
++                self.visitor.visit_test_trait_object_type(dest, object, idx);
++            }
++            BytecodeInstruction::LoadTraitObjectValue { dest, object, idx } => {
++                self.visitor
++                    .visit_load_trait_object_value(dest, object, idx);
++            }
+             BytecodeInstruction::ArrayLength { dest, arr } => {
+                 self.visitor.visit_array_length(dest, arr);
+             }
+@@ -1163,6 +1182,24 @@ pub trait BytecodeVisitor {
+     fn visit_new_trait_object(&mut self, _dest: Register, _src: Register, _idx: ConstPoolIdx) {
+         unimplemented!();
+     }
++
++    fn visit_test_trait_object_type(
++        &mut self,
++        _dest: Register,
++        _object: Register,
++        _idx: ConstPoolIdx,
++    ) {
++        unimplemented!();
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        _dest: Register,
++        _object: Register,
++        _idx: ConstPoolIdx,
++    ) {
++        unimplemented!();
++    }
+     fn visit_array_length(&mut self, _dest: Register, _arr: Register) {
+         unimplemented!();
+     }
+diff --git a/dora-bytecode/src/verifier.rs b/dora-bytecode/src/verifier.rs
+index 4a354ee..8b6102a 100644
+--- a/dora-bytecode/src/verifier.rs
++++ b/dora-bytecode/src/verifier.rs
+@@ -499,6 +499,32 @@ impl<'a> Verifier<'a> {
+                 self.assert_type(src, actual_object_ty);
+             }
+ 
++            BytecodeInstruction::TestTraitObjectType { dest, object, idx } => {
++                let ConstPoolEntry::TraitObject {
++                    trait_ty,
++                    actual_object_ty: _,
++                } = self.const_pool(idx)
++                else {
++                    panic!("expected TraitObject constant pool entry");
++                };
++                assert!(trait_ty.is_trait_object());
++                self.assert_type(dest, &BytecodeType::Bool);
++                self.assert_type(object, trait_ty);
++            }
++
++            BytecodeInstruction::LoadTraitObjectValue { dest, object, idx } => {
++                let ConstPoolEntry::TraitObject {
++                    trait_ty,
++                    actual_object_ty,
++                } = self.const_pool(idx)
++                else {
++                    panic!("expected TraitObject constant pool entry");
++                };
++                assert!(trait_ty.is_trait_object());
++                self.assert_type(object, trait_ty);
++                self.assert_type(dest, actual_object_ty);
++            }
++
+             BytecodeInstruction::ArrayLength { dest, arr } => {
+                 self.assert_type(dest, &BytecodeType::Int64);
+                 self.indexed_element_type(arr);
+diff --git a/dora-bytecode/src/writer.rs b/dora-bytecode/src/writer.rs
+index 82dfc20..ff0a1a4 100644
+--- a/dora-bytecode/src/writer.rs
++++ b/dora-bytecode/src/writer.rs
+@@ -369,6 +369,22 @@ impl BytecodeWriter {
+         let values = [dest.to_usize() as u32, src.to_usize() as u32, idx.0];
+         self.emit_values(BytecodeOpcode::NewTraitObject, &values);
+     }
++    pub fn emit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_reg2_idx(BytecodeOpcode::TestTraitObjectType, dest, object, idx);
++    }
++    pub fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        self.emit_reg2_idx(BytecodeOpcode::LoadTraitObjectValue, dest, object, idx);
++    }
+     pub fn emit_array_length(&mut self, dest: Register, array: Register) {
+         self.emit_reg2(BytecodeOpcode::ArrayLength, dest, array);
+     }
+diff --git a/dora-cannon-compiler/src/asm.rs b/dora-cannon-compiler/src/asm.rs
+index 4eec689..94d1d96 100644
+--- a/dora-cannon-compiler/src/asm.rs
++++ b/dora-cannon-compiler/src/asm.rs
+@@ -1333,6 +1333,10 @@ impl<'a> BaselineAssembler<'a> {
+         self.fill_zero(obj, false, size as usize);
+     }
+ 
++    pub fn load_shape(&mut self, dest: Reg, shape_key: AotShapeKey) {
++        self.masm.load_shape(dest, shape_key);
++    }
++
+     pub fn object_initialization_fence(&mut self) {
+         self.masm.object_initialization_fence();
+     }
+diff --git a/dora-cannon-compiler/src/codegen.rs b/dora-cannon-compiler/src/codegen.rs
+index 5d7f9c1..a53a6ae 100644
+--- a/dora-cannon-compiler/src/codegen.rs
++++ b/dora-cannon-compiler/src/codegen.rs
+@@ -2470,6 +2470,55 @@ impl<'a, 'i> CannonCodeGen<'a, 'i> {
+         self.asm.object_initialization_fence();
+     }
+ 
++    fn trait_object_pattern_types(&self, idx: ConstPoolIdx) -> (BytecodeType, BytecodeType) {
++        let ConstPoolEntry::TraitObject {
++            trait_ty,
++            actual_object_ty,
++        } = self.bytecode().const_pool(idx)
++        else {
++            unreachable!()
++        };
++
++        (
++            self.specialize_ty(trait_ty.clone()),
++            self.specialize_ty(actual_object_ty.clone()),
++        )
++    }
++
++    fn emit_test_trait_object_type(&mut self, dest: Register, object: Register, idx: ConstPoolIdx) {
++        assert_eq!(self.reg_ty(dest), BytecodeType::Bool);
++        let (trait_ty, actual_object_ty) = self.trait_object_pattern_types(idx);
++        assert_eq!(self.specialize_register_type(object), trait_ty);
++
++        self.emit_load_register(object, REG_TMP1.into());
++        self.asm.load_mem(
++            MachineMode::Int32,
++            REG_RESULT.into(),
++            Mem::Base(REG_TMP1, Header::offset_shape_word() as i32),
++        );
++        self.asm.load_shape(
++            REG_TMP2,
++            AotShapeKey::TraitObject {
++                trait_ty,
++                actual_object_ty,
++            },
++        );
++        self.asm.cmp_reg(MachineMode::Int32, REG_RESULT, REG_TMP2);
++        self.asm.set(REG_RESULT, CondCode::Equal);
++        self.emit_store_register(REG_RESULT.into(), dest);
++    }
++
++    fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        let (trait_ty, actual_object_ty) = self.trait_object_pattern_types(idx);
++        assert_eq!(self.specialize_register_type(object), trait_ty);
++        self.emit_load_trait_object_receiver(dest, object, actual_object_ty);
++    }
++
+     fn emit_array_length(&mut self, dest: Register, arr: Register) {
+         assert_eq!(self.bytecode().register_type(dest), BytecodeType::Int64);
+         assert!(self.bytecode().register_type(arr).is_class());
+@@ -4965,6 +5014,38 @@ impl<'a, 'i> BytecodeVisitor for CannonCodeGen<'a, 'i> {
+         self.emit_new_trait_object(dest, idx, src);
+     }
+ 
++    fn visit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        comment!(
++            self,
++            format!(
++                "TestTraitObjectType {}, {}, ConstPoolIdx({})",
++                dest, object, idx.0
++            )
++        );
++        self.emit_test_trait_object_type(dest, object, idx);
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        comment!(
++            self,
++            format!(
++                "LoadTraitObjectValue {}, {}, ConstPoolIdx({})",
++                dest, object, idx.0
++            )
++        );
++        self.emit_load_trait_object_value(dest, object, idx);
++    }
++
+     fn visit_array_length(&mut self, dest: Register, arr: Register) {
+         comment!(self, format!("ArrayLength {}, {}", dest, arr));
+         self.emit_array_length(dest, arr);
+diff --git a/dora-compiler/src/closure.rs b/dora-compiler/src/closure.rs
+index ee87df0..ccbffe3 100644
+--- a/dora-compiler/src/closure.rs
++++ b/dora-compiler/src/closure.rs
+@@ -175,6 +175,28 @@ impl<'a> TransitiveClosureComputation<'a> {
+                     });
+                 }
+ 
++                BytecodeInstruction::TestTraitObjectType { idx, .. } => {
++                    let ConstPoolEntry::TraitObject {
++                        trait_ty,
++                        actual_object_ty,
++                    } = bytecode_body.const_pool(idx)
++                    else {
++                        unreachable!()
++                    };
++                    self.shape_keys.push(AotShapeKey::TraitObject {
++                        trait_ty: specialize_ty_in_program(
++                            self.program,
++                            trait_ty.clone(),
++                            &type_params,
++                        ),
++                        actual_object_ty: specialize_ty_in_program(
++                            self.program,
++                            actual_object_ty.clone(),
++                            &type_params,
++                        ),
++                    });
++                }
++
+                 BytecodeInstruction::LoadGlobal { global_id, .. }
+                 | BytecodeInstruction::StoreGlobal { global_id, .. }
+                 | BytecodeInstruction::GetGlobalRef { global_id, .. } => {
+diff --git a/dora-frontend/src/exhaustiveness.rs b/dora-frontend/src/exhaustiveness.rs
+index 3a44b5c..c12612d 100644
+--- a/dora-frontend/src/exhaustiveness.rs
++++ b/dora-frontend/src/exhaustiveness.rs
+@@ -14,6 +14,7 @@ use crate::sema::{
+     EnumDefinitionId, Expr, ExprId, IdentType, MatchExpr, Pattern as SemaPattern, PatternId, Sema,
+     SourceFileId, Stmt, StructDefinitionId,
+ };
++use crate::ty::SourceType;
+ 
+ pub fn check(sa: &Sema) {
+     for (_id, fct) in sa.fcts.iter() {
+@@ -193,7 +194,10 @@ fn check_match(
+     match_expr_id: ExprId,
+     match_expr: &MatchExpr,
+ ) {
+-    let mut matrix = Vec::new();
++    let mut matrix: Vec<Vec<Pattern>> = Vec::new();
++    let trait_object_scrutinee = match_expr
++        .expr
++        .is_some_and(|scrutinee| body.ty(scrutinee).is_trait_object());
+ 
+     let any_arm_has_guard = match_expr.arms.iter().any(|arm| arm.cond.is_some());
+     let patterns_per_row = if any_arm_has_guard { 2 } else { 1 };
+@@ -209,7 +213,11 @@ fn check_match(
+         }
+         row.push(convert_pattern(sa, body, file_id, arm.pattern));
+ 
+-        let useless = check_useful_expand(sa, matrix.clone(), row.clone());
++        let useless = if trait_object_scrutinee {
++            check_trait_object_useful(&matrix, &row)
++        } else {
++            check_useful_expand(sa, matrix.clone(), row.clone())
++        };
+ 
+         let arm_pattern_span = pattern_span(sa, body, file_id, arm.pattern);
+         let spans = match useless {
+@@ -228,7 +236,19 @@ fn check_match(
+         matrix.push(row);
+     }
+ 
+-    let missing_patterns = check_exhaustive(sa, matrix, patterns_per_row);
++    let trait_object_has_catch_all = match_expr
++        .arms
++        .iter()
++        .any(|arm| arm.cond.is_none() && pattern_catches_erased_value(body, arm.pattern));
++    let missing_patterns = if trait_object_scrutinee {
++        if trait_object_has_catch_all {
++            Vec::new()
++        } else {
++            vec![vec![Pattern::any_no_span(); patterns_per_row]]
++        }
++    } else {
++        check_exhaustive(sa, matrix, patterns_per_row)
++    };
+ 
+     if !missing_patterns.is_empty() {
+         let mut patterns = Vec::new();
+@@ -259,6 +279,59 @@ fn check_match(
+     }
+ }
+ 
++fn check_trait_object_useful(matrix: &[Vec<Pattern>], row: &[Pattern]) -> Useless {
++    if matrix
++        .iter()
++        .any(|row| row.iter().all(pattern_catches_concrete_trait_object_value))
++    {
++        return Useless::Yes;
++    }
++
++    let mut spans = HashSet::new();
++    if let Some(pattern) = row.last() {
++        let mut catches_all = false;
++        collect_useless_trait_object_alternatives(pattern, &mut catches_all, &mut spans);
++    }
++    Useless::Set(spans)
++}
++
++fn collect_useless_trait_object_alternatives(
++    pattern: &Pattern,
++    catches_all: &mut bool,
++    spans: &mut HashSet<Span>,
++) {
++    if let Pattern::Alt { alts, .. } = pattern {
++        for alt in alts {
++            if *catches_all {
++                spans.insert(alt.span());
++            } else {
++                collect_useless_trait_object_alternatives(alt, catches_all, spans);
++                *catches_all |= pattern_catches_concrete_trait_object_value(alt);
++            }
++        }
++    }
++}
++
++fn pattern_catches_concrete_trait_object_value(pattern: &Pattern) -> bool {
++    match pattern {
++        Pattern::Any { .. } => true,
++        Pattern::Alt { alts, .. } => alts.iter().any(pattern_catches_concrete_trait_object_value),
++        Pattern::Literal { .. } | Pattern::Constructor { .. } | Pattern::Guard => false,
++    }
++}
++
++fn pattern_catches_erased_value(body: &Body, pattern_id: PatternId) -> bool {
++    match body.pattern(pattern_id) {
++        SemaPattern::Underscore => true,
++        SemaPattern::Ident(_) => matches!(body.get_ident(pattern_id), Some(IdentType::Var(_))),
++        SemaPattern::Alt(alt) => alt
++            .patterns
++            .iter()
++            .any(|&id| pattern_catches_erased_value(body, id)),
++        _ => false,
++    }
++}
++
+ fn display_pattern(sa: &Sema, pattern: Pattern, output: &mut String) -> fmt::Result {
+     match pattern {
+         Pattern::Alt { alts, .. } => {
+@@ -317,7 +390,7 @@ fn display_pattern(sa: &Sema, pattern: Pattern, output: &mut String) -> fmt::Res
+                 display_params(sa, struct_, params, output)
+             }
+ 
+-            ConstructorId::Tuple => {
++            ConstructorId::Tuple(_) => {
+                 let mut first = true;
+                 write!(output, "(")?;
+ 
+@@ -417,7 +490,7 @@ fn check_exhaustive(sa: &Sema, matrix: Vec<Vec<Pattern>>, n: usize) -> Vec<Vec<P
+                     let arity = ctors.get(&id).cloned().expect("missing ctor id");
+                     let new_matrix = matrix
+                         .iter()
+-                        .flat_map(|r| specialize_row_for_constructor(r.clone(), id, arity))
++                        .flat_map(|r| specialize_row_for_constructor(r.clone(), &first, id, arity))
+                         .collect::<Vec<_>>();
+                     let uncovered = check_exhaustive(sa, new_matrix, n + arity - 1);
+ 
+@@ -499,10 +572,15 @@ enum Signature {
+ fn discover_signature(matrix: &[Vec<Pattern>]) -> Signature {
+     let mut ctors = HashMap::new();
+     let mut first = None;
++    let mut open_domain = false;
+ 
+     for row in matrix {
+         let pattern = row.last().expect("missing pattern");
+-        discover_signature_for_pattern(pattern, &mut ctors, &mut first);
++        discover_signature_for_pattern(pattern, &mut ctors, &mut first, &mut open_domain);
++    }
++
++    if open_domain {
++        return Signature::Incomplete;
+     }
+ 
+     match first {
+@@ -519,33 +597,39 @@ fn discover_signature_for_pattern(
+     pattern: &Pattern,
+     ctors: &mut HashMap<usize, usize>,
+     kind: &mut Option<ConstructorId>,
++    open_domain: &mut bool,
+ ) {
+     match pattern {
+         Pattern::Alt { alts, .. } => {
+             for param in alts {
+-                discover_signature_for_pattern(param, ctors, kind);
++                discover_signature_for_pattern(param, ctors, kind, open_domain);
++            }
++        }
++        Pattern::Literal { value, open, .. } => {
++            *open_domain |= *open;
++            match value {
++                LiteralValue::Bool(value) => {
++                    match kind {
++                        None => *kind = Some(ConstructorId::Bool),
++                        Some(ConstructorId::Bool) => (),
++                        Some(_) => unreachable!(),
++                    }
++                    ctors.insert(*value as usize, 0);
++                }
++                LiteralValue::Char(..)
++                | LiteralValue::Float(..)
++                | LiteralValue::Int(..)
++                | LiteralValue::String(..) => {}
+             }
+         }
+-        Pattern::Literal { value, .. } => match value {
+-            LiteralValue::Bool(value) => {
+-                match kind {
+-                    None => *kind = Some(ConstructorId::Bool),
+-                    Some(ConstructorId::Bool) => (),
+-                    Some(_) => unreachable!(),
+-                }
+-                ctors.insert(*value as usize, 0);
+-            }
+-            LiteralValue::Char(..)
+-            | LiteralValue::Float(..)
+-            | LiteralValue::Int(..)
+-            | LiteralValue::String(..) => {}
+-        },
+         Pattern::Any { .. } => (),
+         Pattern::Constructor {
+             constructor_id,
+             params,
++            open,
+             ..
+         } => {
++            *open_domain |= *open;
+             match *kind {
+                 None => *kind = Some(constructor_id.clone()),
+                 Some(..) => (),
+@@ -718,7 +802,12 @@ fn check_useful_expand_inner(sa: &Sema, matrix: Vec<SplitRow>, mut pattern: Spli
+                 let new_matrix = matrix
+                     .into_iter()
+                     .flat_map(|r| {
+-                        specialize_row_for_constructor(r, constructor_id.variant_id(), arity)
++                        specialize_row_for_constructor(
++                            r,
++                            &constructor_id,
++                            constructor_id.variant_id(),
++                            arity,
++                        )
+                     })
+                     .collect::<Vec<_>>();
+ 
+@@ -882,7 +971,9 @@ fn check_useful(sa: &Sema, matrix: Vec<Vec<Pattern>>, mut pattern: Vec<Pattern>)
+                             let arity = ctors.get(&id).cloned().expect("missing ctor");
+                             let new_matrix = matrix
+                                 .iter()
+-                                .flat_map(|r| specialize_row_for_constructor(r.clone(), id, arity))
++                                .flat_map(|r| {
++                                    specialize_row_for_constructor(r.clone(), &first, id, arity)
++                                })
+                                 .collect::<Vec<_>>();
+ 
+                             let mut new_pattern = pattern.clone();
+@@ -915,7 +1006,14 @@ fn check_useful(sa: &Sema, matrix: Vec<Vec<Pattern>>, mut pattern: Vec<Pattern>)
+             let arity = params.len();
+             let new_matrix = matrix
+                 .into_iter()
+-                .flat_map(|r| specialize_row_for_constructor(r, constructor_id.variant_id(), arity))
++                .flat_map(|r| {
++                    specialize_row_for_constructor(
++                        r,
++                        &constructor_id,
++                        constructor_id.variant_id(),
++                        arity,
++                    )
++                })
+                 .collect::<Vec<_>>();
+ 
+             pattern.append(&mut params);
+@@ -979,10 +1077,10 @@ fn specialize_row_for_literal<T: SpecializeRow + Clone>(
+             }
+         }
+         Pattern::Any { .. } => vec![row],
+-        // This should never be reached because literals and tuples shouldn't type check.
+-        Pattern::Constructor { .. } | Pattern::Guard => {
+-            unreachable!()
+-        }
++        // Trait-object columns are heterogeneous: an unrelated concrete
++        // constructor does not contribute to a literal specialization.
++        Pattern::Constructor { .. } => Vec::new(),
++        Pattern::Guard => unreachable!(),
+     }
+ }
+ 
+@@ -1032,6 +1130,7 @@ impl SpecializeRow for Vec<Pattern> {
+ 
+ fn specialize_row_for_constructor<T: SpecializeRow + Clone>(
+     mut row: T,
++    target: &ConstructorId,
+     id: usize,
+     arity: usize,
+ ) -> Vec<T> {
+@@ -1043,12 +1142,12 @@ fn specialize_row_for_constructor<T: SpecializeRow + Clone>(
+             .flat_map(|p| {
+                 let mut p_row = row.clone();
+                 p_row.push(p);
+-                let rows = specialize_row_for_constructor(p_row, id, arity);
++                let rows = specialize_row_for_constructor(p_row, target, id, arity);
+                 rows
+             })
+             .collect::<Vec<_>>(),
+-        Pattern::Literal { value, .. } => match value {
+-            LiteralValue::Bool(value) => {
++        Pattern::Literal { value, .. } => match (target, value) {
++            (ConstructorId::Bool, LiteralValue::Bool(value)) => {
+                 assert_eq!(arity, 0);
+                 if id == value as usize {
+                     vec![row]
+@@ -1057,19 +1156,16 @@ fn specialize_row_for_constructor<T: SpecializeRow + Clone>(
+                 }
+             }
+ 
+-            // These cases here should be unreachable. This is because
+-            // literal values of these types never have a complete signature.
+-            LiteralValue::Char(..)
+-            | LiteralValue::Float(..)
+-            | LiteralValue::Int(..)
+-            | LiteralValue::String(..) => unreachable!(),
++            // An open trait-object column can contain unrelated literals and
++            // nominal constructors. They are disjoint specializations.
++            _ => Vec::new(),
+         },
+         Pattern::Constructor {
+             constructor_id,
+             params,
+             ..
+         } => {
+-            if id == constructor_id.variant_id() {
++            if target.matches(&constructor_id, id) {
+                 assert_eq!(arity, params.len());
+                 row.append(params);
+                 vec![row]
+@@ -1114,15 +1210,34 @@ enum ConstructorId {
+     Enum(EnumDefinitionId, usize),
+     Class(ClassDefinitionId),
+     Struct(StructDefinitionId),
+-    Tuple,
++    Tuple(usize),
+ }
+ 
+ impl ConstructorId {
++    fn matches(&self, other: &ConstructorId, variant_id: usize) -> bool {
++        match (self, other) {
++            (ConstructorId::Enum(enum_id, _), ConstructorId::Enum(other_enum_id, other_id)) => {
++                enum_id == other_enum_id && variant_id == *other_id
++            }
++            (ConstructorId::Class(cls_id), ConstructorId::Class(other_cls_id)) => {
++                cls_id == other_cls_id && variant_id == 0
++            }
++            (ConstructorId::Struct(struct_id), ConstructorId::Struct(other_struct_id)) => {
++                struct_id == other_struct_id && variant_id == 0
++            }
++            (ConstructorId::Tuple(arity), ConstructorId::Tuple(other_arity)) => {
++                arity == other_arity && variant_id == 0
++            }
++            (ConstructorId::Bool, _) => false,
++            _ => false,
++        }
++    }
++
+     fn variant_id(&self) -> usize {
+         match self {
+             ConstructorId::Bool => unreachable!(),
+             ConstructorId::Enum(_, variant_id) => *variant_id,
+-            ConstructorId::Tuple | ConstructorId::Class(..) | ConstructorId::Struct(..) => 0,
++            ConstructorId::Tuple(_) | ConstructorId::Class(..) | ConstructorId::Struct(..) => 0,
+         }
+     }
+ 
+@@ -1133,6 +1248,7 @@ impl ConstructorId {
+                 Pattern::Literal {
+                     span: Span::new(1, 1),
+                     value: LiteralValue::Bool(id == 1),
++                    open: false,
+                 }
+             }
+ 
+@@ -1140,24 +1256,28 @@ impl ConstructorId {
+                 span: Span::new(1, 1),
+                 constructor_id: self.clone(),
+                 params,
++                open: false,
+             },
+ 
+             ConstructorId::Struct(..) => Pattern::Constructor {
+                 span: Span::new(1, 1),
+                 constructor_id: self.clone(),
+                 params,
++                open: false,
+             },
+ 
+-            ConstructorId::Tuple => Pattern::Constructor {
++            ConstructorId::Tuple(arity) => Pattern::Constructor {
+                 span: Span::new(1, 1),
+-                constructor_id: ConstructorId::Tuple,
++                constructor_id: ConstructorId::Tuple(*arity),
+                 params,
++                open: false,
+             },
+ 
+             ConstructorId::Enum(enum_id, _) => Pattern::Constructor {
+                 span: Span::new(1, 1),
+                 constructor_id: ConstructorId::Enum(*enum_id, id),
+                 params,
++                open: false,
+             },
+         }
+     }
+@@ -1165,7 +1285,7 @@ impl ConstructorId {
+     fn total(&self, sa: &Sema) -> usize {
+         match self {
+             ConstructorId::Bool => 2,
+-            ConstructorId::Class(..) | ConstructorId::Struct(..) | ConstructorId::Tuple => 1,
++            ConstructorId::Class(..) | ConstructorId::Struct(..) | ConstructorId::Tuple(_) => 1,
+             ConstructorId::Enum(enum_id, _) => sa.enum_(*enum_id).variant_ids().len(),
+         }
+     }
+@@ -1179,11 +1299,13 @@ enum Pattern {
+     Literal {
+         span: Span,
+         value: LiteralValue,
++        open: bool,
+     },
+     Constructor {
+         span: Span,
+         constructor_id: ConstructorId,
+         params: Vec<Pattern>,
++        open: bool,
+     },
+     Alt {
+         span: Span,
+@@ -1259,6 +1381,7 @@ fn convert_pattern(
+ ) -> Pattern {
+     let span = pattern_span(sa, body, file_id, pattern_id);
+     let pattern = body.pattern(pattern_id);
++    let open = body.pattern_input_ty(pattern_id).is_trait_object();
+ 
+     match pattern {
+         SemaPattern::Underscore => Pattern::Any { span: Some(span) },
+@@ -1269,6 +1392,7 @@ fn convert_pattern(
+         SemaPattern::LitBool(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::Bool(*value),
++            open,
+         },
+ 
+         SemaPattern::LitInt(_) => {
+@@ -1280,6 +1404,7 @@ fn convert_pattern(
+             Pattern::Literal {
+                 span,
+                 value: LiteralValue::Int(value),
++                open,
+             }
+         }
+ 
+@@ -1293,6 +1418,7 @@ fn convert_pattern(
+             Pattern::Literal {
+                 span,
+                 value: LiteralValue::String(value),
++                open,
+             }
+         }
+ 
+@@ -1305,6 +1431,7 @@ fn convert_pattern(
+             Pattern::Literal {
+                 span,
+                 value: LiteralValue::Float(value),
++                open,
+             }
+         }
+ 
+@@ -1316,20 +1443,35 @@ fn convert_pattern(
+             Pattern::Literal {
+                 span,
+                 value: LiteralValue::Char(value),
++                open,
+             }
+         }
+ 
+         SemaPattern::Tuple(tuple) => {
+-            let patterns: Vec<Pattern> = tuple
++            let arity = match body.ty(pattern_id) {
++                SourceType::Unit => 0,
++                SourceType::Tuple(subtypes) => subtypes.len(),
++                _ => unreachable!("tuple pattern without tuple type"),
++            };
++            let explicit = tuple
+                 .patterns
+                 .iter()
+-                .rev()
+-                .map(|&subpattern_id| convert_pattern(sa, body, file_id, subpattern_id))
+-                .collect();
++                .filter(|&&subpattern_id| !matches!(body.pattern(subpattern_id), SemaPattern::Rest))
++                .count();
++            let mut patterns = Vec::with_capacity(arity);
++            for &subpattern_id in &tuple.patterns {
++                if matches!(body.pattern(subpattern_id), SemaPattern::Rest) {
++                    patterns.extend((explicit..arity).map(|_| Pattern::any_no_span()));
++                } else {
++                    patterns.push(convert_pattern(sa, body, file_id, subpattern_id));
++                }
++            }
++            patterns.reverse();
+             Pattern::Constructor {
+                 span,
+-                constructor_id: ConstructorId::Tuple,
++                constructor_id: ConstructorId::Tuple(arity),
+                 params: patterns,
++                open,
+             }
+         }
+ 
+@@ -1341,12 +1483,13 @@ fn convert_pattern(
+                         span,
+                         constructor_id: ConstructorId::Enum(pattern_enum_id, variant_id as usize),
+                         params: Vec::new(),
++                        open,
+                     }
+                 }
+ 
+                 IdentType::Var(_var_id) => Pattern::Any { span: Some(span) },
+ 
+-                IdentType::Const(const_id) => convert_const_pattern(sa, const_id, span),
++                IdentType::Const(const_id) => convert_const_pattern(sa, const_id, span, open),
+ 
+                 _ => unreachable!(),
+             }
+@@ -1374,6 +1517,7 @@ fn convert_pattern(
+                         span,
+                         constructor_id: ConstructorId::Enum(enum_.id(), variant.index as usize),
+                         params: convert_subpatterns(sa, body, file_id, ctor, variant),
++                        open,
+                     }
+                 }
+ 
+@@ -1383,6 +1527,7 @@ fn convert_pattern(
+                         span,
+                         constructor_id: ConstructorId::Class(cls_id),
+                         params: convert_subpatterns(sa, body, file_id, ctor, &*class),
++                        open,
+                     }
+                 }
+ 
+@@ -1392,13 +1537,14 @@ fn convert_pattern(
+                         span,
+                         constructor_id: ConstructorId::Struct(struct_id),
+                         params: convert_subpatterns(sa, body, file_id, ctor, &*struct_),
++                        open,
+                     }
+                 }
+ 
+                 IdentType::Const(const_id) => {
+                     assert!(ctor.fields.is_empty());
+                     assert!(!ctor.has_parens);
+-                    convert_const_pattern(sa, const_id, span)
++                    convert_const_pattern(sa, const_id, span, open)
+                 }
+ 
+                 _ => unreachable!(),
+@@ -1407,27 +1553,37 @@ fn convert_pattern(
+     }
+ }
+ 
+-fn convert_const_pattern(sa: &Sema, const_id: ConstDefinitionId, span: Span) -> Pattern {
++fn convert_const_pattern(
++    sa: &Sema,
++    const_id: ConstDefinitionId,
++    span: Span,
++    open: bool,
++) -> Pattern {
+     match sa.const_(const_id).value() {
+         ConstValue::Bool(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::Bool(*value),
++            open,
+         },
+         ConstValue::Char(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::Char(*value),
++            open,
+         },
+         ConstValue::Int(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::Int(*value),
++            open,
+         },
+         ConstValue::Float(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::Float(*value),
++            open,
+         },
+         ConstValue::String(value) => Pattern::Literal {
+             span,
+             value: LiteralValue::String(value.clone()),
++            open,
+         },
+         ConstValue::None => unreachable!(),
+     }
+diff --git a/dora-frontend/src/generator/bytecode.rs b/dora-frontend/src/generator/bytecode.rs
+index fcdc667..553fd12 100644
+--- a/dora-frontend/src/generator/bytecode.rs
++++ b/dora-frontend/src/generator/bytecode.rs
+@@ -617,6 +617,26 @@ impl BytecodeBuilder {
+         self.writer.emit_new_trait_object(dest, idx, src);
+     }
+ 
++    pub fn emit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        assert!(self.def(dest) && self.used(object));
++        self.writer.emit_test_trait_object_type(dest, object, idx);
++    }
++
++    pub fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        assert!(self.def(dest) && self.used(object));
++        self.writer.emit_load_trait_object_value(dest, object, idx);
++    }
++
+     pub fn emit_array_length(&mut self, dest: Register, array: Register, location: Location) {
+         assert!(self.def(dest) && self.used(array));
+         self.writer.set_location(location);
+diff --git a/dora-frontend/src/generator/pattern.rs b/dora-frontend/src/generator/pattern.rs
+index acf4c88..4faae61 100644
+--- a/dora-frontend/src/generator/pattern.rs
++++ b/dora-frontend/src/generator/pattern.rs
+@@ -125,6 +125,27 @@ fn destruct_pattern_inner(
+     value: Register,
+     ty: SourceType,
+ ) {
++    if ty.is_trait_object() {
++        if let Some(actual_ty) = trait_object_pattern_ty(g, pattern_id) {
++            let actual_bty = g.emitter.convert_ty(g.sa, actual_ty.clone());
++            let trait_bty = g.emitter.convert_ty(g.sa, ty.clone());
++            let idx = g.builder.add_const_trait(trait_bty, actual_bty.clone());
++            let matched = g.alloc_temp(BytecodeType::Bool);
++            let extracted = g.alloc_temp(actual_bty);
++            let mismatch = pck.ensure_label(&mut g.builder);
++
++            g.builder.emit_test_trait_object_type(matched, value, idx);
++            g.builder.emit_jump_if_false(matched, mismatch);
++            g.builder
++                .emit_load_trait_object_value(extracted, value, idx);
++            destruct_pattern_inner(g, pck, pattern_id, extracted, actual_ty);
++
++            g.free_temp(extracted);
++            g.free_temp(matched);
++            return;
++        }
++    }
++
+     let pattern = g.analysis.pattern(pattern_id);
+ 
+     match pattern {
+@@ -349,6 +370,29 @@ fn destruct_pattern_inner(
+     }
+ }
+ 
++fn trait_object_pattern_ty(g: &AstBytecodeGen, pattern_id: PatternId) -> Option<SourceType> {
++    let pattern = g.analysis.pattern(pattern_id);
++
++    match pattern {
++        Pattern::Ident(_) | Pattern::Ctor(_) => match g.analysis.get_ident(pattern_id) {
++            Some(IdentType::Class(id, type_params)) => Some(SourceType::Class(id, type_params)),
++            Some(IdentType::Struct(id, type_params)) => Some(SourceType::Struct(id, type_params)),
++            Some(IdentType::EnumVariant(id, type_params, _)) => {
++                Some(SourceType::Enum(id, type_params))
++            }
++            Some(IdentType::Const(id)) => Some(g.sa.const_(id).ty()),
++            _ => None,
++        },
++        Pattern::LitBool(_)
++        | Pattern::LitChar(_)
++        | Pattern::LitFloat(_)
++        | Pattern::LitInt(_)
++        | Pattern::LitStr(_) => Some(g.analysis.ty(pattern_id)),
++        Pattern::Tuple(_) => Some(g.analysis.ty(pattern_id)),
++        _ => None,
++    }
++}
++
+ fn destruct_pattern_const(
+     g: &mut AstBytecodeGen,
+     pck: &mut PatternCheckContext,
+diff --git a/dora-frontend/src/sema.rs b/dora-frontend/src/sema.rs
+index 9dd99f3..ea1c306 100644
+--- a/dora-frontend/src/sema.rs
++++ b/dora-frontend/src/sema.rs
+@@ -67,8 +67,8 @@ pub use self::functions::{
+ };
+ pub use self::globals::{GlobalDefinition, GlobalDefinitionId};
+ pub use self::impl_matching::{
+-    associated_type_bounds, extensions_overlap, find_impl, impl_matches, implements_trait,
+-    impls_overlap, maybe_alias_ty,
++    associated_type_bounds, extensions_overlap, find_impl, find_trait_pattern_type,
++    find_trait_tuple_pattern_type, impl_matches, implements_trait, impls_overlap, maybe_alias_ty,
+ };
+ pub use self::impls::{ImplDefinition, ImplDefinitionId, SuperTraitWitness};
+ pub use self::known::KnownElements;
+diff --git a/dora-frontend/src/sema/body.rs b/dora-frontend/src/sema/body.rs
+index d6ad9fb..88ec371 100644
+--- a/dora-frontend/src/sema/body.rs
++++ b/dora-frontend/src/sema/body.rs
+@@ -255,6 +255,7 @@ pub struct Body {
+     map_calls: RefCell<NodeMap<Rc<CallType>>>,
+     map_idents: RefCell<NodeMap<IdentType>>,
+     map_tys: RefCell<NodeMap<SourceType>>,
++    map_pattern_input_tys: RefCell<NodeMap<SourceType>>,
+     map_vars: RefCell<NodeMap<VarId>>,
+     map_consts: RefCell<NodeMap<ConstValue>>,
+     map_fors: RefCell<NodeMap<ForTypeInfo>>,
+@@ -329,6 +330,7 @@ impl Body {
+             map_calls: RefCell::new(NodeMap::new()),
+             map_idents: RefCell::new(NodeMap::new()),
+             map_tys: RefCell::new(NodeMap::new()),
++            map_pattern_input_tys: RefCell::new(NodeMap::new()),
+             map_vars: RefCell::new(NodeMap::new()),
+             map_consts: RefCell::new(NodeMap::new()),
+             map_fors: RefCell::new(NodeMap::new()),
+@@ -582,6 +584,20 @@ impl Body {
+         self.map_tys.borrow_mut().insert_or_replace(id, ty);
+     }
+ 
++    pub fn set_pattern_input_ty(&self, id: PatternId, ty: SourceType) {
++        self.map_pattern_input_tys
++            .borrow_mut()
++            .insert_or_replace(id.to_universal_id(), ty);
++    }
++
++    pub fn pattern_input_ty(&self, id: PatternId) -> SourceType {
++        self.map_pattern_input_tys
++            .borrow()
++            .get(id.to_universal_id())
++            .expect("no pattern input type found")
++            .clone()
++    }
++
+     pub fn set_const_value<T: ExprMapId>(&self, id: T, value: ConstValue) {
+         let id = id.to_universal_id();
+         self.map_consts.borrow_mut().insert(id, value);
+diff --git a/dora-frontend/src/sema/impl_matching.rs b/dora-frontend/src/sema/impl_matching.rs
+index 838e15f..f8b90a8 100644
+--- a/dora-frontend/src/sema/impl_matching.rs
++++ b/dora-frontend/src/sema/impl_matching.rs
+@@ -8,7 +8,9 @@ use crate::{
+     SourceType, SourceTypeArray, TraitType, TypeArgs, specialize_trait_type, specialize_type,
+ };
+ 
+-use super::matching::{block_matches_ty, block_matches_ty_with_context, match_arrays_with_context};
++use super::matching::{
++    block_matches_ty, block_matches_ty_with_context, match_arrays_with_context, match_types,
++};
+ 
+ pub fn impl_matches(
+     sa: &Sema,
+@@ -226,6 +228,116 @@ pub fn find_impl(
+     )
+ }
+ 
++pub fn find_trait_pattern_type(
++    sa: &Sema,
++    check_element: &dyn Element,
++    nominal_ty: SourceType,
++    trait_ty: TraitType,
++) -> Option<SourceType> {
++    find_trait_pattern_type_matching(sa, check_element, trait_ty, |actual_ty| {
++        same_nominal_type(&nominal_ty, actual_ty)
++    })
++}
++
++pub fn find_trait_tuple_pattern_type(
++    sa: &Sema,
++    check_element: &dyn Element,
++    trait_ty: TraitType,
++    minimum_arity: usize,
++    exact_arity: Option<usize>,
++) -> Option<SourceType> {
++    find_trait_pattern_type_matching(sa, check_element, trait_ty, |actual_ty| {
++        let arity = match actual_ty {
++            SourceType::Unit => 0,
++            SourceType::Tuple(subtypes) => subtypes.len(),
++            _ => return false,
++        };
++
++        exact_arity
++            .map(|exact_arity| arity == exact_arity)
++            .unwrap_or(arity >= minimum_arity)
++    })
++}
++
++fn find_trait_pattern_type_matching(
++    sa: &Sema,
++    check_element: &dyn Element,
++    trait_ty: TraitType,
++    matches_pattern: impl Fn(&SourceType) -> bool,
++) -> Option<SourceType> {
++    let check_type_param_definition = check_element.type_param_definition(sa);
++    let mut result = None;
++    let mut context = TraitMatchingContext::default();
++
++    'impls: for (_id, impl_) in sa.impls.iter() {
++        let impl_type_param_definition = impl_.type_param_definition(sa);
++        let Some(impl_trait_ty) = impl_.trait_ty() else {
++            continue;
++        };
++        if impl_trait_ty.trait_id != trait_ty.trait_id {
++            continue;
++        }
++
++        let mut bindings = vec![None; impl_type_param_definition.type_param_count()];
++        if !trait_ty_match(
++            sa,
++            impl_,
++            &impl_trait_ty,
++            &trait_ty,
++            check_element,
++            check_type_param_definition,
++            &mut bindings,
++            &mut context,
++        ) {
++            continue;
++        }
++
++        let bindings = SourceTypeArray::with(
++            bindings
++                .into_iter()
++                .map(|binding| binding.expect("missing binding"))
++                .collect(),
++        );
++        let type_args = TypeArgs::from_own(sa, impl_type_param_definition, &bindings);
++        let actual_ty = specialize_type(sa, impl_.extended_ty(), &type_args);
++
++        for bound in impl_type_param_definition.bounds(sa) {
++            let bound_ty = specialize_type(sa, bound.ty(), &type_args);
++
++            if let Some(bound_trait_ty) = bound.trait_ty() {
++                if !implements_trait_with_context(
++                    sa,
++                    bound_ty,
++                    check_element,
++                    bound_trait_ty,
++                    &mut context,
++                ) {
++                    continue 'impls;
++                }
++            }
++        }
++        if !matches_pattern(&actual_ty) {
++            continue;
++        }
++
++        if result.as_ref().is_some_and(|result| result != &actual_ty) {
++            return None;
++        }
++        result = Some(actual_ty);
++    }
++
++    result
++}
++
++fn same_nominal_type(first: &SourceType, second: &SourceType) -> bool {
++    match (first, second) {
++        (SourceType::Class(first, _), SourceType::Class(second, _)) => first == second,
++        (SourceType::Struct(first, _), SourceType::Struct(second, _)) => first == second,
++        (SourceType::Enum(first, _), SourceType::Enum(second, _)) => first == second,
++        _ => false,
++    }
++}
++
+ fn find_impl_with_context(
+     sa: &Sema,
+     check_element: &dyn Element,
+@@ -648,30 +760,28 @@ fn trait_ty_match(
+         return false;
+     }
+ 
+-    if opt_bindings.iter().any(|t| t.is_none()) {
+-        return false;
+-    }
+-
+-    let bindings = SourceTypeArray::with(
+-        opt_bindings
+-            .clone()
+-            .into_iter()
+-            .map(|t| t.expect("missing binding"))
+-            .collect(),
+-    );
+-    let type_args = TypeArgs::from_own(sa, impl_.type_param_definition(sa), &bindings);
+-
+     let trait_alias_map = impl_.trait_alias_map();
+ 
+     for (trait_alias_id, type_binding) in &check_trait_ty.bindings {
+         let impl_alias_id = trait_alias_map.get(&trait_alias_id).expect("missing alias");
+         let impl_alias_ty = sa.alias(*impl_alias_id).ty();
+-        let impl_alias_ty = specialize_type(sa, impl_alias_ty, &type_args);
+-
+-        if type_binding != &impl_alias_ty {
++        if !match_types(
++            sa,
++            type_binding.clone(),
++            check_element,
++            check_type_param_definition,
++            impl_alias_ty,
++            impl_.type_param_definition(sa),
++            opt_bindings,
++            context,
++        ) {
+             return false;
+         }
+     }
+ 
++    if opt_bindings.iter().any(|t| t.is_none()) {
++        return false;
++    }
++
+     true
+ }
+diff --git a/dora-frontend/src/sema/matching.rs b/dora-frontend/src/sema/matching.rs
+index e06bc7c..f536511 100644
+--- a/dora-frontend/src/sema/matching.rs
++++ b/dora-frontend/src/sema/matching.rs
+@@ -155,7 +155,7 @@ pub(super) fn match_arrays_with_context(
+     true
+ }
+ 
+-fn match_types(
++pub(super) fn match_types(
+     sa: &Sema,
+     check_ty: SourceType,
+     check_element: &dyn Element,
+diff --git a/dora-frontend/src/typeck/pattern.rs b/dora-frontend/src/typeck/pattern.rs
+index 020f030..90e7c2e 100644
+--- a/dora-frontend/src/typeck/pattern.rs
++++ b/dora-frontend/src/typeck/pattern.rs
+@@ -20,14 +20,15 @@ use crate::error::diagnostics::{
+ use crate::sema::{
+     AltPattern, ClassDefinitionId, ConstDefinitionId, ConstValue, CtorPattern, CtorPatternField,
+     Element, ElementWithFields, EnumDefinitionId, IdentPattern, IdentType, Pattern, PatternId,
+-    StructDefinitionId, TuplePattern, TypeParamDefinition, VarId,
++    StructDefinitionId, TuplePattern, TypeParamDefinition, VarId, find_trait_pattern_type,
++    find_trait_tuple_pattern_type, implements_trait,
+ };
+ use crate::ty::SourceType;
+ use crate::typeck::{
+     TypeCheck, add_local, check_lit_char_from_text, check_lit_float_from_text,
+     check_lit_int_from_text, check_lit_str_from_text,
+ };
+-use crate::{Name, SourceTypeArray, SymbolKind, TypeArgs, specialize_type, ty};
++use crate::{Name, SourceTypeArray, SymbolKind, TraitType, TypeArgs, specialize_type, ty};
+ 
+ #[derive(Debug, Clone)]
+ pub(super) struct BindingData {
+@@ -61,6 +62,7 @@ fn check_pattern_inner(
+     pattern_id: PatternId,
+     ty: SourceType,
+ ) {
++    ck.body.set_pattern_input_ty(pattern_id, ty.clone());
+     let pattern = ck.body.pattern(pattern_id);
+ 
+     match pattern {
+@@ -95,6 +97,7 @@ fn check_pattern_inner(
+         }
+ 
+         Pattern::LitBool(..) => {
++            ck.body.set_ty(pattern_id, SourceType::Bool);
+             check_literal_ty(ck, ck.pattern_span(pattern_id), SourceType::Bool, ty);
+         }
+ 
+@@ -102,6 +105,7 @@ fn check_pattern_inner(
+             let span = ck.pattern_span(pattern_id);
+             let value = check_lit_char_from_text(ck.sa, ck.file_id, raw_text, span);
+             ck.body.set_const_value(pattern_id, ConstValue::Char(value));
++            ck.body.set_ty(pattern_id, SourceType::Char);
+ 
+             check_literal_ty(ck, span, SourceType::Char, ty);
+         }
+@@ -127,6 +131,7 @@ fn check_pattern_inner(
+                 .set_const_value(pattern_id, ConstValue::String(value));
+ 
+             let str_ty = SourceType::Class(ck.sa.known.classes.string(), SourceTypeArray::empty());
++            ck.body.set_ty(pattern_id, str_ty.clone());
+             check_literal_ty(ck, span, str_ty, ty);
+         }
+ 
+@@ -328,7 +333,18 @@ fn check_pattern_ctor(
+ }
+ 
+ fn check_literal_ty(ck: &mut TypeCheck, span: Span, ty: SourceType, expected_ty: SourceType) {
+-    if !expected_ty.allows(ck.sa, ty.clone()) && !ty.is_error() {
++    let compatible = if expected_ty.is_trait_object() {
++        implements_trait(
++            ck.sa,
++            ty.clone(),
++            ck.element,
++            TraitType::new_ty(ck.sa, expected_ty.clone()),
++        )
++    } else {
++        expected_ty.allows(ck.sa, ty.clone())
++    };
++
++    if !compatible && !ty.is_error() {
+         let expected_ty = expected_ty.name(ck.sa);
+         let ty_name = ck.ty_name(&ty);
+         ck.report(span, &WRONG_TYPE, args!(expected_ty, ty_name));
+@@ -354,8 +370,27 @@ fn check_pattern_enum(
+         ck.report(ck.pattern_span(pattern_id), &NOT_ACCESSIBLE, args!());
+     }
+ 
+-    if Some(enum_id) == ty.enum_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(enum_id) == ty.enum_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Enum(enum_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };
+         let type_args = TypeArgs::from_own(
+             ck.sa,
+             enum_.type_param_definition(ck.sa),
+@@ -422,6 +457,7 @@ fn check_pattern_const(
+     let const_ = ck.sa.const_(const_id);
+     let const_ty = const_.ty();
+     ck.body.insert_ident(pattern_id, IdentType::Const(const_id));
++    ck.body.set_ty(pattern_id, const_ty.clone());
+     check_literal_ty(ck, span, const_ty, ty);
+ }
+ 
+@@ -432,7 +468,30 @@ fn check_pattern_tuple(
+     tuple_pattern: &TuplePattern,
+     ty: SourceType,
+ ) {
+-    if !ty.is_tuple_or_unit() {
++    let direct_match = ty.is_tuple_or_unit();
++    let trait_object_match = ty.is_trait_object().then(|| {
++        let pattern_count = tuple_pattern
++            .patterns
++            .iter()
++            .filter(|&&pattern_id| !matches!(ck.body.pattern(pattern_id), Pattern::Rest))
++            .count();
++        let has_rest = tuple_pattern
++            .patterns
++            .iter()
++            .any(|&pattern_id| matches!(ck.body.pattern(pattern_id), Pattern::Rest));
++        find_trait_tuple_pattern_type(
++            ck.sa,
++            ck.element,
++            TraitType::new_ty(ck.sa, ty.clone()),
++            pattern_count,
++            (!has_rest).then_some(pattern_count),
++        )
++    });
++
++    let Some(tuple_ty) = direct_match
++        .then_some(ty.clone())
++        .or(trait_object_match.flatten())
++    else {
+         if !ty.is_error() {
+             let ty_name = ck.ty_name(&ty);
+             ck.report(
+@@ -449,12 +508,14 @@ fn check_pattern_tuple(
+             }
+         }
+         return;
+-    }
++    };
++
++    ck.body.set_ty(pattern_id, tuple_ty.clone());
+ 
+-    let subtypes = if ty.is_unit() {
++    let subtypes = if tuple_ty.is_unit() {
+         SourceTypeArray::empty()
+     } else {
+-        ty.tuple_subtypes().expect("tuple expected")
++        tuple_ty.tuple_subtypes().expect("tuple expected")
+     };
+ 
+     let mut idx = 0;
+@@ -529,8 +590,27 @@ fn check_pattern_class(
+         );
+     }
+ 
+-    if Some(cls_id) == ty.cls_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(cls_id) == ty.cls_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Class(cls_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };
+         let type_args =
+             TypeArgs::from_own(ck.sa, cls.type_param_definition(ck.sa), &value_type_params);
+ 
+@@ -594,8 +674,27 @@ fn check_pattern_struct(
+         );
+     }
+ 
+-    if Some(struct_id) == ty.struct_id() {
+-        let value_type_params = ty.type_params();
++    let direct_match = Some(struct_id) == ty.struct_id();
++    let trait_object_match = ty
++        .is_trait_object()
++        .then(|| {
++            find_trait_pattern_type(
++                ck.sa,
++                ck.element,
++                SourceType::Struct(struct_id, SourceTypeArray::empty()),
++                TraitType::new_ty(ck.sa, ty.clone()),
++            )
++        })
++        .flatten();
++
++    if direct_match || trait_object_match.is_some() {
++        let value_type_params = if direct_match {
++            ty.type_params()
++        } else {
++            trait_object_match
++                .expect("missing trait pattern type")
++                .type_params()
++        };
+         let type_args = TypeArgs::from_own(
+             ck.sa,
+             struct_.type_param_definition(ck.sa),
+diff --git a/pkgs/boots/bytecode/dump.dora b/pkgs/boots/bytecode/dump.dora
+index bc6d597..ae879b4 100644
+--- a/pkgs/boots/bytecode/dump.dora
++++ b/pkgs/boots/bytecode/dump.dora
+@@ -295,6 +295,12 @@ pub fn dump_instruction(inst: BytecodeInstructionInfo, dumper: BytecodeDumper) {
+         BytecodeInstruction::NewTraitObject(dest, obj, idx) => {
+             dumper.emit_reg2_and_idx(inst, "NewTraitObject", dest, obj, idx);
+         }
++        BytecodeInstruction::TestTraitObjectType(dest, obj, idx) => {
++            dumper.emit_reg2_and_idx(inst, "TestTraitObjectType", dest, obj, idx);
++        }
++        BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx) => {
++            dumper.emit_reg2_and_idx(inst, "LoadTraitObjectValue", dest, obj, idx);
++        }
+         BytecodeInstruction::ArrayLength(dest, src) => {
+             dumper.emit_reg2(inst, "ArrayLength", dest, src);
+         }
+diff --git a/pkgs/boots/bytecode/instruction.dora b/pkgs/boots/bytecode/instruction.dora
+index ec4eadc..4a7ca84 100644
+--- a/pkgs/boots/bytecode/instruction.dora
++++ b/pkgs/boots/bytecode/instruction.dora
+@@ -70,6 +70,8 @@ pub enum BytecodeInstruction {
+     NewEnum(BytecodeRegister, ConstPoolId, Array[BytecodeRegister]),
+     NewStruct(BytecodeRegister, ConstPoolId, Array[BytecodeRegister]),
+     NewTraitObject(BytecodeRegister, BytecodeRegister, ConstPoolId),
++    TestTraitObjectType(BytecodeRegister, BytecodeRegister, ConstPoolId),
++    LoadTraitObjectValue(BytecodeRegister, BytecodeRegister, ConstPoolId),
+ 
+     ArrayLength(BytecodeRegister, BytecodeRegister),
+ 
+diff --git a/pkgs/boots/bytecode/opcode.dora b/pkgs/boots/bytecode/opcode.dora
+index 9c73189..5c41880 100644
+--- a/pkgs/boots/bytecode/opcode.dora
++++ b/pkgs/boots/bytecode/opcode.dora
+@@ -71,6 +71,8 @@ pub const BYTECODE_OPCODE_GET_REGISTER_REF: Int32 = 66;
+ pub const BYTECODE_OPCODE_GET_GLOBAL_REF: Int32 = 67;
+ pub const BYTECODE_OPCODE_RET: Int32 = 68;
+ pub const BYTECODE_OPCODE_GET_ARRAY_REF: Int32 = 69;
++pub const BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE: Int32 = 70;
++pub const BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE: Int32 = 71;
+ 
+ pub const BYTECODE_TYPE_UNIT: Int32 = 0;
+ pub const BYTECODE_TYPE_BOOL: Int32 = 1;
+@@ -532,6 +534,12 @@ pub fn bytecode_name(opcode: Int32): String {
+     if opcode == BYTECODE_OPCODE_GET_ARRAY_REF {
+         return "GetArrayRef";
+     }
++    if opcode == BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE {
++        return "TestTraitObjectType";
++    }
++    if opcode == BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE {
++        return "LoadTraitObjectValue";
++    }
+     unreachable()
+ }
+ 
+diff --git a/pkgs/boots/bytecode/reader.dora b/pkgs/boots/bytecode/reader.dora
+index 8317e04..556829f 100644
+--- a/pkgs/boots/bytecode/reader.dora
++++ b/pkgs/boots/bytecode/reader.dora
+@@ -376,6 +376,18 @@ impl BytecodeIterator {
+                 let idx = self.read_const_pool_id();
+                 BytecodeInstruction::NewTraitObject(dest, obj, idx)
+             }
++            opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE => {
++                let dest = self.read_register();
++                let obj = self.read_register();
++                let idx = self.read_const_pool_id();
++                BytecodeInstruction::TestTraitObjectType(dest, obj, idx)
++            }
++            opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE => {
++                let dest = self.read_register();
++                let obj = self.read_register();
++                let idx = self.read_const_pool_id();
++                BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx)
++            }
+             opc::BYTECODE_OPCODE_ARRAY_LENGTH => {
+                 let dest = self.read_register();
+                 let arr = self.read_register();
+diff --git a/pkgs/boots/bytecode_graph_builder.dora b/pkgs/boots/bytecode_graph_builder.dora
+index 4653a35..ed0d18f 100644
+--- a/pkgs/boots/bytecode_graph_builder.dora
++++ b/pkgs/boots/bytecode_graph_builder.dora
+@@ -884,6 +884,14 @@ impl BytecodeGraphBuilder {
+                 self.emit_new_trait_object(dest, obj, idx);
+                 false
+             }
++            BytecodeInstruction::TestTraitObjectType(dest, obj, idx) => {
++                self.emit_test_trait_object_type(dest, obj, idx);
++                false
++            }
++            BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx) => {
++                self.emit_load_trait_object_value(dest, obj, idx);
++                false
++            }
+             BytecodeInstruction::ArrayLength(dest, src) => {
+                 self.emit_array_length(dest, src);
+                 false
+@@ -2427,6 +2435,62 @@ impl BytecodeGraphBuilder {
+         self.emit_object_initialization_fence(obj_inst);
+     }
+ 
++    fn trait_object_pattern_info(idx: ConstPoolId): TraitObjectInfo {
++        let ConstPoolEntry::TraitObject(
++            trait_ty,
++            actual_object_ty,
++        ) = self.bc().const_pool_entry(idx);
++        TraitObjectInfo(
++            trait_ty = self.specialize_ty(trait_ty),
++            actual_object_ty = self.specialize_ty(actual_object_ty),
++        )
++    }
++
++    fn emit_test_trait_object_type(
++        dest: BytecodeRegister,
++        obj: BytecodeRegister,
++        idx: ConstPoolId,
++    ) {
++        let obj_inst = self.emit_local_get(obj);
++        let actual_shape = graph::create_load_inst(
++            obj_inst,
++            iface::OBJECT_SHAPE_OFFSET,
++            InstExtraData::None,
++            Type::Int32,
++            true,
++        );
++        self.current().append_inst(actual_shape);
++
++        let expected_shape = graph::create_shape_const_inst(
++            self.trait_object_pattern_info(idx),
++        );
++        self.current().append_inst(expected_shape);
++        let result = graph::create_binary_inst(
++            Op::Equal,
++            Type::Int32,
++            actual_shape,
++            expected_shape,
++        );
++        self.current().append_inst(result);
++        self.emit_local_set(dest, result);
++    }
++
++    fn emit_load_trait_object_value(
++        dest: BytecodeRegister,
++        obj: BytecodeRegister,
++        _idx: ConstPoolId,
++    ) {
++        if self.is_non_zero_type(self.reg(dest)) {
++            let obj_inst = self.emit_local_get(obj);
++            self.load_field_into(
++                dest,
++                obj_inst,
++                InstExtraData::None,
++                iface::OBJECT_HEADER_LENGTH,
++            );
++        }
++    }
++
+     fn emit_new_struct(
+         dest: BytecodeRegister,
+         idx: ConstPoolId,
+diff --git a/pkgs/boots/codegen.dora b/pkgs/boots/codegen.dora
+index 4806756..b8f0363 100644
+--- a/pkgs/boots/codegen.dora
++++ b/pkgs/boots/codegen.dora
+@@ -90,6 +90,11 @@ fn emit_inst(codegen: CodeGen, inst: Inst) {
+             codegen.emit_int32_const(inst);
+         }
+ 
++        Op::ShapeConst => {
++            codegen.emit_comment("ShapeConst");
++            codegen.emit_shape_const(inst);
++        }
++
+         Op::Int64Const => {
+             codegen.emit_comment("Int64Const");
+             codegen.emit_int64_const(inst);
+@@ -669,6 +674,8 @@ pub trait CodeGen {
+ 
+     fn emit_int32_const(inst: Inst);
+ 
++    fn emit_shape_const(inst: Inst);
++
+     fn emit_int64_const(inst: Inst);
+ 
+     fn emit_float32_const(inst: Inst);
+diff --git a/pkgs/boots/codegen/arm64.dora b/pkgs/boots/codegen/arm64.dora
+index 36ad23a..6b1d4d7 100644
+--- a/pkgs/boots/codegen/arm64.dora
++++ b/pkgs/boots/codegen/arm64.dora
+@@ -1237,6 +1237,14 @@ impl CodeGen for CodeGenArm64 {
+         self.mov_imm_w(register, inst.get_value_as_int32());
+     }
+ 
++    fn emit_shape_const(inst: Inst) {
++        let register = inst.get_location_data().get_output().get_register();
++        let key = iface::get_class_shape_key_for_trait_object(
++            inst.get_trait_object_info(),
++        );
++        self.load_shape(register, REG_TEMP2, key);
++    }
++
+     fn emit_int64_const(inst: Inst) {
+         let loc = inst.get_location_data();
+         let register = loc.get_output().get_register();
+diff --git a/pkgs/boots/codegen/x64.dora b/pkgs/boots/codegen/x64.dora
+index 317a83e..55a79ed 100644
+--- a/pkgs/boots/codegen/x64.dora
++++ b/pkgs/boots/codegen/x64.dora
+@@ -1261,6 +1261,14 @@ impl CodeGen for CodeGenX64 {
+         self.asm.movl_ri(register, Immediate(inst.get_value_as_int32().to_int64()));
+     }
+ 
++    fn emit_shape_const(inst: Inst) {
++        let register = inst.get_location_data().get_output().get_register();
++        let key = iface::get_class_shape_key_for_trait_object(
++            inst.get_trait_object_info(),
++        );
++        self.load_shape(register, REG_TEMP, key);
++    }
++
+     fn emit_int64_const(inst: Inst) {
+         let loc = inst.get_location_data();
+         let register = loc.get_output().get_register();
+diff --git a/pkgs/boots/graph.dora b/pkgs/boots/graph.dora
+index 519070c..baa6ec9 100644
+--- a/pkgs/boots/graph.dora
++++ b/pkgs/boots/graph.dora
+@@ -925,6 +925,7 @@ pub enum Op {
+     UInt8Const,
+     Int32Const,
+     Int64Const,
++    ShapeConst,
+ 
+     Float32Const,
+     Float64Const,
+@@ -1133,6 +1134,7 @@ pub fn op_name(op: Op): String {
+         Op::UInt8Const => "Const.UInt8",
+         Op::Int32Const => "Const.Int32",
+         Op::Int64Const => "Const.Int64",
++        Op::ShapeConst => "Const.Shape",
+         Op::Float32Const => "Const.Float32",
+         Op::Float64Const => "Const.Float64",
+         Op::StringConst => "Const.String",
+@@ -1448,6 +1450,7 @@ impl Inst {
+             Op::UInt8Const => Some(Type::UInt8),
+             Op::Int32Const => Some(Type::Int32),
+             Op::Int64Const => Some(Type::Int64),
++            Op::ShapeConst => Some(Type::Int32),
+             Op::Float32Const => Some(Type::Float32),
+             Op::Float64Const => Some(Type::Float64),
+             Op::StringConst => Some(Type::Ptr),
+@@ -2055,6 +2058,7 @@ impl Inst {
+             Op::UInt8Const => false,
+             Op::Int32Const => false,
+             Op::Int64Const => false,
++            Op::ShapeConst => false,
+             Op::Float32Const => false,
+             Op::Float64Const => false,
+             Op::StringConst => false,
+@@ -2933,6 +2937,14 @@ pub fn create_binary_inst(op: Op, ty: Type, lhs: Inst, rhs: Inst): Inst {
+     inst
+ }
+ 
++pub fn create_shape_const_inst(info: TraitObjectInfo): Inst {
++    let inst = Inst::new();
++    inst._op = Some(Op::ShapeConst);
++    inst.ty = Type::Int32;
++    inst.extra = InstExtraData::TraitObjectInfo(info);
++    inst
++}
++
+ pub fn create_test_inst(opcode: Op, ty: Type, lhs: Inst, rhs: Inst): Inst {
+     let inst = Inst::new();
+     inst._op = Some(opcode);
+diff --git a/pkgs/boots/graph/dump.dora b/pkgs/boots/graph/dump.dora
+index 352a4b0..bff034e 100644
+--- a/pkgs/boots/graph/dump.dora
++++ b/pkgs/boots/graph/dump.dora
+@@ -292,6 +292,7 @@ fn dump_inst_name(inst: Inst): String {
+         Op::FalseConst => "Const.False",
+         Op::UInt8Const => "Const.UInt8(#${inst.get_value_as_uint8()})",
+         Op::Int32Const => "Const.Int32(#${inst.get_value_as_int32()})",
++        Op::ShapeConst => "Const.Shape",
+         Op::Int64Const => "Const.Int64(#${inst.get_value_as_int64()})",
+         Op::Float32Const => "Const.Float32(#${inst.get_value_as_float32()})",
+         Op::Float64Const => "Const.Float64(#${inst.get_value_as_float64()})",
+diff --git a/pkgs/boots/graph/verifier.dora b/pkgs/boots/graph/verifier.dora
+index 6891f70..da4a35f 100644
+--- a/pkgs/boots/graph/verifier.dora
++++ b/pkgs/boots/graph/verifier.dora
+@@ -129,6 +129,7 @@ impl GraphVerifier {
+             | Op::UInt8Const
+             | Op::Int32Const
+             | Op::Int64Const
++            | Op::ShapeConst
+             | Op::Float32Const
+             | Op::Float64Const
+             | Op::StringConst
+@@ -142,6 +143,9 @@ impl GraphVerifier {
+             | Op::ThreadCurrent
+             | Op::Unreachable => {
+                 self.assert_no_inputs(inst);
++                if inst.op() == Op::ShapeConst {
++                    inst.get_trait_object_info();
++                }
+             }
+ 
+             Op::LocalGet => {
+diff --git a/pkgs/boots/location.dora b/pkgs/boots/location.dora
+index 57eacfb..4c5587b 100644
+--- a/pkgs/boots/location.dora
++++ b/pkgs/boots/location.dora
+@@ -113,6 +113,7 @@ impl LocationAnnotation {
+             Op::UInt8Const
+             | Op::Int32Const
+             | Op::Int64Const
++            | Op::ShapeConst
+             | Op::StringConst
+             | Op::NullConst => {
+                 use_output_register(inst, InputOutputOverlap::NoOverlap);
+diff --git a/pkgs/boots/store_elimination.dora b/pkgs/boots/store_elimination.dora
+index 0ad132b..b477038 100644
+--- a/pkgs/boots/store_elimination.dora
++++ b/pkgs/boots/store_elimination.dora
+@@ -251,6 +251,7 @@ fn is_memory_barrier(op: Op): Bool {
+         | Op::UInt8Const
+         | Op::Int32Const
+         | Op::Int64Const
++        | Op::ShapeConst
+         | Op::Float32Const
+         | Op::Float64Const
+         | Op::StringConst
+diff --git a/tools/bytecode.toml b/tools/bytecode.toml
+index a9fba39..a0b9aaf 100644
+--- a/tools/bytecode.toml
++++ b/tools/bytecode.toml
+@@ -75,6 +75,8 @@ variants = [
+     "GetGlobalRef",
+     "Ret",
+     "GetArrayRef",
++    "TestTraitObjectType",
++    "LoadTraitObjectValue",
+ ]
+ 
+ [BytecodeType]

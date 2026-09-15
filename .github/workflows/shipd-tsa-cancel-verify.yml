@@ -1,0 +1,139 @@
+name: Shipd Fastlane - TSA Cancel Verify Solution
+
+# Builds the tsa_cancel candidate (shipd-cases/tsa-cancel/) against its pinned
+# upstream commit and runs the same test.sh contract the Shipd grader uses.
+#
+# Per Olympus's own submission docs, the Dockerfile "works without test.patch
+# or solution.patch applied; we apply them after the build" - the image is
+# built ONCE from the vanilla, unpatched repo, and test.patch/solution.patch
+# are applied to a container spun up from that already-built image, not
+# rebuilt in. Earlier revisions of this workflow applied both patches to the
+# checkout BEFORE building the image, which let the Dockerfile's own `cargo
+# build`/`cargo test --no-run` step pre-compile the *patched* source and
+# masked how much rebuilding test.sh actually has to do at grading time.
+# This mirrors the real sequence instead: build from vanilla source, then
+# `git apply` inside a fresh container per mode, matching what Shipd does.
+#
+# Docker layers are cached via the GitHub Actions cache backend so repeat
+# runs after a small patch edit don't recompile the whole kumomta workspace
+# from scratch.
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "shipd-cases/tsa-cancel/**"
+      - ".github/workflows/shipd-tsa-cancel-verify.yml"
+
+env:
+  PINNED_COMMIT: 2a40536127e243065dbaa64f616f386eeb1a91db
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout this repo (case artifacts)
+        uses: actions/checkout@v4
+        with:
+          path: this-repo
+          sparse-checkout: |
+            shipd-cases/tsa-cancel
+          sparse-checkout-cone-mode: false
+
+      - name: Checkout pinned kumomta commit (candidate base, vanilla)
+        uses: actions/checkout@v4
+        with:
+          repository: KumoCorp/kumomta
+          ref: ${{ env.PINNED_COMMIT }}
+          path: candidate
+
+      - name: Copy in the candidate Dockerfile (no patches applied yet)
+        run: cp this-repo/shipd-cases/tsa-cancel/Dockerfile candidate/Dockerfile
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build verifier image from vanilla source (cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: candidate
+          tags: tsa-cancel-verify:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # The real Shipd grading harness wraps the candidate image with its own
+      # outer layer that runs `chmod -R a+rX /opt/cargo` before executing
+      # tests (visible in this case's original Verify Solution build log),
+      # because the base image vendors its cargo registry source with mode
+      # 640 owned by model:model. Baking that chmod into the candidate's own
+      # Dockerfile would force costly overlayfs copy-up of the whole vendored
+      # registry into a new layer and risks blowing past image-flatten time
+      # budgets, so it stays external here too - this step reproduces only
+      # Shipd's own wrapper behavior, not a change to the candidate artifact.
+      - name: Apply Shipd's external cargo-registry permission wrapper
+        run: |
+          docker run --user root --name cargo-perm-fix tsa-cancel-verify:latest \
+            bash -c '[ -d /opt/cargo ] && chmod -R a+rX /opt/cargo || true'
+          docker commit cargo-perm-fix tsa-cancel-verify:latest
+          docker rm cargo-perm-fix
+
+      - name: "Run test.sh new (Verify Solution: test.patch + solution.patch applied live)"
+        run: |
+          mkdir -p out patches && chmod 777 out
+          cp this-repo/shipd-cases/tsa-cancel/test.patch patches/
+          cp this-repo/shipd-cases/tsa-cancel/solution.patch patches/
+          docker run --rm -u 54321:54321 -e HOME=/home/model \
+            --tmpfs /tmp:rw,size=4g \
+            -v "$PWD/out:/out" \
+            -v "$PWD/patches:/patches:ro" \
+            tsa-cancel-verify:latest \
+            bash -c '
+              set -euo pipefail
+              cd /app
+              git apply --check /patches/solution.patch
+              git apply --check /patches/test.patch
+              git apply /patches/solution.patch
+              git apply /patches/test.patch
+              ./test.sh new --output_path /out/new.xml
+            '
+
+      - name: "Run test.sh base (regression: test.patch only, fresh container)"
+        if: always()
+        run: |
+          docker run --rm -u 54321:54321 -e HOME=/home/model \
+            --tmpfs /tmp:rw,size=4g \
+            -v "$PWD/out:/out" \
+            -v "$PWD/patches:/patches:ro" \
+            tsa-cancel-verify:latest \
+            bash -c '
+              set -euo pipefail
+              cd /app
+              git apply --check /patches/test.patch
+              git apply /patches/test.patch
+              ./test.sh base --output_path /out/base.xml
+            '
+
+      - name: Publish JUnit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-solution-results
+          path: out/*.xml
+
+      - name: Fail if any test failed
+        if: always()
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in out/*.xml; do
+            failures=$(grep -o 'failures="[0-9]*"' "$f" | head -1 | grep -o '[0-9]*')
+            errors=$(grep -o 'errors="[0-9]*"' "$f" | head -1 | grep -o '[0-9]*')
+            tests=$(grep -o 'tests="[0-9]*"' "$f" | head -1 | grep -o '[0-9]*')
+            echo "$f: tests=$tests failures=$failures errors=$errors"
+            if [ "${failures:-0}" -ne 0 ] || [ "${errors:-0}" -ne 0 ]; then
+              fail=1
+            fi
+          done
+          exit "$fail"

@@ -1,0 +1,75 @@
+diff --git a/src/optimizer/rule/normalization/pushdown_predicates.rs b/src/optimizer/rule/normalization/pushdown_predicates.rs
+@@ -267,6 +267,7 @@ impl NormalizationRule for PushPredicateIntoScan {
++        let table_name = scan_op.table_name.clone();
+@@ -288,15 +289,25 @@ impl NormalizationRule for PushPredicateIntoScan {
++            let index_expressions = index_meta.expressions.clone();
+-                | IndexType::Normal => RangeDetacher::new(
+-                    index_meta.table_name.as_ref(),
+-                    &index_meta.column_ids[0],
+-                    arena,
+-                )
+-                .detach(&filter_op.predicate)?,
++                | IndexType::Normal => {
++                    let mut detacher = if matches!(
++                        index_expressions[0].unpack_alias_ref(),
++                        ScalarExpression::ColumnRef { .. }
++                    ) {
++                        RangeDetacher::new(table_name.as_ref(), &index_meta.column_ids[0], arena)
++                    } else {
++                        RangeDetacher::new_expression(
++                            &index_expressions[0],
++                            index_meta.value_ty.clone(),
++                            arena,
++                        )
++                    };
++                    detacher.detach(&filter_op.predicate)?
++                }
+@@ -341,7 +352,9 @@ impl NormalizationRule for PushPredicateIntoScan {
+-            if mapping_slots.iter().all(|slot| *slot != usize::MAX) {
++            if !index_meta.is_expression_index()
++                && mapping_slots.iter().all(|slot| *slot != usize::MAX)
++            {
+@@ -362,16 +375,21 @@ impl PushPredicateIntoScan {
+-        let mut eq_ranges = Vec::with_capacity(meta.column_ids.len());
++        let expressions = meta.expressions.clone();
++        let mut eq_ranges = Vec::with_capacity(expressions.len());
+-        for column_id in meta.column_ids.iter() {
++        for expression in expressions.iter() {
+-            let Some(detached) = RangeDetacher::new(meta.table_name.as_ref(), column_id, arena)
+-                .detach(predicate.as_ref())?
++            let Some(detached) = RangeDetacher::new_expression(
++                expression,
++                expression.return_type(arena).into_owned(),
++                arena,
++            )
++            .detach(predicate.as_ref())?
+@@ -396,7 +414,7 @@ impl PushPredicateIntoScan {
+-            if range.only_eq() && apply_column_count != meta.column_ids.len() {
++            if range.only_eq() && apply_column_count != expressions.len() {
+@@ -651,6 +669,11 @@ mod tests {
++            expressions: vec![
++                ScalarExpression::column_expr(c1, 0),
++                ScalarExpression::column_expr(c2, 1),
++                ScalarExpression::column_expr(c3, 2),
++            ],
+@@ -720,6 +743,11 @@ mod tests {
++            expressions: vec![
++                ScalarExpression::column_expr(c1, 0),
++                ScalarExpression::column_expr(c2, 1),
++                ScalarExpression::column_expr(c3, 2),
++            ],
+@@ -804,12 +832,18 @@ mod tests {
++        let c3_ref = arena.alloc_column(c3);
++            expressions: vec![
++                ScalarExpression::column_expr(c2_ref, 1),
++                ScalarExpression::column_expr(c3_ref, 2),
++                ScalarExpression::column_expr(c1_ref, 0),
++            ],
+@@ -823,6 +857,10 @@ mod tests {
++            expressions: vec![
++                ScalarExpression::column_expr(c1_ref, 0),
++                ScalarExpression::column_expr(c2_ref, 1),
++            ],
+@@ -928,7 +966,7 @@ mod tests {
+-                c3.datatype().skip_serializable(),
++                arena.column(c3_ref).datatype().skip_serializable(),

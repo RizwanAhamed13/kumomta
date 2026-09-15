@@ -1,0 +1,19 @@
+diff --git a/crates/semantics/src/checker/registration/mod.rs b/crates/semantics/src/checker/registration/mod.rs
+@@ -161,6 +161,23 @@ impl TaskState {
++        // Field defaults are values, so infer them only after every value in the
++        // package is registered. This also makes sibling-file constants visible.
++        let const_initializers = self.collect_package_field_default_const_initializers(&id, &files);
++        for file in &files {
++            self.with_file_context_mut(
++                store,
++                FileContext::Standard {
++                    package_id: &id,
++                    file_id: file.id,
++                    imports: &file.imports,
++                },
++                |this, store| {
++                    this.infer_and_install_field_defaults(store, &file.items, &const_initializers)
++                },
++            );
++        }
++

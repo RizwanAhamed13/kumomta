@@ -1,0 +1,131 @@
+diff --git a/src/binder/parser.rs b/src/binder/parser.rs
+@@ -841,35 +841,139 @@ where
+-        let input = self
++        let mut input = self
+-        let mut columns = Vec::with_capacity(create.columns.len());
++        let input_schema = input.output_schema(self.arena).clone();
++        let key_count = create.columns.len();
++        let mut expressions = Vec::with_capacity(create.columns.len());
+-            match self
++            let expression = self
+-                .bind_expr(&index_column.column.expr, self.arena)?
+-            {
+-                ScalarExpression::ColumnRef { column, .. } => columns.push(column),
+-                expr => {
+-                    return Err(DatabaseError::UnsupportedStmt(format!(
+-                        "'CREATE INDEX' by {expr}"
+-                    )))
++                .bind_expr(&index_column.column.expr, self.arena)?;
++            match &expression {
++                ScalarExpression::ColumnRef { .. } => {}
++                _ if key_count == 1 => {
++                    if !Self::validate_index_expression(&expression, &input_schema, self.arena)? {
++                        return Err(DatabaseError::UnsupportedStmt(
++                            "CREATE INDEX expressions must reference an indexed-table column"
++                                .to_string(),
++                        ));
++                    }
++                }
++                _ => {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "expression indexes support exactly one key".to_string(),
++                    ));
++            expressions.push(expression);
+-            columns,
++            expressions,
++    fn validate_index_expression(
++        expression: &ScalarExpression,
++        input_schema: &[ColumnRef],
++        arena: &PlanArena,
++    ) -> Result<bool, DatabaseError> {
++        fn is_supported_literal(value: &DataValue) -> bool {
++            matches!(value, DataValue::Int32(value) if *value >= 0)
++        }
++
++        fn validate_column(
++            column: ColumnRef,
++            input_schema: &[ColumnRef],
++            arena: &PlanArena,
++        ) -> Result<(), DatabaseError> {
++            if !input_schema
++                .iter()
++                .any(|candidate| arena.same_column(*candidate, column))
++            {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "CREATE INDEX expressions must use columns from the indexed table".to_string(),
++                ));
++            }
++            if *arena.column(column).datatype() != LogicalType::Integer {
++                return Err(DatabaseError::UnsupportedStmt(
++                    "CREATE INDEX arithmetic requires INTEGER columns".to_string(),
++                ));
++            }
++            Ok(())
++        }
++
++        match expression {
++            ScalarExpression::Binary {
++                op: op @ (expression::BinaryOperator::Plus | expression::BinaryOperator::Minus),
++                left_expr,
++                right_expr,
++                ..
++            } => {
++                let ScalarExpression::ColumnRef { column, .. } = left_expr.as_ref() else {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "CREATE INDEX arithmetic requires an INTEGER column as its left operand"
++                            .to_string(),
++                    ));
++                };
++                validate_column(*column, input_schema, arena)?;
++                match right_expr.as_ref() {
++                    ScalarExpression::ColumnRef { column, .. } => {
++                        validate_column(*column, input_schema, arena)?;
++                    }
++                    ScalarExpression::Constant(value)
++                        if matches!(op, expression::BinaryOperator::Plus)
++                            && is_supported_literal(value) => {}
++                    _ => {
++                        return Err(DatabaseError::UnsupportedStmt(
++                            "CREATE INDEX arithmetic requires an INTEGER column or a non-negative integer literal as its right operand"
++                                .to_string(),
++                        ));
++                    }
++                }
++                Ok(true)
++            }
++            ScalarExpression::TypeCast { expr, ty, .. }
++                if *ty == LogicalType::Bigint
++                    && matches!(expr.as_ref(), ScalarExpression::ColumnRef { .. }) =>
++            {
++                let ScalarExpression::ColumnRef { column, .. } = expr.as_ref() else {
++                    unreachable!();
++                };
++                if !input_schema
++                    .iter()
++                    .any(|candidate| arena.same_column(*candidate, *column))
++                {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "CREATE INDEX expressions must use columns from the indexed table"
++                            .to_string(),
++                    ));
++                }
++                if !matches!(
++                    arena.column(*column).datatype(),
++                    LogicalType::Integer | LogicalType::Bigint
++                ) {
++                    return Err(DatabaseError::UnsupportedStmt(
++                        "CREATE INDEX casts require an INTEGER or BIGINT source".to_string(),
++                    ));
++                }
++                Ok(true)
++            }
++            _ => Err(DatabaseError::UnsupportedStmt(
++                "CREATE INDEX supports only integer addition, subtraction, and CAST(integer_column AS BIGINT)"
++                    .to_string(),
++            )),
++        }
++    }
++
+@@ -2153,7 +2257,7 @@ impl<'a, 'parent, T: Transaction, A: AsRef<[(&'static str, DataValue)]>> Binder<
+-            } => ScalarExpression::type_cast(
++            } => ScalarExpression::explicit_type_cast(

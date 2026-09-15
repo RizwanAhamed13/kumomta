@@ -1,0 +1,8 @@
+diff --git a/pkgs/boots/bytecode/dump.dora b/pkgs/boots/bytecode/dump.dora
+@@ -295,6 +295,12 @@ pub fn dump_instruction(inst: BytecodeInstructionInfo, dumper: BytecodeDumper) {
++        BytecodeInstruction::TestTraitObjectType(dest, obj, idx) => {
++            dumper.emit_reg2_and_idx(inst, "TestTraitObjectType", dest, obj, idx);
++        }
++        BytecodeInstruction::LoadTraitObjectValue(dest, obj, idx) => {
++            dumper.emit_reg2_and_idx(inst, "LoadTraitObjectValue", dest, obj, idx);
++        }

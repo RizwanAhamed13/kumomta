@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "captured_at_utc": "2026-09-12T23:46:07.303889+00:00",
+  "audit_scope": "Retained metadata, receipts and reports only. No candidate/archive source payload reads, builds or tests.",
+  "interpretation": [
+    "Original milestone labels and timestamps are retained unchanged.",
+    "New first-complete definition means frozen package after all agreed own validation; execution completion is separate from every quality check passing.",
+    "These are recorded receipt timestamps, not authenticated process provenance. Metadata/generic exposure is tracked; evidence withholding does not certify blindness.",
+    "Unknown exact times remain null; no file mtime is substituted for an event receipt.",
+    "This chronology is independent of platform upload readiness and acceptance-byte identity."
+  ],
+  "cases": {
+    "lisette": {
+      "original_freeze": {
+        "at_utc": "2026-09-12T17:40:07Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/first-complete.timestamp",
+          "sha256": "aa6f3cbc81886267c5bb59fa06518c3875c42a40eecc1db70e943911eaa1d401",
+          "bytes": 26
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T23:10:07+05:30"
+      },
+      "own_validation_complete": {
+        "at_utc": "2026-09-12T18:43:17Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/own-validation-completed.txt",
+          "sha256": "a08c60b93182735432c9001443cd3aaf37c5410784c567e2a154c2b3ee2cf4ad",
+          "bytes": 21
+        },
+        "timestamp_kind": "explicit_event_receipt"
+      },
+      "first_archive_content_read": {
+        "at_utc": "2026-09-12T18:43:41Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/holdout-first-read.txt",
+          "sha256": "deb53a3314c7c3e65d78a13d062790607036567bb49e2c0de3e7539d42fc8cc7",
+          "bytes": 21
+        },
+        "timestamp_kind": "explicit_event_receipt"
+      },
+      "additional_milestones": [
+        {
+          "at_utc": "2026-09-12T18:05:49Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/matrix-started.txt",
+            "sha256": "391907b0ea49b26d994d47df67cc7258f20900e6dc3d4350a9792ade4a1c4504",
+            "bytes": 21
+          },
+          "timestamp_kind": "explicit_event_receipt"
+        },
+        {
+          "at_utc": "2026-09-12T18:17:19Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/matrix-finished.txt",
+            "sha256": "3c62d4897eab882bd5c1034371140c0913428f3a96baf1fd1749d498a868e9ef",
+            "bytes": 21
+          },
+          "timestamp_kind": "explicit_event_receipt"
+        },
+        {
+          "at_utc": "2026-09-12T18:21:13Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/coverage-started.txt",
+            "sha256": "bc8ab5935ed67d5990080787632b0d18c6fc1a733515b99e22ea4bf79efb337c",
+            "bytes": 21
+          },
+          "timestamp_kind": "explicit_event_receipt"
+        },
+        {
+          "at_utc": "2026-09-12T18:26:42Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/lisette/evidence/coverage-finished.txt",
+            "sha256": "a2e166a41412515db8735345b6a520da86a6fdd422f696f3674558c89dd78114",
+            "bytes": 21
+          },
+          "timestamp_kind": "explicit_event_receipt"
+        }
+      ],
+      "classification": "Original receipt called first-complete is an early artifact snapshot; it precedes the clean matrix and coverage. Under the newer post-validation definition, use the own-validation-completed receipt separately and do not relabel or overwrite the original freeze.",
+      "limits": [
+        "286 external project build spec tests excluded; full compatibility and current strict partition reconciliation remain unproven.",
+        "Original snapshot elapsed 50m25s; start to explicit own-validation-completed is 1h53m35s.",
+        "Frozen runner setup-error reporting limitation requires an artifact revision and affected validation before current upload-readiness claims."
+      ]
+    },
+    "scylla": {
+      "original_freeze": {
+        "at_utc": "2026-09-12T18:03:08.138794Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/first-complete-freeze.json",
+          "sha256": "a4fc7acbaa993743e9e00087695615e7eaaff77ad1780fcf764e9ae730a8a6e7",
+          "bytes": 916
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T18:03:08.138794+00:00"
+      },
+      "own_validation_complete": {
+        "at_utc": null,
+        "status": "UNKNOWN_EXACT_TIME",
+        "evidence": [
+          {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/final-matrix-results.json",
+            "sha256": "d9316e1ea2b1b0e488a5a2129707c364f2db2ee944c9ffa9ea8889d50459654b",
+            "bytes": 1927
+          },
+          {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/delivery-first-complete/README.md",
+            "sha256": "1a1db2fd08d7fa7ccbb445c1c3b0fce7d5e68d4beafa32c9900efaa3d9ef0055",
+            "bytes": 3735
+          }
+        ],
+        "qualification": "Original freeze declares its then-complete matrix, mutations and whole-file coverage. No explicit own-validation-completed timestamp; changed-line coverage was a post-freeze supplement."
+      },
+      "first_archive_content_read": {
+        "at_utc": null,
+        "status": "UNKNOWN_EXACT_TIME",
+        "recorded_claim": "No exposure before original freeze",
+        "upper_bound_utc": "2026-09-12T18:12:05.107701Z",
+        "upper_bound_evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/holdout-first/first-outcome.json",
+          "sha256": "631a5dfe76e0d78cbb73eea736ab9200d05d937a5f78765e781e8b289536832f",
+          "bytes": 1392
+        },
+        "qualification": "First outcome proves exposure by that time, not its exact first-read time. Untimestamped preflights and file mtimes are not event receipts."
+      },
+      "postfreeze_validation": {
+        "completed_at_utc": null,
+        "status": "POST_FREEZE_EXACT_TIME_UNKNOWN",
+        "evidence": [
+          {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/postfreeze-supplement/README.md",
+            "sha256": "ff5b613f68432e88a54689b64c481e2ad99cf49eebae6522a8685a90258a8a38",
+            "bytes": 1042
+          },
+          {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/scylla/evidence/postfreeze-coverage/changed-line-coverage.json",
+            "sha256": "67cfb5e8e0d609a37857c5a902b1b06b303d32d5ce36a711f5f0a97d5f1a9188",
+            "bytes": 177502
+          }
+        ]
+      },
+      "classification": "Preserve original completeness under its recorded scope. It predates the newer separate existing/fresh changed-line coverage supplement; no timestamped later complete freeze established by this audit.",
+      "limits": [
+        "Tests-only is a compile error with zero executed tests, not behavioral baseline-failure proof.",
+        "16 external DB tests unverified.",
+        "Source-owning agent confirmed no explicit missing event receipts located."
+      ]
+    },
+    "dora": {
+      "original_freeze": {
+        "at_utc": "2026-09-12T17:43:47Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/first-complete-frozen-at.txt",
+          "sha256": "9edbce56d5271b857f70d371f5a24039d225f729a94a9ab1ca88450f7a92a160",
+          "bytes": 21
+        },
+        "timestamp_kind": "explicit_event_receipt"
+      },
+      "own_validation_complete": {
+        "at_utc": null,
+        "status": "UNKNOWN_EXACT_TIME",
+        "latest_observed_own_validation": {
+          "at_utc": "2026-09-12T17:58:26.221224Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/coverage/changed-line-coverage.json",
+            "sha256": "b1df08ad36bd96698d9763811cb9d1ac2b0b1cfa7739d2c04babc6f08e664d20",
+            "bytes": 21202
+          },
+          "timestamp_kind": "coverage_summary_recorded_at",
+          "original_timestamp": "2026-09-12T17:58:26.221224+00:00"
+        },
+        "qualification": "No explicit own-validation-completed receipt. Later results-first.json at 18:10:52.578295Z is retrospective aggregation, not execution completion."
+      },
+      "first_archive_content_read": {
+        "at_utc": null,
+        "status": "UNKNOWN_EXACT_TIME",
+        "related_preflight": {
+          "at_utc": "2026-09-12T17:59:30Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/preflight-holdout.log",
+            "sha256": "2f8158f90c75f5ccd059ddf884a45dd59c67fe8820df8366b16aabba38639f39",
+            "bytes": 1178
+          },
+          "timestamp_kind": "preflight_time_not_exposure_time"
+        },
+        "qualification": "First holdout preflight is not a certified first-content-read event. Source-owning agent confirmed no explicit first-read receipt located."
+      },
+      "additional_milestones": [
+        {
+          "at_utc": "2026-09-12T17:45:51Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/preflight-matrix-clean.log",
+            "sha256": "de6aa3838f02f45af4b89cee373121c3dba28239aef570f971247aac00de1f95",
+            "bytes": 1178
+          },
+          "timestamp_kind": "preflight_time"
+        },
+        {
+          "at_utc": "2026-09-12T17:56:53Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/preflight-coverage.log",
+            "sha256": "b8e52056c105672389ac634a508d6dbed58c304a45c0dbe8b5511414bf72a681",
+            "bytes": 1178
+          },
+          "timestamp_kind": "preflight_time"
+        },
+        {
+          "at_utc": "2026-09-12T18:03:51Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/dora/evidence/preflight-holdout-first-execution.log",
+            "sha256": "a25c5cdb8c8a8f1e465a983ea7bb57524d936bdb4fc15cb537bce0cda31d6400",
+            "bytes": 1178
+          },
+          "timestamp_kind": "preflight_time"
+        }
+      ],
+      "classification": "Original receipt called first-complete is an early artifact snapshot preceding the clean matrix and coverage. Exact later all-own-validation completion and first archive read remain unknown; do not impute these from mtimes or retrospective summaries.",
+      "limits": [
+        "Original mutation findings include one compiler crash; do not count as an assertion kill.",
+        "JIT, ARM and Dora-language coverage remain outside measured evidence."
+      ]
+    },
+    "kitesql": {
+      "provisional_freeze": {
+        "at_utc": "2026-09-12T20:42:08.539207Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/frozen-provisional/manifest.json",
+          "sha256": "617bec5ea21f62acfe8693d9e95e0664bf820b57f6833efb7c3571e0fc2b2aae",
+          "bytes": 850
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T20:42:08.539207+00:00"
+      },
+      "own_validation_complete": {
+        "at_utc": "2026-09-12T21:46:17.051806Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/evidence/coverage/resume-complete.json",
+          "sha256": "2317a0fcec0438bf93b18e20bee0c0aad678edf8ba76fcb602fb361230aa2535",
+          "bytes": 275
+        },
+        "timestamp_kind": "final_coverage_completion_receipt",
+        "original_timestamp": "2026-09-12T21:46:17.051806+00:00",
+        "qualification": "Final coverage completion following prior matrix and eight mutation results; first-complete receipt consolidates those results."
+      },
+      "original_freeze": {
+        "at_utc": "2026-09-12T21:47:07.300849Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/evidence/first-complete-freeze.json",
+          "sha256": "aa51d4a33b926ce9f066f1a91af0a4d7039c9f980acedf8a1b9711f42e02e26c",
+          "bytes": 1089
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T21:47:07.300849+00:00"
+      },
+      "first_archive_content_read": {
+        "at_utc": null,
+        "status": "EARLIEST_RETAINED_CONTENT_EXPOSURE_RECORD",
+        "no_content_read_attestation": {
+          "at_utc": "2026-09-12T21:52:27.859624Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/evidence/holdout-wait.json",
+            "sha256": "c0ec5799a9923ae1eb43572b2bc3ecd37393283d00b4b30c858d71d4e46121c7",
+            "bytes": 463
+          },
+          "timestamp_kind": "explicit_event_receipt"
+        },
+        "content_inspected_by": {
+          "at_utc": "2026-09-12T22:00:08.905772Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/kitesql/evidence/holdout-native-identity.json",
+            "sha256": "8c0e5b2dea90f0c3d15805893aa909efaab10f43893569df6ae39eaf27cba522",
+            "bytes": 804
+          },
+          "timestamp_kind": "native_identity_confirmed_at"
+        },
+        "qualification": "Native identity receipt demonstrates content inspection by its timestamp; it is not an explicit exact first-read receipt. Transfer at 21:59:31.138110Z is transfer only."
+      },
+      "classification": "Separate provisional freeze and post-validation first-complete freeze are retained. Original frozen bytes are identical, but completeness milestone follows own validation.",
+      "limits": [
+        "No exclusions in retained six matrix inventories.",
+        "Holdout transfer identity transcription mismatch retained; historical accepted-byte identity unverified."
+      ]
+    },
+    "calyx": {
+      "original_freeze": {
+        "at_utc": "2026-09-12T21:40:41.606741Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/first-complete-freeze.json",
+          "sha256": "1a724c00e827e4f8a23e1bdaa1aa507b9cf117d01a7628dbc4650d6b3f1154cc",
+          "bytes": 875
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T21:40:41.606741+00:00"
+      },
+      "own_validation_complete": {
+        "at_utc": null,
+        "status": "LATEST_EXECUTION_PRECEDES_COMPLETION_DECLARATION",
+        "latest_observed_own_execution": {
+          "at_utc": "2026-09-12T21:38:00.051982Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/image-runtime.json",
+            "sha256": "59b8e1ff5ac2b4f39e1aa92b3438db233f87a7644762029686be11d4d3e5e730",
+            "bytes": 116
+          },
+          "timestamp_kind": "runtime_completion_receipt"
+        },
+        "completion_declared_at_utc": "2026-09-12T21:40:41.606741Z",
+        "qualification": "Freeze/local-results declaration consolidates matrix, coverage, mutations and runnable image; no independent global own-validation-completed timestamp."
+      },
+      "first_archive_content_read": {
+        "at_utc": "2026-09-12T21:44:37.687941Z",
+        "evidence": {
+          "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/holdout-exposure.json",
+          "sha256": "38faf5b0278f74cd43e100b1ab0c2c053ff1e3dfdc23b476b41a6e69298464fc",
+          "bytes": 1472
+        },
+        "timestamp_kind": "explicit_event_receipt",
+        "original_timestamp": "2026-09-12T21:44:37.687941+00:00"
+      },
+      "additional_milestones": [
+        {
+          "at_utc": "2026-09-12T20:44:00.465233Z",
+          "evidence": {
+            "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/coverage-export-new.json",
+            "sha256": "7fe496aa35f9bfb94eb7757346d96c757184829d8375b10df3c9a85177371935",
+            "bytes": 121
+          },
+          "timestamp_kind": "coverage_export_completion_receipt"
+        }
+      ],
+      "classification": "Recorded first-complete freeze follows the retained own execution results and precedes the explicit archive-exposure receipt. Completeness describes consolidated evidence, not every quality family passing.",
+      "limits": [
+        "Preserve three killed semantic mutants and one surviving mutant; not all mutation checks passed.",
+        "Thermal-guard partial build/runtime failures remain limitations; do not convert to fully validated thermal workflow."
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Olympus Review Debugger"
+  short_description: "Repair Olympus review and FP failures"
+  default_prompt: "Use $olympus-review-debugger to turn Olympus gate, fairness, false-positive, or review feedback into one verified fix pass."

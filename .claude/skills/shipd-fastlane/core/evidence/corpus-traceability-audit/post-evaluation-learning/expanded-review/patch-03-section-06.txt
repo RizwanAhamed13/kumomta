@@ -1,0 +1,8 @@
+diff --git a/src/execution/dml/delete.rs b/src/execution/dml/delete.rs
+@@ -82,11 +82,7 @@ impl<'a, T: Transaction + 'a> ExecutorNode<'a, T> for Delete {
+-                    Ok((
+-                        index_meta.id,
+-                        index_meta.ty,
+-                        index_meta.column_exprs(table, plan_arena)?,
+-                    ))
++                    Ok((index_meta.id, index_meta.ty, index_meta.column_exprs()?))

@@ -1,0 +1,59 @@
+diff --git a/src/storage/mod.rs b/src/storage/mod.rs
+@@ -342,6 +342,34 @@ pub trait Transaction: Sized {
++    fn add_expression_index_meta(
++        &mut self,
++        table_codec: &mut TableCodec,
++        plan_arena: &mut PlanArena,
++        table_name: &TableName,
++        index_name: String,
++        column_ids: Vec<ColumnId>,
++        expressions: Vec<ScalarExpression>,
++        ty: IndexType,
++    ) -> Result<(TableCatalog, IndexId), DatabaseError> {
++        let mut table = self
++            .load_table(table_codec, plan_arena, table_name.clone())?
++            .ok_or(DatabaseError::TableNotFound)?;
++        let index_meta =
++            table.add_expression_index_meta(index_name, column_ids, expressions, ty, plan_arena)?;
++        let index_meta = plan_arena.index(index_meta);
++        let index_id = index_meta.id;
++        table_codec.with_index_meta(
++            table_name,
++            index_id,
++            Some(index_meta),
++            plan_arena,
++            |key, value| self.set(key, value),
++        )?;
++
++        Ok((table, index_id))
++    }
++
+@@ -522,12 +550,28 @@ pub trait Transaction: Sized {
++                let mut expressions = index_meta.expressions.clone();
++                temp_table.rebind_index_expressions(&mut expressions, plan_arena)?;
++                let value_ty = if expressions.is_empty() {
++                    index_value_type(&temp_table, plan_arena, &index_meta.column_ids)?
++                } else {
++                    let mut value_types = expressions
++                        .iter()
++                        .map(|expression| expression.return_type(plan_arena).into_owned())
++                        .collect_vec();
++                    if value_types.len() == 1 {
++                        value_types.pop().unwrap()
++                    } else {
++                        LogicalType::Tuple(value_types)
++                    }
++                };
++                    expressions,
+-                    value_ty: index_value_type(&temp_table, plan_arena, &index_meta.column_ids)?,
++                    value_ty,
+@@ -1064,6 +1108,7 @@ pub trait Transaction: Sized {
++        let (scala_functions, table_functions) = table_codec.functions();
+@@ -1083,7 +1128,12 @@ pub trait Transaction: Sized {
+-                    index_metas.push(TableCodec::decode_index_meta::<Self>(value, arena)?);
++                    index_metas.push(TableCodec::decode_index_meta::<Self>(
++                        value,
++                        arena,
++                        &scala_functions,
++                        &table_functions,
++                    )?);

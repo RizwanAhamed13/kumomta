@@ -1,0 +1,385 @@
+{
+  "at": "2026-09-13T00:41:02.643469+00:00",
+  "phase": "metadata-only relative documentation link existence",
+  "documents": 17,
+  "links": 75,
+  "missing": [],
+  "limitation": "Existence only; not a behavioral or semantic test.",
+  "items": [
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/test-coverage.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/SKILL.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/accepted-patterns.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/repair-case-study.md",
+      "exists": true
+    },
+    {
+      "document": "README.md",
+      "target": "skills/shipd-fastlane/references/provenance.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/fresh-reconstruction-benchmark.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/fresh-reconstruction-benchmark.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/accepted-patterns.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/prevention.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/prevention.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/prevention.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/current-general-contract.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/local-quality-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/test-coverage.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "../../assets/quality-checks.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "../../assets/handoff.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "../../assets/metrics.example.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/SKILL.md",
+      "target": "references/provenance.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution.md",
+      "target": "../../../assets/environment.example.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution.md",
+      "target": "local-quality-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution.md",
+      "target": "current-general-contract.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution.md",
+      "target": "../../../assets/metrics.example.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution.md",
+      "target": "thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "../../../assets/quality-checks.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "current-general-contract.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "../../../assets/panel-contract.example.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "execution.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "fresh-reconstruction-benchmark.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/local-quality-gate.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/prevention.md",
+      "target": "test-coverage.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/prevention.md",
+      "target": "repair-case-study.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/provenance.md",
+      "target": "current-general-contract.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/provenance.md",
+      "target": "corpus-completeness.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/test-coverage.md",
+      "target": "../../../assets/contract.example.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/test-coverage.md",
+      "target": "accepted-patterns.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/test-coverage.md",
+      "target": "post-evaluation-learning.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution-integrity.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution-integrity.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution-integrity.md",
+      "target": "thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/execution-integrity.md",
+      "target": "fresh-execution-findings.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/thermal-safety.md",
+      "target": "../../../scripts/thermal_guard.py",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/thermal-safety.md",
+      "target": "thermal-guard-validation.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "target": "thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "target": "../../../evidence/partition-gate-workflow-lessons.json",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "target": "execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-execution-findings.md",
+      "target": "thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "target": "thermal-safety.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "target": "test-coverage.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "target": "local-quality-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "target": "execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/fresh-reconstruction-benchmark.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/corpus-completeness.md",
+      "target": "execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/corpus-completeness.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/corpus-completeness.md",
+      "target": "post-evaluation-learning.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "target": "test-coverage.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "target": "execution-integrity.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "target": "partition-result-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "target": "local-quality-gate.md",
+      "exists": true
+    },
+    {
+      "document": "skills/shipd-fastlane/references/post-evaluation-learning.md",
+      "target": "provenance.md",
+      "exists": true
+    }
+  ]
+}

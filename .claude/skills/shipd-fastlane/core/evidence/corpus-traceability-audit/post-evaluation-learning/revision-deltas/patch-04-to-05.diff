@@ -1,0 +1,31 @@
+--- kitesql-expression-index-scoped/solution.patch
++++ kitesql-expression-index-v5-mixed-types/solution.patch
+@@ -40,7 +40,7 @@
+                  if_not_exists,
+                  ty,
+ diff --git a/src/binder/parser.rs b/src/binder/parser.rs
+-index 91129eb..bbfdef3 100644
++index 91129eb..90cd62e 100644
+ --- a/src/binder/parser.rs
+ +++ b/src/binder/parser.rs
+ @@ -841,35 +841,139 @@ where
+@@ -103,8 +103,8 @@
+ +        input_schema: &[ColumnRef],
+ +        arena: &PlanArena,
+ +    ) -> Result<bool, DatabaseError> {
+-+        fn is_supported_literal(ty: &LogicalType) -> bool {
+-+            matches!(ty, LogicalType::Integer | LogicalType::Bigint)
+++        fn is_supported_literal(value: &DataValue) -> bool {
+++            matches!(value, DataValue::Int32(value) if *value >= 0)
+ +        }
+ +
+ +        fn validate_column(
+@@ -148,7 +148,7 @@
+ +                    }
+ +                    ScalarExpression::Constant(value)
+ +                        if matches!(op, expression::BinaryOperator::Plus)
+-+                            && is_supported_literal(&value.logical_type()) => {}
+++                            && is_supported_literal(value) => {}
+ +                    _ => {
+ +                        return Err(DatabaseError::UnsupportedStmt(
+ +                            "CREATE INDEX arithmetic requires an INTEGER column or a non-negative integer literal as its right operand"

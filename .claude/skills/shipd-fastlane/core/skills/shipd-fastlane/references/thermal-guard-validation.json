@@ -1,0 +1,101 @@
+{
+  "promoted_script": "scripts/thermal_guard.py",
+  "sha256": "7700182175e55385459e215779435f2cfa6fa124b9bdea4ffb5ac48fbe9cff04",
+  "source_path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/thermal-container-guard.py",
+  "byte_identical": false,
+  "validation": {
+    "temperature": 43.0,
+    "owned_container": "8701b9ad08d4273524b0d60fe5dc99f02aa16257dc10674f65fd2120e2be1e87",
+    "events": [
+      "NanoCpus=500000000; forced pause/resume; SIGTERM fail-closed pause",
+      "pre-existing pause retained",
+      "sensor failure exit5 pauses owned container"
+    ],
+    "status": "PASS",
+    "wall_seconds": 8.036
+  },
+  "evidence": [
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation.json",
+      "sha256": "85f33dce7ea497c67a74b4bc03a19a8529f038bb13cb0a3908157844a0866d9a"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-cycle.jsonl",
+      "sha256": "b7794f5530ce66c947c670ab7e450ecef9cbc599d5b1b9dfd7392435f7b29386"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-preexisting.jsonl",
+      "sha256": "d83951a849c46b85844f5decebb34f7379822f474f0b2a8f0353636519ba92ea"
+    },
+    {
+      "path": "/home/admin/olympus-work/fastlane-dogfood-20260912/calyx/evidence/guard-validation-sensor-failure.jsonl",
+      "sha256": "f176e25db38af0ca02c3ae28f66db8159bc95a7a33795a8d8e5f330c3ef62cb7"
+    }
+  ],
+  "promotion_validation": "Source hash equivalence only; no new execution while shared compute slot held.",
+  "required_supervisor": "Pause only exact owned container on any premature guard exit.",
+  "validated_snapshot_path": "evidence/thermal-guard-v1/thermal_guard.py",
+  "candidate_script": "scripts/thermal_guard.py",
+  "candidate_sha256": "5dfb7caa5a919017104b73351cc5253c16308c67382050ea3f8bae2b44a70e21",
+  "candidate_validation": "PASS: five isolated cases, 14.558 seconds, owned container stopped",
+  "candidate_changes": [
+    "Inspect failures become watcher errors, never inferred removal/completion",
+    "Unexpected Python errors attempt pause of immutable owned ID before nonzero exit",
+    "Fail-closed path attempts pause even if inspection itself fails",
+    "Active elapsed time reported separately"
+  ],
+  "candidate_receipt": {
+    "path": "evidence/thermal-guard-v2/validation.json",
+    "sha256": "50fabd029d460f19fa356b2b7084b8b3026bb8a453849a58c24b0e430d81bc50",
+    "result": {
+      "status": "PASS",
+      "temperature": 60.0,
+      "owned_container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf",
+      "stopped": true,
+      "wall_seconds": 14.558,
+      "guard_sha256": "5dfb7caa5a919017104b73351cc5253c16308c67382050ea3f8bae2b44a70e21",
+      "cases": [
+        {
+          "case": "cycle",
+          "exit_code": 143,
+          "status": "PASS",
+          "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/cycle.jsonl",
+          "sha256": "6c6a6ba1e0dc52e637f467cb35978fc82f358e388b32172ab24d91d011aaabd4"
+        },
+        {
+          "case": "preexisting",
+          "exit_code": 143,
+          "status": "PASS",
+          "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/preexisting.jsonl",
+          "sha256": "5190b33382c81513b445e6640b1d0b06134d8680982960133a59ffe187755546"
+        },
+        {
+          "case": "inspect_error",
+          "exit_code": 7,
+          "status": "PASS",
+          "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/inspect_error.jsonl",
+          "sha256": "266d9ffd4678b0d93eb0d6f26da9365b2a29016d6e4e314eeda56e07cee852c1"
+        },
+        {
+          "case": "malformed_json",
+          "exit_code": 7,
+          "status": "PASS",
+          "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/malformed_json.jsonl",
+          "sha256": "6dfb88fb604fc99cdc539ccc138972a98ace023ff9ca8e1382fa52bc996d5908"
+        },
+        {
+          "case": "quota_error",
+          "exit_code": 4,
+          "status": "PASS",
+          "log": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/thermal-guard-v2/quota_error.jsonl",
+          "sha256": "7d0bc2767c20d10eefb3d8405abdea31628d8215e683f44bd0ff4bb0499b0d7d"
+        }
+      ]
+    }
+  },
+  "validation_limits": [
+    "Candidate sensor-error path was source-reviewed; only prior version sensor error was injected",
+    "SIGKILL cannot be handled internally; independent launcher supervision required",
+    "Docker pause rejection cannot guarantee paused state; outcome recorded and phase must halt"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "authorized_cases": [
+    "lisette",
+    "kitesql",
+    "dora",
+    "rust-analyzer",
+    "scylla"
+  ],
+  "withheld": [
+    "calyx",
+    "ladybug",
+    "datafusion-parquet",
+    "datafusion-aggregate"
+  ],
+  "authorization": "Parent explicitly authorized historical semantic review only after all five first archived evaluations finished; no benchmark edits",
+  "recorded_before_payload_read": "2026-09-13T00:05:36.998530+00:00",
+  "files": 118,
+  "bytes": 1597355,
+  "scope": "unique linked solution revisions; selected substantive repair/review narratives; historical metadata; permitted sections of two generic references. Transfer is not semantic inspection. ZIP payloads remain unextracted."
+}

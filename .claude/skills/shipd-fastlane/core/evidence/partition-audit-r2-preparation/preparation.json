@@ -1,0 +1,23 @@
+{
+  "prepared_at": "2026-09-12T22:41:42.029849+00:00",
+  "before": {
+    "scripts/partition_result_gate.py": "27adcdd18bca44d00bb876cb5401c40f946640bdaceafc9a0ea4759323836f5e",
+    "scripts/test_result_gate.py": "d2ca7a7a964a4862a1b4808489dd98ff1869e41acf97a222462c011a3670ae5b",
+    "tests/test_partition_result_gate.py": "e3a28bdd678d0ce6cef56586c0137b6d83d2f2f81fc3e26fc75076150eba3043",
+    "tests/test_execution_receipts.py": "bbae1bb6dc8031edd7a29ec218f7490ad7c5cb4362438735e0f67f0d67bcfc65"
+  },
+  "after": {
+    "scripts/partition_result_gate.py": "7a400bacbb03dc39dc5cb60c5be780f69e05238da84f42a98ed1176ab052413a",
+    "scripts/test_result_gate.py": "3ef72439e59d1f3f1faccc96f16da3eae4ede1b6f74609ecb2386cf33dd97c27",
+    "tests/test_partition_result_gate.py": "d4dbab63a04d1a6a3cfa9146a96708b30398ee83733c24595bfce4e74567c20d",
+    "tests/test_execution_receipts.py": "f82dd4094132790f71a50cd285d7db86e7ed775edb79e1a5f77d38fe8719cd53"
+  },
+  "changes": [
+    "Require one common source snapshot across all disjoint partitions.",
+    "Reject signal-terminated processes as behavioral discrimination.",
+    "Add six targeted regressions for source mixing, absent starts/terminals, no events, duplicate triage and signals."
+  ],
+  "pre_execution_preparation_correction": "First edit command asserted an absent module __main__ anchor after three files changed; appended the signal case to the existing RawEventsTest class instead. No tests executed.",
+  "tests": "NOT RUN: source-only, waiting for parent compute slot",
+  "production_provenance": "unverified"
+}

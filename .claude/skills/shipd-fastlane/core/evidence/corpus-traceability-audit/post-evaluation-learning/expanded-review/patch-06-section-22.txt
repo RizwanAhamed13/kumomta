@@ -1,0 +1,10 @@
+diff --git a/pkgs/boots/codegen.dora b/pkgs/boots/codegen.dora
+@@ -90,6 +90,11 @@ fn emit_inst(codegen: CodeGen, inst: Inst) {
++        Op::ShapeConst => {
++            codegen.emit_comment("ShapeConst");
++            codegen.emit_shape_const(inst);
++        }
++
+@@ -669,6 +674,8 @@ pub trait CodeGen {
++    fn emit_shape_const(inst: Inst);
++

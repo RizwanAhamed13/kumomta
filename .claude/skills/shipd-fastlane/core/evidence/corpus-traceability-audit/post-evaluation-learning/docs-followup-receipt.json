@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-09-13T00:32:43.658688+00:00",
+  "phase": "source_metadata_only",
+  "tests_or_builds_run": false,
+  "manifest_bumped": false,
+  "published": false,
+  "files": {
+    "README.md": {
+      "sha256": "bd4fb6e5005acd52b934a9fd169062d4ad9a6cfbb311ab7a7bfecc4e949dd5a7",
+      "bytes": 9032
+    },
+    "skills/shipd-fastlane/references/provenance.md": {
+      "sha256": "a5e9aeab4ac89a20528a15ab5ae3ad609d3c6bd25c417b908a0555166e550e82",
+      "bytes": 4293
+    },
+    "skills/shipd-fastlane/references/test-coverage.md": {
+      "sha256": "b1a356e45b4d79214a98ec039ac27d94c7edbe158d7cc55e2af2af1f4d30ede1",
+      "bytes": 10660
+    },
+    "skills/shipd-fastlane/references/corpus-completeness.md": {
+      "sha256": "13d0de64f01d72a9a7625e780c5e8b59c8b5dc73542ec4621a5bc94362b0f885",
+      "bytes": 4174
+    },
+    "skills/shipd-fastlane/references/post-evaluation-learning.md": {
+      "sha256": "a39fc428b421deef08f1eec3fce7d52ebf92c2555101866db9a6b6ec38cc73bd",
+      "bytes": 3071
+    },
+    "evidence/corpus-traceability-audit/post-evaluation-learning/AUDIT.md": {
+      "sha256": "b7e3ec0dabb1f72637683a399d06f00cffecdc2c1ac62f7c00a0e2794322da97",
+      "bytes": 9474
+    },
+    "evidence/corpus-traceability-audit/post-evaluation-learning/semantic-inspection-ledger.json": {
+      "sha256": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0",
+      "bytes": 44458
+    },
+    "evidence/corpus-traceability-audit/post-evaluation-learning/buildx-harness-pending.json": {
+      "sha256": "e8eb7627c2df18fd6f27afeec3bbfd5527cc6bee08def14ca0b3732b3399d907",
+      "bytes": 930
+    }
+  }
+}

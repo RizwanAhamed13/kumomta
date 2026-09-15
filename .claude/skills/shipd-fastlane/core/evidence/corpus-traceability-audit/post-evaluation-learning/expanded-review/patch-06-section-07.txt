@@ -1,0 +1,84 @@
+diff --git a/dora-cannon-compiler/src/codegen.rs b/dora-cannon-compiler/src/codegen.rs
+@@ -2470,6 +2470,55 @@ impl<'a, 'i> CannonCodeGen<'a, 'i> {
++    fn trait_object_pattern_types(&self, idx: ConstPoolIdx) -> (BytecodeType, BytecodeType) {
++        let ConstPoolEntry::TraitObject {
++            trait_ty,
++            actual_object_ty,
++        } = self.bytecode().const_pool(idx)
++        else {
++            unreachable!()
++        };
++
++        (
++            self.specialize_ty(trait_ty.clone()),
++            self.specialize_ty(actual_object_ty.clone()),
++        )
++    }
++
++    fn emit_test_trait_object_type(&mut self, dest: Register, object: Register, idx: ConstPoolIdx) {
++        assert_eq!(self.reg_ty(dest), BytecodeType::Bool);
++        let (trait_ty, actual_object_ty) = self.trait_object_pattern_types(idx);
++        assert_eq!(self.specialize_register_type(object), trait_ty);
++
++        self.emit_load_register(object, REG_TMP1.into());
++        self.asm.load_mem(
++            MachineMode::Int32,
++            REG_RESULT.into(),
++            Mem::Base(REG_TMP1, Header::offset_shape_word() as i32),
++        );
++        self.asm.load_shape(
++            REG_TMP2,
++            AotShapeKey::TraitObject {
++                trait_ty,
++                actual_object_ty,
++            },
++        );
++        self.asm.cmp_reg(MachineMode::Int32, REG_RESULT, REG_TMP2);
++        self.asm.set(REG_RESULT, CondCode::Equal);
++        self.emit_store_register(REG_RESULT.into(), dest);
++    }
++
++    fn emit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        let (trait_ty, actual_object_ty) = self.trait_object_pattern_types(idx);
++        assert_eq!(self.specialize_register_type(object), trait_ty);
++        self.emit_load_trait_object_receiver(dest, object, actual_object_ty);
++    }
++
+@@ -4965,6 +5014,38 @@ impl<'a, 'i> BytecodeVisitor for CannonCodeGen<'a, 'i> {
++    fn visit_test_trait_object_type(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        comment!(
++            self,
++            format!(
++                "TestTraitObjectType {}, {}, ConstPoolIdx({})",
++                dest, object, idx.0
++            )
++        );
++        self.emit_test_trait_object_type(dest, object, idx);
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    ) {
++        comment!(
++            self,
++            format!(
++                "LoadTraitObjectValue {}, {}, ConstPoolIdx({})",
++                dest, object, idx.0
++            )
++        );
++        self.emit_load_trait_object_value(dest, object, idx);
++    }
++

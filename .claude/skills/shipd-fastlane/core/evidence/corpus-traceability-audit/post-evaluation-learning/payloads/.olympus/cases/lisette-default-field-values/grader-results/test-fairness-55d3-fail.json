@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "grader": "Test Fairness",
+  "artifact_set_id": "55d3abc23c6164c97afc68500a5bbf8f3312e2ddbc4110cabad56bf3ebcc26d4",
+  "verdict": "FAIL",
+  "summary": "1 of 32 unfair: generated-name collision behavior was tested but unstated",
+  "raw_output_path": "/Users/rizwanahamed/.codex/attachments/55e18aac-1849-4dfb-9cfb-0efbb0080c1d/pasted-text.txt",
+  "findings": [
+    {
+      "id": "fair-generated-name-grounding",
+      "severity": "blocking",
+      "category": "prompt_gap",
+      "status": "repaired_locally",
+      "disposition": "Added an implementation-neutral hygiene sentence and renamed the rollout-specific test. Exact FP/reference/genuine replays preserved the discriminator and solvability. Hosted rerun pending.",
+      "current_evidence": "evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/audit.md"
+    }
+  ]
+}

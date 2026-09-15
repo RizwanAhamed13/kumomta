@@ -1,0 +1,8 @@
+{"utc": "2026-09-12T22:01:00.634915+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "attached", "pre_existing_paused": false}
+{"utc": "2026-09-12T22:01:00.736092+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "quota_update", "returncode": 0, "cpus": 0.5, "diagnostic": ""}
+{"utc": "2026-09-12T22:01:00.755748+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "sample", "celsius": 62.0, "paused": false}
+{"utc": "2026-09-12T22:01:00.931281+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "watcher_error", "diagnostic": "JSONDecodeError('Expecting property name enclosed in double quotes: line 1 column 2 (char 1)')"}
+{"utc": "2026-09-12T22:01:00.931359+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed", "reason": "watcher_error"}
+{"utc": "2026-09-12T22:01:00.951654+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed_inspect_failed", "diagnostic": "JSONDecodeError('Expecting property name enclosed in double quotes: line 1 column 2 (char 1)')"}
+{"utc": "2026-09-12T22:01:01.042569+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "fail_closed_pause", "returncode": 0, "diagnostic": ""}
+{"utc": "2026-09-12T22:01:01.042694+00:00", "container": "d948ad498aac14b10a8a71f85e10bb5de46ef3e0a8c6601bdfc9ca4ca5ff9ccf", "action": "finished", "reason": "watcher_error", "wall_seconds": 0.435, "thermal_pause_seconds": 0.0, "active_elapsed_seconds": 0.435}

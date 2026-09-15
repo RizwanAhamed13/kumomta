@@ -1,0 +1,483 @@
+diff --git a/crates/ide-completion/src/context/analysis.rs b/crates/ide-completion/src/context/analysis.rs
+@@ -19,6 +19,7 @@ use syntax::{
++    syntax_editor::SyntaxEditor,
+@@ -54,45 +55,75 @@ pub(super) struct AnalysisResult<'db> {
++const MAX_EXPANSION_BRANCHES: usize = 64;
++
++struct ExpansionBudget {
++    remaining: usize,
++}
++
++impl ExpansionBudget {
++    fn take_site(&mut self) -> bool {
++        let Some(remaining) = self.remaining.checked_sub(1) else { return false };
++        self.remaining = remaining;
++        true
++    }
++}
++
+-) -> Option<AnalysisResult<'db>> {
++) -> Vec<AnalysisResult<'db>> {
+-    let fake_ident_token = speculative_file.token_at_offset(offset).right_biased()?;
++    let Some(fake_ident_token) = speculative_file.token_at_offset(offset).right_biased() else {
++        return Vec::new();
++    };
+-    let expansion = expand_maybe_stop(
++    let mut budget = ExpansionBudget { remaining: MAX_EXPANSION_BRANCHES };
++    let mut expansions = expand_maybe_stop(
+-    )
+-    .unwrap_or(ExpansionResult {
+-        original_file: original_file.value,
+-        speculative_file,
+-        original_offset: offset,
+-        speculative_offset: fake_ident_token.text_range().start(),
+-        fake_ident_token,
+-        derive_ctx: None,
+-    });
+-
+-    // add the relative offset back, so that left_biased finds the proper token
+-    let original_offset = expansion.original_offset + relative_offset;
+-    let token = expansion.original_file.token_at_offset(original_offset).left_biased()?;
++        &mut budget,
++    );
++    if expansions.is_empty() {
++        expansions.push(ExpansionResult {
++            original_file: original_file.value,
++            speculative_file,
++            original_offset: offset,
++            speculative_offset: fake_ident_token.text_range().start(),
++            fake_ident_token,
++            derive_ctx: None,
++        });
++    }
+-    analyze(sema, expansion, original_token, &token).map(|(analysis, expected, qualifier_ctx)| {
+-        AnalysisResult { analysis, expected, qualifier_ctx, token, original_offset }
+-    })
++    expansions
++        .into_iter()
++        .filter_map(|expansion| {
++            // Add the relative offset back, so that left_biased finds the proper token.
++            let original_offset = expansion.original_offset + relative_offset;
++            let token = expansion.original_file.token_at_offset(original_offset).left_biased()?;
++            analyze(sema, expansion, original_token, &token).map(
++                |(analysis, expected, qualifier_ctx)| AnalysisResult {
++                    analysis,
++                    expected,
++                    qualifier_ctx,
++                    token,
++                    original_offset,
++                },
++            )
++        })
++        .collect()
+@@ -100,6 +131,133 @@ fn token_at_offset_ignore_whitespace(file: &SyntaxNode, offset: TextSize) -> Opt
++fn mapped_completion_tokens(
++    speculative_file: &SyntaxNode,
++    mut mapped_tokens: Vec<(SyntaxToken, u8)>,
++    actual_range: TextSize,
++    relative_offset: TextSize,
++) -> Vec<(SyntaxNode, SyntaxToken, TextSize)> {
++    let emission_order =
++        mapped_tokens.iter().map(|(token, _)| token.text_range()).collect::<Vec<_>>();
++
++    mapped_tokens.sort_by_key(|(token, rank)| {
++        (token.text_range().start(), !token.text().contains(COMPLETION_MARKER), *rank)
++    });
++    mapped_tokens.dedup_by(|(right_token, _), (left_token, _)| {
++        right_token.text_range() == left_token.text_range()
++    });
++
++    let mut accumulated_offset = 0;
++    let mut candidates = Vec::new();
++    for (index, (mapped_token, rank)) in mapped_tokens.iter().enumerate() {
++        let marker_count = mapped_token.text().matches(COMPLETION_MARKER).count();
++        if marker_count == 0 {
++            // Proc macros can make the same span with different text. Such tokens are not
++            // completion sites because the macro author probably did not intend them to be.
++            continue;
++        }
++
++        let marker_offset = accumulated_offset;
++        accumulated_offset += marker_count * COMPLETION_MARKER.len();
++        let original_offset =
++            mapped_token.text_range().start() - TextSize::new(marker_offset as u32);
++        if actual_range < original_offset + relative_offset {
++            // Speculative insertion can move later mapped tokens. Discard impossible offsets.
++            continue;
++        }
++
++        let emission_index = emission_order
++            .iter()
++            .position(|range| *range == mapped_token.text_range())
++            .unwrap_or(index);
++        candidates.push((*rank, emission_index, index, original_offset));
++    }
++
++    candidates.sort_by_key(|(rank, emission_index, _, _)| (*rank, *emission_index));
++    if candidates.first().is_some_and(|(_, _, target_index, _)| {
++        !SyntaxKind::is_any_identifier(mapped_tokens[*target_index].0.kind())
++    }) {
++        // Multi-site completion is identifier-only. Preserve the previous single best-ranked
++        // mapping for strings and every other non-identifier token.
++        candidates.truncate(1);
++    }
++
++    candidates
++        .into_iter()
++        .filter_map(|(_, _, target_index, original_offset)| {
++            let token = &mapped_tokens.get(target_index)?.0;
++            let (speculative_file, token) = if SyntaxKind::is_any_identifier(token.kind()) {
++                isolate_completion_site(speculative_file, &mapped_tokens, target_index)?
++            } else {
++                // String and other non-identifier completions predate multi-ident aggregation.
++                // Preserve their speculative tree exactly as it was produced by the macro.
++                (speculative_file.clone(), token.clone())
++            };
++            Some((speculative_file, token, original_offset))
++        })
++        .collect()
++}
++
++/// Keep the marker at one downmapped occurrence and strip it from the others. The completion
++/// classifier compensates for exactly one inserted marker, so giving each branch its own tree
++/// preserves the positional correspondence with the real expansion.
++fn isolate_completion_site(
++    speculative_file: &SyntaxNode,
++    mapped_tokens: &[(SyntaxToken, u8)],
++    target_index: usize,
++) -> Option<(SyntaxNode, SyntaxToken)> {
++    let target = &mapped_tokens.get(target_index)?.0;
++    let old_root_start = speculative_file.text_range().start();
++    let target_relative_start = target.text_range().start() - old_root_start;
++    let (editor, editor_root) = SyntaxEditor::new(speculative_file.clone());
++    let new_root_start = editor_root.text_range().start();
++    let mut removed_before_target = 0;
++
++    for (index, (token, _)) in mapped_tokens.iter().enumerate() {
++        if !token.text().contains(COMPLETION_MARKER) {
++            continue;
++        }
++
++        let token_relative_start = token.text_range().start() - old_root_start;
++        let editor_offset = new_root_start + token_relative_start;
++        let editor_token = editor_root
++            .token_at_offset(editor_offset)
++            .right_biased()
++            .filter(|it| it.kind() == token.kind() && it.text() == token.text())?;
++        let marker_count = token.text().matches(COMPLETION_MARKER).count();
++        let stripped = token.text().replace(COMPLETION_MARKER, "");
++        if index == target_index {
++            if marker_count > 1 {
++                editor.replace(
++                    editor_token,
++                    ast::make::tokens::ident(&format!("{stripped}{COMPLETION_MARKER}")),
++                );
++            }
++            continue;
++        }
++        if token.text_range().start() < target.text_range().start() {
++            removed_before_target += marker_count * COMPLETION_MARKER.len();
++        }
++
++        // `_` is a token of its own, not a valid identifier for `ast::make::tokens::ident`.
++        if stripped.is_empty() || stripped == "_" {
++            editor.delete(editor_token);
++        } else {
++            editor.replace(editor_token, ast::make::tokens::ident(&stripped));
++        }
++    }
++
++    let edit = editor.finish();
++    let speculative_file = edit.new_root().clone();
++    let target_offset = speculative_file.text_range().start() + target_relative_start
++        - TextSize::new(removed_before_target as u32);
++    let token = speculative_file
++        .token_at_offset(target_offset)
++        .right_biased()
++        .filter(|it| it.text().contains(COMPLETION_MARKER))?;
++    Some((speculative_file, token))
++}
++
+@@ -136,16 +294,19 @@ fn expand_maybe_stop(
+-) -> Option<ExpansionResult> {
+-    if let result @ Some(_) = expand(
++    budget: &mut ExpansionBudget,
++) -> Vec<ExpansionResult> {
++    let results = expand(
+-    ) {
+-        return result;
++        budget,
++    );
++    if !results.is_empty() {
++        return results;
+@@ -154,18 +315,20 @@ fn expand_maybe_stop(
++        && budget.take_site()
+-        // Recursion base case.
+-        Some(ExpansionResult {
++        // Recursion base case. The request-wide budget counts viable completion sites, not
++        // intermediate macro hops, so nested and direct expansion paths share the same limit.
++        vec![ExpansionResult {
+-        })
++        }]
+-        None
++        Vec::new()
+@@ -176,7 +339,8 @@ fn expand(
+-) -> Option<ExpansionResult> {
++    budget: &mut ExpansionBudget,
++) -> Vec<ExpansionResult> {
+@@ -211,41 +375,26 @@ fn expand(
+-                let mut accumulated_offset_from_fake_tokens = 0;
+-                let result = fake_mapped_tokens
+-                    .into_iter()
+-                    .filter_map(|(fake_mapped_token, rank)| {
+-                        let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                        if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                            // Proc macros can make the same span with different text, we don't
+-                            // want them to participate in completion because the macro author probably
+-                            // didn't intend them to.
+-                            return None;
+-                        }
+-                        accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                        let new_offset = fake_mapped_token.text_range().start()
+-                            - TextSize::new(accumulated_offset as u32);
+-                        if new_offset + relative_offset > actual_range {
+-                            // offset outside of bounds from the original expansion,
+-                            // stop here to prevent problems from happening
+-                            return None;
+-                        }
+-                        let result = expand_maybe_stop(
+-                            sema,
+-                            actual_expansion.clone(),
+-                            fake_expansion.clone(),
+-                            new_offset,
+-                            fake_mapped_token,
+-                            relative_offset,
+-                        )?;
+-                        Some((result, rank))
+-                    })
+-                    .min_by_key(|(_, rank)| *rank)
+-                    .map(|(result, _)| result);
+-                if result.is_some() {
+-                    return result;
++                let mut results = Vec::new();
++                for (branch_expansion, mapped_token, mapped_offset) in mapped_completion_tokens(
++                    &fake_expansion,
++                    fake_mapped_tokens,
++                    actual_range,
++                    relative_offset,
++                ) {
++                    results.extend(expand_maybe_stop(
++                        sema,
++                        actual_expansion.clone(),
++                        branch_expansion,
++                        mapped_offset,
++                        mapped_token,
++                        relative_offset,
++                        budget,
++                    ));
++                }
++                if !results.is_empty() {
++                    return results;
+@@ -254,12 +403,19 @@ fn expand(
+-    let orig_tt = ancestors_at_offset(&original_file.value, original_offset)
+-        .map_while(Either::<ast::TokenTree, ast::Meta>::cast)
+-        .last()?;
+-    let spec_tt = ancestors_at_offset(&speculative_file, fake_ident_token.text_range().start())
++    let Some(orig_tt) = ancestors_at_offset(&original_file.value, original_offset)
+-        .last()?;
++        .last()
++    else {
++        return Vec::new();
++    };
++    let Some(spec_tt) =
++        ancestors_at_offset(&speculative_file, fake_ident_token.text_range().start())
++            .map_while(Either::<ast::TokenTree, ast::Meta>::cast)
++            .last()
++    else {
++        return Vec::new();
++    };
+@@ -280,7 +436,7 @@ fn expand(
+-        _ => return None,
++        _ => return Vec::new(),
+@@ -295,22 +451,35 @@ fn expand(
+-        ) && let Some((fake_mapped_token, _)) =
+-            fake_mapped_tokens.into_iter().min_by_key(|(_, rank)| *rank)
+-        {
+-            return Some(ExpansionResult {
+-                original_file: original_file.value,
+-                speculative_file,
+-                original_offset,
+-                speculative_offset: fake_ident_token.text_range().start(),
+-                fake_ident_token,
+-                derive_ctx: Some((
+-                    actual_expansion,
+-                    fake_expansion,
+-                    fake_mapped_token.text_range().start(),
+-                    orig_attr,
+-                )),
+-            });
++        ) {
++            let actual_range = actual_expansion.text_range().end();
++            let mut results = Vec::new();
++            for (branch_expansion, mapped_token, _) in mapped_completion_tokens(
++                &fake_expansion,
++                fake_mapped_tokens,
++                actual_range,
++                relative_offset,
++            ) {
++                if !budget.take_site() {
++                    break;
++                }
++                results.push(ExpansionResult {
++                    original_file: original_file.value.clone(),
++                    speculative_file: speculative_file.clone(),
++                    original_offset,
++                    speculative_offset: fake_ident_token.text_range().start(),
++                    fake_ident_token: fake_ident_token.clone(),
++                    derive_ctx: Some((
++                        actual_expansion.clone(),
++                        branch_expansion,
++                        mapped_token.text_range().start(),
++                        orig_attr.clone(),
++                    )),
++                });
++            }
++            if !results.is_empty() {
++                return results;
++            }
+@@ -323,73 +492,64 @@ fn expand(
++                let mut results = Vec::new();
+-                        // we are inside a derive helper token tree, treat this as being inside
+-                        // the derive expansion
++                        // We are inside a derive helper token tree, so treat it as an expansion.
+-                        let mut accumulated_offset_from_fake_tokens = 0;
+-                        let result = fake_mapped_tokens
+-                            .into_iter()
+-                            .filter_map(|(fake_mapped_token, rank)| {
+-                                let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                                if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                                    // Proc macros can make the same span with different text, we don't
+-                                    // want them to participate in completion because the macro author probably
+-                                    // didn't intend them to.
+-                                    return None;
+-                                }
+-                                accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                                let new_offset = fake_mapped_token.text_range().start()
+-                                    - TextSize::new(accumulated_offset as u32);
+-                                if new_offset + relative_offset > actual_range {
+-                                    // offset outside of bounds from the original expansion,
+-                                    // stop here to prevent problems from happening
+-                                    return None;
+-                                }
+-                                let result = expand_maybe_stop(
+-                                    sema,
+-                                    InFile::new(file.into(), actual_expansion.clone()),
+-                                    fake_expansion.clone(),
+-                                    new_offset,
+-                                    fake_mapped_token,
+-                                    relative_offset,
+-                                )?;
+-                                Some((result, rank))
+-                            })
+-                            .min_by_key(|(_, rank)| *rank)
+-                            .map(|(result, _)| result);
+-                        if result.is_some() {
+-                            return result;
++                        for (branch_expansion, mapped_token, mapped_offset) in
++                            mapped_completion_tokens(
++                                &fake_expansion,
++                                fake_mapped_tokens,
++                                actual_range,
++                                relative_offset,
++                            )
++                        {
++                            results.extend(expand_maybe_stop(
++                                sema,
++                                InFile::new(file.into(), actual_expansion.clone()),
++                                branch_expansion,
++                                mapped_offset,
++                                mapped_token,
++                                relative_offset,
++                                budget,
++                            ));
++                if !results.is_empty() {
++                    return results;
++                }
+-        // at this point we won't have any more successful expansions, so stop
+-        return None;
++        // At this point we will not have any more successful expansions, so stop.
++        return Vec::new();
+-    let (orig_tt, spec_tt) = tts?;
+-    let (actual_macro_call, macro_call_with_fake_ident) = (
+-        orig_tt.syntax().parent().and_then(ast::MacroCall::cast)?,
+-        spec_tt.syntax().parent().and_then(ast::MacroCall::cast)?,
+-    );
++    let Some((orig_tt, spec_tt)) = tts else { return Vec::new() };
++    let Some(actual_macro_call) = orig_tt.syntax().parent().and_then(ast::MacroCall::cast) else {
++        return Vec::new();
++    };
++    let Some(macro_call_with_fake_ident) = spec_tt.syntax().parent().and_then(ast::MacroCall::cast)
++    else {
++        return Vec::new();
++    };
+-        return None;
++        return Vec::new();
+-    let speculative_args = macro_call_with_fake_ident.token_tree()?;
++    let Some(speculative_args) = macro_call_with_fake_ident.token_tree() else {
++        return Vec::new();
++    };
+@@ -397,43 +557,29 @@ fn expand(
+-            let mut accumulated_offset_from_fake_tokens = 0;
+-            fake_mapped_tokens
+-                .into_iter()
+-                .filter_map(|(fake_mapped_token, rank)| {
+-                    let accumulated_offset = accumulated_offset_from_fake_tokens;
+-                    if !fake_mapped_token.text().contains(COMPLETION_MARKER) {
+-                        // Proc macros can make the same span with different text, we don't
+-                        // want them to participate in completion because the macro author probably
+-                        // didn't intend them to.
+-                        return None;
+-                    }
+-                    accumulated_offset_from_fake_tokens += COMPLETION_MARKER.len();
+-
+-                    let new_offset = fake_mapped_token.text_range().start()
+-                        - TextSize::new(accumulated_offset as u32);
+-                    if new_offset + relative_offset > actual_range {
+-                        // offset outside of bounds from the original expansion,
+-                        // stop here to prevent problems from happening
+-                        return None;
+-                    }
+-                    let result = expand_maybe_stop(
+-                        sema,
+-                        actual_expansion.clone(),
+-                        fake_expansion.clone(),
+-                        new_offset,
+-                        fake_mapped_token,
+-                        relative_offset,
+-                    )?;
+-                    Some((result, rank))
+-                })
+-                .min_by_key(|(_, rank)| *rank)
+-                .map(|(result, _)| result)
++            let mut results = Vec::new();
++            for (branch_expansion, mapped_token, mapped_offset) in mapped_completion_tokens(
++                &fake_expansion,
++                fake_mapped_tokens,
++                actual_range,
++                relative_offset,
++            ) {
++                results.extend(expand_maybe_stop(
++                    sema,
++                    actual_expansion.clone(),
++                    branch_expansion,
++                    mapped_offset,
++                    mapped_token,
++                    relative_offset,
++                    budget,
++                ));
++            }
++            results
+-        _ => None,
++        _ => Vec::new(),

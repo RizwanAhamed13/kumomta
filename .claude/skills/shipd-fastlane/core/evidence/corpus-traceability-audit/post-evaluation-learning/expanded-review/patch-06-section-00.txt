@@ -1,0 +1,23 @@
+diff --git a/dora-bytecode/src/data.rs b/dora-bytecode/src/data.rs
+@@ -92,6 +92,8 @@ pub enum BytecodeOpcode {
++    TestTraitObjectType,
++    LoadTraitObjectValue,
+@@ -167,6 +169,8 @@ impl From<BytecodeOpcode> for u8 {
++            BytecodeOpcode::TestTraitObjectType => opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE,
++            BytecodeOpcode::LoadTraitObjectValue => opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE,
+@@ -246,6 +250,10 @@ impl TryFrom<u8> for BytecodeOpcode {
++            opc::BYTECODE_OPCODE_TEST_TRAIT_OBJECT_TYPE => Ok(BytecodeOpcode::TestTraitObjectType),
++            opc::BYTECODE_OPCODE_LOAD_TRAIT_OBJECT_VALUE => {
++                Ok(BytecodeOpcode::LoadTraitObjectValue)
++            }
+@@ -638,6 +646,16 @@ pub enum BytecodeInstruction {
++    TestTraitObjectType {
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    },
++    LoadTraitObjectValue {
++        dest: Register,
++        object: Register,
++        idx: ConstPoolIdx,
++    },

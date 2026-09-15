@@ -1,0 +1,185 @@
+{
+  "recorded_at": "2026-09-13T01:24:48.185972+00:00",
+  "items": [
+    {
+      "item_index": 58,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review24-public-metadata/dispositions.md",
+      "bytes": 2268,
+      "sha256": "331bec0c5eba158a04492bc5816a9f5632cf3864aaa62d7088558ee47773e50d",
+      "kind": "record",
+      "narrative_index": 37,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 61,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/rollout30-clarified-description-2026-08-24/audit.md",
+      "bytes": 3036,
+      "sha256": "75807acc70ba3457a1f445236fe11c52866d0172a22149aa63dda96eab5065d2",
+      "kind": "record",
+      "narrative_index": 40,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 62,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality-2026-09-01/disposition.md",
+      "bytes": 1046,
+      "sha256": "781015bd1d74eb8b488540546072ada5b147a8b59846058f91891112a4c4ae16",
+      "kind": "record",
+      "narrative_index": 41,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 66,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality32-2026-08-25/manifest.md",
+      "bytes": 3064,
+      "sha256": "1c1b55c878ac9341b44c3124e1b357c6cf8d3f3376f1deea8ab65faac3ebaf11",
+      "kind": "record",
+      "narrative_index": 45,
+      "status": "partial_narrative_semantic_inspection",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 68,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-2-2026-08-28/summary.md",
+      "bytes": 1432,
+      "sha256": "58a655852d39d078780714a77a63f9553d188d583820014ff539e831d1ed31f5",
+      "kind": "record",
+      "narrative_index": 47,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 69,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-3-2026-08-28/summary.md",
+      "bytes": 1250,
+      "sha256": "962f654c50cfda0ed16244c38551bd515ef5943e9cd84b1fff06bb9f6ae6c856",
+      "kind": "record",
+      "narrative_index": 48,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 70,
+      "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-96/panel-fp-review-summary.md",
+      "bytes": 1445,
+      "sha256": "445dadf184438db33842baf124cac6de7c1f39f46daa7170fcc1c029fb2fa8e3",
+      "kind": "record",
+      "narrative_index": 49,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 71,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/local-review.json",
+      "bytes": 1994,
+      "sha256": "79597ee01249a82005e31b687529d05939d53f56197901a2e7a81a257aa78f8f",
+      "kind": "record",
+      "status": "transferred_metadata_not_fully_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 72,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/alignment-failure-a55751a3.raw.md",
+      "bytes": 1271,
+      "sha256": "a8f628fc2f133bd3b4907953b417dfaf48ac0d7d3808f025a7382d797ff04191",
+      "kind": "record",
+      "narrative_index": 50,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 75,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/description-format-repair-2026-09-01.md",
+      "bytes": 782,
+      "sha256": "8822a14307d8e1379fa5cef0aa57a714d20e1ac0c0dac99010ef60fdc5f38bce",
+      "kind": "record",
+      "narrative_index": 53,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 76,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/full-repair-aswin-four-state.md",
+      "bytes": 926,
+      "sha256": "da5bd1b0602c080c8de3ee45525e0da2c31fde41463eb188ea933982bf69fba4",
+      "kind": "record",
+      "narrative_index": 54,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 77,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/prepared-caching-flake-repair-2026-09-01.md",
+      "bytes": 2072,
+      "sha256": "3af2d499d979940e8c3e1ca13235bb54e56aca779b0b240f88c3b92c7ca2d9bf",
+      "kind": "record",
+      "narrative_index": 55,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 78,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-bulb-expansion-2026-09-01.md",
+      "bytes": 2901,
+      "sha256": "ffd5911dd669289b754a8bfd0d316ef3e859047386b66cbedf475a002ec879ed",
+      "kind": "record",
+      "narrative_index": 85,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 79,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-failure-58828490.raw.md",
+      "bytes": 916,
+      "sha256": "5edf721f4497e7f6d3185d4251627883be64b9a3ac64ec21a8b3244537f14bf8",
+      "kind": "record",
+      "narrative_index": 86,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 80,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-gap-repair-2026-09-01.md",
+      "bytes": 2814,
+      "sha256": "a613a945528f9432814bc01aec49ae78e780be9166c43a077c21b9d6ace38555",
+      "kind": "record",
+      "narrative_index": 87,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 81,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-and-solution-quality-repair-2026-09-01.md",
+      "bytes": 2186,
+      "sha256": "7fdf5923a1bc760bfc4f696ad31ee9466ce210d9ce8179f0e98bfad2ce633839",
+      "kind": "record",
+      "narrative_index": 88,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 82,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-repair-2026-08-31.md",
+      "bytes": 2447,
+      "sha256": "0176f1c45349289e0ea856ad909612e5f634dbb3d6a12faa2dd497beac0ddc05",
+      "kind": "record",
+      "narrative_index": 89,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    },
+    {
+      "item_index": 83,
+      "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-wrapper-repair-2026-08-31.md",
+      "bytes": 1652,
+      "sha256": "567a82df03afaffd40c7045309206df5c092e40c0c97630051771825dcbd0ba9",
+      "kind": "record",
+      "narrative_index": 90,
+      "status": "transferred_not_independently_semantically_inspected",
+      "inspection": "full narrative text provided for semantic review"
+    }
+  ],
+  "scope": "post-evaluation learning only"
+}

@@ -1,0 +1,37 @@
+{
+  "recorded_at": "2026-09-13T01:44:00.917987+00:00",
+  "phase": "source-only-history-delta-preparation",
+  "execution": "NO_TESTS_OR_BUILDS_QUEUE_HELD",
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane/evidence/corpus-traceability-audit/post-evaluation-learning",
+  "repository_commit": null,
+  "commit_limit": "Plugin copy has no .git; exact input hashes bind this metadata/source phase.",
+  "host": {
+    "exit_code": 0,
+    "stdout": "arch",
+    "stderr": ""
+  },
+  "arch": {
+    "exit_code": 0,
+    "stdout": "x86_64",
+    "stderr": ""
+  },
+  "disk": {
+    "exit_code": 0,
+    "stdout": "Filesystem                Size  Used Avail Use% Mounted on\n/dev/mapper/omarchy_root  779G  268G  511G  35% /home",
+    "stderr": ""
+  },
+  "mount": {
+    "exit_code": 0,
+    "stdout": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+    "stderr": ""
+  },
+  "docker": {
+    "exit_code": 0,
+    "stdout": "29.7.2",
+    "stderr": ""
+  },
+  "input_sha256": {
+    "semantic-inspection-ledger.json": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0",
+    "expanded-review/index.json": "23f128dc50a7e85e1ebb39b04ab6abce55b737e7dc2baf0229076edf1db6366b"
+  }
+}

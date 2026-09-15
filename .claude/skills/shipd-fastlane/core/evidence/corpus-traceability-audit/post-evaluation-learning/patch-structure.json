@@ -1,0 +1,1201 @@
+[
+  {
+    "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+    "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+    "files": [
+      {
+        "file": "crates/diagnostics/src/infer.rs",
+        "added": 24,
+        "removed": 0
+      },
+      {
+        "file": "crates/emit/src/expressions/access/struct_call.rs",
+        "added": 159,
+        "removed": 22
+      },
+      {
+        "file": "crates/emit/src/expressions/identifiers.rs",
+        "added": 55,
+        "removed": 8
+      },
+      {
+        "file": "crates/format/src/formatter/top_level_item.rs",
+        "added": 82,
+        "removed": 12
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "added": 22,
+        "removed": 0
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/cache/mod.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/cache/types.rs",
+        "added": 359,
+        "removed": 22
+      },
+      {
+        "file": "crates/semantics/src/checker/freeze.rs",
+        "added": 22,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/context.rs",
+        "added": 12,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "added": 56,
+        "removed": 6
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "added": 146,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/mod.rs",
+        "added": 71,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "added": 9,
+        "removed": 4
+      },
+      {
+        "file": "crates/semantics/src/checker/promotion.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/declarations.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/mod.rs",
+        "added": 17,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/types.rs",
+        "added": 548,
+        "removed": 5
+      },
+      {
+        "file": "crates/semantics/src/store.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/zero.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/ast.rs",
+        "added": 46,
+        "removed": 4
+      },
+      {
+        "file": "crates/syntax/src/go_names.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/parse/definitions.rs",
+        "added": 57,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/3f3ce128a1e555c6e171c6a7f9de42e97615ad912824d27f8ec002ae71d58ba3/artifacts/solution.patch",
+    "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9",
+    "files": [
+      {
+        "file": "crates/diagnostics/src/infer.rs",
+        "added": 24,
+        "removed": 0
+      },
+      {
+        "file": "crates/emit/src/expressions/access/struct_call.rs",
+        "added": 159,
+        "removed": 22
+      },
+      {
+        "file": "crates/format/src/formatter/top_level_item.rs",
+        "added": 21,
+        "removed": 5
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "added": 22,
+        "removed": 0
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/cache/mod.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/cache/types.rs",
+        "added": 359,
+        "removed": 22
+      },
+      {
+        "file": "crates/semantics/src/checker/freeze.rs",
+        "added": 22,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/context.rs",
+        "added": 12,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "added": 56,
+        "removed": 6
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "added": 146,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/mod.rs",
+        "added": 71,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "added": 9,
+        "removed": 4
+      },
+      {
+        "file": "crates/semantics/src/checker/promotion.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/declarations.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/mod.rs",
+        "added": 17,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/types.rs",
+        "added": 545,
+        "removed": 5
+      },
+      {
+        "file": "crates/semantics/src/store.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/zero.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/ast.rs",
+        "added": 13,
+        "removed": 2
+      },
+      {
+        "file": "crates/syntax/src/go_names.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/parse/definitions.rs",
+        "added": 57,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch",
+    "sha256": "f9a3845b6d13d179fcd4feb918da7beab105e5d5cdec47e68ca2205e6cafbb90",
+    "files": [
+      {
+        "file": "crates/diagnostics/src/infer.rs",
+        "added": 24,
+        "removed": 0
+      },
+      {
+        "file": "crates/emit/src/expressions/access/struct_call.rs",
+        "added": 159,
+        "removed": 22
+      },
+      {
+        "file": "crates/format/src/formatter/top_level_item.rs",
+        "added": 21,
+        "removed": 5
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs",
+        "added": 58,
+        "removed": 9
+      },
+      {
+        "file": "crates/passes/src/passes/lints/ref_graph/extract.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/cache/mod.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/cache/types.rs",
+        "added": 359,
+        "removed": 22
+      },
+      {
+        "file": "crates/semantics/src/checker/freeze.rs",
+        "added": 22,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/context.rs",
+        "added": 12,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/bindings.rs",
+        "added": 56,
+        "removed": 6
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/definitions.rs",
+        "added": 146,
+        "removed": 1
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/mod.rs",
+        "added": 71,
+        "removed": 2
+      },
+      {
+        "file": "crates/semantics/src/checker/infer/expressions/struct_call.rs",
+        "added": 9,
+        "removed": 4
+      },
+      {
+        "file": "crates/semantics/src/checker/promotion.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/declarations.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/mod.rs",
+        "added": 17,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/checker/registration/types.rs",
+        "added": 545,
+        "removed": 5
+      },
+      {
+        "file": "crates/semantics/src/store.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/semantics/src/zero.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/ast.rs",
+        "added": 13,
+        "removed": 2
+      },
+      {
+        "file": "crates/syntax/src/go_names.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "crates/syntax/src/parse/definitions.rs",
+        "added": 57,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "path": "kitesql-expression-index-core/solution.patch",
+    "sha256": "a1f979a1b9a12ed568391b7697b2be210638e81109e05c8579824d6fbb91321c",
+    "files": [
+      {
+        "file": "src/binder/create_index.rs",
+        "added": 5,
+        "removed": 4
+      },
+      {
+        "file": "src/binder/parser.rs",
+        "added": 101,
+        "removed": 14
+      },
+      {
+        "file": "src/catalog/table.rs",
+        "added": 174,
+        "removed": 19
+      },
+      {
+        "file": "src/db.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "src/execution/ddl/create_index.rs",
+        "added": 15,
+        "removed": 15
+      },
+      {
+        "file": "src/execution/dml/analyze.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "src/execution/dml/delete.rs",
+        "added": 1,
+        "removed": 5
+      },
+      {
+        "file": "src/execution/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/mod.rs",
+        "added": 80,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/range_detacher.rs",
+        "added": 86,
+        "removed": 66
+      },
+      {
+        "file": "src/optimizer/core/histogram.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/core/statistics_meta.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/elimination.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/parameterized_index.rs",
+        "added": 5,
+        "removed": 1
+      },
+      {
+        "file": "src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "added": 51,
+        "removed": 13
+      },
+      {
+        "file": "src/optimizer/rule/normalization/simplification.rs",
+        "added": 52,
+        "removed": 0
+      },
+      {
+        "file": "src/orm/ddl.rs",
+        "added": 3,
+        "removed": 3
+      },
+      {
+        "file": "src/planner/arena.rs",
+        "added": 3,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/create_index.rs",
+        "added": 6,
+        "removed": 5
+      },
+      {
+        "file": "src/planner/operator/mod.rs",
+        "added": 4,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/table_scan.rs",
+        "added": 4,
+        "removed": 7
+      },
+      {
+        "file": "src/planner/operator/visitor.rs",
+        "added": 9,
+        "removed": 2
+      },
+      {
+        "file": "src/planner/operator/visitor_mut.rs",
+        "added": 7,
+        "removed": 0
+      },
+      {
+        "file": "src/storage/mod.rs",
+        "added": 52,
+        "removed": 2
+      },
+      {
+        "file": "src/storage/table_codec.rs",
+        "added": 156,
+        "removed": 13
+      },
+      {
+        "file": "src/types/index.rs",
+        "added": 24,
+        "removed": 32
+      }
+    ]
+  },
+  {
+    "path": "kitesql-expression-index-scoped/solution.patch",
+    "sha256": "436a55fb0c0e8a0e8b535aeaf1966bbd64b80899697abb8b65e1043a6489bbaa",
+    "files": [
+      {
+        "file": "src/binder/create_index.rs",
+        "added": 5,
+        "removed": 4
+      },
+      {
+        "file": "src/binder/parser.rs",
+        "added": 116,
+        "removed": 12
+      },
+      {
+        "file": "src/catalog/table.rs",
+        "added": 174,
+        "removed": 19
+      },
+      {
+        "file": "src/db.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "src/execution/ddl/create_index.rs",
+        "added": 15,
+        "removed": 15
+      },
+      {
+        "file": "src/execution/dml/analyze.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "src/execution/dml/delete.rs",
+        "added": 1,
+        "removed": 5
+      },
+      {
+        "file": "src/execution/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/mod.rs",
+        "added": 80,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/range_detacher.rs",
+        "added": 86,
+        "removed": 66
+      },
+      {
+        "file": "src/optimizer/core/histogram.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/core/statistics_meta.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/elimination.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/parameterized_index.rs",
+        "added": 5,
+        "removed": 1
+      },
+      {
+        "file": "src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "added": 51,
+        "removed": 13
+      },
+      {
+        "file": "src/optimizer/rule/normalization/simplification.rs",
+        "added": 52,
+        "removed": 0
+      },
+      {
+        "file": "src/orm/ddl.rs",
+        "added": 3,
+        "removed": 3
+      },
+      {
+        "file": "src/planner/arena.rs",
+        "added": 3,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/create_index.rs",
+        "added": 6,
+        "removed": 5
+      },
+      {
+        "file": "src/planner/operator/mod.rs",
+        "added": 4,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/table_scan.rs",
+        "added": 4,
+        "removed": 7
+      },
+      {
+        "file": "src/planner/operator/visitor.rs",
+        "added": 9,
+        "removed": 2
+      },
+      {
+        "file": "src/planner/operator/visitor_mut.rs",
+        "added": 7,
+        "removed": 0
+      },
+      {
+        "file": "src/storage/mod.rs",
+        "added": 52,
+        "removed": 2
+      },
+      {
+        "file": "src/storage/table_codec.rs",
+        "added": 156,
+        "removed": 13
+      },
+      {
+        "file": "src/types/index.rs",
+        "added": 24,
+        "removed": 32
+      }
+    ]
+  },
+  {
+    "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+    "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be",
+    "files": [
+      {
+        "file": "src/binder/create_index.rs",
+        "added": 5,
+        "removed": 4
+      },
+      {
+        "file": "src/binder/parser.rs",
+        "added": 116,
+        "removed": 12
+      },
+      {
+        "file": "src/catalog/table.rs",
+        "added": 174,
+        "removed": 19
+      },
+      {
+        "file": "src/db.rs",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "src/execution/ddl/create_index.rs",
+        "added": 15,
+        "removed": 15
+      },
+      {
+        "file": "src/execution/dml/analyze.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "src/execution/dml/delete.rs",
+        "added": 1,
+        "removed": 5
+      },
+      {
+        "file": "src/execution/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/mod.rs",
+        "added": 80,
+        "removed": 0
+      },
+      {
+        "file": "src/expression/range_detacher.rs",
+        "added": 86,
+        "removed": 66
+      },
+      {
+        "file": "src/optimizer/core/histogram.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/core/statistics_meta.rs",
+        "added": 3,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/elimination.rs",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "src/optimizer/rule/normalization/parameterized_index.rs",
+        "added": 5,
+        "removed": 1
+      },
+      {
+        "file": "src/optimizer/rule/normalization/pushdown_predicates.rs",
+        "added": 51,
+        "removed": 13
+      },
+      {
+        "file": "src/optimizer/rule/normalization/simplification.rs",
+        "added": 52,
+        "removed": 0
+      },
+      {
+        "file": "src/orm/ddl.rs",
+        "added": 3,
+        "removed": 3
+      },
+      {
+        "file": "src/planner/arena.rs",
+        "added": 3,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/create_index.rs",
+        "added": 6,
+        "removed": 5
+      },
+      {
+        "file": "src/planner/operator/mod.rs",
+        "added": 4,
+        "removed": 1
+      },
+      {
+        "file": "src/planner/operator/table_scan.rs",
+        "added": 4,
+        "removed": 7
+      },
+      {
+        "file": "src/planner/operator/visitor.rs",
+        "added": 9,
+        "removed": 2
+      },
+      {
+        "file": "src/planner/operator/visitor_mut.rs",
+        "added": 7,
+        "removed": 0
+      },
+      {
+        "file": "src/storage/mod.rs",
+        "added": 52,
+        "removed": 2
+      },
+      {
+        "file": "src/storage/table_codec.rs",
+        "added": 156,
+        "removed": 13
+      },
+      {
+        "file": "src/types/index.rs",
+        "added": 24,
+        "removed": 32
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/dora-trait-object-concrete-patterns/artifacts/solution.patch",
+    "sha256": "c2e553bdef19a6b23994d7f54b37418c384f3cea8b29942e8375f8cdf013c2a0",
+    "files": [
+      {
+        "file": "dora-bytecode/src/data.rs",
+        "added": 18,
+        "removed": 0
+      },
+      {
+        "file": "dora-bytecode/src/dumper.rs",
+        "added": 18,
+        "removed": 0
+      },
+      {
+        "file": "dora-bytecode/src/opcode.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "dora-bytecode/src/reader.rs",
+        "added": 37,
+        "removed": 0
+      },
+      {
+        "file": "dora-bytecode/src/verifier.rs",
+        "added": 26,
+        "removed": 0
+      },
+      {
+        "file": "dora-bytecode/src/writer.rs",
+        "added": 16,
+        "removed": 0
+      },
+      {
+        "file": "dora-cannon-compiler/src/asm.rs",
+        "added": 4,
+        "removed": 0
+      },
+      {
+        "file": "dora-cannon-compiler/src/codegen.rs",
+        "added": 81,
+        "removed": 0
+      },
+      {
+        "file": "dora-compiler/src/closure.rs",
+        "added": 22,
+        "removed": 0
+      },
+      {
+        "file": "dora-frontend/src/exhaustiveness.rs",
+        "added": 207,
+        "removed": 51
+      },
+      {
+        "file": "dora-frontend/src/generator/bytecode.rs",
+        "added": 20,
+        "removed": 0
+      },
+      {
+        "file": "dora-frontend/src/generator/pattern.rs",
+        "added": 44,
+        "removed": 0
+      },
+      {
+        "file": "dora-frontend/src/sema.rs",
+        "added": 2,
+        "removed": 2
+      },
+      {
+        "file": "dora-frontend/src/sema/body.rs",
+        "added": 16,
+        "removed": 0
+      },
+      {
+        "file": "dora-frontend/src/sema/impl_matching.rs",
+        "added": 127,
+        "removed": 17
+      },
+      {
+        "file": "dora-frontend/src/sema/matching.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "dora-frontend/src/typeck/pattern.rs",
+        "added": 112,
+        "removed": 13
+      },
+      {
+        "file": "pkgs/boots/bytecode/dump.dora",
+        "added": 6,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/bytecode/instruction.dora",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/bytecode/opcode.dora",
+        "added": 8,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/bytecode/reader.dora",
+        "added": 12,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/bytecode_graph_builder.dora",
+        "added": 64,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/codegen.dora",
+        "added": 7,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/codegen/arm64.dora",
+        "added": 8,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/codegen/x64.dora",
+        "added": 8,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/graph.dora",
+        "added": 12,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/graph/dump.dora",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/graph/verifier.dora",
+        "added": 4,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/location.dora",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "pkgs/boots/store_elimination.dora",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "file": "tools/bytecode.toml",
+        "added": 2,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+    "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+    "files": [
+      {
+        "file": "crates/ide-completion/src/context.rs",
+        "added": 115,
+        "removed": 13
+      },
+      {
+        "file": "crates/ide-completion/src/context/analysis.rs",
+        "added": 465,
+        "removed": 162
+      },
+      {
+        "file": "crates/ide-completion/src/item.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/ide-completion/src/lib.rs",
+        "added": 77,
+        "removed": 24
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch",
+    "sha256": "95c60a6ff4e42dcaeef858c48ce603eaea3abff779366515a4b981316dcb6ad4",
+    "files": [
+      {
+        "file": "crates/ide-completion/src/context.rs",
+        "added": 115,
+        "removed": 13
+      },
+      {
+        "file": "crates/ide-completion/src/context/analysis.rs",
+        "added": 501,
+        "removed": 162
+      },
+      {
+        "file": "crates/ide-completion/src/item.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/ide-completion/src/lib.rs",
+        "added": 77,
+        "removed": 24
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch",
+    "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a",
+    "files": [
+      {
+        "file": "crates/ide-completion/src/context.rs",
+        "added": 118,
+        "removed": 13
+      },
+      {
+        "file": "crates/ide-completion/src/context/analysis.rs",
+        "added": 505,
+        "removed": 162
+      },
+      {
+        "file": "crates/ide-completion/src/item.rs",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "file": "crates/ide-completion/src/lib.rs",
+        "added": 77,
+        "removed": 24
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/solution.patch",
+    "sha256": "3369ded437806aae7135bb3d172eb2e19e7998cbe9027017ac87dd8ae93e3be8",
+    "files": [
+      {
+        "file": "crates/ide-completion/src/completions.rs",
+        "added": 37,
+        "removed": 3
+      },
+      {
+        "file": "crates/ide-completion/src/context.rs",
+        "added": 190,
+        "removed": 154
+      },
+      {
+        "file": "crates/ide-completion/src/context/analysis.rs",
+        "added": 308,
+        "removed": 162
+      },
+      {
+        "file": "crates/ide-completion/src/item.rs",
+        "added": 2,
+        "removed": 2
+      },
+      {
+        "file": "crates/ide-completion/src/lib.rs",
+        "added": 41,
+        "removed": 31
+      },
+      {
+        "file": "crates/ide-completion/src/tests/expression.rs",
+        "added": 1,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+    "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44",
+    "files": [
+      {
+        "file": "scylla/src/client/caching_session.rs",
+        "added": 16,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/pager.rs",
+        "added": 15,
+        "removed": 33
+      },
+      {
+        "file": "scylla/src/client/paging_continuation.rs",
+        "added": 30,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/session.rs",
+        "added": 89,
+        "removed": 1
+      },
+      {
+        "file": "scylla/src/cluster/worker.rs",
+        "added": 4,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/default.rs",
+        "added": 53,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/mod.rs",
+        "added": 14,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/plan.rs",
+        "added": 68,
+        "removed": 18
+      },
+      {
+        "file": "scylla/tests/integration/session/pager.rs",
+        "added": 9,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch",
+    "sha256": "c2bf2ce0176aadc6c214453029409cf44ac71462a30852e04a68d724585523c3",
+    "files": [
+      {
+        "file": "scylla/src/client/caching_session.rs",
+        "added": 16,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/pager.rs",
+        "added": 12,
+        "removed": 31
+      },
+      {
+        "file": "scylla/src/client/session.rs",
+        "added": 89,
+        "removed": 1
+      },
+      {
+        "file": "scylla/src/cluster/worker.rs",
+        "added": 4,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/default.rs",
+        "added": 53,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/mod.rs",
+        "added": 14,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/plan.rs",
+        "added": 69,
+        "removed": 18
+      },
+      {
+        "file": "scylla/src/client/paging_continuation.rs",
+        "added": 30,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-gap-pre-v16/solution.patch",
+    "sha256": "c5a83c205851ef0c5c1084a84a4805d1cc4a12b534e8691558c5229557b1c9ac",
+    "files": [
+      {
+        "file": "scylla/src/client/caching_session.rs",
+        "added": 16,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/mod.rs",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/pager.rs",
+        "added": 12,
+        "removed": 31
+      },
+      {
+        "file": "scylla/src/client/paging_continuation.rs",
+        "added": 30,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/client/session.rs",
+        "added": 89,
+        "removed": 1
+      },
+      {
+        "file": "scylla/src/cluster/worker.rs",
+        "added": 4,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/default.rs",
+        "added": 53,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/mod.rs",
+        "added": 14,
+        "removed": 0
+      },
+      {
+        "file": "scylla/src/policies/load_balancing/plan.rs",
+        "added": 68,
+        "removed": 18
+      },
+      {
+        "file": "scylla/tests/paging_affinity_regression.rs",
+        "added": 964,
+        "removed": 0
+      }
+    ]
+  }
+]

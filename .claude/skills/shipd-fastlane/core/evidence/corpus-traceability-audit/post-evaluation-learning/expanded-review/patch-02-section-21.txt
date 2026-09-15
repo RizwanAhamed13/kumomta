@@ -1,0 +1,70 @@
+diff --git a/crates/syntax/src/parse/definitions.rs b/crates/syntax/src/parse/definitions.rs
+@@ -20,6 +20,14 @@ struct DefinitionHeader<'source> {
++#[derive(Clone, Copy)]
++enum FieldDefaultPosition {
++    Named,
++    TupleStruct,
++    TupleVariant,
++    Embedded,
++}
++
+@@ -314,6 +322,43 @@ impl<'source> Parser<'source> {
++    fn parse_field_default(&mut self, position: FieldDefaultPosition) -> Option<Box<Expression>> {
++        if self.is_not(Equal) {
++            return None;
++        }
++
++        let equal = self.current_token();
++        let equal_span = Span::new(self.file_id, equal.byte_offset, equal.byte_length);
++        self.next();
++        let default = Box::new(self.parse_expression());
++
++        let (title, label, help) = match position {
++            FieldDefaultPosition::Named => return Some(default),
++            FieldDefaultPosition::TupleStruct => (
++                "Default on tuple struct field",
++                "tuple struct fields cannot declare defaults",
++                "Use a named struct field to declare a default value.",
++            ),
++            FieldDefaultPosition::TupleVariant => (
++                "Default on tuple variant field",
++                "tuple variant fields cannot declare defaults",
++                "Use a named variant field to declare a default value.",
++            ),
++            FieldDefaultPosition::Embedded => (
++                "Default on embedded field",
++                "embedded fields cannot declare defaults",
++                "Remove the default value from the embedded field.",
++            ),
++        };
++
++        self.errors.push(
++            ParseError::new(title, equal_span, label)
++                .with_parse_code("field_default_not_allowed")
++                .with_help(help),
++        );
++        None
++    }
++
+@@ -334,10 +379,13 @@ impl<'source> Parser<'source> {
++            let annotation = self.parse_annotation();
++            let _ = self.parse_field_default(FieldDefaultPosition::TupleVariant);
+-                annotation: self.parse_annotation(),
++                annotation,
++                default: None,
+@@ -372,6 +420,7 @@ impl<'source> Parser<'source> {
++            let default = self.parse_field_default(FieldDefaultPosition::Named);
+@@ -383,6 +432,7 @@ impl<'source> Parser<'source> {
++                default,
+@@ -473,6 +523,7 @@ impl<'source> Parser<'source> {
++            let _ = self.parse_field_default(FieldDefaultPosition::TupleStruct);
+@@ -480,6 +531,7 @@ impl<'source> Parser<'source> {
++                default: None,
+@@ -557,6 +609,7 @@ impl<'source> Parser<'source> {
++        let default = self.parse_field_default(FieldDefaultPosition::Named);
+@@ -564,6 +617,7 @@ impl<'source> Parser<'source> {
++            default,
+@@ -579,6 +633,7 @@ impl<'source> Parser<'source> {
++        let _ = self.parse_field_default(FieldDefaultPosition::Embedded);
+@@ -603,6 +658,7 @@ impl<'source> Parser<'source> {
++            default: None,

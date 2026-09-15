@@ -1,0 +1,17 @@
+diff --git a/crates/semantics/src/checker/infer/expressions/struct_call.rs b/crates/semantics/src/checker/infer/expressions/struct_call.rs
+@@ -366,7 +366,7 @@ impl InferCtx<'_> {
+-                    .map(|f| (&f.name, &f.ty)),
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+@@ -469,7 +469,9 @@ impl InferCtx<'_> {
+-                variant_fields.iter().map(|f| (&f.name, &f.ty)),
++                variant_fields
++                    .iter()
++                    .map(|f| (&f.name, &f.ty, f.default.as_deref())),
+@@ -671,16 +673,19 @@ impl InferCtx<'_> {
+-        fields: impl Iterator<Item = (&'a EcoString, &'a Type)>,
++        fields: impl Iterator<Item = (&'a EcoString, &'a Type, Option<&'a Expression>)>,
+-        for (name, ty) in fields {
++        for (name, ty, default) in fields {
++            if default.is_some() {
++                continue;
++            }

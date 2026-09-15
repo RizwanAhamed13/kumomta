@@ -1,0 +1,12 @@
+Problem Description
+Clean
+1/3
+Tests
+Weak
+T3/T4 High: Add a function-like proc-macro budget regression where 64 speculative identifier sites correspond to actual self tokens before a valid record-field identifier. The final record-field completion must survive. This exposes the reference defect below.
+T4 Medium: Cover raw identifiers through nested declarative expansion and through an attribute-preserved declarative invocation. Current raw-identifier coverage is direct-only.
+T4 Medium: Combine an empty expansion, an unsupported type/binding/pattern terminal, and a later required record-field sibling. Existing tests cover these pieces separately but not their stated interaction.
+1/3
+Solution & Code
+Weak
+- S1 High: Terminal accounting uses SyntaxKind::is_any_identifier, which explicitly includes keywords. Consequently, function-like proc-macro mappings whose actual tokens are self can consume the 64-identifier budget and hide a later required expression or record-field completion. Require actual IDENT tokens at the corresponding-token and recursive terminal checks.

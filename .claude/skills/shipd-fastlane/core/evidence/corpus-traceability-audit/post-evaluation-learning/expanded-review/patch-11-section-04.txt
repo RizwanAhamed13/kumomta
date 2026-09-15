@@ -1,0 +1,106 @@
+diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs
+@@ -4,6 +4,7 @@
++use super::paging_continuation::PagingContinuation;
+@@ -52,6 +53,7 @@ use crate::statement::batch::{Batch, BatchStatement};
++use arc_swap::ArcSwap;
+@@ -752,6 +754,41 @@ impl Session {
++    /// Executes one page while preserving an eligible preceding coordinator.
++    ///
++    /// Pass `None` for the first page. A returned continuation is opaque and can
++    /// be supplied to the next call. `None` means that the result is complete.
++    pub async fn query_single_page_with_affinity(
++        &self,
++        statement: impl Into<Statement>,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let statement = statement.into();
++        let (paging_state, preferred) = match continuation {
++            Some(continuation) => {
++                let (state, coordinator) = continuation.into_parts();
++                (state, Some(coordinator))
++            }
++            None => (PagingState::start(), None),
++        };
++        let (result, paging_state_response) = self
++            .query(
++                &statement,
++                values,
++                Some(statement.get_validated_page_size()),
++                paging_state,
++                RequestPaging::Manual,
++                preferred.as_ref(),
++            )
++            .await?;
++        let next = PagingContinuation::from_response(
++            paging_state_response,
++            result.request_coordinator().clone(),
++        );
++        Ok((result, next))
++    }
++
+@@ -852,6 +889,7 @@ impl Session {
++                None,
+@@ -935,10 +973,46 @@ impl Session {
++            None,
++    /// Executes one prepared page while preserving an eligible preceding coordinator.
++    ///
++    /// Pass `None` for the first page. `None` in the returned pair indicates that
++    /// the server completed the result.
++    pub async fn execute_single_page_with_affinity(
++        &self,
++        prepared: &PreparedStatement,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let serialized_values = prepared.serialize_values(&values)?;
++        let (paging_state, preferred) = match continuation {
++            Some(continuation) => {
++                let (state, coordinator) = continuation.into_parts();
++                (state, Some(coordinator))
++            }
++            None => (PagingState::start(), None),
++        };
++        let (result, paging_state_response) = self
++            .execute(
++                prepared,
++                &serialized_values,
++                Some(prepared.get_validated_page_size()),
++                paging_state,
++                RequestPaging::Manual,
++                preferred.as_ref(),
++            )
++            .await?;
++        let next = PagingContinuation::from_response(
++            paging_state_response,
++            result.request_coordinator().clone(),
++        );
++        Ok((result, next))
++    }
++
+@@ -1102,6 +1176,7 @@ impl Session {
++                None,
+@@ -1332,6 +1407,7 @@ impl Session {
++                None,
+@@ -1357,6 +1433,7 @@ impl Session {
++            None,
+@@ -1379,6 +1456,7 @@ impl Session {
++        preferred_coordinator: Option<&Coordinator>,
+@@ -1448,6 +1526,7 @@ impl Session {
++                preferred_coordinator,
+@@ -1766,6 +1845,7 @@ impl Session {
++            None,
+@@ -1787,6 +1867,7 @@ impl Session {
++        preferred_coordinator: Option<&Coordinator>,
+@@ -1855,6 +1936,7 @@ impl Session {
++                preferred_coordinator,
+@@ -2053,6 +2135,10 @@ impl Session {
++    pub(crate) fn get_cluster_state_handle(&self) -> Arc<ArcSwap<ClusterState>> {
++        self.cluster.get_state_handle()
++    }
++
+@@ -2165,15 +2251,17 @@ impl Session {
++        preferred_coordinator: Option<&'a Coordinator>,
+-        let request_plan = load_balancing::Plan::new(
++        let request_plan = load_balancing::Plan::new_with_preferred(
++            preferred_coordinator,

@@ -1,0 +1,1083 @@
+{
+  "recorded_at": "2026-09-13T00:40:19.978151+00:00",
+  "stage": "post_evaluation_later_learning",
+  "source_ledger": {
+    "path": "semantic-inspection-ledger.json",
+    "sha256": "80c0c1d084efeb5199c4143479d4571ab22ee5b3f91f9e507d9e146a4ed831a0"
+  },
+  "scope": "Five completed first-evaluation cases only; selected subset of full corpus. No accepted artifact byte binding. Counts describe reading, not execution.",
+  "cases": {
+    "lisette": {
+      "counts": {
+        "partial_semantic_inspection": 1,
+        "structure_only": 2,
+        "transferred_metadata_not_fully_semantically_inspected": 2,
+        "full_narrative_semantic_inspection": 9
+      },
+      "selected_solution_revisions": [
+        {
+          "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+          "bytes": 98757,
+          "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+          "kind": "artifact",
+          "status": "partial_semantic_inspection",
+          "extents": [
+            "selected changed lines in emitter, formatter, registration, cache, inference and lint sections; output truncation prevents a whole-file claim",
+            "later untruncated changed-lines sections 11,12,13,15,16; other inspected observations are bounded excerpts"
+          ],
+          "unread": "Complete patch and two other saved revisions remain unaudited."
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/3f3ce128a1e555c6e171c6a7f9de42e97615ad912824d27f8ec002ae71d58ba3/artifacts/solution.patch",
+          "bytes": 88977,
+          "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch",
+          "bytes": 92787,
+          "sha256": "f9a3845b6d13d179fcd4feb918da7beab105e5d5cdec47e68ca2205e6cafbb90",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        }
+      ],
+      "selected_reports_and_references": [
+        {
+          "path": ".olympus/cases/lisette-default-field-values/case.json",
+          "bytes": 83541,
+          "sha256": "67577a2b96adb9a6ead5eed4b222b316e3ec1e5e6d16646f4bf65cd940c2c71a",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/0f2bccd7bd1751384d07337247167d1280f8decbe022b1377e654f3c7374b5f6/base-skip-repair/audit.md",
+          "bytes": 848,
+          "sha256": "2f639314f84ac13b7a51e25a18a038168907bd564c630460cd3b1a81c4640dbd",
+          "kind": "record",
+          "narrative_index": 16,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/alignment.md",
+          "bytes": 2007,
+          "sha256": "e1069bacf64f3a81101ae06709d15ea6bb2fcbc003bf7606c60a6d8c19b030a3",
+          "kind": "record",
+          "narrative_index": 17,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/403ae75d-description-clarification/fp-master-rerun.md",
+          "bytes": 3183,
+          "sha256": "728414f0ba68df411d0a89e8040bfa7008a8ccff85bc3a9806d047612f72b842",
+          "kind": "record",
+          "narrative_index": 18,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/475f9256e0bea0696d881f3de7a4a8b88609860cf2da8a897ffd679a45a0c0c7/fairness-repair/audit.md",
+          "bytes": 2837,
+          "sha256": "36811452107d28cb5aa76fb5b5f050c49f7152f1c5f2f6949fcc92532daa7565",
+          "kind": "record",
+          "narrative_index": 19,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/591006fb3d3600cdde7fbe17d4233ea0c6bd5c39a52e15488a15db199387c94e/review-v2/audit.md",
+          "bytes": 1558,
+          "sha256": "40185b6a4be5a2b5dd3d6993f97248c1553bcbb3603a81bd1dbd589fce89162d",
+          "kind": "record",
+          "narrative_index": 20,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/ba2ff7fe1e789af87d1b1b09e17687070709fae17bd8bd9cb86b358543d050a6/verify-solution-base-skip-failure.md",
+          "bytes": 736,
+          "sha256": "545408f9e50e1acf37c32f5dfea6b6961283baa0a0ff026d0a23d61d4b3c79ad",
+          "kind": "record",
+          "narrative_index": 21,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/c2403788df09897f6fa9e310523c9ce0e356319d0541ccd8eb40cdfd5dc8dfc0/review-portability/audit.md",
+          "bytes": 2563,
+          "sha256": "f3a604c5e196ed4d60f5ea08d1cf147e8d3998192c6748a47515771ae1114a5c",
+          "kind": "record",
+          "narrative_index": 22,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/c9a97f2b33bb42848cf30fb46f75f0b0a19556a09c2c5cfa5ac8751ebfce5cc5/review-v4/audit.md",
+          "bytes": 1697,
+          "sha256": "6834461944e31d246b6f478872f700f21f563b5cc350431f5bcbb4acf375aa4e",
+          "kind": "record",
+          "narrative_index": 23,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/evidence/db75b1c6c1165e4152756d7052246a9d4f23f84460293a8c0c4aa451432a310d/review-v3/audit.md",
+          "bytes": 1612,
+          "sha256": "ccae39aa9f1e1fdbf6e9b76e09b4efcaf2866ed209806d7ff947babde03c0f7e",
+          "kind": "record",
+          "narrative_index": 24,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/lisette-default-field-values/grader-results/test-fairness-55d3-fail.json",
+          "bytes": 888,
+          "sha256": "b41bdfeb78a717fe7d409113affba331827270310c6c1a8e75fc8d0b05885c7b",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        }
+      ],
+      "zip_payloads_semantically_read": 0,
+      "zip_limit": "Central-directory member metadata is indexed; no member payload opened in this pass. Historical solver claims are not independent replay evidence."
+    },
+    "scylla": {
+      "counts": {
+        "full_semantic_inspection": 1,
+        "structure_only": 2,
+        "transferred_metadata_not_fully_semantically_inspected": 2,
+        "transferred_not_independently_semantically_inspected": 27,
+        "full_narrative_semantic_inspection": 14
+      },
+      "selected_solution_revisions": [
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+          "bytes": 25443,
+          "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44",
+          "kind": "artifact",
+          "status": "full_semantic_inspection",
+          "extents": [
+            "Entire 25,443-byte patch in an untruncated tool response."
+          ],
+          "unread": "Two other saved revisions, raw historical executions, solver payloads and ZIP contents remain unaudited."
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch",
+          "bytes": 24104,
+          "sha256": "c2bf2ce0176aadc6c214453029409cf44ac71462a30852e04a68d724585523c3",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-gap-pre-v16/solution.patch",
+          "bytes": 58594,
+          "sha256": "c5a83c205851ef0c5c1084a84a4805d1cc4a12b534e8691558c5229557b1c9ac",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        }
+      ],
+      "selected_reports_and_references": [
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/case.json",
+          "bytes": 39493,
+          "sha256": "858a98c12d8bb431a2ac30a3267632c0b95d8afa09e735ff827b5dc00e529ccb",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/local-review.json",
+          "bytes": 1994,
+          "sha256": "79597ee01249a82005e31b687529d05939d53f56197901a2e7a81a257aa78f8f",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/alignment-failure-a55751a3.raw.md",
+          "bytes": 1271,
+          "sha256": "a8f628fc2f133bd3b4907953b417dfaf48ac0d7d3808f025a7382d797ff04191",
+          "kind": "record",
+          "narrative_index": 50,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/auto-review-v25-revision-requested.raw.md",
+          "bytes": 20019,
+          "sha256": "b07523f5279b3009d020a8c82517edd17ba93e57abbb5be50e7379daeb332774",
+          "kind": "record",
+          "narrative_index": 51,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/auto-review-v26-runtime-fixture-revision.raw.md",
+          "bytes": 15252,
+          "sha256": "772a2eec86f6f1fcc21d664feb77c62292f7c90b5db0368468858712f17216aa",
+          "kind": "record",
+          "narrative_index": 52,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/description-format-repair-2026-09-01.md",
+          "bytes": 782,
+          "sha256": "8822a14307d8e1379fa5cef0aa57a714d20e1ac0c0dac99010ef60fdc5f38bce",
+          "kind": "record",
+          "narrative_index": 53,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/full-repair-aswin-four-state.md",
+          "bytes": 926,
+          "sha256": "da5bd1b0602c080c8de3ee45525e0da2c31fde41463eb188ea933982bf69fba4",
+          "kind": "record",
+          "narrative_index": 54,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/prepared-caching-flake-repair-2026-09-01.md",
+          "bytes": 2072,
+          "sha256": "3af2d499d979940e8c3e1ca13235bb54e56aca779b0b240f88c3b92c7ca2d9bf",
+          "kind": "record",
+          "narrative_index": 55,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-bulb-expansion-2026-09-01.md",
+          "bytes": 2901,
+          "sha256": "ffd5911dd669289b754a8bfd0d316ef3e859047386b66cbedf475a002ec879ed",
+          "kind": "record",
+          "narrative_index": 85,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-failure-58828490.raw.md",
+          "bytes": 916,
+          "sha256": "5edf721f4497e7f6d3185d4251627883be64b9a3ac64ec21a8b3244537f14bf8",
+          "kind": "record",
+          "narrative_index": 86,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/test-quality-gap-repair-2026-09-01.md",
+          "bytes": 2814,
+          "sha256": "a613a945528f9432814bc01aec49ae78e780be9166c43a077c21b9d6ace38555",
+          "kind": "record",
+          "narrative_index": 87,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-and-solution-quality-repair-2026-09-01.md",
+          "bytes": 2186,
+          "sha256": "7fdf5923a1bc760bfc4f696ad31ee9466ce210d9ce8179f0e98bfad2ce633839",
+          "kind": "record",
+          "narrative_index": 88,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-repair-2026-08-31.md",
+          "bytes": 2447,
+          "sha256": "0176f1c45349289e0ea856ad909612e5f634dbb3d6a12faa2dd497beac0ddc05",
+          "kind": "record",
+          "narrative_index": 89,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/verify-solution-wrapper-repair-2026-08-31.md",
+          "bytes": 1652,
+          "sha256": "567a82df03afaffd40c7045309206df5c092e40c0c97630051771825dcbd0ba9",
+          "kind": "record",
+          "narrative_index": 90,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v19/auto-review.raw.md",
+          "bytes": 17032,
+          "sha256": "97d71eef6bb138571d1c17b0d9d41662edb393c37f4d49ee8535fd1248d8d0c4",
+          "kind": "record",
+          "narrative_index": 56,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v19/repair-report.md",
+          "bytes": 5251,
+          "sha256": "5dfb13f2915bd03058c293bb7d931898221f4c2f7171aadbc5060c793f7fcbcf",
+          "kind": "record",
+          "narrative_index": 57,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v19/test-quality.raw.md",
+          "bytes": 49506,
+          "sha256": "d6df584666f203a9d38c94da896a8fa7802344af1a3c52b72560eba20f6a1da4",
+          "kind": "record",
+          "narrative_index": 58,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/auto-review-verdict.raw.md",
+          "bytes": 1158,
+          "sha256": "6160486cfbbcf2d7e80bb6badd260108979393e3fd8e61fc5014daf888415e22",
+          "kind": "record",
+          "narrative_index": 59,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/repair-report.md",
+          "bytes": 3084,
+          "sha256": "f7f65e07a23c7fe14d0a0475bf4092d1a2e0bc2a8ba499141185461c44f04a47",
+          "kind": "record",
+          "narrative_index": 60,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v20/validate-submission.raw.md",
+          "bytes": 753,
+          "sha256": "84cf6f86fbf9c5674b2ff5763eae60c016c370398b953874eb7ec0f109d8338c",
+          "kind": "record",
+          "narrative_index": 61,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v21/repair-report.md",
+          "bytes": 1389,
+          "sha256": "287c505b085e8e02393e936aa2faf352101140d10c241b94a8cb7d1017e753b6",
+          "kind": "record",
+          "narrative_index": 62,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v21/test-quality-failure.raw.md",
+          "bytes": 52270,
+          "sha256": "58ba158acd895749f1cc9021ec22fe7a1b2487c2d1ced1cf95a4d08bb11bf878",
+          "kind": "record",
+          "narrative_index": 63,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v22/hosted-test-quality.raw.md",
+          "bytes": 46110,
+          "sha256": "767ec5e96efd07a7fee7ae4192432c40058b5608fa4d168744c14eb853c81d1a",
+          "kind": "record",
+          "narrative_index": 64,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v22/repair-report.md",
+          "bytes": 2703,
+          "sha256": "b23431e0a1a5fa50b7b1399cb77188a8a6cf077dc0536a6c250c9395e410435d",
+          "kind": "record",
+          "narrative_index": 65,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v23/auto-review.raw.md",
+          "bytes": 31450,
+          "sha256": "d72e345cf048a0d00f4452297e334a871d1c7a6bee9f2278131e5a893bfdc1a7",
+          "kind": "record",
+          "narrative_index": 66,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v23/repair-report.md",
+          "bytes": 3438,
+          "sha256": "3dd52d64672fc655db3da34fbf72e33135849e8d3995bf478de5e6bd613de63d",
+          "kind": "record",
+          "narrative_index": 67,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v24/auto-review.raw.md",
+          "bytes": 12514,
+          "sha256": "811ca84bbb46a1d8f6d83d91bc5f7348b13f4b4dc92b10da98e61ff21f3488b4",
+          "kind": "record",
+          "narrative_index": 68,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v24/repair-report.md",
+          "bytes": 3141,
+          "sha256": "bb5028e4ac58394e0492127ad499dc61760f33911052591cad0ad949dc3d2334",
+          "kind": "record",
+          "narrative_index": 69,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v25/repair-report.md",
+          "bytes": 2870,
+          "sha256": "8c62b0bd43ce7709aa229c9df6c9684965eeb5501493f06c2fb34a87e7a56506",
+          "kind": "record",
+          "narrative_index": 70,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v25/solution-quality.raw.md",
+          "bytes": 6510,
+          "sha256": "a8748d3046455d08b34f4ce4b04fb39e600cecb8bd60fdf8b7f633497947c940",
+          "kind": "record",
+          "narrative_index": 71,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v26/repair-report.md",
+          "bytes": 4361,
+          "sha256": "5f769c968ce9cf89c5ca1a189ad6d92e0088ef2e73c3117f730cd7087bf6ca11",
+          "kind": "record",
+          "narrative_index": 72,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v27/repair-report.md",
+          "bytes": 1356,
+          "sha256": "8c5cadb95e85d4d3bfc3ad913fb5f8a88ada5970bc92f97f8c0a7167013dda47",
+          "kind": "record",
+          "narrative_index": 73,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v28/hosted-flakiness-verdict.raw.md",
+          "bytes": 687,
+          "sha256": "03f8074e0bda443b43be8961051960bf111e840e394443407b5ba40bd1c76455",
+          "kind": "record",
+          "narrative_index": 74,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v28/repair-report.md",
+          "bytes": 1793,
+          "sha256": "6809f0ec9eab76b9205b9dc5976580909001a9306968efed0cf630492f9639e3",
+          "kind": "record",
+          "narrative_index": 75,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v29/agent-runs-38-environment-blocker-audit.md",
+          "bytes": 4633,
+          "sha256": "2e673aeb5f1ba776436566f77f9139bda7b4c4e44afeaa3988a0e093435a7a27",
+          "kind": "record",
+          "narrative_index": 76,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v31/repair-report.md",
+          "bytes": 3968,
+          "sha256": "29ebe1e9cd207ce33909ad796425b5ff62d5edd3a7ae779e8455ea131a999c4c",
+          "kind": "record",
+          "narrative_index": 77,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v32/repair-report.md",
+          "bytes": 2719,
+          "sha256": "72959a90753009a40bc91b99217bc43655a88b6ec290d570efd8e8b6c829dba0",
+          "kind": "record",
+          "narrative_index": 78,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v33/repair-report.md",
+          "bytes": 2922,
+          "sha256": "41e5ff1a900c5eb2ae7fc7dd14ea5dc4d7396268543916d19767f3ad4ab0e53e",
+          "kind": "record",
+          "narrative_index": 79,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v34/repair-report.md",
+          "bytes": 2088,
+          "sha256": "b52f5a5ea7e0ed0a49cb8db54cd5764bfb0a82ed99817fb2ab29d576a924122a",
+          "kind": "record",
+          "narrative_index": 80,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v35/repair-report.md",
+          "bytes": 2759,
+          "sha256": "f74f6b9e32b6ba31b28d608d2c5d668a3900d15e4d3f8a82aef94e0d00eb6e77",
+          "kind": "record",
+          "narrative_index": 81,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v36/repair-report.md",
+          "bytes": 2605,
+          "sha256": "7219f840f5f5a277c8085e49ef3411aba9fa543b01b442685301cf058aeefa8c",
+          "kind": "record",
+          "narrative_index": 82,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v37/repair-report.md",
+          "bytes": 1835,
+          "sha256": "7ab65632543d72a7c0fb5661fd0b62b1aef0bc5f486736b40c3172b8d8b9f8de",
+          "kind": "record",
+          "narrative_index": 83,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-repair-v38/repair-report.md",
+          "bytes": 1642,
+          "sha256": "b2c1e05651c5b3656edf6b32653fdd1d4844bc00207fefe2d0e4c759ed871376",
+          "kind": "record",
+          "narrative_index": 84,
+          "status": "full_narrative_semantic_inspection"
+        }
+      ],
+      "zip_payloads_semantically_read": 0,
+      "zip_limit": "Central-directory member metadata is indexed; no member payload opened in this pass. Historical solver claims are not independent replay evidence."
+    },
+    "dora": {
+      "counts": {
+        "partial_semantic_inspection": 1,
+        "transferred_metadata_not_fully_semantically_inspected": 2,
+        "full_narrative_semantic_inspection": 13,
+        "transferred_not_independently_semantically_inspected": 3
+      },
+      "selected_solution_revisions": [
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/artifacts/solution.patch",
+          "bytes": 68353,
+          "sha256": "c2e553bdef19a6b23994d7f54b37418c384f3cea8b29942e8375f8cdf013c2a0",
+          "kind": "artifact",
+          "status": "partial_semantic_inspection",
+          "extents": [
+            "Full sections 11,21,22,23,24,27",
+            "section 9 patch-local lines 1\u2013410",
+            "section16 added lines only",
+            "selected changed lines in sections0,3,4,5,7,14"
+          ],
+          "unread": "Remaining lowering, exhaustiveness tail, metadata and backend diff portions; no whole-patch claim."
+        }
+      ],
+      "selected_reports_and_references": [
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/case.json",
+          "bytes": 23690,
+          "sha256": "0810b295e8b85633fa9f65b6f2a933f225f6c707e1ad455db913ab712c238406",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/local-review.json",
+          "bytes": 2714,
+          "sha256": "8e49b04a719595c8e5799a74ad0dd734cc09237c00f47bd550b9292a6bc3fda3",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-guarded-catchall-repair-20260830.md",
+          "bytes": 2797,
+          "sha256": "d321fcb5a1bf99ebbaf53d473b66f0eec693bdfbca9e9a447ecd1030f0278d59",
+          "kind": "record",
+          "narrative_index": 0,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-interaction-harness-repair-20260830.md",
+          "bytes": 4257,
+          "sha256": "d9ac7bcd0e6df94fcc8ae74117ba7c991de1b25dcbfc2ba80be0b17504d9dad0",
+          "kind": "record",
+          "narrative_index": 1,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-nested-heterogeneous-repair-20260830.md",
+          "bytes": 3368,
+          "sha256": "184b935509beb7f3ac358ef6db35007e94841b48c1feffda0fe91229b23b51e2",
+          "kind": "record",
+          "narrative_index": 2,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/auto-review-tuple-arity-repair-20260830.md",
+          "bytes": 2575,
+          "sha256": "3e0038ade0210df6d1553546833de771a6c6e74e82add398c49463bde955bbe7",
+          "kind": "record",
+          "narrative_index": 3,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-audit-validation-20260829.md",
+          "bytes": 2037,
+          "sha256": "918faab1e6c08e90cf8721c8c378b0f0871f3426731a32cd421e8b6f25cf5768",
+          "kind": "record",
+          "narrative_index": 4,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-test-map-20260829.md",
+          "bytes": 3382,
+          "sha256": "280097d5cd96fc29208f1a0b59d90856e76ca6e9928526f5b24b6cdabb8b863a",
+          "kind": "record",
+          "narrative_index": 5,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/description-test-map-final-20260829.md",
+          "bytes": 1415,
+          "sha256": "a0ae813e116d84cbdd7be1c37c0320c92d3b414dcc52d99d08a82ef97ed8cb3e",
+          "kind": "record",
+          "narrative_index": 6,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-associated-inference-repair-20260830.md",
+          "bytes": 2616,
+          "sha256": "78f1b31824cae8be4fce412f04c05da1fc5ee728dc501a600ece5bc767a608ae",
+          "kind": "record",
+          "narrative_index": 7,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-impl-bound-usefulness-repair-20260830.md",
+          "bytes": 2641,
+          "sha256": "1d49a5054eb98796e12306bc3d11599c6058d75914fd4cdf2efb80f9d8fa7077",
+          "kind": "record",
+          "narrative_index": 8,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-tuple-repair-20260830.md",
+          "bytes": 3394,
+          "sha256": "b853a872d65f7fc59e0986f15194a60f62c088b683a7495fe26245d0d6989a09",
+          "kind": "record",
+          "narrative_index": 9,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage5b-verification.md",
+          "bytes": 1654,
+          "sha256": "c970e668b4ace1a9aeeb0bcfa7281abc23ddec5982da104bf02da629e00fb9b4",
+          "kind": "record",
+          "narrative_index": 10,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage6-full-golden-20260829.md",
+          "bytes": 2582,
+          "sha256": "da893317a90a23e1a11a4166f26d4921d72b98a161c544b02f8c914c70eb91e7",
+          "kind": "record",
+          "narrative_index": 11,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-gate-classification-repair-20260830.md",
+          "bytes": 2493,
+          "sha256": "1adae652febb0d160d5ea0d8ec3d64fb62343927845a7b9807f50c2c6f962bee",
+          "kind": "record",
+          "narrative_index": 12,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-materialization-repair-20260830.md",
+          "bytes": 3417,
+          "sha256": "108ac9d4a77c17298c4994026e81092e5b2917a7e15eea4c9dc0733da6164925",
+          "kind": "record",
+          "narrative_index": 13,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-offline-runner-repair-20260830.md",
+          "bytes": 2980,
+          "sha256": "d5b009236d1c84cd37f1a59f4029496de389e2efa1f3ac0000326896e1ad48b7",
+          "kind": "record",
+          "narrative_index": 14,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-runner-repair-20260830.md",
+          "bytes": 2368,
+          "sha256": "d61a5acdcdd73a18aa2b8d834cf98128c8115376b5f24482ce25a574c17beda6",
+          "kind": "record",
+          "narrative_index": 15,
+          "status": "full_narrative_semantic_inspection"
+        }
+      ],
+      "zip_payloads_semantically_read": 0,
+      "zip_limit": "Central-directory member metadata is indexed; no member payload opened in this pass. Historical solver claims are not independent replay evidence."
+    },
+    "rust-analyzer": {
+      "counts": {
+        "partial_semantic_inspection": 1,
+        "structure_only": 3,
+        "transferred_metadata_not_fully_semantically_inspected": 2,
+        "full_narrative_semantic_inspection": 12,
+        "transferred_not_independently_semantically_inspected": 12,
+        "partial_narrative_semantic_inspection": 1
+      },
+      "selected_solution_revisions": [
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+          "bytes": 57807,
+          "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+          "kind": "artifact",
+          "status": "partial_semantic_inspection",
+          "extents": [
+            "Full sections0,2,3",
+            "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+          ],
+          "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch",
+          "bytes": 59216,
+          "sha256": "95c60a6ff4e42dcaeef858c48ce603eaea3abff779366515a4b981316dcb6ad4",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch",
+          "bytes": 59413,
+          "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/solution.patch",
+          "bytes": 51156,
+          "sha256": "3369ded437806aae7135bb3d172eb2e19e7998cbe9027017ac87dd8ae93e3be8",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        }
+      ],
+      "selected_reports_and_references": [
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/case.json",
+          "bytes": 82992,
+          "sha256": "be4cc857b2c35ca9c77dee860b819cdd128f622e171e70d9dfec23c46113c1a6",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/auto-review-d815b3dc-disposition.md",
+          "bytes": 1574,
+          "sha256": "64e540c951cc7a2ccd67d9e3f04cad5b077e792396d48091c3f6b6d9799e5942",
+          "kind": "record",
+          "narrative_index": 25,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/auto-review-fix-2026-08-25/dispositions.md",
+          "bytes": 2101,
+          "sha256": "1a4bc2cf266ba406e36a82a5d25349c0eda85b2760ebda080cbf5384399fc2ae",
+          "kind": "record",
+          "narrative_index": 26,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/auto-review28-2026-08-24/dispositions.md",
+          "bytes": 1019,
+          "sha256": "84f8723102ab98b397906f9a238bd6c93a1d38eeaeeaa05f2872190f5fc488be",
+          "kind": "record",
+          "narrative_index": 27,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/description-quality-2026-08-24/dispositions.md",
+          "bytes": 1165,
+          "sha256": "1af4d2c652da5e2ed0b82975bba3f4f8f90dd4b53d63c5346da838a2b910b606",
+          "kind": "record",
+          "narrative_index": 28,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/description-quality-2026-09-03/disposition.md",
+          "bytes": 1197,
+          "sha256": "fbef93c787d6a691eb7aca0012fad2530c4b8f801396dcd84f21cb89cfaf8454",
+          "kind": "record",
+          "narrative_index": 29,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/description-quality-review27-2026-08-24/dispositions.md",
+          "bytes": 983,
+          "sha256": "d9be22b8c7aef88b740acdfdf555c43fb465808a4ad9557a2333709563529fa9",
+          "kind": "record",
+          "narrative_index": 30,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/fp-repair-2026-08-28-cloud/provenance.md",
+          "bytes": 1058,
+          "sha256": "6ba9a04b7b79c2cdd677184357f0b8e8b985c397223f78011376c5688e39d38d",
+          "kind": "record",
+          "narrative_index": 31,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/keyword-route-repair-2026-08-28-cloud/review-disposition.md",
+          "bytes": 1656,
+          "sha256": "c601fd87facf373caac153c86e7f5afe2c75922b77bdfc7a894dfe69ef560ff2",
+          "kind": "record",
+          "narrative_index": 32,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/punctuation-budget-2026-09-03/codespaces-targeted-summary.md",
+          "bytes": 1472,
+          "sha256": "ffc9ea14c456bc3a213bfe25b03106cfaa016caeaa1879c8495e2f7daad5e0e5",
+          "kind": "record",
+          "narrative_index": 33,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-01/revision-requested.txt",
+          "bytes": 1079,
+          "sha256": "649e37cc1630ac8de4fd4981013bef23a34b2bc72b919fb74a149f06a9520bce",
+          "kind": "record",
+          "status": "transferred_metadata_not_fully_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/dispositions.md",
+          "bytes": 1630,
+          "sha256": "544e94d45035128446b7d43d273ad6529d95171979bcb16f5e9e0376fceaa02b",
+          "kind": "record",
+          "narrative_index": 34,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-v2-2026-08-26/cli-matrix-summary.md",
+          "bytes": 1149,
+          "sha256": "8ca8840a899e31da6ae16776b0baa0be0571f54ba5711327f647a617a6da2149",
+          "kind": "record",
+          "narrative_index": 35,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-v2-2026-08-26/dispositions.md",
+          "bytes": 2254,
+          "sha256": "333e204ded4b7e45c21bde76ab8e52a584e650e9f0f1c969dcc098a4e9137ba5",
+          "kind": "record",
+          "narrative_index": 36,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review24-public-metadata/dispositions.md",
+          "bytes": 2268,
+          "sha256": "331bec0c5eba158a04492bc5816a9f5632cf3864aaa62d7088558ee47773e50d",
+          "kind": "record",
+          "narrative_index": 37,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review26-label-order-2026-08-24/canonical-apply.md",
+          "bytes": 456,
+          "sha256": "bc7810102cf68d3081d78541ee2dcc38186862188fdcaca436c74aa9cb80d613",
+          "kind": "record",
+          "narrative_index": 38,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review26-label-order-2026-08-24/dispositions.md",
+          "bytes": 2835,
+          "sha256": "00a83427ce92fdcd8e4062eaf80a85ef8f6f9d2b3e04424f4d53edc976bb9191",
+          "kind": "record",
+          "narrative_index": 39,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/rollout30-clarified-description-2026-08-24/audit.md",
+          "bytes": 3036,
+          "sha256": "75807acc70ba3457a1f445236fe11c52866d0172a22149aa63dda96eab5065d2",
+          "kind": "record",
+          "narrative_index": 40,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality-2026-09-01/disposition.md",
+          "bytes": 1046,
+          "sha256": "781015bd1d74eb8b488540546072ada5b147a8b59846058f91891112a4c4ae16",
+          "kind": "record",
+          "narrative_index": 41,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality31-2026-08-24/dispositions.md",
+          "bytes": 2241,
+          "sha256": "da094ca8b27846a14f2792f69e708a45e66a5227904657fbb46a664f772069cf",
+          "kind": "record",
+          "narrative_index": 42,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality31-2026-08-24/manifest.md",
+          "bytes": 2272,
+          "sha256": "739de097a5c07b73ca0dde53ed0d2d3913a97ebc52dc229d25aca1a7c96f3384",
+          "kind": "record",
+          "narrative_index": 43,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality32-2026-08-25/dispositions.md",
+          "bytes": 2481,
+          "sha256": "93c9f6c2e7a3fdbec4b5b7cb53c942aca7cb37d2e4758ca5fcab62ff00087505",
+          "kind": "record",
+          "narrative_index": 44,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/solution-quality32-2026-08-25/manifest.md",
+          "bytes": 3064,
+          "sha256": "1c1b55c878ac9341b44c3124e1b357c6cf8d3f3376f1deea8ab65faac3ebaf11",
+          "kind": "record",
+          "narrative_index": 45,
+          "status": "partial_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/sq-empty-sibling-2026-08-27/summary.md",
+          "bytes": 1326,
+          "sha256": "4512b81d5c5efee8991ed3d5e9a2524291afa679a12a82e1d6449224d128c835",
+          "kind": "record",
+          "narrative_index": 46,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-2-2026-08-28/summary.md",
+          "bytes": 1432,
+          "sha256": "58a655852d39d078780714a77a63f9553d188d583820014ff539e831d1ed31f5",
+          "kind": "record",
+          "narrative_index": 47,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-3-2026-08-28/summary.md",
+          "bytes": 1250,
+          "sha256": "962f654c50cfda0ed16244c38551bd515ef5943e9cd84b1fff06bb9f6ae6c856",
+          "kind": "record",
+          "narrative_index": 48,
+          "status": "transferred_not_independently_semantically_inspected"
+        },
+        {
+          "path": ".olympus/cases/rust-analyzer-multi-macro-completion/rollouts/agent-runs-96/panel-fp-review-summary.md",
+          "bytes": 1445,
+          "sha256": "445dadf184438db33842baf124cac6de7c1f39f46daa7170fcc1c029fb2fa8e3",
+          "kind": "record",
+          "narrative_index": 49,
+          "status": "transferred_not_independently_semantically_inspected"
+        }
+      ],
+      "zip_payloads_semantically_read": 0,
+      "zip_limit": "Central-directory member metadata is indexed; no member payload opened in this pass. Historical solver claims are not independent replay evidence."
+    },
+    "kitesql": {
+      "counts": {
+        "structure_only": 2,
+        "partial_semantic_inspection": 1,
+        "full_narrative_semantic_inspection": 3
+      },
+      "selected_solution_revisions": [
+        {
+          "path": "kitesql-expression-index-core/solution.patch",
+          "bytes": 75756,
+          "sha256": "a1f979a1b9a12ed568391b7697b2be210638e81109e05c8579824d6fbb91321c",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": "kitesql-expression-index-scoped/solution.patch",
+          "bytes": 76309,
+          "sha256": "436a55fb0c0e8a0e8b535aeaf1966bbd64b80899697abb8b65e1043a6489bbaa",
+          "kind": "artifact",
+          "status": "structure_only",
+          "extents": [
+            "Diff file names and addition/deletion counts only."
+          ]
+        },
+        {
+          "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+          "bytes": 76293,
+          "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be",
+          "kind": "artifact",
+          "status": "partial_semantic_inspection",
+          "extents": [
+            "Full sections0,1,2,4,8,9,14,15,23,24,25"
+          ],
+          "unread": "Remaining execution, optimization, storage integration sections; core/scoped solution payloads. Three descriptions were fully read and differ in contract."
+        }
+      ],
+      "selected_reports_and_references": [
+        {
+          "path": "kitesql-expression-index-core/description.md",
+          "bytes": 1482,
+          "sha256": "4c3ef490b1528c532fc2ffc02310e9722aa662f04cf07e29ee57d5897073fe81",
+          "kind": "record",
+          "narrative_index": 93,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": "kitesql-expression-index-scoped/description.md",
+          "bytes": 1597,
+          "sha256": "e565dc86b46fedabd4853a5dc83dc409b4b5979b4832bf0ce617c7e395b75444",
+          "kind": "record",
+          "narrative_index": 94,
+          "status": "full_narrative_semantic_inspection"
+        },
+        {
+          "path": "kitesql-expression-index-v5-mixed-types/description.md",
+          "bytes": 1333,
+          "sha256": "1875c53276fcf0c61b03f79d4187918e520e77dca50a0d9f62c1603798cee753",
+          "kind": "record",
+          "narrative_index": 95,
+          "status": "full_narrative_semantic_inspection"
+        }
+      ],
+      "zip_payloads_semantically_read": 0,
+      "zip_limit": "Central-directory member metadata is indexed; no member payload opened in this pass. Historical solver claims are not independent replay evidence.",
+      "narrative_limit": "The three fully read narratives are contract descriptions, not reviewer/FP/rollout reports."
+    }
+  },
+  "shared_unread_references": [
+    {
+      "path": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+      "bytes": 3428,
+      "sha256": "ef89e635555ab51f274fe15ba935f166ab1194d331ffadb8be00ee73fecb2067",
+      "kind": "record",
+      "narrative_index": 91,
+      "status": "transferred_not_independently_semantically_inspected"
+    },
+    {
+      "path": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/hardness-calibrators.md",
+      "bytes": 10947,
+      "sha256": "403a2e8dad22259af46d8aac13728769218591d9277ca40e281f4ce0327ae347",
+      "kind": "record",
+      "narrative_index": 92,
+      "status": "transferred_not_independently_semantically_inspected"
+    }
+  ],
+  "remaining_plan": [
+    {
+      "order": 1,
+      "scope": "Complete four partially read canonical solutions, then compare nine structure-only revisions by deduplicated semantic deltas.",
+      "method": "Use exact contract revision and existing patch hashes; preserve each original path and hash even when content is deduplicated. No accepted/latest inference from path names."
+    },
+    {
+      "order": 2,
+      "scope": "Read 44 uninspected and one partial selected narratives plus eight other records; prioritize actual reviewer/FP/rollout failure outcomes over repeated status prose.",
+      "method": "Bind each finding to the solution/test/description revision explicitly named in its receipt; unknown identity stays unknown. Follow raw records when a summary makes an unverified success claim."
+    },
+    {
+      "order": 3,
+      "scope": "Select completed-case solver/ZIP member payloads from the existing searchable archive inventory.",
+      "method": "Deduplicate by measured payload hash only after authorized remote extraction; inspect one representative plus distinct outcome/behavior deltas, retaining all duplicate provenance. First-failure reports and passing-run false-positive dispositions take precedence. No builds or replay under the current source-only slot."
+    },
+    {
+      "order": 4,
+      "scope": "Release pending Calyx, Parquet, Ladybug and Aggregate historical payloads only after their first archive evaluations.",
+      "method": "Preserve fresh receipts and later learning exposure times separately; unread or unavailable payloads remain explicit."
+    }
+  ],
+  "full_corpus_semantic_completion": false
+}

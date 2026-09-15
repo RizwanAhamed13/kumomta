@@ -1,0 +1,18 @@
+diff --git a/pkgs/boots/graph.dora b/pkgs/boots/graph.dora
+@@ -925,6 +925,7 @@ pub enum Op {
++    ShapeConst,
+@@ -1133,6 +1134,7 @@ pub fn op_name(op: Op): String {
++        Op::ShapeConst => "Const.Shape",
+@@ -1448,6 +1450,7 @@ impl Inst {
++            Op::ShapeConst => Some(Type::Int32),
+@@ -2055,6 +2058,7 @@ impl Inst {
++            Op::ShapeConst => false,
+@@ -2933,6 +2937,14 @@ pub fn create_binary_inst(op: Op, ty: Type, lhs: Inst, rhs: Inst): Inst {
++pub fn create_shape_const_inst(info: TraitObjectInfo): Inst {
++    let inst = Inst::new();
++    inst._op = Some(Op::ShapeConst);
++    inst.ty = Type::Int32;
++    inst.extra = InstExtraData::TraitObjectInfo(info);
++    inst
++}
++

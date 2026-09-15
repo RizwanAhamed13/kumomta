@@ -1,0 +1,47 @@
+{
+  "at": "2026-09-13T00:29:36.475633+00:00",
+  "rows": [
+    {
+      "narrative_index": 9,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/solution-quality-tuple-repair-20260830.md",
+      "sha256": "b853a872d65f7fc59e0986f15194a60f62c088b683a7495fe26245d0d6989a09",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 10,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage5b-verification.md",
+      "sha256": "c970e668b4ace1a9aeeb0bcfa7281abc23ddec5982da104bf02da629e00fb9b4",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 11,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/stage6-full-golden-20260829.md",
+      "sha256": "da893317a90a23e1a11a4166f26d4921d72b98a161c544b02f8c914c70eb91e7",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 12,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-gate-classification-repair-20260830.md",
+      "sha256": "1adae652febb0d160d5ea0d8ec3d64fb62343927845a7b9807f50c2c6f962bee",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 13,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-materialization-repair-20260830.md",
+      "sha256": "108ac9d4a77c17298c4994026e81092e5b2917a7e15eea4c9dc0733da6164925",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 14,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-offline-runner-repair-20260830.md",
+      "sha256": "d5b009236d1c84cd37f1a59f4029496de389e2efa1f3ac0000326896e1ad48b7",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    },
+    {
+      "narrative_index": 15,
+      "path": ".olympus/cases/dora-trait-object-concrete-patterns/evidence/verify-solution-runner-repair-20260830.md",
+      "sha256": "d61a5acdcdd73a18aa2b8d834cf98128c8115376b5f24482ce25a574c17beda6",
+      "extent": "full narrative emitted; final inspection subject to no tool truncation"
+    }
+  ]
+}

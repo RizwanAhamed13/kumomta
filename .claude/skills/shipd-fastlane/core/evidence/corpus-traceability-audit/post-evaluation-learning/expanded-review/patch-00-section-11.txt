@@ -1,0 +1,151 @@
+diff --git a/crates/semantics/src/checker/infer/expressions/definitions.rs b/crates/semantics/src/checker/infer/expressions/definitions.rs
+@@ -1,5 +1,9 @@
+-use syntax::ast::Expression;
++use syntax::ast::{
++    EnumFieldDefinition, EnumVariant, Expression, StructFieldDefinition, StructFields,
++    VariantFields,
++};
++use syntax::types::Type;
+@@ -36,6 +40,10 @@ impl InferCtx<'_> {
++            let definition_fields = self.with_scope(|this| {
++                this.put_in_scope(&definition_generics);
++                this.hydrate_struct_source_defaults(fields, definition_fields)
++            });
+@@ -61,6 +69,143 @@ impl InferCtx<'_> {
++    pub(super) fn infer_enum_definition(&mut self, expression: Expression) -> Expression {
++        let store = self.store;
++        let Expression::Enum {
++            doc,
++            attributes,
++            name,
++            name_span,
++            generics,
++            variants,
++            visibility,
++            span,
++        } = expression
++        else {
++            unreachable!()
++        };
++
++        let qualified_name = self.qualify_name(&name);
++        if let Some(Definition {
++            name_span: definition_name_span,
++            body:
++                DefinitionBody::Enum {
++                    generics: definition_generics,
++                    variants: definition_variants,
++                    ..
++                },
++            ..
++        }) = store.get_definition(&qualified_name)
++        {
++            let definition_name_span =
++                definition_name_span.expect("enum definition has a name span");
++            let definition_generics = definition_generics.clone();
++            let definition_variants = definition_variants.clone();
++            let definition_variants = self.with_scope(|this| {
++                this.put_in_scope(&definition_generics);
++                this.hydrate_enum_source_defaults(variants, definition_variants)
++            });
++            Expression::Enum {
++                doc,
++                attributes,
++                name,
++                name_span: definition_name_span,
++                generics: definition_generics,
++                variants: definition_variants,
++                visibility,
++                span,
++            }
++        } else {
++            Expression::Enum {
++                doc,
++                attributes,
++                name,
++                name_span,
++                generics,
++                variants,
++                visibility,
++                span,
++            }
++        }
++    }
++
++    fn hydrate_struct_source_defaults(
++        &mut self,
++        source: StructFields,
++        registered: StructFields,
++    ) -> StructFields {
++        match (source, registered) {
++            (StructFields::Record(source), StructFields::Record(registered)) => {
++                StructFields::Record(self.hydrate_struct_field_defaults(source, registered))
++            }
++            (StructFields::Tuple(source), StructFields::Tuple(registered)) => {
++                StructFields::Tuple(self.hydrate_struct_field_defaults(source, registered))
++            }
++            (_, registered) => {
++                debug_assert!(false, "registered struct shape changed during inference");
++                registered
++            }
++        }
++    }
++
++    fn hydrate_struct_field_defaults(
++        &mut self,
++        source: Vec<StructFieldDefinition>,
++        registered: Vec<StructFieldDefinition>,
++    ) -> Vec<StructFieldDefinition> {
++        debug_assert_eq!(source.len(), registered.len());
++        registered
++            .into_iter()
++            .zip(source)
++            .map(|(mut registered, source)| {
++                registered.default = self.infer_source_default(source.default, &registered.ty);
++                registered
++            })
++            .collect()
++    }
++
++    fn hydrate_enum_source_defaults(
++        &mut self,
++        source: Vec<EnumVariant>,
++        mut registered: Vec<EnumVariant>,
++    ) -> Vec<EnumVariant> {
++        debug_assert_eq!(source.len(), registered.len());
++        for (registered_variant, source_variant) in registered.iter_mut().zip(source) {
++            match (&mut registered_variant.fields, source_variant.fields) {
++                (VariantFields::Struct(registered), VariantFields::Struct(source))
++                | (VariantFields::Tuple(registered), VariantFields::Tuple(source)) => {
++                    self.hydrate_enum_field_defaults(source, registered);
++                }
++                (VariantFields::Unit, VariantFields::Unit) => {}
++                _ => debug_assert!(false, "registered enum shape changed during inference"),
++            }
++        }
++        registered
++    }
++
++    fn hydrate_enum_field_defaults(
++        &mut self,
++        source: Vec<EnumFieldDefinition>,
++        registered: &mut [EnumFieldDefinition],
++    ) {
++        debug_assert_eq!(source.len(), registered.len());
++        for (registered, source) in registered.iter_mut().zip(source) {
++            registered.default = self.infer_source_default(source.default, &registered.ty);
++        }
++    }
++
++    fn infer_source_default(
++        &mut self,
++        default: Option<Box<Expression>>,
++        expected_ty: &Type,
++    ) -> Option<Box<Expression>> {
++        default.map(|default| {
++            Box::new(
++                self.without_diagnostics(|this| this.infer_field_default(*default, expected_ty)),
++            )
++        })
++    }
++

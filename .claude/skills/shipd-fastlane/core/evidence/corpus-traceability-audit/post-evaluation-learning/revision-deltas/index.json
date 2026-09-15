@@ -1,0 +1,281 @@
+{
+  "recorded_at": "2026-09-13T01:44:00.983069+00:00",
+  "comparison": "Exact saved patch-text differences, including hunk offsets/context; canonical changed code already reviewed; these are not production patch files.",
+  "deltas": [
+    {
+      "from_index": 1,
+      "to_index": 0,
+      "from": {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/3f3ce128a1e555c6e171c6a7f9de42e97615ad912824d27f8ec002ae71d58ba3/artifacts/solution.patch",
+        "bytes": 88977,
+        "sha256": "9a4f5d2ebfb52b1eaf6570a5ef14aba409857236441c50bf7cb27f3d1d9caac9",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+        "bytes": 98757,
+        "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "selected changed lines in emitter, formatter, registration, cache, inference and lint sections; output truncation prevents a whole-file claim",
+          "later untruncated changed-lines sections 11,12,13,15,16; other inspected observations are bounded excerpts"
+        ],
+        "unread": "Complete patch and two other saved revisions remain unaudited."
+      },
+      "delta_path": "revision-deltas/patch-01-to-00.diff",
+      "bytes": 15644,
+      "lines": 376,
+      "sha256": "4347479e64175ac257f72e4ca343b87d7d90156adb32706a41f3de914c542a33",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 2,
+      "to_index": 0,
+      "from": {
+        "path": ".olympus/cases/lisette-default-field-values/evidence/bfa7342d16252585e2ba42e755bef4915bfee6cd6f303ab23289bd9faf070dd7/artifacts/solution.patch",
+        "bytes": 92787,
+        "sha256": "f9a3845b6d13d179fcd4feb918da7beab105e5d5cdec47e68ca2205e6cafbb90",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/lisette-default-field-values/artifacts/solution.patch",
+        "bytes": 98757,
+        "sha256": "7f2f8b78ddcac53558ea2580ed0c3a00d4cbb865be0b65b5bfe77887cd3d2c99",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "selected changed lines in emitter, formatter, registration, cache, inference and lint sections; output truncation prevents a whole-file claim",
+          "later untruncated changed-lines sections 11,12,13,15,16; other inspected observations are bounded excerpts"
+        ],
+        "unread": "Complete patch and two other saved revisions remain unaudited."
+      },
+      "delta_path": "revision-deltas/patch-02-to-00.diff",
+      "bytes": 21991,
+      "lines": 536,
+      "sha256": "a2ecc8f1cbc10d7485fd7c36bd59c0bcdd9b73e6b105f4b189fe5dbabe94dd32",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 3,
+      "to_index": 5,
+      "from": {
+        "path": "kitesql-expression-index-core/solution.patch",
+        "bytes": 75756,
+        "sha256": "a1f979a1b9a12ed568391b7697b2be210638e81109e05c8579824d6fbb91321c",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+        "bytes": 76293,
+        "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "Full sections0,1,2,4,8,9,14,15,23,24,25"
+        ],
+        "unread": "Remaining execution, optimization, storage integration sections; core/scoped solution payloads. Three descriptions were fully read and differ in contract."
+      },
+      "delta_path": "revision-deltas/patch-03-to-05.diff",
+      "bytes": 7436,
+      "lines": 167,
+      "sha256": "f27d59d46f4d4b617535f5256cbbc3408692db75d900c0195fba9d5cc5e1874e",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 4,
+      "to_index": 5,
+      "from": {
+        "path": "kitesql-expression-index-scoped/solution.patch",
+        "bytes": 76309,
+        "sha256": "436a55fb0c0e8a0e8b535aeaf1966bbd64b80899697abb8b65e1043a6489bbaa",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": "kitesql-expression-index-v5-mixed-types/solution.patch",
+        "bytes": 76293,
+        "sha256": "8b5a2b4c0a6b7067b77b7766ef9c8799702d546940b1e844a7deec72a4cee2be",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "Full sections0,1,2,4,8,9,14,15,23,24,25"
+        ],
+        "unread": "Remaining execution, optimization, storage integration sections; core/scoped solution payloads. Three descriptions were fully read and differ in contract."
+      },
+      "delta_path": "revision-deltas/patch-04-to-05.diff",
+      "bytes": 1390,
+      "lines": 31,
+      "sha256": "392985d1a466c60ce78d2231c4012c92ad04517a9529271cc9cf7b953d2372b8",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 8,
+      "to_index": 7,
+      "from": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-aswin/proposed-output/solution.patch",
+        "bytes": 59216,
+        "sha256": "95c60a6ff4e42dcaeef858c48ce603eaea3abff779366515a4b981316dcb6ad4",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+        "bytes": 57807,
+        "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "Full sections0,2,3",
+          "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+        ],
+        "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+      },
+      "delta_path": "revision-deltas/patch-08-to-07.diff",
+      "bytes": 6881,
+      "lines": 175,
+      "sha256": "e49604412965e5a4fc416ace0e6f6e3707fc19969df104bf9e08fc934d1c8105",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 9,
+      "to_index": 7,
+      "from": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-2026-09-04-scope-reduction/batch43-hardened-candidate/solution.patch",
+        "bytes": 59413,
+        "sha256": "2665527f661b0a6358c68d8f3604a0effda74f3338fe42c56b6a48e00fc15d1a",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+        "bytes": 57807,
+        "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "Full sections0,2,3",
+          "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+        ],
+        "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+      },
+      "delta_path": "revision-deltas/patch-09-to-07.diff",
+      "bytes": 19334,
+      "lines": 486,
+      "sha256": "090afb6e0fca2285d89040e9ddd8ec69d43330649e52debcfc9a91381ef488c1",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 10,
+      "to_index": 7,
+      "from": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/evidence/review-bulbs-2026-08-23/cloud/solution.patch",
+        "bytes": 51156,
+        "sha256": "3369ded437806aae7135bb3d172eb2e19e7998cbe9027017ac87dd8ae93e3be8",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/rust-analyzer-multi-macro-completion/artifacts/solution.patch",
+        "bytes": 57807,
+        "sha256": "4762f3d960581cec7aa6f796111985a6c01f175836ce597634fffd07a3991b4f",
+        "kind": "artifact",
+        "status": "partial_semantic_inspection",
+        "extents": [
+          "Full sections0,2,3",
+          "section1 patch-local lines1\u2013247,453\u2013525,933\u20131009 and function index"
+        ],
+        "unread": "Remaining analysis diff and three other saved revisions. Later narratives describe changes absent from this canonical patch; canonical does not mean latest or accepted."
+      },
+      "delta_path": "revision-deltas/patch-10-to-07.diff",
+      "bytes": 92682,
+      "lines": 2183,
+      "sha256": "6fd460a7a0fd2741ea076285e4a0dd845c3a1241400533e4a873f311b549fb36",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 12,
+      "to_index": 11,
+      "from": {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/drift-20260831-2124/solution.patch",
+        "bytes": 24104,
+        "sha256": "c2bf2ce0176aadc6c214453029409cf44ac71462a30852e04a68d724585523c3",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+        "bytes": 25443,
+        "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44",
+        "kind": "artifact",
+        "status": "full_semantic_inspection",
+        "extents": [
+          "Entire 25,443-byte patch in an untruncated tool response."
+        ],
+        "unread": "Two other saved revisions, raw historical executions, solver payloads and ZIP contents remain unaudited."
+      },
+      "delta_path": "revision-deltas/patch-12-to-11.diff",
+      "bytes": 8670,
+      "lines": 215,
+      "sha256": "927902253af71dd682a3c137a1f1f8e8719b8e1c5d864096eb6b487dd9f237f4",
+      "semantic_status": "prepared_not_read"
+    },
+    {
+      "from_index": 13,
+      "to_index": 11,
+      "from": {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/evidence/review-gap-pre-v16/solution.patch",
+        "bytes": 58594,
+        "sha256": "c5a83c205851ef0c5c1084a84a4805d1cc4a12b534e8691558c5229557b1c9ac",
+        "kind": "artifact",
+        "status": "structure_only",
+        "extents": [
+          "Diff file names and addition/deletion counts only."
+        ]
+      },
+      "to": {
+        "path": ".olympus/cases/scylla-policy-aware-paging-affinity/artifacts/solution.patch",
+        "bytes": 25443,
+        "sha256": "b3624a960d4d76fe4475d6e319f6987690c3c39c07f36cc3f65874e54d214b44",
+        "kind": "artifact",
+        "status": "full_semantic_inspection",
+        "extents": [
+          "Entire 25,443-byte patch in an untruncated tool response."
+        ],
+        "unread": "Two other saved revisions, raw historical executions, solver payloads and ZIP contents remain unaudited."
+      },
+      "delta_path": "revision-deltas/patch-13-to-11.diff",
+      "bytes": 38078,
+      "lines": 1028,
+      "sha256": "9b947f5d62f716579a1d04aef839c0659e60a91d604b64d788b3b76a8c0982a4",
+      "semantic_status": "prepared_not_read"
+    }
+  ]
+}

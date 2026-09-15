@@ -1,0 +1,641 @@
+diff --git a/scylla/src/client/caching_session.rs b/scylla/src/client/caching_session.rs
+index fda6a14b..b27f4e2b 100644
+--- a/scylla/src/client/caching_session.rs
++++ b/scylla/src/client/caching_session.rs
+@@ -1,6 +1,7 @@
+ //! Provides a convenient wrapper over the [`Session`] that caches
+ //! prepared statements automatically and reuses them when possible.
+ 
++use crate::client::paging_continuation::PagingContinuation;
+ use crate::errors::{ExecutionError, PagerExecutionError, PrepareError};
+ use crate::response::query_result::QueryResult;
+ use crate::response::{PagingState, PagingStateResponse};
+@@ -136,6 +137,21 @@ where
+             .await
+     }
+ 
++    /// Does the same thing as [`Session::execute_single_page_with_affinity`]
++    /// but uses the prepared statement cache.
++    pub async fn execute_single_page_with_affinity(
++        &self,
++        query: impl Into<Statement>,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let query = query.into();
++        let prepared = self.add_prepared_statement_owned(query).await?;
++        self.session
++            .execute_single_page_with_affinity(&prepared, values, continuation)
++            .await
++    }
++
+     /// Does the same thing as [`Session::batch`] but uses the
+     /// prepared statement cache.\
+     /// Prepares batch using [`CachingSession::prepare_batch`]
+diff --git a/scylla/src/client/mod.rs b/scylla/src/client/mod.rs
+index 347117e8..06a1b708 100644
+--- a/scylla/src/client/mod.rs
++++ b/scylla/src/client/mod.rs
+@@ -21,6 +21,8 @@ mod execution;
+ 
+ pub mod pager;
+ 
++pub mod paging_continuation;
++
+ pub mod client_routes;
+ 
+ pub mod caching_session;
+diff --git a/scylla/src/client/pager.rs b/scylla/src/client/pager.rs
+index 09fed463..1ad5b0df 100644
+--- a/scylla/src/client/pager.rs
++++ b/scylla/src/client/pager.rs
+@@ -9,6 +9,7 @@ use std::sync::Arc;
+ use std::task::{Context, Poll};
+ use std::time::Duration;
+ 
++use arc_swap::ArcSwap;
+ use futures::Stream;
+ use std::result::Result;
+ use thiserror::Error;
+@@ -129,7 +130,7 @@ enum ShouldFetchMorePages {
+ /// - turning each successful page into a [`NextReceivedPage`] sent over the
+ ///   channel, and stopping once the server reports no more pages.
+ struct PagingExecutor {
+-    cluster_state: Arc<ClusterState>,
++    cluster_state: Arc<ArcSwap<ClusterState>>,
+     load_balancing_policy: Arc<dyn LoadBalancingPolicy>,
+     retry_policy: Arc<dyn RetryPolicy>,
+     speculative_policy: Option<Arc<dyn SpeculativeExecutionPolicy>>,
+@@ -152,7 +153,7 @@ impl PagingExecutor {
+             .access();
+ 
+         Self {
+-            cluster_state: session.get_cluster_state(),
++            cluster_state: session.get_cluster_state_handle(),
+             load_balancing_policy: Arc::clone(
+                 statement
+                     .load_balancing_policy
+@@ -334,35 +335,14 @@ impl PagingExecutor {
+                 .and_then(QueryResponse::into_non_error_query_response)
+         };
+ 
+-        let load_balancing_policy = self.load_balancing_policy.as_ref();
+-        let base_plan =
+-            load_balancing::Plan::new(load_balancing_policy, routing_info, &self.cluster_state);
+-
+-        // Coordinator stability: try the previous page's coordinator first.
+-        let stability_target = self.stable_coordinator.as_ref().map(|coordinator| {
+-            // `Coordinator` gets its shard from `Connection`. If `Connection` believes it has `Shard` `None`,
+-            // then it means that the connection pool to that connection is not sharded.
+-            // In such case, shard is ignored in `connection_for_shard()`.
+-            // We must provide a shard to `connection_for_shard()` anyway.
+-            // Therefore, let's pass an arbitrarily big shard to catch regressions in this logic earlier.
+-            (coordinator.node(), coordinator.shard().unwrap_or(2137))
+-        });
+-
+-        let plan = stability_target
+-            .into_iter()
+-            .chain(base_plan.filter(|&(node, shard)| {
+-                // Filter out the preselected coordinator - it is tried first.
+-                self.stable_coordinator.as_ref().is_none_or(|coordinator| {
+-                    // If the previous attempt targeted an unsharded node (such as
+-                    // Cassandra), filter out all targets to that node regardless
+-                    // of shard.
+-                    !(Arc::ptr_eq(node, coordinator.node())
+-                        && coordinator
+-                            .shard()
+-                            .is_none_or(|last_shard| last_shard == shard))
+-                })
+-            }))
+-            .map(|(node, shard)| NodeAttemptTarget::new(node, shard));
++        let cluster_state = self.cluster_state.load_full();
++        let plan = load_balancing::Plan::new_with_preferred(
++            self.load_balancing_policy.as_ref(),
++            routing_info,
++            &cluster_state,
++            self.stable_coordinator.as_ref(),
++        )
++        .map(|(node, shard)| NodeAttemptTarget::new(node, shard));
+ 
+         exec_params
+             .run_request_no_side_effects(routing_info, plan, run_request_once, page_span)
+@@ -990,6 +970,7 @@ If you are using this API, you are probably doing something wrong."
+             Option::zip(routing_info.table, routing_info.token).map(|(table_spec, token)| {
+                 executor
+                     .cluster_state
++                    .load_full()
+                     .get_token_endpoints_iter(table_spec, token)
+                     .map(|(node, shard)| (node.clone(), shard))
+                     .collect()
+diff --git a/scylla/src/client/session.rs b/scylla/src/client/session.rs
+index 31923e5b..2c2faf5a 100644
+--- a/scylla/src/client/session.rs
++++ b/scylla/src/client/session.rs
+@@ -4,6 +4,7 @@
+ use super::execution::RequestPaging;
+ use super::execution_profile::{ExecutionProfile, ExecutionProfileHandle};
+ use super::pager::QueryPager;
++use super::paging_continuation::PagingContinuation;
+ use super::{Compression, PoolSize, SelfIdentity, WriteCoalescingDelay};
+ use crate::authentication::AuthenticatorProvider;
+ use crate::client::client_routes::ClientRoutesConfig;
+@@ -42,6 +43,7 @@ use crate::response::query_result::{MaybeFirstRowError, QueryResult, RowsError};
+ use crate::response::{
+     Coordinator, NonErrorQueryResponse, PagingState, PagingStateResponse, QueryResponse,
+ };
++use arc_swap::ArcSwap;
+ use crate::routing::NodeLocationPreference;
+ use crate::routing::ShardAwarePortRange;
+ use crate::routing::partitioner::PartitionerName;
+@@ -752,6 +754,41 @@ impl Session {
+             .await
+     }
+ 
++    /// Executes one page while preserving an eligible preceding coordinator.
++    ///
++    /// Pass `None` for the first page. A returned continuation is opaque and can
++    /// be supplied to the next call. `None` means that the result is complete.
++    pub async fn query_single_page_with_affinity(
++        &self,
++        statement: impl Into<Statement>,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let statement = statement.into();
++        let (paging_state, preferred) = match continuation {
++            Some(continuation) => {
++                let (state, coordinator) = continuation.into_parts();
++                (state, Some(coordinator))
++            }
++            None => (PagingState::start(), None),
++        };
++        let (result, paging_state_response) = self
++            .query(
++                &statement,
++                values,
++                Some(statement.get_validated_page_size()),
++                paging_state,
++                RequestPaging::Manual,
++                preferred.as_ref(),
++            )
++            .await?;
++        let next = PagingContinuation::from_response(
++            paging_state_response,
++            result.request_coordinator().clone(),
++        );
++        Ok((result, next))
++    }
++
+     /// Execute an unprepared CQL statement with paging\
+     /// This method will query all pages of the result\
+     ///
+@@ -852,6 +889,7 @@ impl Session {
+                 None,
+                 PagingState::start(),
+                 RequestPaging::Unpaged,
++                None,
+             )
+             .await?;
+         if !paging_state.finished() {
+@@ -935,10 +973,46 @@ impl Session {
+             Some(page_size),
+             paging_state,
+             RequestPaging::Manual,
++            None,
+         )
+         .await
+     }
+ 
++    /// Executes one prepared page while preserving an eligible preceding coordinator.
++    ///
++    /// Pass `None` for the first page. `None` in the returned pair indicates that
++    /// the server completed the result.
++    pub async fn execute_single_page_with_affinity(
++        &self,
++        prepared: &PreparedStatement,
++        values: impl SerializeRow,
++        continuation: Option<PagingContinuation>,
++    ) -> Result<(QueryResult, Option<PagingContinuation>), ExecutionError> {
++        let serialized_values = prepared.serialize_values(&values)?;
++        let (paging_state, preferred) = match continuation {
++            Some(continuation) => {
++                let (state, coordinator) = continuation.into_parts();
++                (state, Some(coordinator))
++            }
++            None => (PagingState::start(), None),
++        };
++        let (result, paging_state_response) = self
++            .execute(
++                prepared,
++                &serialized_values,
++                Some(prepared.get_validated_page_size()),
++                paging_state,
++                RequestPaging::Manual,
++                preferred.as_ref(),
++            )
++            .await?;
++        let next = PagingContinuation::from_response(
++            paging_state_response,
++            result.request_coordinator().clone(),
++        );
++        Ok((result, next))
++    }
++
+     /// Execute a prepared statement with paging.\
+     /// This method will query all pages of the result.\
+     ///
+@@ -1102,6 +1176,7 @@ impl Session {
+                         .and_then(QueryResponse::into_non_error_query_response)
+                 },
+                 &span,
++                None,
+             )
+             .instrument(span.span().clone())
+             .await?;
+@@ -1332,6 +1407,7 @@ impl Session {
+                 None,
+                 PagingState::start(),
+                 RequestPaging::Unpaged,
++                None,
+             )
+             .await?;
+         if !paging_state_response.finished() {
+@@ -1357,6 +1433,7 @@ impl Session {
+             Some(statement.get_validated_page_size()),
+             paging_state,
+             RequestPaging::Manual,
++            None,
+         )
+         .await
+     }
+@@ -1379,6 +1456,7 @@ impl Session {
+         page_size: Option<PageSize>,
+         paging_state: PagingState,
+         request_paging: RequestPaging,
++        preferred_coordinator: Option<&Coordinator>,
+     ) -> Result<(QueryResult, PagingStateResponse), ExecutionError> {
+         let execution_profile = statement
+             .get_execution_profile_handle()
+@@ -1448,6 +1526,7 @@ impl Session {
+                     }
+                 },
+                 &span,
++                preferred_coordinator,
+             )
+             .instrument(span.span().clone())
+             .await?;
+@@ -1766,6 +1845,7 @@ impl Session {
+             page_size,
+             paging_state,
+             request_paging,
++            None,
+         )
+         .await
+     }
+@@ -1787,6 +1867,7 @@ impl Session {
+         page_size: Option<PageSize>,
+         paging_state: PagingState,
+         request_paging: RequestPaging,
++        preferred_coordinator: Option<&Coordinator>,
+     ) -> Result<(QueryResult, PagingStateResponse), ExecutionError> {
+         let paging_state_ref = &paging_state;
+ 
+@@ -1855,6 +1936,7 @@ impl Session {
+                         .and_then(QueryResponse::into_non_error_query_response)
+                 },
+                 &span,
++                preferred_coordinator,
+             )
+             .instrument(span.span().clone())
+             .await?;
+@@ -2053,6 +2135,10 @@ impl Session {
+         self.cluster.get_state()
+     }
+ 
++    pub(crate) fn get_cluster_state_handle(&self) -> Arc<ArcSwap<ClusterState>> {
++        self.cluster.get_state_handle()
++    }
++
+     /// Get [`TracingInfo`] of a traced query performed earlier
+     ///
+     /// See [the book](https://rust-driver.docs.scylladb.com/stable/tracing/tracing.html)
+@@ -2165,15 +2251,17 @@ impl Session {
+         exec_params: RequestExecutionParams<'a>,
+         run_request_once: impl Fn(Arc<Connection>, Consistency) -> QueryFut,
+         request_span: &'a RequestSpan,
++        preferred_coordinator: Option<&'a Coordinator>,
+     ) -> Result<(RunRequestResult<NonErrorQueryResponse>, Coordinator), ExecutionError>
+     where
+         QueryFut: Future<Output = Result<NonErrorQueryResponse, RequestAttemptError>>,
+     {
+         let cluster_state = self.cluster.get_state();
+-        let request_plan = load_balancing::Plan::new(
++        let request_plan = load_balancing::Plan::new_with_preferred(
+             exec_params.load_balancing_policy,
+             &routing_info,
+             &cluster_state,
++            preferred_coordinator,
+         )
+         .map(|(node, shard)| NodeAttemptTarget::new(node, shard));
+ 
+diff --git a/scylla/src/cluster/worker.rs b/scylla/src/cluster/worker.rs
+index 653f7fbe..b0d05172 100644
+--- a/scylla/src/cluster/worker.rs
++++ b/scylla/src/cluster/worker.rs
+@@ -196,6 +196,10 @@ impl Cluster {
+         self.state.load_full()
+     }
+ 
++    pub(crate) fn get_state_handle(&self) -> Arc<ArcSwap<ClusterState>> {
++        Arc::clone(&self.state)
++    }
++
+     pub(crate) async fn refresh_metadata(&self) -> Result<(), MetadataError> {
+         let (response_sender, response_receiver) = tokio::sync::oneshot::channel();
+ 
+diff --git a/scylla/src/policies/load_balancing/default.rs b/scylla/src/policies/load_balancing/default.rs
+index 1176675c..323d3f36 100644
+--- a/scylla/src/policies/load_balancing/default.rs
++++ b/scylla/src/policies/load_balancing/default.rs
+@@ -4,6 +4,7 @@ pub use self::latency_awareness::LatencyAwarenessBuilder;
+ use super::{FallbackPlan, LoadBalancingPolicy, NodeRef, RoutingInfo};
+ use crate::cluster::ClusterState;
+ use crate::frame::response::result::TableSpec;
++use crate::response::Coordinator;
+ use crate::routing::NodeLocationPreference;
+ use crate::{
+     cluster::metadata::Strategy,
+@@ -540,6 +541,58 @@ or refrain from preferring datacenters (which may ban all other datacenters, if
+         }
+     }
+ 
++    fn is_coordinator_preferred(
++        &self,
++        query: &RoutingInfo,
++        cluster: &ClusterState,
++        coordinator: &Coordinator,
++    ) -> bool {
++        let node = coordinator.node();
++
++        // Require the exact node instance currently present in topology.
++        let Some(current_node) = cluster.get_node_by_host_id(node.host_id) else {
++            return false;
++        };
++        if !Arc::ptr_eq(node, current_node) || !node.is_enabled() {
++            return false;
++        }
++
++        // Reuse the connectivity and latency predicate used by fresh picks.
++        if !(self.pick_predicate)(node, coordinator.shard()) {
++            return false;
++        }
++
++        let routing_info = self.routing_info(query, cluster);
++        if !self
++            .preferred_node_set(cluster, &routing_info)
++            .iter()
++            .any(|candidate| Arc::ptr_eq(candidate, node))
++        {
++            return false;
++        }
++
++        // Fall back when replica ownership cannot be established.
++        let (Some(token_with_strategy), Some(table_spec)) =
++            (routing_info.token_with_strategy.as_ref(), query.table)
++        else {
++            return false;
++        };
++
++        self.nonfiltered_replica_set(
++            token_with_strategy,
++            NodeLocationCriteria::Any,
++            cluster,
++            table_spec,
++        )
++        .into_iter()
++        .any(|(replica, shard)| {
++            Arc::ptr_eq(replica, node)
++                && coordinator
++                    .shard()
++                    .is_none_or(|coordinator_shard| coordinator_shard == shard)
++        })
++    }
++
+     fn name(&self) -> String {
+         "DefaultPolicy".to_string()
+     }
+diff --git a/scylla/src/policies/load_balancing/mod.rs b/scylla/src/policies/load_balancing/mod.rs
+index 4c72c181..93913dee 100644
+--- a/scylla/src/policies/load_balancing/mod.rs
++++ b/scylla/src/policies/load_balancing/mod.rs
+@@ -5,6 +5,7 @@
+ use crate::cluster::{ClusterState, NodeRef};
+ use crate::frame::response::result::TableSpec;
+ use crate::frame::types;
++use crate::response::Coordinator;
+ use crate::routing::NodeLocationPreference;
+ use crate::{
+     errors::RequestAttemptError,
+@@ -170,6 +171,19 @@ pub trait LoadBalancingPolicy: Send + Sync + std::fmt::Debug {
+         cluster: &'a ClusterState,
+     ) -> FallbackPlan<'a>;
+ 
++    /// Decides whether a coordinator retained from a preceding page may be
++    /// preferred for the current routing and cluster state.
++    ///
++    /// The conservative default requires custom policies to opt in to affinity.
++    fn is_coordinator_preferred(
++        &self,
++        _routing: &RoutingInfo,
++        _cluster: &ClusterState,
++        _coordinator: &Coordinator,
++    ) -> bool {
++        false
++    }
++
+     /// Invoked each time a request succeeds.
+     fn on_request_success(&self, _request: &RoutingInfo, _latency: Duration, _node: NodeRef<'_>) {}
+ 
+diff --git a/scylla/src/policies/load_balancing/plan.rs b/scylla/src/policies/load_balancing/plan.rs
+index 51a4e632..198904e0 100644
+--- a/scylla/src/policies/load_balancing/plan.rs
++++ b/scylla/src/policies/load_balancing/plan.rs
+@@ -1,8 +1,10 @@
+ use rand::{Rng, rng};
++use std::sync::Arc;
+ use tracing::error;
+ 
+ use super::{FallbackPlan, LoadBalancingPolicy, NodeRef, RoutingInfo};
+ use crate::cluster::ClusterState;
++use crate::response::Coordinator;
+ use crate::routing::Shard;
+ 
+ enum PlanState<'a> {
+@@ -71,6 +73,8 @@ pub struct Plan<'a> {
+     policy: &'a dyn LoadBalancingPolicy,
+     routing_info: &'a RoutingInfo<'a>,
+     cluster: &'a ClusterState,
++    preferred: Option<(NodeRef<'a>, Option<Shard>)>,
++    preferred_emitted: bool,
+ 
+     state: PlanState<'a>,
+ }
+@@ -87,6 +91,41 @@ impl<'a> Plan<'a> {
+             policy,
+             routing_info,
+             cluster,
++            preferred: None,
++            preferred_emitted: true,
++            state: PlanState::Created,
++        }
++    }
++
++    pub(crate) fn new_with_preferred(
++        policy: &'a dyn LoadBalancingPolicy,
++        routing_info: &'a RoutingInfo<'a>,
++        cluster: &'a ClusterState,
++        preferred: Option<&'a Coordinator>,
++    ) -> Self {
++        let preferred = preferred
++            .filter(|coordinator| {
++                policy.is_coordinator_preferred(routing_info, cluster, coordinator)
++            })
++            .map(|coordinator| (coordinator.node(), coordinator.shard()));
++        Self::new_with_preferred_target(policy, routing_info, cluster, preferred)
++    }
++
++    /// Creates a plan with an optional target to attempt before the policy's
++    /// freshly generated plan.
++    #[doc(hidden)]
++    pub fn new_with_preferred_target(
++        policy: &'a dyn LoadBalancingPolicy,
++        routing_info: &'a RoutingInfo<'a>,
++        cluster: &'a ClusterState,
++        preferred: Option<(NodeRef<'a>, Option<Shard>)>,
++    ) -> Self {
++        Self {
++            policy,
++            routing_info,
++            cluster,
++            preferred,
++            preferred_emitted: false,
+             state: PlanState::Created,
+         }
+     }
+@@ -105,18 +144,20 @@ impl<'a> Plan<'a> {
+             }),
+         )
+     }
+-}
+-
+-impl<'a> Iterator for Plan<'a> {
+-    type Item = (NodeRef<'a>, Shard);
++    fn is_preferred_target(&self, target: (NodeRef<'_>, Shard)) -> bool {
++        self.preferred.is_some_and(|preferred| {
++            Arc::ptr_eq(preferred.0, target.0)
++                && preferred.1.is_none_or(|shard| target.1 == shard)
++        })
++    }
+ 
+-    fn next(&mut self) -> Option<Self::Item> {
++    fn next_base(&mut self) -> Option<(NodeRef<'a>, Option<Shard>)> {
+         match &mut self.state {
+             PlanState::Created => {
+                 let picked = self.policy.pick(self.routing_info, self.cluster);
+                 if let Some(picked) = picked {
+                     self.state = PlanState::Picked(picked);
+-                    Some(Self::with_random_shard_if_unknown(picked))
++                    Some(picked)
+                 } else {
+                     // `pick()` returned None, which semantically means that a first node cannot be computed _cheaply_.
+                     // This, however, does not imply that fallback would return an empty plan, too.
+@@ -130,7 +171,7 @@ impl<'a> Iterator for Plan<'a> {
+                             iter,
+                             target_to_filter_out: node,
+                         };
+-                        Some(Self::with_random_shard_if_unknown(node))
++                        Some(node)
+                     } else {
+                         error!(
+                             "Load balancing policy returned an empty plan! The query cannot be executed. Routing info: {:?}",
+@@ -147,23 +188,33 @@ impl<'a> Iterator for Plan<'a> {
+                     target_to_filter_out: *node,
+                 };
+ 
+-                self.next()
++                self.next_base()
+             }
+             PlanState::Fallback {
+                 iter,
+                 target_to_filter_out: node_to_filter_out,
+-            } => {
+-                for node in iter {
+-                    if node == *node_to_filter_out {
+-                        continue;
+-                    } else {
+-                        return Some(Self::with_random_shard_if_unknown(node));
+-                    }
+-                }
++            } => iter.find(|node| *node != *node_to_filter_out),
++            PlanState::PickedNone => None,
++        }
++    }
++}
+ 
+-                None
++impl<'a> Iterator for Plan<'a> {
++    type Item = (NodeRef<'a>, Shard);
++
++    fn next(&mut self) -> Option<Self::Item> {
++        if !self.preferred_emitted {
++            self.preferred_emitted = true;
++            if let Some(preferred) = self.preferred {
++                return Some(Self::with_random_shard_if_unknown(preferred));
++            }
++        }
++
++        loop {
++            let target = Self::with_random_shard_if_unknown(self.next_base()?);
++            if !self.is_preferred_target(target) {
++                return Some(target);
+             }
+-            PlanState::PickedNone => None,
+         }
+     }
+ }
+diff --git a/scylla/src/client/paging_continuation.rs b/scylla/src/client/paging_continuation.rs
+new file mode 100644
+index 00000000..043ab584
+--- /dev/null
++++ b/scylla/src/client/paging_continuation.rs
+@@ -0,0 +1,30 @@
++//! Coordinator-aware state for manually paged requests.
++
++use crate::response::{Coordinator, PagingState, PagingStateResponse};
++
++/// Opaque state used to resume a manually paged request.
++///
++/// Besides the server-provided paging state, this value remembers the coordinator
++/// which completed the preceding page. The coordinator is only a preference: the
++/// active load-balancing policy revalidates it before every resumed request.
++#[derive(Debug, Clone)]
++pub struct PagingContinuation {
++    state: PagingState,
++    coordinator: Coordinator,
++}
++
++impl PagingContinuation {
++    pub(crate) fn from_response(
++        response: PagingStateResponse,
++        coordinator: Coordinator,
++    ) -> Option<Self> {
++        match response {
++            PagingStateResponse::HasMorePages { state } => Some(Self { state, coordinator }),
++            PagingStateResponse::NoMorePages => None,
++        }
++    }
++
++    pub(crate) fn into_parts(self) -> (PagingState, Coordinator) {
++        (self.state, self.coordinator)
++    }
++}

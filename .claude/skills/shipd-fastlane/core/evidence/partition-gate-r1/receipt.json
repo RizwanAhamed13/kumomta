@@ -1,0 +1,21 @@
+{
+  "total_seconds": 0.3145112991333008,
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "exit_code": 0,
+  "revision": "Fixture-only: replace escaped literal backslash-n separators with actual JSONL newlines in two new cases. Gate implementation unchanged.",
+  "first_result": {
+    "executed": 127,
+    "pass": 125,
+    "failure": 2,
+    "seconds": 0.6155216693878174
+  },
+  "production_provenance": "unverified"
+}

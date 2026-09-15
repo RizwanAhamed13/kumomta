@@ -1,0 +1,12 @@
+{
+  "url": null,
+  "captured_at": null,
+  "complete": false,
+  "capture": {"path": null, "sha256": null},
+  "contract": {
+    "case_id": null,
+    "rules": {},
+    "checks": []
+  },
+  "instructions": "Replace nulls from a fresh complete structured-text read of the selected live case panel. Save that text as a hashed evidence file. rules records exact fields, stage order, evaluator behavior, costs, repetitions and cohort criteria; use explicit unavailable entries with reasons where the panel does not expose a value. Every visible check becomes {label, local_ids, stages, rationale}; stages use scope/full/final. Explain each semantic mapping; unknown unmapped checks block upload. Never turn this example into a passing panel capture."
+}

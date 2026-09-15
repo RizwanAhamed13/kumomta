@@ -1,0 +1,17 @@
+diff --git a/scylla/src/policies/load_balancing/mod.rs b/scylla/src/policies/load_balancing/mod.rs
+@@ -5,6 +5,7 @@
++use crate::response::Coordinator;
+@@ -170,6 +171,19 @@ pub trait LoadBalancingPolicy: Send + Sync + std::fmt::Debug {
++    /// Decides whether a coordinator retained from a preceding page may be
++    /// preferred for the current routing and cluster state.
++    ///
++    /// The conservative default requires custom policies to opt in to affinity.
++    fn is_coordinator_preferred(
++        &self,
++        _routing: &RoutingInfo,
++        _cluster: &ClusterState,
++        _coordinator: &Coordinator,
++    ) -> bool {
++        false
++    }
++

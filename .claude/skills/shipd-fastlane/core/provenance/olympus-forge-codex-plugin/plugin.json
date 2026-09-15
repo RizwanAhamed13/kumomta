@@ -1,0 +1,37 @@
+{
+  "name": "olympus-forge",
+  "version": "1.0.0+codex.20260823071000",
+  "description": "Run an evidence-bound Shipd/Olympus workflow with full-reference hardness proof before reduced-test scope gating, frozen problem and solution bytes, deterministic validators, adaptive rollouts, and approval freeze.",
+  "author": {
+    "name": "Rizwan Ahamed"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Olympus Forge",
+    "shortDescription": "Evidence-bound Olympus challenge workflow",
+    "longDescription": "A combined and enhanced workflow preserving the archived validator and rollout controls while requiring a complete executable hardness-proven reference before Scope Gate, freezing problem and solution bytes while reducing only gate tests, and retaining explicit auditable user overrides, machine-readable state, adversarial grading, rollout analysis, review repair, and approval freeze.",
+    "developerName": "Rizwan Ahamed",
+    "category": "Productivity",
+    "capabilities": [
+      "Repository scouting and candidate qualification",
+      "Full-reference hardness proof before Scope Gate",
+      "Reduced-test Scope Gate with frozen problem and solution",
+      "Auditable explicit user override for Scope Gate",
+      "Challenge artifact construction",
+      "Machine-readable case state and proof staleness",
+      "Deterministic artifact and rollout validators",
+      "Requirement-derived mutation inventory and grader records",
+      "Per-case token budget and spend ledger",
+      "Offline validation and adversarial grading",
+      "Gate and rollout analysis",
+      "Review repair and approval freeze",
+      "Persistent lessons, duplicate rechecks, and exact-byte case state",
+      "Review-only defaults, evidence bundles, and resumable checkpoints"
+    ],
+    "defaultPrompt": [
+      "Run the combined Olympus workflow from the correct next stage.",
+      "Build and validate this Olympus challenge package.",
+      "Audit these Olympus rollout results and fix every blocker."
+    ]
+  }
+}

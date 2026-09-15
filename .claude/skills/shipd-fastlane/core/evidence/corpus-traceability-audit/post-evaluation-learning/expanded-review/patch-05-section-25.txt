@@ -1,0 +1,65 @@
+diff --git a/src/types/index.rs b/src/types/index.rs
+@@ -12,12 +12,11 @@
+-use crate::catalog::{TableCatalog, TableName};
++use crate::catalog::TableName;
+-use crate::planner::PlanArena;
+@@ -103,6 +102,7 @@ impl IndexOrderHint {
++    pub expressions: Vec<ScalarExpression>,
+@@ -111,26 +111,14 @@ pub struct IndexMeta {
+-    pub(crate) fn column_exprs(
+-        &self,
+-        table: &TableCatalog,
+-        arena: &PlanArena,
+-    ) -> Result<Vec<ScalarExpression>, DatabaseError> {
+-        let mut exprs = Vec::with_capacity(self.column_ids.len());
+-
+-        for column_id in self.column_ids.iter() {
+-            if let Some((position, column_ref)) = table
+-                .columns()
+-                .copied()
+-                .enumerate()
+-                .find(|(_, column)| arena.column(*column).id() == Some(*column_id))
+-            {
+-                exprs.push(ScalarExpression::column_expr(column_ref, position));
+-            } else {
+-                return Err(DatabaseError::column_not_found(column_id.to_string()));
+-            }
+-        }
+-        Ok(exprs)
++    pub(crate) fn column_exprs(&self) -> Result<Vec<ScalarExpression>, DatabaseError> {
++        Ok(self.expressions.clone())
++    }
++
++    pub(crate) fn is_expression_index(&self) -> bool {
++        self.expressions
++            .iter()
++            .any(|expression| !matches!(expression, ScalarExpression::ColumnRef { .. }))
+@@ -184,7 +172,7 @@ impl fmt::Display for IndexMetaRef {
+-    use crate::catalog::{ColumnCatalog, ColumnDesc, TableCatalog};
++    use crate::catalog::{ColumnCatalog, ColumnDesc, ColumnRef, TableCatalog};
+@@ -208,6 +196,7 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(ColumnRef::new(0), 0)],
+@@ -309,6 +298,12 @@ mod tests {
++        encode_arena.alloc_column(ColumnCatalog::new(
++            "c1".to_string(),
++            false,
++            ColumnDesc::new(LogicalType::Integer, Some(10), false, None)?,
++        ));
++
+@@ -398,6 +393,10 @@ mod tests {
++            expressions: vec![ScalarExpression::column_expr(
++                *table.columns().next().unwrap(),
++                0,
++            )],
+@@ -405,16 +404,9 @@ mod tests {
+-        assert_eq!(meta.column_exprs(&table, &arena)?.len(), 1);
++        assert_eq!(meta.column_exprs()?.len(), 1);
+-        let missing = IndexMeta {
+-            column_ids: vec![u64::MAX],
+-            ..meta
+-        };
+-        assert!(matches!(
+-            missing.column_exprs(&table, &arena),
+-            Err(DatabaseError::ColumnNotFound { .. })
+-        ));
++        assert!(!meta.is_expression_index());

@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-13T00:49:59.856744+00:00",
+  "scope": "source-only quality metadata gate repair",
+  "validation": "NOT_RUN awaiting coordinated slot",
+  "claim": "Fail-closed receipt schema only; no Docker availability probe or candidate execution performed by gate.",
+  "files": {
+    "scripts/quality_gate.py": "3fd76522ca9d20a7692648f9d2b2fba3b6cc054b6911ee0c1359f1fcefb01d45",
+    "tests/test_quality_gate.py": "f8ea1070535dc749ab90820dd05226d11224e20ba70fa1e903d5a02c5cb41346",
+    "assets/environment.example.json": "7f9afaf1fd59fa7bdfb6950e64ffcf3eb790349ce3762787d0456148fc962adf",
+    "skills/shipd-fastlane/references/execution.md": "340c5ef5914805ba199089d51a07a912aac1603dd4685029c0f9aacab287ec9c",
+    "skills/shipd-fastlane/references/local-quality-gate.md": "db6bf03fb9d8a26f79863a8068615977b43e6741fd699745c216431e561c483a"
+  }
+}

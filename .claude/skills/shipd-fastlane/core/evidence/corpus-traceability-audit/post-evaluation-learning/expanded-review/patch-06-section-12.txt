@@ -1,0 +1,6 @@
+diff --git a/dora-frontend/src/sema.rs b/dora-frontend/src/sema.rs
+@@ -67,8 +67,8 @@ pub use self::functions::{
+-    associated_type_bounds, extensions_overlap, find_impl, impl_matches, implements_trait,
+-    impls_overlap, maybe_alias_ty,
++    associated_type_bounds, extensions_overlap, find_impl, find_trait_pattern_type,
++    find_trait_tuple_pattern_type, impl_matches, implements_trait, impls_overlap, maybe_alias_ty,

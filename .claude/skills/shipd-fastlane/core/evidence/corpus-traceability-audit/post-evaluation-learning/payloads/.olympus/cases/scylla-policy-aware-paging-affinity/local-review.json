@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-09-02T17:30:00+05:30",
+  "rows": {
+    "category_fit": {
+      "status": "PASS",
+      "evidence": "Feature engineering across policy eligibility, lazy plan composition, automatic paging, three manual API families, opaque continuation state, retries, and compatibility surfaces."
+    },
+    "plagiarism_screen": {
+      "status": "PASS",
+      "evidence": "Candidate audit found no merged or open upstream implementation at pinned commit 611d43b595fb0ad7010f2bdbd887acae3d962d65 and no prior local challenge with this paging-policy interaction."
+    },
+    "problem_test_quality": {
+      "status": "PASS",
+      "evidence": "Thirteen hidden tests combine live proxy integration, DefaultPolicy unit matrices, plan ordering, and a Rustdoc public-API oracle. Clean transition is 0/13 before and 13/13 after; three review-gap mutants are killed and three saved genuine Nova solutions remain 13/13."
+    },
+    "description_necessity": {
+      "status": "PASS",
+      "evidence": "Each paragraph defines an externally relevant contract: eligibility, plan ordering, continuation/retry behavior, or compatibility."
+    },
+    "problem_test_alignment": {
+      "status": "PASS",
+      "evidence": "All tested interfaces remain explicit in the description. Runtime and public-API oracles now cover shard-sensitive eligibility, node-wide unsharded suppression, resumed observability and errors, continuation opacity, and exact metric accounting."
+    },
+    "test_filename_collision": {
+      "status": "PASS",
+      "evidence": "The blind prediction was scylla/tests/paging_affinity.rs. The generated path scylla/tests/paging_affinity_1d7881.rs and test.sh are absent from tracked paths at the pinned commit."
+    },
+    "docker_guidelines": {
+      "status": "PASS",
+      "evidence": "Dockerfile uses the allowed Rust :latest image without a digest, hydrates dependencies without running challenge tests, uses WORKDIR /app, switches to uid 1000, and starts Bash."
+    }
+  }
+}

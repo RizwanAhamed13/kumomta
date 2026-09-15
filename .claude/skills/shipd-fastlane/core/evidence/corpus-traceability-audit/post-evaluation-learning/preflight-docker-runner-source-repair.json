@@ -1,0 +1,73 @@
+{
+  "phase": "source-only-docker-contract-and-runner-repair",
+  "captured_at": "2026-09-13T01:22:18.227832+00:00",
+  "workdir": "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane",
+  "repository_commit": null,
+  "reason": "Transferred plugin is not a git checkout; source hashes bind this phase.",
+  "commands": [
+    {
+      "command": [
+        "hostname"
+      ],
+      "exit_code": 0,
+      "stdout": "arch",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "uname",
+        "-m"
+      ],
+      "exit_code": 0,
+      "stdout": "x86_64",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "df",
+        "-B1",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem                  1B-blocks         Used    Available Use% Mounted on\n/dev/mapper/omarchy_root 835832512512 286520991744 548992425984  35% /home",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "/home/admin/olympus-work/fastlane-routing-20260912/shipd-fastlane"
+      ],
+      "exit_code": 0,
+      "stdout": "TARGET SOURCE                           FSTYPE OPTIONS\n/home  /dev/mapper/omarchy_root[/@home] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=257,subvol=/@home",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "info",
+        "--format",
+        "{{.ServerVersion}} {{.DockerRootDir}}"
+      ],
+      "exit_code": 0,
+      "stdout": "29.7.2 /mnt/ssd/docker",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "findmnt",
+        "-T",
+        "/mnt/ssd/docker"
+      ],
+      "exit_code": 0,
+      "stdout": "TARGET SOURCE                       FSTYPE OPTIONS\n/      /dev/mapper/omarchy_root[/@] btrfs  rw,noatime,compress=zstd:3,space_cache=v2,subvolid=256,subvol=/@",
+      "stderr": ""
+    }
+  ],
+  "source_hashes": {
+    "scripts/fastlane.py": "45a173f699c94b746f644da2730c6804f6588d5aad6a427e175a7615634dbafd",
+    "scripts/quality_gate.py": "84c403c4e6e079a682ee41f03a239138f1f16a0c01209754b633e04412e88829",
+    "tests/test_tools.py": "292f0518c53163082348ee4a1f9a73d645fa583e8fe2a6faa66aec59f561d60f"
+  },
+  "validation": "NOT_RUN_THERMAL_HOLD"
+}

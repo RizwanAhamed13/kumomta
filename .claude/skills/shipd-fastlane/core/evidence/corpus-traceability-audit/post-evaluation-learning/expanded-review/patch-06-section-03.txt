@@ -1,0 +1,41 @@
+diff --git a/dora-bytecode/src/reader.rs b/dora-bytecode/src/reader.rs
+@@ -436,6 +436,18 @@ impl<'a> BytecodeReader<'a> {
++            BytecodeOpcode::TestTraitObjectType => {
++                let dest = self.read_register();
++                let object = self.read_register();
++                let idx = self.read_const_pool_idx();
++                BytecodeInstruction::TestTraitObjectType { dest, object, idx }
++            }
++            BytecodeOpcode::LoadTraitObjectValue => {
++                let dest = self.read_register();
++                let object = self.read_register();
++                let idx = self.read_const_pool_idx();
++                BytecodeInstruction::LoadTraitObjectValue { dest, object, idx }
++            }
+@@ -857,6 +869,13 @@ where
++            BytecodeInstruction::TestTraitObjectType { dest, object, idx } => {
++                self.visitor.visit_test_trait_object_type(dest, object, idx);
++            }
++            BytecodeInstruction::LoadTraitObjectValue { dest, object, idx } => {
++                self.visitor
++                    .visit_load_trait_object_value(dest, object, idx);
++            }
+@@ -1163,6 +1182,24 @@ pub trait BytecodeVisitor {
++
++    fn visit_test_trait_object_type(
++        &mut self,
++        _dest: Register,
++        _object: Register,
++        _idx: ConstPoolIdx,
++    ) {
++        unimplemented!();
++    }
++
++    fn visit_load_trait_object_value(
++        &mut self,
++        _dest: Register,
++        _object: Register,
++        _idx: ConstPoolIdx,
++    ) {
++        unimplemented!();
++    }

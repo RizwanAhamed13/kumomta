@@ -1,0 +1,25 @@
+diff --git a/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs b/crates/passes/src/passes/lints/ast_walk/checks/replaceable_with_autofill.rs
+@@ -27,6 +27,9 @@ pub fn check_replaceable_with_autofill(expression: &Expression, ctx: &NodeCtx) {
++    if owner_has_declared_default(ctx.store, ty, name) {
++        return;
++    }
+@@ -93,6 +96,25 @@ fn is_obvious_zero(value: &Expression) -> bool {
++fn owner_has_declared_default(store: &Store, ty: &Type, owner_name: &str) -> bool {
++    let Type::Nominal { id, .. } = ty.strip_refs() else {
++        return false;
++    };
++    let Some(definition) = store.get_definition(id.as_str()) else {
++        return false;
++    };
++    match &definition.body {
++        DefinitionBody::Struct { fields, .. } => fields.iter().any(|field| field.default.is_some()),
++        DefinitionBody::Enum { variants, .. } => {
++            let variant_name = unqualified_name(owner_name);
++            variants
++                .iter()
++                .find(|variant| variant.name == variant_name)
++                .is_some_and(|variant| variant.fields.iter().any(|field| field.default.is_some()))
++        }
++        _ => false,
++    }
++}

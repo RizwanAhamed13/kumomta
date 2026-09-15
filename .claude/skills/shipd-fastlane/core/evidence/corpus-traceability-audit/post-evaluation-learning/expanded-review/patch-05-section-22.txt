@@ -1,0 +1,9 @@
+diff --git a/src/planner/operator/visitor_mut.rs b/src/planner/operator/visitor_mut.rs
+@@ -335,6 +335,13 @@ impl<'a, V: ExprVisitorMut<'a>> OperatorVisitorMut<'a> for OperatorExprVisitorMu
++
++    fn visit_create_index(&mut self, op: &'a mut CreateIndexOperator) -> Result<(), DatabaseError> {
++        for expression in &mut op.expressions {
++            ExprVisitorMut::visit(self.visitor, expression)?;
++        }
++        Ok(())
++    }

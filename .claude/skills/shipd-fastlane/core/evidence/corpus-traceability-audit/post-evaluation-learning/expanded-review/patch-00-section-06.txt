@@ -1,0 +1,4 @@
+diff --git a/crates/semantics/src/cache/mod.rs b/crates/semantics/src/cache/mod.rs
+@@ -18,7 +18,7 @@ use crate::store::{ENTRY_PACKAGE_ID, Store};
+-pub(super) const CACHE_FORMAT_VERSION: u32 = 1;
++pub(super) const CACHE_FORMAT_VERSION: u32 = 2;

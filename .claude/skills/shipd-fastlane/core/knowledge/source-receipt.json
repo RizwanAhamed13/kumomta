@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-12",
+  "sources": [
+    {
+      "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/approved-candidates.md",
+      "sha256": "ef89e635555ab51f274fe15ba935f166ab1194d331ffadb8be00ee73fecb2067",
+      "bytes": 3428
+    },
+    {
+      "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/hardness-calibrators.md",
+      "sha256": "403a2e8dad22259af46d8aac13728769218591d9277ca40e281f4ce0327ae347",
+      "bytes": 10947
+    },
+    {
+      "source": ".olympus/lessons.md",
+      "sha256": "334d9f2e542270b92b4a7103788606066c7126e215fff19fdb26a7ec402a10ba",
+      "bytes": 98746
+    },
+    {
+      "source": ".olympus/plugin-build/olympus-forge-1.0.1+codex.20260902113852/skills/olympus-workflow/references/lessons-ledger.md",
+      "sha256": "6a812130292a21e8b9ca70835608c15a08015d3adc73490e9b0e00f1e63c32a6",
+      "bytes": 11727
+    },
+    {
+      "source": "knowledge/user-acceptance-confirmation-20260912.md",
+      "sha256": "8dbf0e87c18f5dead9fb679fe34468983ad8cf96c597c6adc23e247054fbc9d8",
+      "bytes": 1035,
+      "authority": "workspace owner confirmation in this task"
+    }
+  ],
+  "unique_lessons": 195,
+  "audit_directory": "/Users/rizwanahamed/Documents/Shipd/output/shipd-fastlane-audit-20260912",
+  "source_semantics": "Historical reference data; current user/workspace instructions take precedence.",
+  "accepted_reference_count": 9
+}
