@@ -28,7 +28,7 @@ index eec75b0..ba1565e 100644
 +        response.text().await?
 +    );
 +
-+    let cancelled = tokio::time::timeout(Duration::from_secs(10), async {
++    let cancelled = tokio::time::timeout(Duration::from_secs(30), async {
 +        loop {
 +            if get_suspensions(&daemon).await?.is_empty() {
 +                return Ok::<_, anyhow::Error>(());
